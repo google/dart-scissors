@@ -1,0 +1,12 @@
+name: scissors
+version: 0.0.1
+description: A CSS minifier / tree-shaker for AngularDart 1.x / Angular2.
+dependencies:
+  barback: any
+  code_transformers: any
+  csslib: any
+  html: any
+  quiver: any
+  source_maps: any
+dev_dependencies:
+  unittest: any
