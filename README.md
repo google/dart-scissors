@@ -1,4 +1,5 @@
-# sCiSSors: a CSS minifier / tree-shaker for Angular.
+# sCiSSors [![Build Status](https://travis-ci.org/google/dart-scissors.svg?branch=master)](https://travis-ci.org/google/dart-scissors)
+**A CSS minifier / tree-shaker for Angular.**
 
 Bored of tuning your SASS imports to avoid bloated CSS? This is for you!
 
