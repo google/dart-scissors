@@ -10,3 +10,4 @@ dependencies:
   source_maps: any
 dev_dependencies:
   test: any
+  unittest: any
