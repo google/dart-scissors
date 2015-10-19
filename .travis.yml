@@ -1,2 +1,7 @@
 language: dart
 sudo: false
+dart:
+  - dev
+cache:
+  directories:
+    - $HOME/.pub-cache/hosted
