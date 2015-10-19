@@ -13,8 +13,8 @@
 // limitations under the License.
 library scissors.name_fragment.test;
 
-import 'package:unittest/unittest.dart';
 import 'package:scissors/src/name_fragment.dart';
+import "package:test/test.dart";
 
 main() {
   regexp(String pattern) => new RegExp(pattern, multiLine: true);

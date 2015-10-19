@@ -16,7 +16,7 @@ library scissors.test;
 import 'package:barback/barback.dart';
 import 'package:code_transformers/tests.dart';
 import 'package:scissors/transformer.dart';
-import 'package:unittest/compact_vm_config.dart';
+import "package:test/test.dart";
 
 final phases = [
   [
@@ -26,8 +26,6 @@ final phases = [
 ];
 
 void main() {
-  useCompactVMConfiguration();
-
   testPhases('does basic class and element selector pruning', phases, {
     'a|foo.css': r'''
       .used-class {}

@@ -9,4 +9,4 @@ dependencies:
   quiver: any
   source_maps: any
 dev_dependencies:
-  unittest: any
+  test: any

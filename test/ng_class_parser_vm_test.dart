@@ -14,7 +14,7 @@
 library scissors.ng_class_parser.test;
 
 import 'package:scissors/src/ng_class_parser.dart';
-import 'package:unittest/unittest.dart';
+import "package:test/test.dart";
 
 main() {
   group('NgClassParsingResults', () {
