@@ -14,11 +14,10 @@
 library scissors.test;
 
 import 'package:barback/barback.dart';
-import 'package:code_transformers/tests.dart';
 import 'package:scissors/transformer.dart';
 import "package:test/test.dart";
 
-// import 'package:scissors/src/async_transformer_test_utils.dart';
+import 'package:scissors/src/async_transformer_test_utils.dart';
 
 final phases = [
   [
@@ -29,7 +28,7 @@ final phases = [
 
 void main() {
   group('ScissorsTransformer', () {
-  testPhases('does basic class and element selector pruning', phases, {
+  testPhasesAsync('does basic class and element selector pruning', phases, {
     'a|foo.css': r'''
       .used-class {}
       .unused-class {}
@@ -46,7 +45,7 @@ void main() {
       present-element {}
     '''
   });
-  testPhases('prunes css based on angular2 annotations in .dart companion', phases, {
+  testPhasesAsync('prunes css based on angular2 annotations in .dart companion', phases, {
     'a|foo.css': r'''
       absent-element {}
       present-element {}
@@ -62,7 +61,7 @@ void main() {
       present-element {}
     '''
   });
-  // testPhases('prunes css based on angular1 annotations in .dart companion', phases, {
+  // testPhasesAsync('prunes css based on angular1 annotations in .dart companion', phases, {
   //   'a|foo.css': r'''
   //     absent-element {}
   //     present-element {}
@@ -78,7 +77,7 @@ void main() {
   //   '''
   // });
 
-  testPhases('only prunes css which html it could resolve', phases, {
+  testPhasesAsync('only prunes css which html it could resolve', phases, {
     'a|foo.css': r'.some-class {}',
     'a|bar.css': r'.some-class {}',
     'a|baz.scss.css': r'.some-class {}',
@@ -90,7 +89,7 @@ void main() {
     'a|baz.scss.css': r'',
   });
 
-  testPhases('supports descending and attribute selectors', phases, {
+  testPhasesAsync('supports descending and attribute selectors', phases, {
     'a|foo.css': r'''
       html body input[type="submit"] {}
       html body input[type="checkbox"] {}
@@ -104,7 +103,7 @@ void main() {
     ''',
   });
 
-  testPhases('processes class attributes with mustaches', phases, {
+  testPhasesAsync('processes class attributes with mustaches', phases, {
     'a|foo.css': r'''
       .what_1 {}
       .what-2 {}
@@ -131,7 +130,7 @@ void main() {
     ''',
   });
 
-  testPhases('uses constant class names from ng-class', phases, {
+  testPhasesAsync('uses constant class names from ng-class', phases, {
     'a|foo.css': r'''
       .used-class {}
       .unused-class {}
@@ -157,7 +156,7 @@ void main() {
       body{font-family:sans-serif}
       div{font-family:sans-serif}
     ''';
-  testPhases('deals with synthetic html and body', phases, {
+  testPhasesAsync('deals with synthetic html and body', phases, {
     'a|html.css': htmlBodyDiv,
     'a|html.html': r'<html></html>',
     'a|body.css': htmlBodyDiv,
