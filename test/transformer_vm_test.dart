@@ -1,11 +1,11 @@
 // Copyright 2015 Google Inc. All Rights Reserved.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,8 @@ import 'package:code_transformers/tests.dart';
 import 'package:scissors/transformer.dart';
 import "package:test/test.dart";
 
+// import 'package:scissors/src/async_transformer_test_utils.dart';
+
 final phases = [
   [
     new ScissorsTransformer.asPlugin(
@@ -26,6 +28,7 @@ final phases = [
 ];
 
 void main() {
+  group('ScissorsTransformer', () {
   testPhases('does basic class and element selector pruning', phases, {
     'a|foo.css': r'''
       .used-class {}
@@ -43,6 +46,37 @@ void main() {
       present-element {}
     '''
   });
+  testPhases('prunes css based on angular2 annotations in .dart companion', phases, {
+    'a|foo.css': r'''
+      absent-element {}
+      present-element {}
+    ''',
+    'a|foo.dart': r'''
+      import 'package:angular/angular.dart';
+      @Component(selector = 'foo')
+      @View(template = '<present-element></present-element>')
+      class FooComponent {}
+    ''',
+  }, {
+    'a|foo.css': r'''
+      present-element {}
+    '''
+  });
+  // testPhases('prunes css based on angular1 annotations in .dart companion', phases, {
+  //   'a|foo.css': r'''
+  //     absent-element {}
+  //     present-element {}
+  //   ''',
+  //   'a|foo.dart': r'''
+  //     import 'package:angular2/angular2.dart';
+  //     @Component(template = '<present-element></present-element>')
+  //     class FooComponent {}
+  //   ''',
+  // }, {
+  //   'a|foo.css': r'''
+  //     present-element {}
+  //   '''
+  // });
 
   testPhases('only prunes css which html it could resolve', phases, {
     'a|foo.css': r'.some-class {}',
@@ -141,5 +175,6 @@ void main() {
     'a|div.css': r'''
       div{font-family:sans-serif}
     '''
+  });
   });
 }

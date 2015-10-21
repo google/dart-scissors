@@ -1,11 +1,11 @@
 // Copyright 2015 Google Inc. All Rights Reserved.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,15 +27,24 @@ import 'package:source_maps/refactor.dart';
 import 'package:source_maps/printer.dart';
 import 'package:source_span/source_span.dart';
 
+import 'package:code_transformers/resolver.dart' show Resolvers;
+import 'package:code_transformers/src/dart_sdk.dart' show dartSdkDirectory;
+
 import 'src/rule_set_index.dart';
 import 'src/usage_collector.dart';
+import 'package:scissors/src/template_extractor.dart';
 
 /// sCiSSors is an Angular tree-shaker for CSS files.
 /// It drops CSS rule sets that are not referenced from Angular templates.
 class ScissorsTransformer extends Transformer {
   final bool _isDebug;
+  Resolvers resolvers;
+
   ScissorsTransformer.asPlugin(BarbackSettings settings)
-      : this._isDebug = settings.mode == BarbackMode.DEBUG;
+      : this._isDebug = settings.mode == BarbackMode.DEBUG {
+    resolvers = new Resolvers(
+        checkNotNull(dartSdkDirectory, message: "dartSdkDirectory not found!"));
+  }
 
   @override
   String get allowedExtensions => ".css";
@@ -53,10 +62,18 @@ class ScissorsTransformer extends Transformer {
 
   Future<String> _findHtmlTemplate(
       Transform transform, AssetId cssAssetId) async {
-    // TODO(ochafik): Extract inline templates from companion .dart files if
-    // there is no companion .html file.
-    return (await transform.getInput(_getCssCompanionId(cssAssetId, ".html")))
-        .readAsString();
+    var extractor = new TemplateExtractor(resolvers);
+    var dartAssetId = _getCssCompanionId(cssAssetId, ".dart");
+    var dartAsset;
+    try {
+      dartAsset = await transform.getInput(dartAssetId);
+    } catch (e, s) {
+      // print('$e\n$s');
+      var htmlAssetId = _getCssCompanionId(cssAssetId, ".html");
+      var htmlAsset = await transform.getInput(htmlAssetId);
+      return htmlAsset.readAsString();
+    }
+    return extractor.extractTemplate(transform, dartAsset);
   }
 
   apply(Transform transform) async {
