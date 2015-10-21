@@ -1,11 +1,11 @@
 // Copyright 2015 Google Inc. All Rights Reserved.
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -120,9 +120,9 @@ class ElementDescription {
       ruleSet.selectorGroup.selectors.any(_isSelectorMatch);
 
   bool _isSelectorMatch(Selector sel) {
-    final seqNames = sel.simpleSelectorSequences
-        .map((seq) => seq.simpleSelector.name)
-        .toList();
+    // final seqNames = sel.simpleSelectorSequences
+    //     .map((seq) => seq.simpleSelector.name)
+    //     .toList();
 
     /// Ignore element descent: this will match elements regardless on whether
     /// their hierarchy matches the rule, but it's a simple and pessimistic
