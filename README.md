@@ -15,8 +15,7 @@ _Disclaimer_: This is not an official Google product.
 - Supports ng-class and class names with programmatic interpolated fragments
   (e.g. `class="some-{{fragmented}}-class and-some-normal-class"`,
   `ng-class="{'some-class': isSome}"`).
-- Reasonably framework-agnostic (should work with Angular 1 & 2, but not with
-  inlined templates yet).
+- Reasonably framework-agnostic (works with Angular 1 & 2)
 
 ## Usage
 
@@ -44,6 +43,7 @@ conventions and limitations.
   files yet (html.Element.classes, etc).
 - No support for XML namespaces in CSS3 attribute selectors.
 - No CSS renaming yet (just pruning for now),
+- No Polymer.dart support yet.
 
 ## Style Isolation in Angular
 
