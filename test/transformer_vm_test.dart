@@ -101,8 +101,10 @@ void main() {
       present-element {}
     ''',
     'a|foo1.dart': r'''
-      import 'package:angular2/angular2.dart';
-      @Component(template = '<present-element></present-element>',
+      import 'package:angular/angular.dart';
+      @Component(
+        selector = 'foo',
+        template = '<present-element></present-element>',
         cssUrl = 'package:a/foo1.css')
       class FooComponent {}
     ''',
