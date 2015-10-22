@@ -3,6 +3,5 @@
 
 ### Features
 
-* Support for Angular1 and Angular2
-* Support for separate .html template and inlined templates
-* Support for `ng-class` and interpolated name fragments inside `class`
+* Basic support for .css pruning based on companion .html template or inlined templates in companion .dart file (Angular1 and Angular2)
+* Support for `ng-class` and interpolated name fragments inside `class` in templates
