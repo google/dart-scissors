@@ -1,0 +1,11 @@
+name: scissors_angular2_example
+version: 0.1.0
+dependencies:
+  angular2: 2.0.0-alpha.44
+dev_dependencies:
+  scissors:
+    path: ../..
+transformers:
+- scissors
+- angular2:
+    entry_points: web/main.dart

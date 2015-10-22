@@ -1,0 +1,9 @@
+name: scissors_angular1_example
+version: 0.1.0
+dependencies:
+  angular: "1.1.0"
+dev_dependencies:
+  scissors:
+    path: ../..
+transformers:
+- scissors
