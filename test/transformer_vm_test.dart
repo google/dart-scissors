@@ -13,9 +13,10 @@
 // limitations under the License.
 library scissors.test;
 
-import 'package:barback/barback.dart';
-import 'package:scissors/transformer.dart';
-import 'package:scissors/src/async_transformer_test_utils.dart';
+import 'package:barback/barback.dart' show BarbackMode, BarbackSettings, Transformer;
+import 'package:code_transformers/tests.dart' show StringFormatter, applyTransformers;
+import 'package:scissors/transformer.dart' show ScissorsTransformer;
+import 'package:test/test.dart' show test;
 
 final phases = [
   [
@@ -25,7 +26,7 @@ final phases = [
 ];
 
 void main() {
-  testPhasesAsync('leaves css based on angular2 annotations without css url alone', phases, {
+  _testPhases('leaves css based on angular2 annotations without css url alone', phases, {
     'a|foo2_unmatched_css_url.css': r'''
       .used-class {}
       .unused-class {}
@@ -52,7 +53,7 @@ void main() {
       present-element {}
     '''
   });
-  testPhasesAsync('does basic class and element selector pruning', phases, {
+  _testPhases('does basic class and element selector pruning', phases, {
     'a|foo2_html.css': r'''
       .used-class {}
       .unused-class {}
@@ -69,7 +70,7 @@ void main() {
       present-element {}
     '''
   });
-  testPhasesAsync('prunes css based on angular2 annotations in .dart companion', phases, {
+  _testPhases('prunes css based on angular2 annotations in .dart companion', phases, {
     'a|foo2_dart.css': r'''
       .used-class {}
       .unused-class {}
@@ -95,7 +96,7 @@ void main() {
       present-element {}
     '''
   });
-  testPhasesAsync('prunes css based on angular1 annotations in .dart companion', phases, {
+  _testPhases('prunes css based on angular1 annotations in .dart companion', phases, {
     'a|foo1.css': r'''
       absent-element {}
       present-element {}
@@ -113,7 +114,7 @@ void main() {
       present-element {}
     '''
   });
-  testPhasesAsync('resolves local css files in angular2', phases, {
+  _testPhases('resolves local css files in angular2', phases, {
     'a|foo2_local.css': r'''
       absent-element {}
       present-element {}
@@ -131,7 +132,7 @@ void main() {
     '''
   });
 
-  testPhasesAsync('only prunes css which html it could resolve', phases, {
+  _testPhases('only prunes css which html it could resolve', phases, {
     'a|foo.css': r'.some-class {}',
     'a|bar.css': r'.some-class {}',
     'a|baz.scss.css': r'.some-class {}',
@@ -143,7 +144,7 @@ void main() {
     'a|baz.scss.css': r'',
   });
 
-  testPhasesAsync('supports descending and attribute selectors', phases, {
+  _testPhases('supports descending and attribute selectors', phases, {
     'a|foo.css': r'''
       html body input[type="submit"] {}
       html body input[type="checkbox"] {}
@@ -157,7 +158,7 @@ void main() {
     ''',
   });
 
-  testPhasesAsync('processes class attributes with mustaches', phases, {
+  _testPhases('processes class attributes with mustaches', phases, {
     'a|foo.css': r'''
       .what_1 {}
       .what-2 {}
@@ -184,7 +185,7 @@ void main() {
     ''',
   });
 
-  testPhasesAsync('uses constant class names from ng-class', phases, {
+  _testPhases('uses constant class names from ng-class', phases, {
     'a|foo.css': r'''
       .used-class {}
       .unused-class {}
@@ -210,7 +211,7 @@ void main() {
       body{font-family:sans-serif}
       div{font-family:sans-serif}
     ''';
-  testPhasesAsync('deals with synthetic html and body', phases, {
+  _testPhases('deals with synthetic html and body', phases, {
     'a|html.css': htmlBodyDiv,
     'a|html.html': r'<html></html>',
     'a|body.css': htmlBodyDiv,
@@ -229,4 +230,13 @@ void main() {
       div{font-family:sans-serif}
     '''
   });
+}
+
+_testPhases(String testName, List<List<Transformer>> phases,
+    Map<String, String> inputs, Map<String, String> results,
+    [List<String> messages,
+    StringFormatter formatter = StringFormatter.noTrailingWhitespace]) {
+  test(testName, () async => applyTransformers(phases,
+      inputs: inputs, results: results,
+      messages: messages, formatter: formatter));
 }
