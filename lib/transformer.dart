@@ -108,13 +108,13 @@ class ScissorsTransformer extends Transformer {
           ..build(cssAssetId.path);
         final String processedCss = printer.text;
 
-        transform.logger.info("[scissors] Size($cssAssetId): "
+        transform.logger.info("Size($cssAssetId): "
             "before = ${css.length}, after = ${processedCss.length}");
         transform.addOutput(new Asset.fromString(cssAssetId, processedCss));
       }
     } catch (e, s) {
       if (_isDebug) print("$e\n$s");
-      transform.logger.warning("[scissors] Failed to prune $cssAssetId: $e");
+      transform.logger.warning("Failed to prune $cssAssetId: $e");
     }
   }
 
@@ -135,7 +135,7 @@ class ScissorsTransformer extends Transformer {
 
     final fileLength = transaction.file.length;
     topLevelsToDropWithIndex.forEach((TreeNode topLevel, int i) {
-      transform.logger.info("[scissors] Dropping unused CSS rule: "
+      transform.logger.info("Dropping unused CSS rule: "
           "${_printCss(new StyleSheet([topLevel], null))}");
       final start = topLevel.span.start.offset;
       final end = i == topLevels.length - 1
