@@ -3,7 +3,7 @@ set -eu
 
 readonly EXAMPLE_NAME="$1"
 
-cd "$EXAMPLE_NAME"
+cd "`dirname $0`/$EXAMPLE_NAME"
 
 # Use local version of scissors:
 sed -i '.bak' -E 's!scissors: .+!scissors: {path: ../..}!' pubspec.yaml
