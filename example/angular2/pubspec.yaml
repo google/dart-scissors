@@ -8,3 +8,4 @@ transformers:
 - scissors
 - angular2:
     entry_points: web/main.dart
+    html_files: web/index.html
