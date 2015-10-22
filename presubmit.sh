@@ -1,6 +1,7 @@
 #!/bin/bash
 set -eux
 
+pub get
 pub run test
 example/test_example.sh angular1
 example/test_example.sh angular2
