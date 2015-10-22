@@ -3,8 +3,7 @@ version: 0.1.0
 dependencies:
   angular2: 2.0.0-alpha.44
 dev_dependencies:
-  scissors:
-    path: ../..
+  scissors: 0.1.0
 transformers:
 - scissors
 - angular2:
