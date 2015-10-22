@@ -18,6 +18,7 @@ Future<Map<String, String>> _awaitValues(Map<String, dynamic> map) {
       result[key] = futureValue;
     }
   });
+  if (futures.isEmpty) return new Future.value(result);
   return Future.wait(futures).then((_) => result);
 }
 

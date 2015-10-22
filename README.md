@@ -10,6 +10,8 @@ _Disclaimer_: This is not an official Google product.
 - For each .css file with a .html companion, prunes CSS rules that don't seem
   to be used. Have a look a [the tests](./test/transformer_vm_test.dart) for
   examples.
+- Same logic applies to .css files with a .dart companion with inlined
+  Angular(1,2) templates (inside `@Component` / `@View` annotations).
 - Supports ng-class and class names with programmatic interpolated fragments
   (e.g. `class="some-{{fragmented}}-class and-some-normal-class"`,
   `ng-class="{'some-class': isSome}"`).
@@ -32,8 +34,6 @@ conventions and limitations.
 
 ## Limitations
 
-- No support for inlined templates in `@Component` / `@View` annotations in
-  .dart files yet,
 - Assumes if foo.html exists, foo.css is only used from there (conventions
   matter). This means sCiSSors should be disabled or used with caution when
   using Angular2 with EmulatedUnscopedShadowDomStrategy (see section below).
@@ -68,19 +68,6 @@ The last "unscoped" strategy (the default(?) in Angular2) means there's no file-
 component-local way of deciding if a style *could* be used elsewhere. You should
 not use sCiSSors on packages / projects with that strategy.
 
-## TODO(ochafik):
+## TODO
 
-- Analyze companion .dart files:
-  - Extract inline templates from Angular 1 & 2 component / view annotations
-  - Detect manual DOM class manipulations
-  - Note that in Angular2, even in the face of EmulatedUnscopedShadowDomStrategy
-    we might be able to walk down the possible subcomponents of a template, and
-    perform downwards-usage-based pruning.
-  - *(stretch)* Perform ahead-of-time transclusion
-- Introduce mechanism to preserve classes: need to see which of the following
-  options are the most SASS-friendly / most usable:
-  - Javadoc-like `@retain` tags in comments,
-  - Special rule `scissors { my-class: preserved; }`,
-  - Special property `.my-class { scissors: preserved; ... }` (my favourite),
-- Minify/rename CSS class names
-- *(stretch)* Include RTL mirroring of CSS?
+Please see issues.

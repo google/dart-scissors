@@ -15,8 +15,6 @@ library scissors.test;
 
 import 'package:barback/barback.dart';
 import 'package:scissors/transformer.dart';
-import "package:test/test.dart";
-
 import 'package:scissors/src/async_transformer_test_utils.dart';
 
 final phases = [
@@ -27,55 +25,92 @@ final phases = [
 ];
 
 void main() {
-  group('ScissorsTransformer', () {
-  testPhasesAsync('does basic class and element selector pruning', phases, {
-    'a|foo.css': r'''
+  testPhasesAsync('leaves css based on angular2 annotations without css url alone', phases, {
+    'a|foo2_unmatched_css_url.css': r'''
       .used-class {}
       .unused-class {}
       absent-element {}
       present-element {}
     ''',
-    'a|foo.html': r'''
+    'a|foo2_unmatched_css_url.dart': r'''
+      import 'package:angular2/angular2.dart';
+
+      @Component(selector = 'foo2_unmatched_css_url')
+      @View(template = '<present-element></present-element>',
+          styleUrls = const ['package:a/something_else.css'])
+      class FooComponent {}
+
+      @Component(selector = 'bar')
+      @View(template = '<div class="used-class inexistent-class"></div>')
+      class BarComponent {}
+    ''',
+  }, {
+    'a|foo2_unmatched_css_url.css': r'''
+      .used-class {}
+      .unused-class {}
+      absent-element {}
+      present-element {}
+    '''
+  });
+  testPhasesAsync('does basic class and element selector pruning', phases, {
+    'a|foo2_html.css': r'''
+      .used-class {}
+      .unused-class {}
+      absent-element {}
+      present-element {}
+    ''',
+    'a|foo2_html.html': r'''
       <present-element class="used-class inexistent-class">
       </present-element>
     ''',
   }, {
-    'a|foo.css': r'''
+    'a|foo2_html.css': r'''
       .used-class {}
       present-element {}
     '''
   });
   testPhasesAsync('prunes css based on angular2 annotations in .dart companion', phases, {
-    'a|foo.css': r'''
+    'a|foo2_dart.css': r'''
+      .used-class {}
+      .unused-class {}
       absent-element {}
       present-element {}
     ''',
-    'a|foo.dart': r'''
-      import 'package:angular/angular.dart';
+    'a|foo2_dart.dart': r'''
+      import 'package:angular2/angular2.dart';
+
       @Component(selector = 'foo')
-      @View(template = '<present-element></present-element>')
+      @View(template = '<present-element></present-element>',
+          styleUrls = const ['package:a/foo2_dart.css'])
       class FooComponent {}
+
+      @Component(selector = 'bar')
+      @View(template = '<div class="used-class inexistent-class"></div>',
+          styleUrls = const ['package:a/foo2_dart.css'])
+      class BarComponent {}
     ''',
   }, {
-    'a|foo.css': r'''
+    'a|foo2_dart.css': r'''
+      .used-class {}
       present-element {}
     '''
   });
-  // testPhasesAsync('prunes css based on angular1 annotations in .dart companion', phases, {
-  //   'a|foo.css': r'''
-  //     absent-element {}
-  //     present-element {}
-  //   ''',
-  //   'a|foo.dart': r'''
-  //     import 'package:angular2/angular2.dart';
-  //     @Component(template = '<present-element></present-element>')
-  //     class FooComponent {}
-  //   ''',
-  // }, {
-  //   'a|foo.css': r'''
-  //     present-element {}
-  //   '''
-  // });
+  testPhasesAsync('prunes css based on angular1 annotations in .dart companion', phases, {
+    'a|foo1.css': r'''
+      absent-element {}
+      present-element {}
+    ''',
+    'a|foo1.dart': r'''
+      import 'package:angular2/angular2.dart';
+      @Component(template = '<present-element></present-element>',
+        cssUrl = 'package:a/foo1.css')
+      class FooComponent {}
+    ''',
+  }, {
+    'a|foo1.css': r'''
+      present-element {}
+    '''
+  });
 
   testPhasesAsync('only prunes css which html it could resolve', phases, {
     'a|foo.css': r'.some-class {}',
@@ -174,6 +209,5 @@ void main() {
     'a|div.css': r'''
       div{font-family:sans-serif}
     '''
-  });
   });
 }

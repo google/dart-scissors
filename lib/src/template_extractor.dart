@@ -3,68 +3,56 @@ library scissors.template_extractor;
 import 'dart:async';
 
 import 'package:barback/barback.dart' show Transform, Asset, AssetId;
-
-import 'package:code_transformers/resolver.dart';
-
 import 'package:analyzer/analyzer.dart';
-import 'package:analyzer/src/generated/constant.dart';
-import 'package:analyzer/src/generated/element.dart';
-import 'package:analyzer/src/generated/engine.dart';
-import 'package:analyzer/src/generated/source.dart';
 
-part '_asset_based_source.dart';
+Future<List<String>> extractTemplates(Transform transform, Asset dartAsset, AssetId cssAssetId) async {
+  String dartSource = await dartAsset.readAsString();
 
-class TemplateExtractor {
-  final Resolvers resolvers;
+  var unit = parseCompilationUnit(dartSource, suppressErrors: true);
+  var templates = <String>[];
+  var cssUrl = _assetIdToUri(cssAssetId);
 
-  TemplateExtractor(this.resolvers);
+  for (var decl in unit.declarations) {
+    if (decl is ClassDeclaration) {
+      for (var meta in decl.metadata) {
+        String annotationName = meta.name.name;
 
-  Future<String> extractTemplate(Transform transform, Asset dartAsset) async {
-    String dartSource = await dartAsset.readAsString();
-    Resolver resolver = await resolvers.get(transform, [dartAsset.id]);
+        evalArg(String argumentName) {
+          var expr = _findNamedArgument(meta.arguments, argumentName);
+          var result = expr == null ? null : _eval(expr);
+          return result;
+        }
 
-    AnalysisContext analysisContext = new AnalysisContextImpl()
-        ..analysisOptions = resolvers.options ?? new AnalysisOptionsImpl();
-
-    var unit = parseCompilationUnit(dartSource, suppressErrors: true);
-    LibraryDirective libDirective =
-        unit.directives.firstWhere((d) => d is LibraryDirective, orElse: () => null);
-    // var source = analysisContext.sources.single;
-    //var source = analysisContext.sourceFactory.forUri('package:${dartAsset.id.package}:${dartAsset.id.path}');
-    var source = new _AssetBasedSource(dartAsset, dartSource);
-    var unitElement = new CompilationUnitElementImpl(dartAsset.id.path)
-        ..source = source
-        ..librarySource = source;
-    unit.element = unitElement;
-    var libElement = new LibraryElementImpl.forNode(
-        analysisContext, libDirective?.name ?? new LibraryIdentifier([]));
-    libElement.definingCompilationUnit = unitElement;
-
-    for (var decl in unit.declarations) {
-      if (decl is ClassDeclaration) {
-        for (var meta in decl.metadata) {
-          String annotationName = meta.name.name;
-          // Handle Angular1's Component.template and Angular2's View.template.
+        try {
+          // Handle Angular1's Component.{template, cssUrl}
+          // and Angular2's View.{template, styleUrls}.
           if (annotationName == 'View' || annotationName == 'Component') {
-            var template = _findNamedArgument(meta.arguments, 'template');
-            if (template != null && template is StringLiteral) {
-              return _evalString(template, resolver, libElement);
+            var template = evalArg('template');
+            if (template != null) {
+              List styleUrls = evalArg('styleUrls') ?? [evalArg('cssUrl')];
+              if (styleUrls.contains(cssUrl)) {
+                  templates.add(template);
+              }
             }
           }
+        } catch (e, s) {
+          print('$e\n$s');
+          throw e;
         }
       }
     }
-    throw new StateError('No template found in ${dartAsset.id}');
   }
-
-  String _evalString(StringLiteral expr, Resolver resolver, LibraryElement libElement) {
-    var result = resolver.evaluateConstant(libElement, expr);
-    if (result.errors.isNotEmpty) {
-      throw new StateError(result.errors.map((e) => e.message).join("\n"));
-    }
-    return result.value.stringValue;
-  }
+  return templates;
 }
+
+dynamic _eval(Literal expr) {
+  if (expr == null) return null;
+  if (expr is SimpleStringLiteral) return expr.stringValue;
+  if (expr is ListLiteral) return expr.elements.map(_eval).toList();
+  throw new ArgumentError("Unsupported literal type: ${expr.runtimeType} ($expr)");
+}
+
+String _assetIdToUri(AssetId id) => 'package:${id.package}/${id.path}';
 
 Expression _findNamedArgument(ArgumentList argumentList, String name) {
   for (var arg in argumentList.arguments) {

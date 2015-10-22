@@ -62,18 +62,17 @@ class ScissorsTransformer extends Transformer {
 
   Future<String> _findHtmlTemplate(
       Transform transform, AssetId cssAssetId) async {
-    var extractor = new TemplateExtractor(resolvers);
-    var dartAssetId = _getCssCompanionId(cssAssetId, ".dart");
-    var dartAsset;
     try {
-      dartAsset = await transform.getInput(dartAssetId);
+      var dartAssetId = _getCssCompanionId(cssAssetId, ".dart");
+      var dartAsset = await transform.getInput(dartAssetId);
+      var templates = await extractTemplates(transform, dartAsset, cssAssetId);
+      if (templates.isNotEmpty) return templates.join('\n');
     } catch (e, s) {
-      // print('$e\n$s');
-      var htmlAssetId = _getCssCompanionId(cssAssetId, ".html");
-      var htmlAsset = await transform.getInput(htmlAssetId);
-      return htmlAsset.readAsString();
+      if (e is! AssetNotFoundException) print('$e (${e.runtimeType})\n$s');
     }
-    return extractor.extractTemplate(transform, dartAsset);
+    var htmlAssetId = _getCssCompanionId(cssAssetId, ".html");
+    var htmlAsset = await transform.getInput(htmlAssetId);
+    return htmlAsset.readAsString();
   }
 
   apply(Transform transform) async {
