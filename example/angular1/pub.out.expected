@@ -1,0 +1,89 @@
+Loading source assets...
+Loading di/module_transformer, scissors and smoke/src/default_transformer transformers...
+Building scissors_angular1_example...
+[Info from Scissors on scissors_angular1_example|lib/foo.css]:
+Dropping unused CSS rule: .unused-class {
+}
+[Info from Scissors on scissors_angular1_example|lib/foo.css]:
+Dropping unused CSS rule: absent-element {
+}
+[Info from Scissors]:
+Size(scissors_angular1_example|lib/foo.css): before = 69, after = 34
+[Info from Dart2JS]:
+Compiling scissors_angular1_example|web/main.dart...
+[Warning from Dart2JS on scissors_angular1_example|web/main.dart]:
+packages/angular/core/annotation_src.dart:3:44:
+Library 'package:di/di.dart' doesn't export a 'Visibility' declaration.
+Try removing 'Visibility' from the 'show' clause.
+import "package:di/di.dart" show Injector, Visibility, Factory;
+                                           ^^^^^^^^^^
+[Warning from Dart2JS on scissors_angular1_example|web/main.dart]:
+packages/angular/core/annotation_src.dart:3:56:
+Library 'package:di/di.dart' doesn't export a 'Factory' declaration.
+Try removing 'Factory' from the 'show' clause.
+import "package:di/di.dart" show Injector, Visibility, Factory;
+                                                       ^^^^^^^
+[Warning from Dart2JS on scissors_angular1_example|web/main.dart]:
+packages/angular/core/annotation.dart:11:5:
+Library 'package:angular/core/annotation_src.dart' doesn't export a 'ShadowRootAware' declaration.
+Try removing 'ShadowRootAware' from the 'show' clause.
+    ShadowRootAware,
+    ^^^^^^^^^^^^^^^
+[Warning from Dart2JS on scissors_angular1_example|web/main.dart]:
+packages/angular/core/module.dart:70:5:
+Library 'package:angular/core/module_internal.dart' doesn't export a 'CacheStats' declaration.
+Try removing 'CacheStats' from the 'show' clause.
+    CacheStats,
+    ^^^^^^^^^^
+[Warning from Dart2JS on scissors_angular1_example|web/main.dart]:
+packages/angular/core/module.dart:71:5:
+Library 'package:angular/core/module_internal.dart' doesn't export a 'ComponentCssRewriter' declaration.
+Try removing 'ComponentCssRewriter' from the 'show' clause.
+    ComponentCssRewriter,
+    ^^^^^^^^^^^^^^^^^^^^
+[Warning from Dart2JS on scissors_angular1_example|web/main.dart]:
+packages/angular/core/module.dart:75:5:
+Library 'package:angular/core/module_internal.dart' doesn't export a 'WebPlatform' declaration.
+Try removing 'WebPlatform' from the 'show' clause.
+    WebPlatform,
+    ^^^^^^^^^^^
+[Warning from Dart2JS on scissors_angular1_example|web/main.dart]:
+packages/angular/core/module.dart:50:5:
+Library 'package:angular/core_dom/module_internal.dart' doesn't export a 'NgAnimate' declaration.
+Try removing 'NgAnimate' from the 'show' clause.
+    NgAnimate,
+    ^^^^^^^^^
+[Warning from Dart2JS on scissors_angular1_example|web/main.dart]:
+packages/angular/core/module.dart:54:5:
+Library 'package:angular/core_dom/module_internal.dart' doesn't export a 'PendingAsync' declaration.
+Try removing 'PendingAsync' from the 'show' clause.
+    PendingAsync,
+    ^^^^^^^^^^^^
+[Warning from Dart2JS on scissors_angular1_example|web/main.dart]:
+packages/angular/angular.dart:15:54:
+Library 'package:route_hierarchical/client.dart' doesn't export a 'childRoute' declaration.
+Try removing 'childRoute' the 'hide' clause.
+export 'package:route_hierarchical/client.dart' hide childRoute;
+                                                     ^^^^^^^^^^
+[Dart2JS]:
+web/main.dart:
+
+****************************************************************
+* WARNING: dart:mirrors support in dart2js is experimental,
+*          and not recommended.
+*          This implementation of mirrors is incomplete,
+*          and often greatly increases the size of the generated
+*          JavaScript code.
+*
+* Your app imports dart:mirrors via:
+*   main.dart => package:angular => dart:mirrors
+*
+* You can disable this message by using the --enable-experimental-mirrors
+* command-line flag.
+*
+* To learn what to do next, please visit:
+*    http://dartlang.org/dart2js-reflection
+****************************************************************
+
+[Info from Dart2JS]:
+Built 210 files to "build".
