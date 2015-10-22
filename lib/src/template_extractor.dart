@@ -16,7 +16,6 @@ Future<List<String>> extractTemplates(Transform transform, Asset dartAsset, Asse
     if (decl is ClassDeclaration) {
       for (var meta in decl.metadata) {
         String annotationName = meta.name.name;
-
         evalArg(String argumentName) {
           var expr = _findNamedArgument(meta.arguments, argumentName);
           var result = expr == null ? null : _eval(expr);
@@ -30,6 +29,7 @@ Future<List<String>> extractTemplates(Transform transform, Asset dartAsset, Asse
             var template = evalArg('template');
             if (template != null) {
               List styleUrls = evalArg('styleUrls') ?? [evalArg('cssUrl')];
+              // stderr.writeln('\ncssUrl = $cssUrl, styleUrls = $styleUrls');
               if (styleUrls.contains(cssUrl)) {
                   templates.add(template);
               }
@@ -52,15 +52,19 @@ dynamic _eval(Literal expr) {
   throw new ArgumentError("Unsupported literal type: ${expr.runtimeType} ($expr)");
 }
 
-String _assetIdToUri(AssetId id) => 'package:${id.package}/${id.path}';
+String _assetIdToUri(AssetId id) {
+  var path = id.path;
+  if (path.startsWith('lib/')) path = path.substring('lib/'.length);
+  return 'package:${id.package}/$path';
+}
 
 Expression _findNamedArgument(ArgumentList argumentList, String name) {
   for (var arg in argumentList.arguments) {
-    if (arg is AssignmentExpression
-        && arg.leftHandSide is Identifier) {
-      if (arg.leftHandSide.name == name) {
-        return arg.rightHandSide;
-      }
+    if (arg is AssignmentExpression && arg.leftHandSide is Identifier
+        && arg.leftHandSide.name == name) {
+      return arg.rightHandSide;
+    } else if (arg is NamedExpression && arg.name.label.name == name) {
+      return arg.expression;
     }
   }
   return null;
