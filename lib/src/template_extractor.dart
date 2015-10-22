@@ -1,9 +1,9 @@
 library scissors.template_extractor;
 
 import 'dart:async';
-
 import 'package:barback/barback.dart' show Transform, Asset, AssetId;
 import 'package:analyzer/analyzer.dart';
+import 'package:path/path.dart';
 
 Future<List<String>> extractTemplates(Transform transform, Asset dartAsset, AssetId cssAssetId) async {
   String dartSource = await dartAsset.readAsString();
@@ -11,6 +11,14 @@ Future<List<String>> extractTemplates(Transform transform, Asset dartAsset, Asse
   var unit = parseCompilationUnit(dartSource, suppressErrors: true);
   var templates = <String>[];
   var cssUrl = _assetIdToUri(cssAssetId);
+
+  var dartAssetId = dartAsset.id;
+  String _resolveRelativeUrl(String url) {
+    if (url == null || url.contains(':')) return url;
+
+    var path = '${dirname(dartAssetId.path)}/$url'.replaceAll('/./', '');
+    return _assetIdToUri(new AssetId(dartAssetId.package, path));
+  }
 
   for (var decl in unit.declarations) {
     if (decl is ClassDeclaration) {
@@ -30,8 +38,8 @@ Future<List<String>> extractTemplates(Transform transform, Asset dartAsset, Asse
             if (template != null) {
               List styleUrls = evalArg('styleUrls') ?? [evalArg('cssUrl')];
               // stderr.writeln('\ncssUrl = $cssUrl, styleUrls = $styleUrls');
-              if (styleUrls.contains(cssUrl)) {
-                  templates.add(template);
+              if (styleUrls.map(_resolveRelativeUrl).contains(cssUrl)) {
+                templates.add(template);
               }
             }
           }

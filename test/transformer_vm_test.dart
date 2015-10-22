@@ -113,6 +113,23 @@ void main() {
       present-element {}
     '''
   });
+  testPhasesAsync('resolves local css files in angular2', phases, {
+    'a|foo2_local.css': r'''
+      absent-element {}
+      present-element {}
+    ''',
+    'a|foo2_local.dart': r'''
+      import 'package:angular/angular.dart';
+      @View(
+        template = '<present-element></present-element>',
+        styleUrls = const ['foo2_local.css'])
+      class FooComponent {}
+    ''',
+  }, {
+    'a|foo2_local.css': r'''
+      present-element {}
+    '''
+  });
 
   testPhasesAsync('only prunes css which html it could resolve', phases, {
     'a|foo.css': r'.some-class {}',

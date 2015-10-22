@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# Invocation:
+#   example/test_example.sh angular1
+#
 set -eu
 
 readonly EXAMPLE_NAME="$1"
