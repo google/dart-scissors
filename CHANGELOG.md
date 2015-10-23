@@ -1,3 +1,11 @@
+<a name="0.1.1"></a>
+# 0.1.1 (2015-10-23)
+
+### Features
+
+* Preliminary support for compiling `*.scss` and `*.sass` files with
+  [sassc](https://github.com/sass/sassc).
+
 <a name="0.1.0"></a>
 # 0.1.0 (2015-10-22)
 

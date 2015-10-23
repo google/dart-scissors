@@ -7,29 +7,41 @@ _Disclaimer_: This is not an official Google product.
 
 ## Features
 
-- For each .css file with a .html companion, prunes CSS rules that don't seem
-  to be used. Have a look a [the tests](./test/transformer_vm_test.dart) for
-  examples.
-- Same logic applies to .css files with a .dart companion with inlined
-  Angular(1,2) templates (inside `@Component` / `@View` annotations).
-- Supports ng-class and class names with programmatic interpolated fragments
+- For each .css file, prunes rules that aren't used in its .html companion or
+  in the templates inlined in its .dart companion
+  (see [tests](./test/transformer_vm_test.dart) and [examples](./example))
+- Supports Angular(1,2) templates inside `@Component` / `@View` annotations.
+- Supports `ng-class` and `class` names with programmatic interpolated fragments
   (e.g. `class="some-{{fragmented}}-class and-some-normal-class"`,
   `ng-class="{'some-class': isSome}"`).
-- Reasonably framework-agnostic (works with Angular 1 & 2)
+- Automatically runs `sassc` on `*.sass` and `*.scss` files if they're not
+  already compiled.
 
 ## Usage
 
 - Add the sCiSSors dep and transformer:
 
-```
-dev_dependencies:
-  scissors
-transformers:
+  ```
+  dev_dependencies:
+    scissors
+  transformers:
   - scissors
-```
+  ```
 
 Please only setup sCiSSors's transformer on projects you know respect sCiSSors'
 conventions and limitations.
+
+You can optionally point sCiSSors to your local `sassc` install (hint: install
+with `brew install sassc`) and provide it with extra args:
+
+  ```
+  transformers:
+  - scissors:
+      sasscPath: path/to/sassc
+      sasscArgs:
+        - -foo
+        - -bar
+  ```
 
 ## Limitations
 
