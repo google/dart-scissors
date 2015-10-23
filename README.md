@@ -49,9 +49,9 @@ conventions and limitations.
   using Angular2 with `ViewEncapsulation.None` (see section below).
 - Very limited support of CSS rules (naive and hopefully pessimistic matching),
 - Bails out of pruning as soon as it doesn't recognize the (map literal)
-  syntax of an ng-class (or if the map has non-string-literal keys),
+  syntax of an `ng-class` (or if the map has non-string-literal keys),
 - Does not detect direct / handle DOM manipulations done in .dart companion
-  files yet (html.Element.classes, etc).
+  files yet ([html:Element.classes](https://api.dartlang.org/1.12.1/dart-html/Element/classes.html), etc).
 - No support for XML namespaces in CSS3 attribute selectors.
 - No CSS renaming yet (just pruning for now),
 - No Polymer.dart support yet.
