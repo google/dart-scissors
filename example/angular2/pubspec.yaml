@@ -1,9 +1,9 @@
 name: scissors_angular2_example
-version: 0.1.0
+version: 0.1.2
 dependencies:
   angular2: 2.0.0-alpha.44
 dev_dependencies:
-  scissors: 0.1.1
+  scissors: 0.1.2
 transformers:
 - scissors
 - angular2:
