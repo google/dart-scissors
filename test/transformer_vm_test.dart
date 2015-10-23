@@ -17,6 +17,7 @@ import 'package:barback/barback.dart' show BarbackMode, BarbackSettings, Transfo
 import 'package:code_transformers/tests.dart' show StringFormatter, applyTransformers;
 import 'package:scissors/transformer.dart' show ScissorsTransformer;
 import 'package:test/test.dart' show test;
+import 'dart:io';
 
 final phases = [
   [
@@ -231,6 +232,16 @@ void main() {
     '''
   });
 
+  if (Process.runSync('which', ['sassc']).exitCode == 0) {
+    runSassTests();
+  } else {
+    // TODO(ochafik): Find a way to get sassc on travis (if possible,
+    // without having to compile it ourselves).
+    print("WARNING: Skipping Sass tests by lack of sassc in the PATH.");
+  }
+}
+
+runSassTests() {
   _testPhases('runs sassc on .scss and .sass inputs', phases, {
     'a|foo.scss': '''
       .foo {
