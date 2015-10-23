@@ -74,7 +74,7 @@ encapsulation of style at the component level: styles defined in a component
 do not leak to any of its sub-components or parent components. This is the
 assumption by which sCiSSors lives, so you're safe with it.
 
-The last "unscoped" strategy (the default(?) in Angular2) means there's no file- or
+The last "unscoped" strategy means there's no file- or
 component-local way of deciding if a style *could* be used elsewhere. You should
 not use sCiSSors on packages / projects with that strategy.
 
