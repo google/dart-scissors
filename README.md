@@ -47,7 +47,7 @@ with `brew install sassc`) and provide it with extra args:
 
 - Assumes if foo.html exists, foo.css is only used from there (conventions
   matter). This means sCiSSors should be disabled or used with caution when
-  using Angular2 with EmulatedUnscopedShadowDomStrategy (see section below).
+  using Angular2 with `ViewEncapsulation.None` (see section below).
 - Very limited support of CSS rules (naive and hopefully pessimistic matching),
 - Bails out of pruning as soon as it doesn't recognize the (map literal)
   syntax of an ng-class (or if the map has non-string-literal keys),
@@ -59,17 +59,15 @@ with `brew install sassc`) and provide it with extra args:
 
 ## Style Isolation in Angular
 
-Angular(1,2) provide the following strategies
+Angular(1,2) provide the following [strategies](http://blog.thoughtram.io/angular/2015/06/29/shadow-dom-strategies-in-angular2.html):
 
-- Shadow DOM (*default in AngularDart 1.x*, implemented by
-  ShadowDomComponentFactory in AngularDart 1.x and NativeShadowDomStrategy
-  in Angular2)
-- Shadow DOM emulation with "transclusion" (implemented by
-  TranscludingComponentFactory in AngularDart 1.x and EmulatedScopedShadowDomStrategy
-  in Angular2)
-- Unscoped / no Shadow DOM
-  (*[default(?)](http://blog.thoughtram.io/angular/2015/06/29/shadow-dom-strategies-in-angular2.html)
-  in Angular2*, implemented by EmulatedUnscopedShadowDomStrategy)
+- Shadow DOM (*default in AngularDart 1.x*), implemented by
+  `ShadowDomComponentFactory` in AngularDart 1.x and `ViewEncapsulation.Native`
+  in Angular2
+- Shadow DOM emulation with "transclusion" (*default in Angular2*) implemented by
+  `TranscludingComponentFactory` in AngularDart 1.x and `ViewEncapsulation.Emulated`
+  in Angular2
+- Unscoped / no Shadow DOM, implemented by `ViewEncapsulation.None` in Angular2
 
 The first two strategies (Shadow DOM & its transcluded emulation) provide strict
 encapsulation of style at the component level: styles defined in a component
