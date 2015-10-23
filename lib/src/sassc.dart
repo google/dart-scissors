@@ -1,0 +1,157 @@
+library scissors.sassc;
+import 'dart:async';
+import 'package:barback/barback.dart' show Asset, AssetId, LogLevel, Transform;
+import 'dart:io';
+import 'package:path/path.dart';
+import 'package:source_span/source_span.dart';
+import 'package:code_transformers/messages/build_logger.dart';
+
+class SassMessage {
+  final LogLevel level;
+  final String message;
+  final AssetId asset;
+  final SourceSpan span;
+  SassMessage(this.level, this.message, this.asset, this.span);
+
+  log(Transform transform) {
+    var logger = new BuildLogger(transform, primaryId: asset);
+    switch (level) {
+      case LogLevel.ERROR:
+        logger.error(message, asset: asset, span: span);
+        break;
+      case LogLevel.WARNING:
+        logger.warning(message, asset: asset, span: span);
+        break;
+      case LogLevel.INFO:
+        logger.info(message, asset: asset, span: span);
+        break;
+    }
+  }
+}
+
+class SassResult {
+  final bool success;
+  final List<SassMessage> messages;
+  final Asset css;
+  final Asset map;
+  SassResult(this.success, this.messages, this.css, this.map);
+}
+
+Future<SassResult> runSassC(Asset sassAsset,
+    {bool isDebug,
+     String sasscPath: 'sassc',
+     List<String> sasscArgs: const<String>[]}) async {
+
+  var sassId = sassAsset.id;
+  var sassContent = sassAsset.readAsString();
+  var dir = await Directory.systemTemp.createTemp();
+  try {
+    var fileName = basename(sassId.path);
+    var sassFile = new File(join(dir.path, fileName));
+    var cssFile = new File(sassFile.path + ".css");
+    var mapFile = new File(cssFile.path + ".map");
+
+    await sassFile.writeAsString(await sassContent);
+
+    // TODO(ochafik): What about `sassc -t nested`?
+    var result = await Process.run(sasscPath,
+        [
+          '-t', isDebug ? 'expanded' : 'compressed',
+          '-m',
+          relative(sassFile.path, from: dir.path),
+          relative(cssFile.path, from: dir.path)
+        ]..addAll(sasscArgs),
+        workingDirectory: dir.path);
+
+    var messages = [];
+    /*
+    Error: invalid property name
+            on line 1 of foo.scss
+    >>       .foo {{
+       -----------^
+    */
+    var messageRx = new RegExp(
+      r'(Error|Warning|Info): (.*?)\n'
+      r'\s+on line (\d+) of (.*?)\n'
+      r'>> (.*?)\n'
+      r'   (-*\^)$',
+      multiLine: true);
+    convertLevel(String level) {
+      switch (level) {
+        case 'Error': return LogLevel.ERROR;
+        case 'Warning': return LogLevel.WARNING;
+        case 'Info': return LogLevel.INFO;
+        default:
+          throw new StateError("Unknown level: $level");
+      }
+    }
+
+    for (var match in messageRx.allMatches(result.stderr)) {
+      var level = match.group(1);
+      var message = match.group(2);
+      int line = int.parse(match.group(3));
+      var file = normalize(match.group(4));
+      var excerpt = match.group(5);
+      var arrow = match.group(6);
+
+      if (file == basename(sassId.path)) {
+        int column = arrow.length;
+        var start = computeSourceSpan(await sassContent, line, column);
+        var span;
+        if (start != null) {
+          var end = new SourceLocation(start.offset + excerpt.length, line: line, column: column + excerpt.length);
+          span = new SourceSpan(start, end, excerpt);
+        }
+        messages.add(new SassMessage(convertLevel(level), message, sassId, span));
+      } else {
+        // TODO(ochafik): Compute asset + span from file if possible here.
+        var asset = null;
+        var span = null;
+        message += '\nIn $file:$line\n  $excerpt\n  $arrow';
+        messages.add(new SassMessage(convertLevel(level), message, asset, span));
+      }
+    }
+
+    if (result.exitCode == 0) {
+      var css = cssFile.readAsString();
+      var map = mapFile.readAsString();
+      var ext = sassId.extension;
+      return new SassResult(true, messages,
+          new Asset.fromString(sassId.changeExtension('$ext.css'), await css),
+          new Asset.fromString(sassId.changeExtension('$ext.css.map'), await map));
+    } else {
+      return new SassResult(false, messages, null, null);
+    }
+  } finally {
+    await _deleteDir(dir);
+  }
+}
+
+_deleteDir(Directory dir) async {
+  await for (var f in dir.list()) {
+    await f.delete();
+  }
+  await dir.delete();
+}
+
+final _multilineRx = new RegExp(r'^.*?$', multiLine: true);
+
+SourceLocation computeSourceSpan(String content, int line, int column) {
+  int nextLine = 1;
+  for (var match in _multilineRx.allMatches(content)) {
+    if (line == nextLine) {
+      var offset = match.start + column - 1;
+      return new SourceLocation(offset, line: line, column: column);
+    }
+    nextLine++;
+  }
+  throw new StateError("No such position in file: line $line, column $column");
+}
+
+// _normalize(String path) {
+//   while (true) {
+//     var newPath = path.replaceAll(new RegExp(r'\.\./\.?[^./]+/|(^|/)\./'), '');
+//     if (path == newPath) return path;
+//     path = newPath;
+//   }
+// }

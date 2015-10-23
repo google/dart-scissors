@@ -230,6 +230,70 @@ void main() {
       div{font-family:sans-serif}
     '''
   });
+
+  _testPhases('runs sassc on .scss and .sass inputs', phases, {
+    'a|foo.scss': '''
+      .foo {
+        float: left;
+      }
+    ''',
+    'a|foo.sass': '''
+.foo
+  height: 100%
+    '''
+  }, {
+    'a|foo.scss.css':
+        '.foo{float:left}\n'
+        '\n'
+        '/*# sourceMappingURL=foo.scss.css.map */',
+    'a|foo.scss.css.map':
+        '{\n'
+        '\t"version": 3,\n'
+        '\t"file": "foo.scss.css",\n'
+        '\t"sources": [\n'
+        '\t\t"foo.scss"\n'
+        '\t],\n'
+        '\t"sourcesContent": [],\n'
+        '\t"mappings": "AAAM,IAAI,AAAC,CACH,KAAK,CAAE,IAAK,CADR",\n'
+        '\t"names": []\n'
+        '}',
+    'a|foo.sass.css':
+        '.foo{height:100%}\n'
+        '\n'
+        '/*# sourceMappingURL=foo.sass.css.map */',
+    'a|foo.sass.css.map':
+        '{\n'
+        '\t"version": 3,\n'
+        '\t"file": "foo.sass.css",\n'
+        '\t"sources": [\n'
+        '\t\t"foo.sass"\n'
+        '\t],\n'
+        '\t"sourcesContent": [],\n'
+        '\t"mappings": "AAAA,IAAI,AAAC,CACH,MAAM,CAAE,IAAK,CADT",\n'
+        '\t"names": []\n'
+        '}'
+  });
+
+  _testPhases('does not run sassc on .scss that are already converted', phases, {
+    'a|foo.scss': '''
+      .foo {
+        float: left;
+      }
+    ''',
+    'a|foo.scss.css': 'do not modify'
+  }, {
+    'a|foo.scss.css': 'do not modify'
+  });
+
+  _testPhases('reports sassc errors properly', phases, {
+    'a|foo.scss': '''
+      .foo {{
+        float: left;
+      }
+    '''
+  }, {}, [
+    'error: invalid property name (null 1 12)'
+  ]);
 }
 
 _testPhases(String testName, List<List<Transformer>> phases,

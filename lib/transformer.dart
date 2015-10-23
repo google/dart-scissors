@@ -14,8 +14,11 @@
 library scissors.transformer;
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:barback/barback.dart';
+import 'package:code_transformers/resolver.dart' show Resolvers;
+import 'package:code_transformers/src/dart_sdk.dart' show dartSdkDirectory;
 import 'package:csslib/parser.dart' as css_parser;
 import 'package:csslib/visitor.dart'
     show CssPrinter, RuleSet, StyleSheet, TreeNode;
@@ -27,27 +30,29 @@ import 'package:source_maps/refactor.dart';
 import 'package:source_maps/printer.dart';
 import 'package:source_span/source_span.dart';
 
-import 'package:code_transformers/resolver.dart' show Resolvers;
-import 'package:code_transformers/src/dart_sdk.dart' show dartSdkDirectory;
-
 import 'src/rule_set_index.dart';
+import 'src/sassc.dart' show runSassC;
+import 'src/template_extractor.dart' show extractTemplates;
 import 'src/usage_collector.dart';
-import 'package:scissors/src/template_extractor.dart';
 
 /// sCiSSors is an Angular tree-shaker for CSS files.
 /// It drops CSS rule sets that are not referenced from Angular templates.
 class ScissorsTransformer extends Transformer {
   final bool _isDebug;
+  final String _sasscPath;
+  final List<String> _sasscArgs;
   Resolvers resolvers;
 
   ScissorsTransformer.asPlugin(BarbackSettings settings)
-      : this._isDebug = settings.mode == BarbackMode.DEBUG {
+      : this._isDebug = settings.mode == BarbackMode.DEBUG,
+        this._sasscPath = settings.configuration['sassc'] ?? 'sassc',
+        this._sasscArgs = settings.configuration['sasscArgs'] ?? const<String>[] {
     resolvers = new Resolvers(
         checkNotNull(dartSdkDirectory, message: "dartSdkDirectory not found!"));
   }
 
   @override
-  String get allowedExtensions => ".css";
+  String get allowedExtensions => ".css .scss .sass";
 
   static AssetId _getCssCompanionId(AssetId cssId, String companionExtension) {
     final path = cssId.path;
@@ -75,9 +80,45 @@ class ScissorsTransformer extends Transformer {
     return htmlAsset.readAsString();
   }
 
-  apply(Transform transform) async {
-    final Asset cssAsset = transform.primaryInput;
-    final AssetId cssAssetId = cssAsset.id;
+  Future apply(Transform transform) async {
+    var primaryId = transform.primaryInput.id;
+    switch (primaryId.extension) {
+      case '.scss':
+      case '.sass':
+        try {
+          await transform.getInput(primaryId.changeExtension('.scss.css'));
+        } catch (e, s) {
+          if (e is! AssetNotFoundException) {
+            throw new StateError('$e (${e.runtimeType})\n$s');
+          }
+          return transformSassAsset(transform);
+        }
+        break;
+      case '.css':
+        return transformCssAsset(transform);
+      default:
+        throw new StateError('Unexpected input file type: $primaryId');
+    }
+  }
+
+  Future transformSassAsset(Transform transform) async {
+    var sassAsset = transform.primaryInput;
+    var result = await runSassC(
+      sassAsset, isDebug: _isDebug, sasscPath: _sasscPath, sasscArgs: _sasscArgs);
+
+    result.messages.forEach((m) => m.log(transform));
+
+    if (result.success) {
+      transform
+        ..consumePrimary()
+        ..addOutput(result.css)
+        ..addOutput(result.map);
+    }
+  }
+
+  Future transformCssAsset(Transform transform) async {
+    var cssAsset = transform.primaryInput;
+    var cssAssetId = cssAsset.id;
 
     String htmlTemplate;
     try {
@@ -185,4 +226,24 @@ List<dom.Node> _skipSyntheticNodes(dom.Document doc, String source) {
   final body = html.children.last;
   if (body.sourceSpan != null || source.contains("<body")) return [body];
   return body.children;
+}
+
+Future<ProcessResult> runProcessWithPipedInput(String executable, List<String> args, {String pipedInput}) async {
+  var process = await Process.start(executable, args);
+
+  Future<String> foldStream(Stream<List<int>> stream) async {
+    var buffer = new StringBuffer();
+    await for (var data in stream.transform(SYSTEM_ENCODING.decoder)) {
+      buffer.write(data);
+    }
+    return buffer.toString();
+  }
+
+  var stdout = foldStream(process.stdout);
+  var stderr = foldStream(process.stderr);
+
+  process.stdin..writeln(pipedInput)..close();
+
+  var result = await Future.wait([process.exitCode, stdout, stderr]);
+  return new ProcessResult(pid, result[0], result[1], result[2]);
 }
