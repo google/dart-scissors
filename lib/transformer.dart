@@ -98,7 +98,7 @@ class ScissorsTransformer extends Transformer {
         }
         break;
       case '.css':
-        return transformCssAsset(transform);
+        return transformCssAsset(transform, transform.primaryInput);
       default:
         throw new StateError('Unexpected input file type: $primaryId');
     }
@@ -106,21 +106,21 @@ class ScissorsTransformer extends Transformer {
 
   Future transformSassAsset(Transform transform) async {
     var sassAsset = transform.primaryInput;
+    transform.logger.info("Running ${_sasscPath} on ${sassAsset.id}");
     var result = await runSassC(
       sassAsset, isDebug: _isDebug, sasscPath: _sasscPath, sasscArgs: _sasscArgs);
 
     result.messages.forEach((m) => m.log(transform));
 
     if (result.success) {
-      transform
-        ..consumePrimary()
-        ..addOutput(result.css)
-        ..addOutput(result.map);
+      transform.consumePrimary();
+      // TODO(ochafik): Use a transformer group instead of chaining the transforms explicitly like this.
+      return transformCssAsset(transform, result.css, result.map);
     }
   }
 
-  Future transformCssAsset(Transform transform) async {
-    var cssAsset = transform.primaryInput;
+  Future transformCssAsset(Transform transform, Asset cssAsset, [Asset mapAsset]) async {
+    //var cssAsset = transform.primaryInput;
     var cssAssetId = cssAsset.id;
 
     String htmlTemplate;
@@ -128,6 +128,8 @@ class ScissorsTransformer extends Transformer {
       htmlTemplate = await _findHtmlTemplate(transform, cssAssetId);
     } catch (_) {
       // No HTML template found: leave the CSS alone!
+      transform.addOutput(cssAsset);
+      if (mapAsset != null) transform.addOutput(mapAsset);
       return;
     }
 

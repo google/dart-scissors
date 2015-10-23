@@ -1,14 +1,18 @@
 Loading source assets...
 Loading di/module_transformer, scissors and smoke/src/default_transformer transformers...
 Building scissors_angular1_example...
-[Info from Scissors on scissors_angular1_example|lib/foo.css]:
+[Info from Scissors]:
+Running sassc on scissors_angular1_example|lib/foo.scss
+[Info from Scissors on scissors_angular1_example|lib/foo.scss]:
 Dropping unused CSS rule: .unused-class {
+  float: left;
 }
-[Info from Scissors on scissors_angular1_example|lib/foo.css]:
+[Info from Scissors on scissors_angular1_example|lib/foo.scss]:
 Dropping unused CSS rule: absent-element {
+  float: left;
 }
 [Info from Scissors]:
-Size(scissors_angular1_example|lib/foo.css): before = 69, after = 34
+Size(scissors_angular1_example|lib/foo.scss.css): before = 143, after = 92
 [Info from Dart2JS]:
 Compiling scissors_angular1_example|web/main.dart...
 [Warning from Dart2JS on scissors_angular1_example|web/main.dart]:
