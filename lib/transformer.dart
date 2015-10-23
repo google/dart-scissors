@@ -57,9 +57,11 @@ class ScissorsTransformer extends Transformer {
   static AssetId _getCssCompanionId(AssetId cssId, String companionExtension) {
     final path = cssId.path;
     checkArgument(path.endsWith(".css"));
-    if (path.endsWith(".scss.css")) {
+    if (path.endsWith('.scss.css') || path.endsWith('.sass.css')) {
       return new AssetId(
-          cssId.package, path.replaceAll(".scss.css", companionExtension));
+          cssId.package,
+          path.substring(0, path.length - '.scss.css'.length)
+              + companionExtension);
     } else {
       return cssId.changeExtension(companionExtension);
     }
@@ -82,11 +84,12 @@ class ScissorsTransformer extends Transformer {
 
   Future apply(Transform transform) async {
     var primaryId = transform.primaryInput.id;
-    switch (primaryId.extension) {
+    var ext = primaryId.extension;
+    switch (ext) {
       case '.scss':
       case '.sass':
         try {
-          await transform.getInput(primaryId.changeExtension('.scss.css'));
+          await transform.getInput(primaryId.changeExtension('$ext.css'));
         } catch (e, s) {
           if (e is! AssetNotFoundException) {
             throw new StateError('$e (${e.runtimeType})\n$s');
