@@ -28,8 +28,7 @@ _Disclaimer_: This is not an official Google product.
   - scissors
   ```
 
-- You can optionally point sCiSSors to your local [`sassc`](https://github.com/sass/sassc) install (hint: install
-  with `brew install sassc`) and provide it with extra args:
+- You can optionally point sCiSSors to your local [`sassc`](https://github.com/sass/sassc) install if it's not in the path (hint: install with `brew install sassc` on MacOS X) and provide it with extra args:
 
   ```
   transformers:
