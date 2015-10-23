@@ -6,3 +6,8 @@ dev_dependencies:
   scissors: 0.1.1
 transformers:
 - scissors
+# - scissors:
+#     sasscPath: path/to/sassc
+#     sasscArgs:
+#       - -foo
+#       - -bar

@@ -14,11 +14,8 @@
 library scissors.transformer;
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:barback/barback.dart';
-import 'package:code_transformers/resolver.dart' show Resolvers;
-import 'package:code_transformers/src/dart_sdk.dart' show dartSdkDirectory;
 import 'package:csslib/parser.dart' as css_parser;
 import 'package:csslib/visitor.dart'
     show CssPrinter, RuleSet, StyleSheet, TreeNode;
@@ -32,24 +29,17 @@ import 'package:source_span/source_span.dart';
 
 import 'src/rule_set_index.dart';
 import 'src/sassc.dart' show runSassC;
+import 'src/settings.dart';
 import 'src/template_extractor.dart' show extractTemplates;
 import 'src/usage_collector.dart';
 
 /// sCiSSors is an Angular tree-shaker for CSS files.
 /// It drops CSS rule sets that are not referenced from Angular templates.
 class ScissorsTransformer extends Transformer {
-  final bool _isDebug;
-  final String _sasscPath;
-  final List<String> _sasscArgs;
-  Resolvers resolvers;
+  final ScissorsSettings settings;
 
   ScissorsTransformer.asPlugin(BarbackSettings settings)
-      : this._isDebug = settings.mode == BarbackMode.DEBUG,
-        this._sasscPath = settings.configuration['sassc'] ?? 'sassc',
-        this._sasscArgs = settings.configuration['sasscArgs'] ?? const<String>[] {
-    resolvers = new Resolvers(
-        checkNotNull(dartSdkDirectory, message: "dartSdkDirectory not found!"));
-  }
+      : this.settings = new ScissorsSettings.fromSettings(settings);
 
   @override
   String get allowedExtensions => ".css .scss .sass";
@@ -106,9 +96,9 @@ class ScissorsTransformer extends Transformer {
 
   Future transformSassAsset(Transform transform) async {
     var sassAsset = transform.primaryInput;
-    transform.logger.info("Running ${_sasscPath} on ${sassAsset.id}");
+    transform.logger.info("Running ${settings.sasscPath} on ${sassAsset.id}");
     var result = await runSassC(
-      sassAsset, isDebug: _isDebug, sasscPath: _sasscPath, sasscArgs: _sasscArgs);
+      sassAsset, isDebug: settings.isDebug, sasscPath: settings.sasscPath, sasscArgs: settings.sasscArgs);
 
     result.messages.forEach((m) => m.log(transform));
 
@@ -161,7 +151,7 @@ class ScissorsTransformer extends Transformer {
         transform.addOutput(new Asset.fromString(cssAssetId, processedCss));
       }
     } catch (e, s) {
-      if (_isDebug) print("$e\n$s");
+      if (settings.isDebug) print("$e\n$s");
       transform.logger.warning("Failed to prune $cssAssetId: $e");
     }
   }

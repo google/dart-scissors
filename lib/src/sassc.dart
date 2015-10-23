@@ -45,6 +45,7 @@ Future<SassResult> runSassC(Asset sassAsset,
   var sassId = sassAsset.id;
   var sassContent = sassAsset.readAsString();
   var dir = await Directory.systemTemp.createTemp();
+  List<String> cmd;
   try {
     var fileName = basename(sassId.path);
     var sassFile = new File(join(dir.path, fileName));
@@ -54,16 +55,17 @@ Future<SassResult> runSassC(Asset sassAsset,
     await sassFile.writeAsString(await sassContent);
 
     // TODO(ochafik): What about `sassc -t nested`?
-    var result = await Process.run(sasscPath,
-        [
-          '-t', isDebug ? 'expanded' : 'compressed',
-          '-m',
-          relative(sassFile.path, from: dir.path),
-          relative(cssFile.path, from: dir.path)
-        ]..addAll(sasscArgs),
-        workingDirectory: dir.path);
+    var args = [
+      '-t', isDebug ? 'expanded' : 'compressed',
+      '-m',
+      relative(sassFile.path, from: dir.path),
+      relative(cssFile.path, from: dir.path)
+    ]..addAll(sasscArgs);
+    cmd = [sasscPath]..addAll(args);
 
-    var messages = [];
+    var result = await Process.run(sasscPath, args, workingDirectory: dir.path);
+
+    var messages = <SassMessage>[];
     /*
     Error: invalid property name
             on line 1 of foo.scss
@@ -96,10 +98,13 @@ Future<SassResult> runSassC(Asset sassAsset,
 
       if (file == basename(sassId.path)) {
         int column = arrow.length;
-        var start = computeSourceSpan(await sassContent, line, column);
+        var start = computeSourceSpan(await sassContent, '$sassId', line, column);
         var span;
         if (start != null) {
-          var end = new SourceLocation(start.offset + excerpt.length, line: line, column: column + excerpt.length);
+          var end = new SourceLocation(
+              start.offset + excerpt.length,
+              sourceUrl: start.sourceUrl,
+              line: line, column: column + excerpt.length);
           span = new SourceSpan(start, end, excerpt);
         }
         messages.add(new SassMessage(convertLevel(level), message, sassId, span));
@@ -120,6 +125,10 @@ Future<SassResult> runSassC(Asset sassAsset,
           new Asset.fromString(sassId.changeExtension('$ext.css'), await css),
           new Asset.fromString(sassId.changeExtension('$ext.css.map'), await map));
     } else {
+      if (!messages.any((m) => m.level == LogLevel.ERROR)) {
+        messages.add(new SassMessage(LogLevel.ERROR,
+            "Failed to run $cmd in ${dir.path}:\n${result.stderr}", null, null));
+      }
       return new SassResult(false, messages, null, null);
     }
   } finally {
@@ -136,12 +145,12 @@ _deleteDir(Directory dir) async {
 
 final _multilineRx = new RegExp(r'^.*?$', multiLine: true);
 
-SourceLocation computeSourceSpan(String content, int line, int column) {
+SourceLocation computeSourceSpan(String content, String sourceUrl, int line, int column) {
   int nextLine = 1;
   for (var match in _multilineRx.allMatches(content)) {
     if (line == nextLine) {
       var offset = match.start + column - 1;
-      return new SourceLocation(offset, line: line, column: column);
+      return new SourceLocation(offset, sourceUrl: sourceUrl, line: line, column: column);
     }
     nextLine++;
   }
