@@ -14,7 +14,7 @@ _Disclaimer_: This is not an official Google product.
 - Supports `ng-class` and `class` names with programmatic interpolated fragments
   (e.g. `class="some-{{fragmented}}-class and-some-normal-class"`,
   `ng-class="{'some-class': isSome}"`).
-- Automatically runs `sassc` on `*.sass` and `*.scss` files if they're not
+- Automatically runs [`sassc`](https://github.com/sass/sassc) on `*.sass` and `*.scss` files if they're not
   already compiled.
 
 ## Usage
@@ -28,11 +28,8 @@ _Disclaimer_: This is not an official Google product.
   - scissors
   ```
 
-Please only setup sCiSSors's transformer on projects you know respect sCiSSors'
-conventions and limitations.
-
-You can optionally point sCiSSors to your local `sassc` install (hint: install
-with `brew install sassc`) and provide it with extra args:
+- You can optionally point sCiSSors to your local [`sassc`](https://github.com/sass/sassc) install (hint: install
+  with `brew install sassc`) and provide it with extra args:
 
   ```
   transformers:
@@ -42,6 +39,9 @@ with `brew install sassc`) and provide it with extra args:
         - -foo
         - -bar
   ```
+
+Please only setup sCiSSors's transformer on projects you know respect sCiSSors'
+conventions and limitations.
 
 ## Limitations
 
