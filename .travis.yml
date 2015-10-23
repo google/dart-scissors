@@ -6,4 +6,4 @@ cache:
   directories:
     - $HOME/.pub-cache/hosted
 script:
-- ./presubmit.sh
+- TEST_EXAMPLES=0 ./presubmit.sh

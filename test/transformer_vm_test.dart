@@ -306,7 +306,7 @@ runSassTests() {
       }
     '''
   }, {}, [
-    'error: invalid property name (null 1 12)'
+    'error: invalid property name (a%7Cfoo.scss 1 12)'
   ]);
 }
 
