@@ -232,23 +232,3 @@ List<dom.Node> _skipSyntheticNodes(dom.Document doc, String source) {
   if (body.sourceSpan != null || source.contains("<body")) return [body];
   return body.children;
 }
-
-Future<ProcessResult> runProcessWithPipedInput(String executable, List<String> args, {String pipedInput}) async {
-  var process = await Process.start(executable, args);
-
-  Future<String> foldStream(Stream<List<int>> stream) async {
-    var buffer = new StringBuffer();
-    await for (var data in stream.transform(SYSTEM_ENCODING.decoder)) {
-      buffer.write(data);
-    }
-    return buffer.toString();
-  }
-
-  var stdout = foldStream(process.stdout);
-  var stderr = foldStream(process.stderr);
-
-  process.stdin..writeln(pipedInput)..close();
-
-  var result = await Future.wait([process.exitCode, stdout, stderr]);
-  return new ProcessResult(pid, result[0], result[1], result[2]);
-}
