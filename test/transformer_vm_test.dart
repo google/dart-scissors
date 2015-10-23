@@ -206,6 +206,9 @@ void main() {
       present-element {}
     '''
   });
+  _testPhases('leaves weird css files alone', phases,
+      {'a|weird.ess.scss.css': r"don't even try to parse me!"},
+      {'a|weird.ess.scss.css': r"don't even try to parse me!"});
 
   final htmlBodyDiv = r'''
       html{font-family:sans-serif}

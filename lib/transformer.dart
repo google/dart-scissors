@@ -119,9 +119,11 @@ class ScissorsTransformer extends Transformer {
     }
   }
 
+  static final RegExp _cssFilesToSkipRx = new RegExp(r'.*?\.ess\.s[ac]ss\.css$');
+
   Future transformCssAsset(Transform transform, Asset cssAsset, [Asset mapAsset]) async {
-    //var cssAsset = transform.primaryInput;
     var cssAssetId = cssAsset.id;
+    if (_cssFilesToSkipRx.matchAsPrefix(cssAssetId.path) != null) return;
 
     String htmlTemplate;
     try {
