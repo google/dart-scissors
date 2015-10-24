@@ -42,6 +42,9 @@ Future<SassResult> runSassC(Asset sassAsset,
      String sasscPath: 'sassc',
      List<String> sasscArgs: const<String>[]}) async {
 
+  sasscPath = _resolveEnvVars(sasscPath);
+  sasscArgs = sasscArgs.map(_resolveEnvVars).toList();
+
   var sassId = sassAsset.id;
   var sassContent = sassAsset.readAsString();
   var dir = await Directory.systemTemp.createTemp();
@@ -62,7 +65,6 @@ Future<SassResult> runSassC(Asset sassAsset,
       relative(cssFile.path, from: dir.path)
     ]..addAll(sasscArgs);
     cmd = [sasscPath]..addAll(args);
-
     var result = await Process.run(sasscPath, args, workingDirectory: dir.path);
 
     var messages = <SassMessage>[];
@@ -98,7 +100,7 @@ Future<SassResult> runSassC(Asset sassAsset,
 
       if (file == basename(sassId.path)) {
         int column = arrow.length;
-        var start = computeSourceSpan(await sassContent, '$sassId', line, column);
+        var start = _computeSourceSpan(await sassContent, '$sassId', line, column);
         var span;
         if (start != null) {
           var end = new SourceLocation(
@@ -145,7 +147,7 @@ _deleteDir(Directory dir) async {
 
 final _multilineRx = new RegExp(r'^.*?$', multiLine: true);
 
-SourceLocation computeSourceSpan(String content, String sourceUrl, int line, int column) {
+SourceLocation _computeSourceSpan(String content, String sourceUrl, int line, int column) {
   int nextLine = 1;
   for (var match in _multilineRx.allMatches(content)) {
     if (line == nextLine) {
@@ -156,6 +158,11 @@ SourceLocation computeSourceSpan(String content, String sourceUrl, int line, int
   }
   throw new StateError("No such position in file: line $line, column $column");
 }
+
+String _resolveEnvVars(String s) =>
+    s.replaceAllMapped(
+        new RegExp(r'\$\{([^}]+)\}'),
+        (Match m) => (Platform.environment[m.group(1)] ?? ''));
 
 // _normalize(String path) {
 //   while (true) {
