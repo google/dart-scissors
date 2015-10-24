@@ -13,6 +13,8 @@
 // limitations under the License.
 library scissors.settings;
 
+import 'dart:io';
+
 import 'package:barback/barback.dart';
 import 'package:quiver/check.dart';
 
@@ -29,8 +31,8 @@ class ScissorsSettings {
   ScissorsSettings.fromSettings(BarbackSettings settings) {
     this._isDebug = settings.mode == BarbackMode.DEBUG;
     var config = settings.configuration;
-    this._sasscPath = config[_SASSC_PATH_PARAM] ?? _DEFAULT_SASSC_PATH;
-    this._sasscArgs = config[_SASSC_ARGS_PARAM] ?? const<String>[];
+    this._sasscPath = _resolveEnvVars(config[_SASSC_PATH_PARAM] ?? _DEFAULT_SASSC_PATH);
+    this._sasscArgs = (config[_SASSC_ARGS_PARAM] ?? []).map(_resolveEnvVars).toList();
 
     var invalidKeys = settings.configuration.keys
         .where((k) => !_VALID_PARAMS.contains(k));
@@ -42,3 +44,9 @@ class ScissorsSettings {
     String get sasscPath => _sasscPath;
     List<String> get sasscArgs => _sasscArgs;
 }
+
+
+String _resolveEnvVars(String s) =>
+    s.replaceAllMapped(
+        new RegExp(r'\$\{([^}]+)\}'),
+        (Match m) => (Platform.environment[m.group(1)] ?? ''));

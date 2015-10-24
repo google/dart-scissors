@@ -1,10 +1,12 @@
 library scissors.sassc;
+
 import 'dart:async';
-import 'package:barback/barback.dart' show Asset, AssetId, LogLevel, Transform;
 import 'dart:io';
+
+import 'package:barback/barback.dart' show Asset, AssetId, LogLevel, Transform;
+import 'package:code_transformers/messages/build_logger.dart';
 import 'package:path/path.dart';
 import 'package:source_span/source_span.dart';
-import 'package:code_transformers/messages/build_logger.dart';
 
 class SassMessage {
   final LogLevel level;
@@ -41,9 +43,6 @@ Future<SassResult> runSassC(Asset sassAsset,
     {bool isDebug,
      String sasscPath: 'sassc',
      List<String> sasscArgs: const<String>[]}) async {
-
-  sasscPath = _resolveEnvVars(sasscPath);
-  sasscArgs = sasscArgs.map(_resolveEnvVars).toList();
 
   var sassId = sassAsset.id;
   var sassContent = sassAsset.readAsString();
@@ -158,16 +157,3 @@ SourceLocation _computeSourceSpan(String content, String sourceUrl, int line, in
   }
   throw new StateError("No such position in file: line $line, column $column");
 }
-
-String _resolveEnvVars(String s) =>
-    s.replaceAllMapped(
-        new RegExp(r'\$\{([^}]+)\}'),
-        (Match m) => (Platform.environment[m.group(1)] ?? ''));
-
-// _normalize(String path) {
-//   while (true) {
-//     var newPath = path.replaceAll(new RegExp(r'\.\./\.?[^./]+/|(^|/)\./'), '');
-//     if (path == newPath) return path;
-//     path = newPath;
-//   }
-// }
