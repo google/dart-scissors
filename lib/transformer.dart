@@ -79,11 +79,14 @@ class ScissorsTransformer extends Transformer {
       case '.scss':
       case '.sass':
         try {
+          // We only run sassc on files that haven't been converted already:
+          // Try and load the converted result first.
           await transform.getInput(primaryId.changeExtension('$ext.css'));
         } catch (e, s) {
           if (e is! AssetNotFoundException) {
             throw new StateError('$e (${e.runtimeType})\n$s');
           }
+          // We failed to load the converted result, so run sassc ourselves.
           return transformSassAsset(transform);
         }
         break;
