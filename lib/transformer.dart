@@ -96,9 +96,11 @@ class ScissorsTransformer extends Transformer {
 
   Future transformSassAsset(Transform transform) async {
     var sassAsset = transform.primaryInput;
-    transform.logger.info("Running ${settings.sasscPath} on ${sassAsset.id}");
+    var stopwatch = new Stopwatch()..start();
     var result = await runSassC(
-      sassAsset, isDebug: settings.isDebug, sasscPath: settings.sasscPath, sasscArgs: settings.sasscArgs);
+      sassAsset, isDebug: settings.isDebug,
+      sasscPath: settings.sasscPath, sasscArgs: settings.sasscArgs);
+    transform.logger.info('Running sassc on ${sassAsset.id} took ${stopwatch.elapsed.inMilliseconds} msec.');
 
     result.messages.forEach((m) => m.log(transform));
 
@@ -113,7 +115,6 @@ class ScissorsTransformer extends Transformer {
 
   Future transformCssAsset(Transform transform, Asset cssAsset, [Asset mapAsset]) async {
     var cssAssetId = cssAsset.id;
-    var mapAssetId = cssAssetId.changeExtension(cssAssetId.extension + ".map");
     if (_cssFilesToSkipRx.matchAsPrefix(cssAssetId.path) != null) return;
 
     String htmlTemplate;
@@ -146,24 +147,10 @@ class ScissorsTransformer extends Transformer {
         final NestedPrinter printer = transaction.commit()
           ..build(cssAssetId.path);
         final String processedCss = printer.text;
-        final String processedMap = printer.map;
 
         transform.logger.info("Size($cssAssetId): "
             "before = ${css.length}, after = ${processedCss.length}");
-        // TODO(ochafik): Sourcemap support:
-        //
-        // - If the file has an existing sourcemap:
-        //   - We compose it with the new one.
-        // - If there's no existing sourcemap:
-        //   - In debug mode:
-        //     - output the original file as .original
-        //     - update the sourcemap's reference to point to .original
-        //
-        // Re/ sass generation:
-        // - In debug mode: don't consume the original (so that sourcemap's origin is pub served)
-        //
         transform.addOutput(new Asset.fromString(cssAssetId, processedCss));
-        transform.addOutput(new Asset.fromString(mapAssetId, processedCss));
       }
     } catch (e, s) {
       if (settings.isDebug) print("$e\n$s");

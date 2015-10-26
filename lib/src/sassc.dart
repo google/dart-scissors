@@ -42,7 +42,7 @@ class SassResult {
 Future<SassResult> runSassC(Asset sassAsset,
     {bool isDebug,
      Future<String> sasscPath,
-     List<String> sasscArgs: const<String>[]}) async {
+     Future<List<String>> sasscArgs}) async {
 
   var sassId = sassAsset.id;
   var sassContent = sassAsset.readAsString();
@@ -57,15 +57,16 @@ Future<SassResult> runSassC(Asset sassAsset,
     await sassFile.writeAsString(await sassContent);
 
     // TODO(ochafik): What about `sassc -t nested`?
-    var path = await sasscPath;
     var args = [
       '-t', isDebug ? 'expanded' : 'compressed',
       '-m',
       relative(sassFile.path, from: dir.path),
       relative(cssFile.path, from: dir.path)
-    ]..addAll(sasscArgs);
-
+    ];
+    args.addAll(await sasscArgs);
+    var path = await sasscPath;
     cmd = [path]..addAll(args);
+
     var result = await Process.run(path, args, workingDirectory: dir.path);
 
     var messages = <SassMessage>[];

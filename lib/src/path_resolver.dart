@@ -14,9 +14,14 @@
 library scissors.path_resolver;
 
 import 'dart:async';
+import 'dart:io';
 
-Future<String> resolvePath(String path) {
+Future<String> resolvePath(String path) async {
   // Note: this file is meant to be replaced by custom resolution logic in
   // forks of this package.
   return new Future.value(path);
+}
+
+Future<List<String>> getRootDirectories() async {
+  return [Directory.current.path];
 }

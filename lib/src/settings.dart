@@ -24,7 +24,7 @@ import 'path_resolver.dart';
 class ScissorsSettings {
   bool _isDebug;
   Future<String> _sasscPath;
-  List<String> _sasscArgs;
+  Future<List<String>> _sasscArgs;
 
   static const _DEFAULT_SASSC_PATH = 'sassc';
   static const _SASSC_PATH_PARAM = 'sasscPath';
@@ -35,19 +35,25 @@ class ScissorsSettings {
     _isDebug = settings.mode == BarbackMode.DEBUG;
     var config = settings.configuration;
 
-    _sasscPath = resolvePath(
-        _resolveEnvVars(config[_SASSC_PATH_PARAM] ?? _DEFAULT_SASSC_PATH));
-    _sasscArgs = (config[_SASSC_ARGS_PARAM] ?? []).map(_resolveEnvVars).toList();
-
-    var invalidKeys = settings.configuration.keys
-        .where((k) => !_VALID_PARAMS.contains(k));
+    var invalidKeys = config.keys.where((k) => !_VALID_PARAMS.contains(k));
     checkState(invalidKeys.isEmpty,
         message: () => "Invalid keys in configuration: $invalidKeys (valid keys: ${_VALID_PARAMS})");
+
+    _sasscPath = resolvePath(
+        _resolveEnvVars(config[_SASSC_PATH_PARAM] ?? _DEFAULT_SASSC_PATH));
+    _sasscArgs = (() async {
+      var args = [];
+      for (var dir in await getRootDirectories()) {
+        args.addAll(["--load-path", dir]);
+      }
+      args.addAll(config[_SASSC_ARGS_PARAM]?.map(_resolveEnvVars) ?? []);
+      return args;
+    })();
   }
 
-    bool get isDebug => _isDebug;
-    Future<String> get sasscPath => _sasscPath;
-    List<String> get sasscArgs => _sasscArgs;
+  bool get isDebug => _isDebug;
+  Future<String> get sasscPath => _sasscPath;
+  Future<List<String>> get sasscArgs => _sasscArgs;
 }
 
 
