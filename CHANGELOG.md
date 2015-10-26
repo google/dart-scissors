@@ -5,7 +5,8 @@
 
 * Improved [sassc](https://github.com/sass/sassc) integration:
   * Resolving `${FOO}` environment variables in `sasscPath` and `sasscArgs` settings
-  * Automatically set `--load-path` arguments with list of root directories
+  * Automatically set `--load-path` arguments with list of root directories, with clean
+    fork point (`path_resolver.dart`)
   * Output css sourcemaps
 
 <a name="0.1.1"></a>
