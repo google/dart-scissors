@@ -39,13 +39,18 @@ class SassResult {
   SassResult(this.success, this.messages, this.css, this.map);
 }
 
+class SasscSettings {
+  final String sasscPath;
+  final List<String> sasscArgs;
+
+  SasscSettings(this.sasscPath, this.sasscArgs);
+}
+
 Future<SassResult> runSassC(Asset sassAsset,
-    {bool isDebug,
-     Future<String> sasscPath,
-     Future<List<String>> sasscArgs}) async {
+    {bool isDebug, SasscSettings settings}) async {
 
   var sassId = sassAsset.id;
-  var sassContent = sassAsset.readAsString();
+  var sassContentFuture = sassAsset.readAsString();
   var dir = await Directory.systemTemp.createTemp();
   List<String> cmd;
   try {
@@ -54,7 +59,8 @@ Future<SassResult> runSassC(Asset sassAsset,
     var cssFile = new File(sassFile.path + ".css");
     var mapFile = new File(cssFile.path + ".map");
 
-    await sassFile.writeAsString(await sassContent);
+    var sassContent = await sassContentFuture;
+    await sassFile.writeAsString(sassContent);
 
     // TODO(ochafik): What about `sassc -t nested`?
     var args = [
@@ -63,8 +69,8 @@ Future<SassResult> runSassC(Asset sassAsset,
       relative(sassFile.path, from: dir.path),
       relative(cssFile.path, from: dir.path)
     ];
-    args.addAll(await sasscArgs);
-    var path = await sasscPath;
+    args.addAll(settings.sasscArgs);
+    var path = settings.sasscPath;
     cmd = [path]..addAll(args);
 
     var result = await Process.run(path, args, workingDirectory: dir.path);
@@ -102,7 +108,7 @@ Future<SassResult> runSassC(Asset sassAsset,
 
       if (file == basename(sassId.path)) {
         int column = arrow.length;
-        var start = _computeSourceSpan(await sassContent, '$sassId', line, column);
+        var start = _computeSourceSpan(sassContent, '$sassId', line, column);
         var span;
         if (start != null) {
           var end = new SourceLocation(

@@ -102,7 +102,7 @@ class ScissorsTransformer extends Transformer {
     var stopwatch = new Stopwatch()..start();
     var result = await runSassC(
       sassAsset, isDebug: settings.isDebug,
-      sasscPath: settings.sasscPath, sasscArgs: settings.sasscArgs);
+      settings: await settings.sasscSettings);
     transform.logger.info('Running sassc on ${sassAsset.id} took ${stopwatch.elapsed.inMilliseconds} msec.');
 
     result.messages.forEach((m) => m.log(transform));

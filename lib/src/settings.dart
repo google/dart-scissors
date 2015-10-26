@@ -20,11 +20,11 @@ import 'package:barback/barback.dart';
 import 'package:quiver/check.dart';
 
 import 'path_resolver.dart';
+import 'sassc.dart';
 
 class ScissorsSettings {
   bool _isDebug;
-  Future<String> _sasscPath;
-  Future<List<String>> _sasscArgs;
+  Future<SasscSettings> _sasscSettings;
 
   static const _DEFAULT_SASSC_PATH = 'sassc';
   static const _SASSC_PATH_PARAM = 'sasscPath';
@@ -39,21 +39,21 @@ class ScissorsSettings {
     checkState(invalidKeys.isEmpty,
         message: () => "Invalid keys in configuration: $invalidKeys (valid keys: ${_VALID_PARAMS})");
 
-    _sasscPath = resolvePath(
-        _resolveEnvVars(config[_SASSC_PATH_PARAM] ?? _DEFAULT_SASSC_PATH));
-    _sasscArgs = (() async {
+    _sasscSettings = (() async {
+      var path = await resolvePath(_resolveEnvVars(
+          config[_SASSC_PATH_PARAM] ?? _DEFAULT_SASSC_PATH));
       var args = [];
       for (var dir in await getRootDirectories()) {
         args.addAll(["--load-path", dir]);
       }
       args.addAll(config[_SASSC_ARGS_PARAM]?.map(_resolveEnvVars) ?? []);
-      return args;
+
+      return new SasscSettings(path, args);
     })();
   }
 
   bool get isDebug => _isDebug;
-  Future<String> get sasscPath => _sasscPath;
-  Future<List<String>> get sasscArgs => _sasscArgs;
+  Future<SasscSettings> get sasscSettings => _sasscSettings;
 }
 
 
