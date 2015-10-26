@@ -1,3 +1,13 @@
+<a name="0.1.2"></a>
+# 0.1.2 (2015-10-26)
+
+### Features
+
+* Improved [sassc](https://github.com/sass/sassc) integration:
+  * Resolving `${FOO}` environment variables in `sasscPath` and `sasscArgs` settings
+  * Automatically set `--load-path` arguments with list of root directories
+  * Output css sourcemaps
+
 <a name="0.1.1"></a>
 # 0.1.1 (2015-10-23)
 
