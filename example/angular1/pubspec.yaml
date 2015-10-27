@@ -5,7 +5,8 @@ dependencies:
 dev_dependencies:
   scissors: 0.1.2
 transformers:
-- scissors
+- scissors:
+    verbose: true
 # - scissors:
 #     sasscPath: path/to/sassc
 #     sasscArgs:
