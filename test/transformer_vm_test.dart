@@ -15,16 +15,14 @@ library scissors.test;
 
 import 'package:barback/barback.dart' show BarbackMode, BarbackSettings, Transformer;
 import 'package:code_transformers/tests.dart' show StringFormatter, applyTransformers;
-import 'package:scissors/transformer.dart' show ScissorsTransformer;
+import 'package:scissors/transformer.dart' show ScissorsTransformerGroup;
 import 'package:test/test.dart' show test;
 import 'dart:io';
 
-final phases = [
-  [
-    new ScissorsTransformer.asPlugin(
-        new BarbackSettings({}, BarbackMode.RELEASE))
-  ]
-];
+final phases =
+  new ScissorsTransformerGroup.asPlugin(
+      new BarbackSettings({}, BarbackMode.RELEASE))
+          .phases;
 
 void main() {
   _testPhases('leaves css based on angular2 annotations without css url alone', phases, {
