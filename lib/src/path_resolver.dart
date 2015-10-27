@@ -15,6 +15,8 @@ library scissors.path_resolver;
 
 import 'dart:async';
 import 'dart:io';
+import 'package:path/path.dart';
+import 'package:barback/barback.dart' show AssetId;
 
 Future<String> resolvePath(String path) async {
   // Note: this file is meant to be replaced by custom resolution logic in
@@ -24,4 +26,11 @@ Future<String> resolvePath(String path) async {
 
 Future<List<String>> getRootDirectories() async {
   return [Directory.current.path];
+}
+
+Future<String> resolveAssetFile(AssetId id) async {
+  var path = id.path;
+  if (path.startsWith('lib/')) path = path.substring('lib/'.length);
+
+  return join('packages', id.package.replaceAll('.', '/'), path);
 }

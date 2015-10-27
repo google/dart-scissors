@@ -7,6 +7,7 @@ import 'package:barback/barback.dart' show Asset, AssetId, LogLevel, Transform;
 import 'package:code_transformers/messages/build_logger.dart';
 import 'package:path/path.dart';
 import 'package:source_span/source_span.dart';
+import 'path_resolver.dart' show resolveAssetFile;
 
 class SassMessage {
   final LogLevel level;
@@ -46,27 +47,35 @@ class SasscSettings {
   SasscSettings(this.sasscPath, this.sasscArgs);
 }
 
+// Each isolate gets its temp dir.
+var _tmpDir = Directory.systemTemp.createTemp();
+
 Future<SassResult> runSassC(Asset sassAsset,
     {bool isDebug, SasscSettings settings}) async {
 
   var sassId = sassAsset.id;
-  var sassContentFuture = sassAsset.readAsString();
-  var dir = await Directory.systemTemp.createTemp();
+  Future<String> sassContentFuture;
+  getSassContent() {
+    sassContentFuture ??= sassAsset.readAsString();
+    return sassContentFuture;
+  }
+  var dir = await _tmpDir;
   List<String> cmd;
-  try {
+  {
     var fileName = basename(sassId.path);
-    var sassFile = new File(join(dir.path, fileName));
-    var cssFile = new File(sassFile.path + ".css");
+    var sassFile = new File(absolute(await resolveAssetFile(sassId)));
+    if (!await sassFile.exists()) {
+      sassFile = new File(fileName);
+      await sassFile.writeAsString(await getSassContent());
+    }
+    var cssFile = new File(join(dir.path, fileName + ".css"));
     var mapFile = new File(cssFile.path + ".map");
-
-    var sassContent = await sassContentFuture;
-    await sassFile.writeAsString(sassContent);
 
     // TODO(ochafik): What about `sassc -t nested`?
     var args = [
       '-t', isDebug ? 'expanded' : 'compressed',
       '-m',
-      relative(sassFile.path, from: dir.path),
+      absolute(sassFile.path),
       relative(cssFile.path, from: dir.path)
     ];
     args.addAll(settings.sasscArgs);
@@ -82,6 +91,7 @@ Future<SassResult> runSassC(Asset sassAsset,
     >>       .foo {{
        -----------^
     */
+    var primaryFile = relative(sassFile.path, from: cssFile.path);
     var messageRx = new RegExp(
       r'(Error|Warning|Info): (.*?)\n'
       r'\s+on line (\d+) of (.*?)\n'
@@ -106,9 +116,10 @@ Future<SassResult> runSassC(Asset sassAsset,
       var excerpt = match.group(5);
       var arrow = match.group(6);
 
-      if (file == basename(sassId.path)) {
+      if (file == primaryFile) {
         int column = arrow.length;
-        var start = _computeSourceSpan(sassContent, '$sassId', line, column);
+        var start = _computeSourceSpan(
+            await getSassContent(), '$sassId', line, column);
         var span;
         if (start != null) {
           var end = new SourceLocation(
@@ -128,12 +139,14 @@ Future<SassResult> runSassC(Asset sassAsset,
     }
 
     if (result.exitCode == 0) {
-      var css = cssFile.readAsString();
-      var map = mapFile.readAsString();
       var ext = sassId.extension;
+
+      var map = await mapFile.readAsString();
+      map = map.replaceAll(primaryFile, fileName);
+
       return new SassResult(true, messages,
-          new Asset.fromString(sassId.changeExtension('$ext.css'), await css),
-          new Asset.fromString(sassId.changeExtension('$ext.css.map'), await map));
+          new Asset.fromFile(sassId.changeExtension('$ext.css'), cssFile),
+          new Asset.fromString(sassId.changeExtension('$ext.css.map'), map));
     } else {
       if (!messages.any((m) => m.level == LogLevel.ERROR)) {
         messages.add(new SassMessage(LogLevel.ERROR,
@@ -141,16 +154,7 @@ Future<SassResult> runSassC(Asset sassAsset,
       }
       return new SassResult(false, messages, null, null);
     }
-  } finally {
-    await _deleteDir(dir);
   }
-}
-
-_deleteDir(Directory dir) async {
-  await for (var f in dir.list()) {
-    await f.delete();
-  }
-  await dir.delete();
 }
 
 final _multilineRx = new RegExp(r'^.*?$', multiLine: true);

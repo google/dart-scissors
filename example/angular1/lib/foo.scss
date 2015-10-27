@@ -1,12 +1,14 @@
+@import 'defs';
+
 .used-class {
-  float: left;
+  float: $foo-alignment;
 }
 .unused-class {
-  float: left;
+  float: $foo-alignment;
 }
 absent-element {
-  float: left;
+  float: $foo-alignment;
 }
 present-element {
-  float: left;
+  float: $foo-alignment;
 }
