@@ -183,9 +183,19 @@ List<dom.Node> _skipSyntheticNodes(dom.Document doc, String source) {
   // TODO(ochafik): Cleanup the source.contains hack by fixing the html parser.
   //     (does not set source spans, so we don't really know when a node is
   //     synthetic :-S)
-  final html = doc.firstChild;
-  if (html.sourceSpan != null || source.contains("<html")) return [html];
-  final body = html.children.last;
-  if (body.sourceSpan != null || source.contains("<body")) return [body];
-  return body.children;
+
+  if (doc.children.length == 1) {
+    final html = doc.firstChild;
+    if (html is dom.Element && html.localName == 'html') {
+      if (html.sourceSpan != null || source.contains("<html")) return [html];
+      if (html.children.length == 2
+          && html.children[0].localName == 'head'
+          && html.children[1].localName == 'body') {
+        final body = html.children.last;
+        if (body.sourceSpan != null || source.contains("<body")) return [body];
+        return body.children;
+      }
+    }
+  }
+  return doc.children;
 }

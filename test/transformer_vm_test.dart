@@ -60,6 +60,7 @@ void main() {
       present-element {}
     ''',
     'a|foo2_html.html': r'''
+      <!-- Spice this up -->
       <present-element class="used-class inexistent-class">
       </present-element>
     ''',
