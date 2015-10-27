@@ -65,7 +65,7 @@ Future<SassResult> runSassC(Asset sassAsset,
     var fileName = basename(sassId.path);
     var sassFile = new File(absolute(await resolveAssetFile(sassId)));
     if (!await sassFile.exists()) {
-      sassFile = new File(fileName);
+      sassFile = new File(join(dir.path, fileName));
       await sassFile.writeAsString(await getSassContent());
     }
     var cssFile = new File(join(dir.path, fileName + ".css"));
@@ -75,7 +75,7 @@ Future<SassResult> runSassC(Asset sassAsset,
     var args = [
       '-t', isDebug ? 'expanded' : 'compressed',
       '-m',
-      absolute(sassFile.path),
+      relative(sassFile.path, from: dir.path),
       relative(cssFile.path, from: dir.path)
     ];
     args.addAll(settings.sasscArgs);
@@ -116,7 +116,7 @@ Future<SassResult> runSassC(Asset sassAsset,
       var excerpt = match.group(5);
       var arrow = match.group(6);
 
-      if (file == primaryFile) {
+      if (file == relative(sassFile.path, from: dir.path)) {
         int column = arrow.length;
         var start = _computeSourceSpan(
             await getSassContent(), '$sassId', line, column);

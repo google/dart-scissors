@@ -1,13 +1,13 @@
 Loading source assets...
 Loading observe, scissors and smoke/src/default_transformer transformers...
 Loading angular2 transformers...
-[Info from Scissors on scissors_angular2_example|lib/foo.css]:
+[Info from ScissorsPruning on scissors_angular2_example|lib/foo.css]:
 Dropping unused CSS rule: .unused-class {
 }
-[Info from Scissors on scissors_angular2_example|lib/foo.css]:
+[Info from ScissorsPruning on scissors_angular2_example|lib/foo.css]:
 Dropping unused CSS rule: absent-element {
 }
-[Info from Scissors]:
+[Info from ScissorsPruning]:
 Size(scissors_angular2_example|lib/foo.css): before = 69, after = 34
 Building scissors_angular2_example...
 [Info from Dart2JS]:
