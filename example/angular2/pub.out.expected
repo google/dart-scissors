@@ -1,5 +1,5 @@
 Loading source assets...
-Loading observe, scissors and smoke/src/default_transformer transformers...
+Loading dart_to_js_script_rewriter, observe, scissors and smoke/src/default_transformer transformers...
 Loading angular2 transformers...
 [Info from ScissorsPruning on scissors_angular2_example|lib/foo.css]:
 Dropping unused CSS rule: .unused-class {
@@ -30,6 +30,12 @@ Library 'dart:collection' doesn't export a 'Iterator' declaration.
 Try removing 'Iterator' from the 'show' clause.
 import 'dart:collection' show IterableBase, Iterator;
                                             ^^^^^^^^
+[Warning from Dart2JS on scissors_angular2_example|web/main.dart]:
+packages/angular2/src/core/facade/browser.dart:12:9:
+Library 'dart:html' doesn't export a 'location' declaration.
+Try removing 'location' from the 'show' clause.
+        location,
+        ^^^^^^^^
 [Warning from Dart2JS on scissors_angular2_example|web/main.dart]:
 packages/angular2/src/core/util.ng_deps.dart:6:36:
 Library 'package:angular2/src/core/util/decorators.dart' doesn't export a 'Class' declaration.
@@ -66,11 +72,5 @@ Library 'package:angular2/src/core/util/decorators.dart' doesn't export a 'TypeD
 Try removing 'TypeDecorator' from the 'show' clause.
 export "util/decorators.dart" show Class, ClassDefinition, TypeDecorator;
                                                            ^^^^^^^^^^^^^
-[Warning from Dart2JS on scissors_angular2_example|web/main.dart]:
-packages/angular2/src/core/facade/browser.dart:12:9:
-Library 'dart:html' doesn't export a 'location' declaration.
-Try removing 'location' from the 'show' clause.
-        location,
-        ^^^^^^^^
 [Info from Dart2JS]:
-Built 534 files to "build".
+Built 537 files to "build".

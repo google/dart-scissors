@@ -2,11 +2,15 @@ name: scissors_angular2_example
 version: 0.1.2
 dependencies:
   angular2: 2.0.0-alpha.44
+  browser: 0.10.0
 dev_dependencies:
-  scissors: 0.1.2
+  # scissors: 0.1.2
+  scissors: {path: ../..}
+  dart_to_js_script_rewriter: ^0.1.0
 transformers:
 - scissors:
     verbose: true
 - angular2:
     entry_points: web/main.dart
     html_files: web/index.html
+- dart_to_js_script_rewriter

@@ -3,7 +3,9 @@ version: 0.1.2
 dependencies:
   angular: "1.1.0"
 dev_dependencies:
-  scissors: 0.1.2
+  # scissors: 0.1.2
+  scissors: {path: ../..}
+  dart_to_js_script_rewriter: ^0.1.0
 transformers:
 - scissors:
     verbose: true
@@ -12,3 +14,5 @@ transformers:
 #     sasscArgs:
 #       - -foo
 #       - -bar
+- angular
+- dart_to_js_script_rewriter
