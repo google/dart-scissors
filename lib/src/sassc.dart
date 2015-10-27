@@ -139,14 +139,12 @@ Future<SassResult> runSassC(Asset sassAsset,
     }
 
     if (result.exitCode == 0) {
-      var ext = sassId.extension;
-
       var map = await mapFile.readAsString();
       map = map.replaceAll(primaryFile, fileName);
 
       return new SassResult(true, messages,
-          new Asset.fromFile(sassId.changeExtension('$ext.css'), cssFile),
-          new Asset.fromString(sassId.changeExtension('$ext.css.map'), map));
+          new Asset.fromFile(sassId.addExtension('.css'), cssFile),
+          new Asset.fromString(sassId.addExtension('.css.map'), map));
     } else {
       if (!messages.any((m) => m.level == LogLevel.ERROR)) {
         messages.add(new SassMessage(LogLevel.ERROR,

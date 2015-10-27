@@ -33,42 +33,43 @@ class ScissorsSassTransformer extends Transformer {
 
   static final RegExp _scssFilesToSkipRx = new RegExp(r'^_.*|.*?\.ess\.s[ac]ss$');
 
+  bool shouldTransform(AssetId id) =>
+      _scssFilesToSkipRx.matchAsPrefix(basename(id.path)) == null;
+
   Future apply(Transform transform) async {
     var sassAsset = transform.primaryInput;
     var sassId = sassAsset.id;
 
-    if (_scssFilesToSkipRx.matchAsPrefix(basename(sassId.path)) != null) {
-      if (settings.isVerbose) {
-        transform.logger.info("Skipping $sassId");
-      }
+    if (!shouldTransform(sassId)) {
+      if (settings.isVerbose) transform.logger.info("Skipping $sassId");
       return new Future.value();
     }
 
     try {
       // We only run sassc on files that haven't been converted already:
       // Try and load the converted result first.
-      await transform.getInput(
-          sassId.changeExtension('${sassId.extension}.css'));
+      var cssId = sassId.addExtension('.css');
+      await transform.getInput(cssId);
+      return new Future.value();
     } catch (e, s) {
       if (e is! AssetNotFoundException) {
         throw new StateError('$e (${e.runtimeType})\n$s');
       }
+    }
 
-      // We failed to load the converted result, so run sassc ourselves.
-      var sassAsset = transform.primaryInput;
-      var stopwatch = new Stopwatch()..start();
-      var result = await runSassC(
-        sassAsset, isDebug: settings.isDebug,
-        settings: await settings.sasscSettings);
-      transform.logger.info('Running sassc on $sassId took ${stopwatch.elapsed.inMilliseconds} msec.');
+    // We failed to load the converted result, so run sassc ourselves.
+    var stopwatch = new Stopwatch()..start();
+    var result = await runSassC(
+      sassAsset, isDebug: settings.isDebug,
+      settings: await settings.sasscSettings);
+    transform.logger.info('Running sassc on $sassId took ${stopwatch.elapsed.inMilliseconds} msec.');
 
-      result.messages.forEach((m) => m.log(transform));
+    result.messages.forEach((m) => m.log(transform));
 
-      if (result.success) {
-        if (!settings.isDebug) transform.consumePrimary();
-        transform.addOutput(result.css);
-        transform.addOutput(result.map);
-      }
+    if (result.success) {
+      if (!settings.isDebug) transform.consumePrimary();
+      transform.addOutput(result.css);
+      transform.addOutput(result.map);
     }
   }
 }
