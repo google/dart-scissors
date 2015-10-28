@@ -1,5 +1,5 @@
 Loading source assets...
-Loading dart_to_js_script_rewriter, di/module_transformer, scissors and smoke/src/default_transformer transformers...
+Loading di/module_transformer, scissors and smoke/src/default_transformer transformers...
 Loading angular transformers...
 [Info from ScissorsSass]:
 Skipping scissors_angular1_example|lib/_defs.scss
@@ -13,10 +13,10 @@ Dropping unused CSS rule: absent-element {
   float: left;
 }
 [Info from ScissorsPruning]:
-Size(scissors_angular1_example|lib/foo.scss.css): before = 185, after = 134
+Size(scissors_angular1_example|lib/foo.scss.css): before = 212, after = 161
 [Info from ScissorsImageInliner]:
 [Info from ScissorsImageInliner on scissors_angular1_example|lib/foo.scss.css]:
-line 1, column 68 of scissors_angular1_example|lib/foo.scss.css: Inlined 'icon.svg' with scissors_angular1_example|lib/icon.svg
+line 1, column 95 of scissors_angular1_example|lib/foo.scss.css: Inlined 'icon.svg' with scissors_angular1_example|lib/icon.svg
 inline-image("icon.svg")
 ^^^^^^^^^^^^^^^^^^^^^^^^
 Building scissors_angular1_example...
