@@ -12,4 +12,5 @@ absent-element {
 }
 present-element {
   float: $foo-alignment;
+  background-image: inline-image('icon.svg');
 }

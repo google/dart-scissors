@@ -16,7 +16,7 @@ echo "# Building $EXAMPLE_NAME"
 pub get
 pub build 2>&1 | \
   egrep -v "^Took .*? to compile " | \
-  egrep -v "Running sassc on .*? took .*? msec." | \
+  egrep -v ".*? took .*? msec." | \
   tee pub.out
 
 # Restore pubspec.yaml

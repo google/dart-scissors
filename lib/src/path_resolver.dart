@@ -16,12 +16,17 @@ library scissors.path_resolver;
 import 'dart:async';
 import 'dart:io';
 import 'package:path/path.dart';
-import 'package:barback/barback.dart' show AssetId;
+import 'package:barback/barback.dart' show Asset, AssetId, Transform;
 
 Future<String> resolvePath(String path) async {
   // Note: this file is meant to be replaced by custom resolution logic in
   // forks of this package.
   return new Future.value(path);
+}
+
+Future<Asset> resolveAsset(Transform transform, String url, AssetId from) {
+  var id = new AssetId(from.package, join(dirname(from.path), url));
+  return transform.getInput(id);
 }
 
 Future<List<String>> getRootDirectories() async {

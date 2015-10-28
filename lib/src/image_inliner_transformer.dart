@@ -11,59 +11,50 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.sass_transformer;
+library scissors.image_inliner_transformer;
 
 import 'dart:async';
 
 import 'package:barback/barback.dart';
-import 'package:path/path.dart';
 
 import 'blacklists.dart';
-import 'sassc.dart' show runSassC;
+import 'image_inliner.dart';
+import 'path_resolver.dart';
 import 'settings.dart';
 
 /// sCiSSors is an Angular tree-shaker for CSS files.
 /// It drops CSS rule sets that are not referenced from Angular templates.
-class ScissorsSassTransformer extends Transformer {
+class ScissorsImageInlinerTransformer extends Transformer {
   final ScissorsSettings settings;
 
-  ScissorsSassTransformer(this.settings);
+  ScissorsImageInlinerTransformer(this.settings);
 
   @override
-  String get allowedExtensions => ".scss .sass";
+  String get allowedExtensions => ".css .css.map";
 
   Future apply(Transform transform) async {
     if (shouldSkipPrimaryAsset(transform, settings)) return null;
 
-    var sassAsset = transform.primaryInput;
-    var sassId = sassAsset.id;
-
-    try {
-      // We only run sassc on files that haven't been converted already:
-      // Try and load the converted result first.
-      var cssId = sassId.addExtension('.css');
-      await transform.getInput(cssId);
-
+    if (transform.primaryInput.id.path.endsWith(".map")) {
+      // transform.consumePrimary();
       return null;
-    } catch (e, s) {
-      if (e is! AssetNotFoundException) {
-        throw new StateError('$e (${e.runtimeType})\n$s');
-      }
     }
+
+    var cssAsset = transform.primaryInput;
+    var cssId = cssAsset.id;
+
 
     // We failed to load the converted result, so run sassc ourselves.
     var stopwatch = new Stopwatch()..start();
-    var result = await runSassC(
-      sassAsset, isDebug: settings.isDebug,
-      settings: await settings.sasscSettings);
-
-    transform.logger.info('Running sassc on $sassId took ${stopwatch.elapsed.inMilliseconds} msec.');
+    var result = await inlineImages(cssAsset, assetFetcher: (String url, {AssetId from}) {
+      return resolveAsset(transform, url, from);
+    });
+    transform.logger.info('Inlining images in $cssId took ${stopwatch.elapsed.inMilliseconds} msec.');
     result.logMessages(transform);
 
     if (result.success) {
-      if (!settings.isDebug) transform.consumePrimary();
       transform.addOutput(result.css);
-      transform.addOutput(result.map);
+      // transform.addOutput(result.map);
     }
   }
 }

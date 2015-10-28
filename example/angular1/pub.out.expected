@@ -13,7 +13,12 @@ Dropping unused CSS rule: absent-element {
   float: left;
 }
 [Info from ScissorsPruning]:
-Size(scissors_angular1_example|lib/foo.scss.css): before = 143, after = 92
+Size(scissors_angular1_example|lib/foo.scss.css): before = 185, after = 134
+[Info from ScissorsImageInliner]:
+[Info from ScissorsImageInliner on scissors_angular1_example|lib/foo.scss.css]:
+line 1, column 68 of scissors_angular1_example|lib/foo.scss.css: Inlined 'icon.svg' with scissors_angular1_example|lib/icon.svg
+inline-image("icon.svg")
+^^^^^^^^^^^^^^^^^^^^^^^^
 Building scissors_angular1_example...
 [Info from Dart2JS]:
 Compiling scissors_angular1_example|web/main.dart...
@@ -74,4 +79,4 @@ export 'package:route_hierarchical/client.dart' hide childRoute;
 [Dart2JS on scissors_angular1_example|web/main.dart]:
 1 warning(s) suppressed in package:angular.
 [Info from Dart2JS]:
-Built 214 files to "build".
+Built 215 files to "build".

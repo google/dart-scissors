@@ -234,6 +234,26 @@ void main() {
     '''
   });
 
+  _testPhases('inlines images', phases, {
+    'a|foo.scss': r'''
+      div {
+        background-image: inline-image('icon.svg');
+      }
+    ''',
+    'a|icon.svg': r'''
+      <?xml version="1.0" encoding="utf-8"?>
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <rect x="0" y="0" height="10" width="10" style="stroke:#00ff00; fill: #ff0000"/>
+      </svg>
+    ''',
+    'a|foo.html': r'<div></div>',
+  }, {
+    'a|foo.scss.css':
+        'div{background-image:url(data:image/svg+xml;base64,ICAgICAgPD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KICAgICAgPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KICAgICAgICA8cmVjdCB4PSIwIiB5PSIwIiBoZWlnaHQ9IjEwIiB3aWR0aD0iMTAiIHN0eWxlPSJzdHJva2U6IzAwZmYwMDsgZmlsbDogI2ZmMDAwMCIvPgogICAgICA8L3N2Zz4KICAgIA==)}\n'
+        '\n'
+        '/*# sourceMappingURL=foo.scss.css.map */'
+  });
+
   if (Process.runSync('which', ['sassc']).exitCode == 0) {
     runSassTests();
   } else {
@@ -293,9 +313,9 @@ runSassTests() {
         float: left;
       }
     ''',
-    'a|foo.scss.css': 'do not modify'
+    'a|foo.scss.css': '/* do not modify */'
   }, {
-    'a|foo.scss.css': 'do not modify'
+    'a|foo.scss.css': '/* do not modify */'
   });
 
   _testPhases('reports sassc errors properly', phases, {

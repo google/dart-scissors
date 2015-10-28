@@ -27,6 +27,7 @@ import 'package:source_maps/refactor.dart';
 import 'package:source_maps/printer.dart';
 import 'package:source_span/source_span.dart';
 
+import 'blacklists.dart';
 import 'rule_set_index.dart';
 import 'settings.dart';
 import 'template_extractor.dart' show extractTemplates;
@@ -70,12 +71,11 @@ class ScissorsPruningTransformer extends Transformer {
     return htmlAsset.readAsString();
   }
 
-  static final RegExp _cssFilesToSkipRx = new RegExp(r'.*?\.ess\.s[ac]ss\.css$');
-
   Future apply(Transform transform) async {
+    if (shouldSkipPrimaryAsset(transform, settings)) return null;
+
     var cssAsset = transform.primaryInput;
     var cssAssetId = cssAsset.id;
-    if (_cssFilesToSkipRx.matchAsPrefix(cssAssetId.path) != null) return;
 
     String htmlTemplate;
     try {
@@ -85,7 +85,7 @@ class ScissorsPruningTransformer extends Transformer {
         throw new StateError('$e (${e.runtimeType})\n$s');
       }
       // No HTML template found: leave the CSS alone!
-      return;
+      return null;
     }
 
     try {

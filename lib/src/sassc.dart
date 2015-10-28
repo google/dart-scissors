@@ -1,44 +1,27 @@
+// Copyright 2015 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 library scissors.sassc;
 
 import 'dart:async';
 import 'dart:io';
 
 import 'package:barback/barback.dart' show Asset, AssetId, LogLevel, Transform;
-import 'package:code_transformers/messages/build_logger.dart';
 import 'package:path/path.dart';
 import 'package:source_span/source_span.dart';
 import 'path_resolver.dart' show resolveAssetFile;
 
-class SassMessage {
-  final LogLevel level;
-  final String message;
-  final AssetId asset;
-  final SourceSpan span;
-  SassMessage(this.level, this.message, this.asset, this.span);
-
-  log(Transform transform) {
-    var logger = new BuildLogger(transform, primaryId: asset);
-    switch (level) {
-      case LogLevel.ERROR:
-        logger.error(message, asset: asset, span: span);
-        break;
-      case LogLevel.WARNING:
-        logger.warning(message, asset: asset, span: span);
-        break;
-      case LogLevel.INFO:
-        logger.info(message, asset: asset, span: span);
-        break;
-    }
-  }
-}
-
-class SassResult {
-  final bool success;
-  final List<SassMessage> messages;
-  final Asset css;
-  final Asset map;
-  SassResult(this.success, this.messages, this.css, this.map);
-}
+import 'result.dart' show TransformMessage, TransformResult;
 
 class SasscSettings {
   final String sasscPath;
@@ -50,7 +33,7 @@ class SasscSettings {
 // Each isolate gets its temp dir.
 var _tmpDir = Directory.systemTemp.createTemp();
 
-Future<SassResult> runSassC(Asset sassAsset,
+Future<TransformResult> runSassC(Asset sassAsset,
     {bool isDebug, SasscSettings settings}) async {
 
   var sassId = sassAsset.id;
@@ -84,7 +67,7 @@ Future<SassResult> runSassC(Asset sassAsset,
 
     var result = await Process.run(path, args, workingDirectory: dir.path);
 
-    var messages = <SassMessage>[];
+    var messages = <TransformMessage>[];
     /*
     Error: invalid property name
             on line 1 of foo.scss
@@ -128,13 +111,13 @@ Future<SassResult> runSassC(Asset sassAsset,
               line: line, column: column + excerpt.length);
           span = new SourceSpan(start, end, excerpt);
         }
-        messages.add(new SassMessage(convertLevel(level), message, sassId, span));
+        messages.add(new TransformMessage(convertLevel(level), message, sassId, span));
       } else {
         // TODO(ochafik): Compute asset + span from file if possible here.
         var asset = null;
         var span = null;
         message += '\nIn $file:$line\n  $excerpt\n  $arrow';
-        messages.add(new SassMessage(convertLevel(level), message, asset, span));
+        messages.add(new TransformMessage(convertLevel(level), message, asset, span));
       }
     }
 
@@ -142,15 +125,15 @@ Future<SassResult> runSassC(Asset sassAsset,
       var map = await mapFile.readAsString();
       map = map.replaceAll(primaryFile, fileName);
 
-      return new SassResult(true, messages,
+      return new TransformResult(true, messages,
           new Asset.fromFile(sassId.addExtension('.css'), cssFile),
           new Asset.fromString(sassId.addExtension('.css.map'), map));
     } else {
       if (!messages.any((m) => m.level == LogLevel.ERROR)) {
-        messages.add(new SassMessage(LogLevel.ERROR,
+        messages.add(new TransformMessage(LogLevel.ERROR,
             "Failed to run $cmd in ${dir.path}:\n${result.stderr}", null, null));
       }
-      return new SassResult(false, messages, null, null);
+      return new TransformResult(false, messages, null, null);
     }
   }
 }

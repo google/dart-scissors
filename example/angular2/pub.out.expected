@@ -9,6 +9,7 @@ Dropping unused CSS rule: absent-element {
 }
 [Info from ScissorsPruning]:
 Size(scissors_angular2_example|lib/foo.css): before = 69, after = 34
+[Info from ScissorsImageInliner]:
 Building scissors_angular2_example...
 [Info from Dart2JS]:
 Compiling scissors_angular2_example|web/main.dart...
