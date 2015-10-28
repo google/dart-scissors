@@ -7,7 +7,7 @@ homepage: http://github.com/google/dart-scissors
 dependencies:
   barback: ">=0.15.0 <0.16.0"
   code_transformers: ">=0.2.3 <0.3.0"
-  crypto: ">=0.9.0"
+  crypto: ">=0.9.0 <0.10.0"
   csslib: ">=0.12.0 <0.13.0"
   html: ">=0.12.0 <0.13.0"
   quiver: ">=0.21.0 <0.22.0"
