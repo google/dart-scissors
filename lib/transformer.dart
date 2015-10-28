@@ -31,8 +31,8 @@ class ScissorsTransformerGroup extends TransformerGroup {
   ScissorsTransformerGroup(ScissorsSettings settings)
       : super([
           [new ScissorsSassTransformer(settings)],
-          [new ScissorsPruningTransformer(settings)],
-          [new ScissorsImageInlinerTransformer(settings)]
+          settings.pruneCss ? [new ScissorsPruningTransformer(settings)] : [],
+          settings.inlineImages ? [new ScissorsImageInlinerTransformer(settings)] : []
         ]),
         this.settings = settings;
 }

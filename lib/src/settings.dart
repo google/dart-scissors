@@ -25,17 +25,24 @@ import 'sassc.dart';
 class ScissorsSettings {
   bool _isDebug;
   bool _isVerbose;
+  bool _pruneCss;
+  bool _inlineImages;
   Future<SasscSettings> _sasscSettings;
 
   static const _DEFAULT_SASSC_PATH = 'sassc';
   static const _SASSC_PATH_PARAM = 'sasscPath';
   static const _SASSC_ARGS_PARAM = 'sasscArgs';
   static const _VERBOSE_PARAM = 'verbose';
+  static const _PRUNE_CSS_PARAM = 'pruneCss';
+  static const _INLINE_IMAGES_PARAM = 'inlineImages';
   static const _VALID_PARAMS = const [
     _SASSC_PATH_PARAM,
     _SASSC_ARGS_PARAM,
-    _VERBOSE_PARAM
+    _VERBOSE_PARAM,
+    _PRUNE_CSS_PARAM,
+    _INLINE_IMAGES_PARAM
   ];
+
 
   ScissorsSettings.fromSettings(BarbackSettings settings) {
     _isDebug = settings.mode == BarbackMode.DEBUG;
@@ -58,10 +65,14 @@ class ScissorsSettings {
     })();
 
     _isVerbose = config[_VERBOSE_PARAM] ?? false;
+    _pruneCss = config[_PRUNE_CSS_PARAM] ?? true;
+    _inlineImages = config[_INLINE_IMAGES_PARAM] ?? true;
   }
 
   bool get isDebug => _isDebug;
   bool get isVerbose => _isVerbose;
+  bool get pruneCss => _pruneCss;
+  bool get inlineImages => _inlineImages;
   Future<SasscSettings> get sasscSettings => _sasscSettings;
 }
 
