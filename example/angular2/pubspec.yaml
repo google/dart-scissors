@@ -8,8 +8,14 @@ dev_dependencies:
   scissors: {path: ../..}
   dart_to_js_script_rewriter: ^0.1.0
 transformers:
+# Use this transformer instead to force-build all the css files upfront:
+# - scissors/eager_transformer
 - scissors:
     verbose: true
+    # sasscPath: path/to/sassc
+    # sasscArgs:
+    #   - -foo
+    #   - -bar
 - angular2:
     entry_points: web/main.dart
     html_files: web/index.html

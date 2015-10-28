@@ -7,12 +7,13 @@ dev_dependencies:
   scissors: {path: ../..}
   dart_to_js_script_rewriter: ^0.1.0
 transformers:
+# Use this transformer instead to force-build all the css files upfront:
+# - scissors/eager_transformer
 - scissors:
     verbose: true
-# - scissors:
-#     sasscPath: path/to/sassc
-#     sasscArgs:
-#       - -foo
-#       - -bar
+    # sasscPath: path/to/sassc
+    # sasscArgs:
+    #   - -foo
+    #   - -bar
 - angular
 - dart_to_js_script_rewriter

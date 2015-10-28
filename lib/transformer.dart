@@ -15,7 +15,7 @@ library scissors.transformer;
 
 import 'package:barback/barback.dart';
 
-import 'src/scissors_transformer.dart';
+import 'eager_transformer.dart';
 
 /// sCiSSors is an CSS pruner and SASS runner for Angular Dart apps.
 class LazyScissorsTransformer extends EagerScissorsTransformer

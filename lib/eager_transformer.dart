@@ -22,12 +22,12 @@ import 'package:quiver/check.dart';
 import 'package:source_maps/refactor.dart';
 import 'package:source_span/source_span.dart';
 
-import 'css_pruning.dart';
-import 'deps_consumer.dart';
-import 'image_inliner.dart';
-import 'path_resolver.dart';
-import 'sassc.dart' show runSassC;
-import 'settings.dart';
+import 'src/css_pruning.dart';
+import 'src/deps_consumer.dart';
+import 'src/image_inliner.dart';
+import 'src/path_resolver.dart';
+import 'src/sassc.dart' show runSassC;
+import 'src/settings.dart';
 
 class _Css {
   final Asset original;

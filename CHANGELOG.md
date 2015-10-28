@@ -2,11 +2,15 @@
 
 ### Features
 
+- The transformer is now lazy by default, which speeds up startup time of
+  `pub serve` (use `scissors/eager_transformer` to force eager transform)
 - Sass compilation supports Compass's
   [inline-image](http://compass-style.org/reference/compass/helpers/inline-data/)
   helper to inline images.
-- Rebuilds `.css` file whenever any transitive `.sass` import is modified.
-  (note: requires `pub serve --force-poll`)
+- Rebuilds `.css` files when any transitive `.sass` import is modified:
+  - Requires `pub serve --force-poll`
+  - The default (lazy) transformer will just invalidate stale resources, while
+    `scissors/eager_transformer` will eagerly rebuild them.
 
 <a name="0.1.2"></a>
 # 0.1.2 (2015-10-26)

@@ -13,11 +13,12 @@
 // limitations under the License.
 library scissors.test;
 
+import 'dart:io';
+
 import 'package:barback/barback.dart' show BarbackMode, BarbackSettings, Transformer;
 import 'package:code_transformers/tests.dart' show StringFormatter, applyTransformers;
-import 'package:scissors/src/scissors_transformer.dart';
+import 'package:scissors/eager_transformer.dart';
 import 'package:test/test.dart' show test;
-import 'dart:io';
 
 final phases = [[
   new EagerScissorsTransformer.asPlugin(
