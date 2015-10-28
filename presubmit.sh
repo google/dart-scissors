@@ -3,7 +3,7 @@ set -eux
 
 pub get
 pub run test
-pub publish --dry-run || true
+pub publish --dry-run
 
 if (( "${TEST_EXAMPLES:-1}" )); then
   example/test_example.sh angular1
