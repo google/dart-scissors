@@ -14,8 +14,9 @@ _Disclaimer_: This is not an official Google product.
 - Supports `ng-class` and `class` names with programmatic interpolated fragments
   (e.g. `class="some-{{fragmented}}-class and-some-normal-class"`,
   `ng-class="{'some-class': isSome}"`).
-- Automatically runs [`sassc`](https://github.com/sass/sassc) on `*.sass` and `*.scss` files if they're not
-  already compiled.
+- Compiles `*.sass` and `*.scss` files with [`sassc`](https://github.com/sass/sassc)
+  - Supports Compass's [inline-image](http://compass-style.org/reference/compass/helpers/inline-data/)
+    helper to inline images.
 
 ## Usage
 
