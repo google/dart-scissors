@@ -9,7 +9,7 @@ Dropping unused CSS rule: .unused-class {
 Dropping unused CSS rule: absent-element {
 }
 [Info from Scissors]:
-Size[scissors_angular2_example|lib/foo.css]: before = 90, after = 55
+Size[scissors_angular2_example|lib/foo.css]: before = 69, after = 34
 [Info from Scissors]:
 [Info from Scissors]:
 [Info from Dart2JS]:
