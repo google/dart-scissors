@@ -15,14 +15,14 @@ library scissors.test;
 
 import 'package:barback/barback.dart' show BarbackMode, BarbackSettings, Transformer;
 import 'package:code_transformers/tests.dart' show StringFormatter, applyTransformers;
-import 'package:scissors/transformer.dart' show ScissorsTransformerGroup;
+import 'package:scissors/src/scissors_transformer.dart';
 import 'package:test/test.dart' show test;
 import 'dart:io';
 
-final phases =
-  new ScissorsTransformerGroup.asPlugin(
+final phases = [[
+  new EagerScissorsTransformer.asPlugin(
       new BarbackSettings({}, BarbackMode.RELEASE))
-          .phases;
+]];
 
 void main() {
   _testPhases('leaves css based on angular2 annotations without css url alone', phases, {
@@ -287,16 +287,16 @@ runSassTests() {
         '}'
   });
 
-  _testPhases('does not run sassc on .scss that are already converted', phases, {
-    'a|foo.scss': '''
-      .foo {
-        float: left;
-      }
-    ''',
-    'a|foo.scss.css': '/* do not modify */'
-  }, {
-    'a|foo.scss.css': '/* do not modify */'
-  });
+  // _testPhases('does not run sassc on .scss that are already converted', phases, {
+  //   'a|foo.scss': '''
+  //     .foo {
+  //       float: left;
+  //     }
+  //   ''',
+  //   'a|foo.scss.css': '/* do not modify */'
+  // }, {
+  //   'a|foo.scss.css': '/* do not modify */'
+  // });
 
   _testPhases('reports sassc errors properly', phases, {
     'a|foo.scss': '''

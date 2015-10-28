@@ -1,25 +1,26 @@
 Loading source assets...
-Loading di/module_transformer, scissors and smoke/src/default_transformer transformers...
+Loading dart_to_js_script_rewriter, di/module_transformer, scissors and smoke/src/default_transformer transformers...
 Loading angular transformers...
-[Info from ScissorsSass]:
+Building scissors_angular1_example...
+[Info from Scissors]:
 Skipping scissors_angular1_example|lib/_defs.scss
-[Info from ScissorsSass]:
-[Info from ScissorsPruning on scissors_angular1_example|lib/foo.scss.css]:
+[Info from Scissors]:
+[Info from Scissors on scissors_angular1_example|lib/foo.scss]:
 Dropping unused CSS rule: .unused-class {
   float: left;
 }
-[Info from ScissorsPruning on scissors_angular1_example|lib/foo.scss.css]:
+[Info from Scissors on scissors_angular1_example|lib/foo.scss]:
 Dropping unused CSS rule: absent-element {
   float: left;
 }
-[Info from ScissorsPruning]:
-Size(scissors_angular1_example|lib/foo.scss.css): before = 212, after = 161
-[Info from ScissorsImageInliner]:
-[Info from ScissorsImageInliner on scissors_angular1_example|lib/foo.scss.css]:
+[Info from Scissors]:
+Size[scissors_angular1_example|lib/foo.scss.css]: before = 212, after = 161
+[Info from Scissors]:
+[Info from Scissors on scissors_angular1_example|lib/foo.scss with input scissors_angular1_example|lib/foo.scss.css]:
 line 1, column 95 of scissors_angular1_example|lib/foo.scss.css: Inlined 'icon.svg' with scissors_angular1_example|lib/icon.svg
 inline-image("icon.svg")
 ^^^^^^^^^^^^^^^^^^^^^^^^
-Building scissors_angular1_example...
+[Info from Scissors]:
 [Info from Dart2JS]:
 Compiling scissors_angular1_example|web/main.dart...
 [Warning from Dart2JS on scissors_angular1_example|web/main.dart]:

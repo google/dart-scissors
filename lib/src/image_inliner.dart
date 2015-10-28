@@ -13,15 +13,18 @@
 // limitations under the License.
 library scissors.image_inliner;
 
-import 'package:csslib/visitor.dart';
-import 'package:barback/barback.dart';
 import 'dart:async';
+import 'dart:io';
+
+import 'package:barback/barback.dart';
+import 'package:crypto/crypto.dart';
+import 'package:csslib/visitor.dart';
 import 'package:csslib/parser.dart';
-import 'package:source_span/source_span.dart';
 import 'package:quiver/check.dart';
 import 'package:source_maps/refactor.dart';
-import 'package:crypto/crypto.dart';
-import 'dart:io';
+import 'package:source_span/source_span.dart';
+
+import 'hacks.dart' as hacks;
 import 'result.dart' show TransformMessage, TransformResult;
 
 String _unquote(String s) {
@@ -63,6 +66,9 @@ class InliningVisitor extends Visitor {
 }
 Future<TransformResult> inlineImages(Asset input,
     {Future<Asset> assetFetcher(String url, {AssetId from})}) async {
+
+  hacks.useCssLib();
+
   var css = await input.readAsString();
   var cssSourceFile = new SourceFile(css, url: "${input.id}");
   var cssTree = new Parser(cssSourceFile, css).parse();

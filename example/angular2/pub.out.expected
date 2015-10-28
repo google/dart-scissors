@@ -1,16 +1,17 @@
 Loading source assets...
 Loading dart_to_js_script_rewriter, observe, scissors and smoke/src/default_transformer transformers...
 Loading angular2 transformers...
-[Info from ScissorsPruning on scissors_angular2_example|lib/foo.css]:
+Building scissors_angular2_example...
+[Info from Scissors on scissors_angular2_example|lib/foo.css]:
 Dropping unused CSS rule: .unused-class {
 }
-[Info from ScissorsPruning on scissors_angular2_example|lib/foo.css]:
+[Info from Scissors on scissors_angular2_example|lib/foo.css]:
 Dropping unused CSS rule: absent-element {
 }
-[Info from ScissorsPruning]:
-Size(scissors_angular2_example|lib/foo.css): before = 69, after = 34
-[Info from ScissorsImageInliner]:
-Building scissors_angular2_example...
+[Info from Scissors]:
+Size[scissors_angular2_example|lib/foo.css]: before = 90, after = 55
+[Info from Scissors]:
+[Info from Scissors]:
 [Info from Dart2JS]:
 Compiling scissors_angular2_example|web/main.dart...
 [Warning from Dart2JS on scissors_angular2_example|web/main.dart]:
@@ -74,4 +75,4 @@ Try removing 'TypeDecorator' from the 'show' clause.
 export "util/decorators.dart" show Class, ClassDefinition, TypeDecorator;
                                                            ^^^^^^^^^^^^^
 [Info from Dart2JS]:
-Built 537 files to "build".
+Built 538 files to "build".

@@ -11,17 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.blacklists;
-import 'package:barback/barback.dart' show AssetId, Transform;
-import 'package:path/path.dart';
-import 'package:scissors/src/settings.dart';
+library scissors.hacks;
 
-final RegExp _filesToSkipRx = new RegExp(r'^_.*?\.scss|.*?\.ess\.s[ac]ss\.css(\.map)?$');
+import 'package:csslib/src/messages.dart' as csslib show messages, Messages;
 
-bool shouldSkipPrimaryAsset(Transform transform, ScissorsSettings settings) {
-  var id = transform.primaryInput.id;
-  var fileName = basename(id.path);
-  var skip = _filesToSkipRx.matchAsPrefix(fileName) != null;
-  if (skip) transform.logger.info("Skipping $id");
-  return skip;
+useCssLib() {
+  // TODO(ochafik): This ugly wart is because of csslib's global messages.
+  // See //third_party/dart/csslib/lib/src/messages.dart.
+  csslib.messages = new csslib.Messages();
 }

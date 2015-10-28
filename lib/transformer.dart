@@ -15,24 +15,11 @@ library scissors.transformer;
 
 import 'package:barback/barback.dart';
 
-import 'src/sass_transformer.dart';
-import 'src/settings.dart';
-import 'src/pruning_transformer.dart';
-import 'src/image_inliner_transformer.dart';
+import 'src/scissors_transformer.dart';
 
-/// sCiSSors is an Angular tree-shaker for CSS files.
-/// It drops CSS rule sets that are not referenced from Angular templates.
-class ScissorsTransformerGroup extends TransformerGroup {
-  final ScissorsSettings settings;
-
-  ScissorsTransformerGroup.asPlugin(BarbackSettings settings)
-      : this(new ScissorsSettings.fromSettings(settings));
-
-  ScissorsTransformerGroup(ScissorsSettings settings)
-      : super([
-          [new ScissorsSassTransformer(settings)],
-          settings.pruneCss ? [new ScissorsPruningTransformer(settings)] : [],
-          settings.inlineImages ? [new ScissorsImageInlinerTransformer(settings)] : []
-        ]),
-        this.settings = settings;
+/// sCiSSors is an CSS pruner and SASS runner for Angular Dart apps.
+class LazyScissorsTransformer extends EagerScissorsTransformer
+    implements LazyTransformer {
+  LazyScissorsTransformer.asPlugin(BarbackSettings settings)
+      : super.asPlugin(settings);
 }
