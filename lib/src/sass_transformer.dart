@@ -16,9 +16,9 @@ library scissors.sass_transformer;
 import 'dart:async';
 
 import 'package:barback/barback.dart';
-import 'package:path/path.dart';
 
 import 'blacklists.dart';
+import 'deps_consumer.dart';
 import 'sassc.dart' show runSassC;
 import 'settings.dart';
 
@@ -51,6 +51,9 @@ class ScissorsSassTransformer extends Transformer {
       }
     }
 
+    // Mark transitive SASS @imports as barback dependencies.
+    var depsConsumption = consumeTransitiveSassDeps(transform, sassAsset);
+
     // We failed to load the converted result, so run sassc ourselves.
     var stopwatch = new Stopwatch()..start();
     var result = await runSassC(
@@ -65,5 +68,7 @@ class ScissorsSassTransformer extends Transformer {
       transform.addOutput(result.css);
       transform.addOutput(result.map);
     }
+
+    await depsConsumption;
   }
 }
