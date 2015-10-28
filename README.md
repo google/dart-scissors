@@ -17,6 +17,8 @@ _Disclaimer_: This is not an official Google product.
 - Compiles `*.sass` and `*.scss` files with [`sassc`](https://github.com/sass/sassc)
   - Supports Compass's [inline-image](http://compass-style.org/reference/compass/helpers/inline-data/)
     helper to inline images.
+  - Rebuilds `.css` file whenever any transitive `.sass` import is modified.
+    (note: requires `pub serve --force-poll`)
 
 ## Usage
 
