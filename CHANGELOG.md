@@ -1,3 +1,13 @@
+# Current development tree
+
+### Features
+
+- Sass compilation supports Compass's
+  [inline-image](http://compass-style.org/reference/compass/helpers/inline-data/)
+  helper to inline images.
+- Rebuilds `.css` file whenever any transitive `.sass` import is modified.
+  (note: requires `pub serve --force-poll`)
+
 <a name="0.1.2"></a>
 # 0.1.2 (2015-10-26)
 
