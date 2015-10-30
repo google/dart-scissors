@@ -6,10 +6,6 @@ import 'package:source_maps/parser.dart';
 import 'package:source_maps/source_maps.dart';
 import 'package:source_span/source_span.dart';
 
-import '../result.dart';
-import 'package:path/path.dart';
-import 'package:barback/barback.dart';
-import 'dart:async';
 import 'pos_converter.dart';
 
 class _Edit implements Comparable<_Edit> {
