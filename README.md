@@ -1,7 +1,7 @@
 # sCiSSors [![Build Status](https://travis-ci.org/google/dart-scissors.svg?branch=master)](https://travis-ci.org/google/dart-scissors) [![Pub Package](https://img.shields.io/pub/v/scissors.svg)](https://pub.dartlang.org/packages/scissors)
-**A CSS minifier / tree-shaker / SASS runner for Angular.**
+**A CSS minifier / tree-shaker / Sass runner for Angular.**
 
-Bored of tuning your SASS imports to avoid bloated CSS? This is for you!
+Bored of tuning your Sass imports to avoid bloated CSS? This is for you!
 
 _Disclaimer_: This is not an official Google product.
 
