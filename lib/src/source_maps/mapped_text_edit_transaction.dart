@@ -19,7 +19,6 @@ class _MockNestedPrinter implements NestedPrinter {
 }
 
 class MappedTextEditTransaction implements TextEditTransaction {
-
   final TextEditTransaction _transaction;
   final SourceMapEditor _mapEditor;
 
@@ -28,8 +27,7 @@ class MappedTextEditTransaction implements TextEditTransaction {
   @override
   NestedPrinter commit() {
     var printer = _transaction.commit();
-    return new _MockNestedPrinter(
-      printer.text, _mapEditor.createSourceMap());
+    return new _MockNestedPrinter(printer.text, _mapEditor.createSourceMap());
   }
 
   @override
@@ -53,10 +51,10 @@ Future<MappedTextEditTransaction> upgradeTransaction(
   var orig = originalCss.readAsString();
   var map = sourceMap.readAsString();
   return new MappedTextEditTransaction(
-    transaction,
-    new SourceMapEditor(
-        basename(sourceMap.id.path),
-        parse(await map),
-        new PosConverter(await orig),
-        new PosConverter(transaction.original)));
+      transaction,
+      new SourceMapEditor(
+          basename(sourceMap.id.path),
+          parse(await map),
+          new PosConverter(await orig),
+          new PosConverter(transaction.original)));
 }

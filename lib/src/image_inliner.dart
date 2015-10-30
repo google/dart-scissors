@@ -60,13 +60,14 @@ class InliningVisitor extends Visitor {
       urls[span] = url;
     }
   }
+
   void visitLiteralTerm(LiteralTerm node) {
     _literals.add(node);
   }
 }
+
 Future<TransformResult> inlineImages(Asset input,
     {Future<Asset> assetFetcher(String url, {AssetId from})}) async {
-
   hacks.useCssLib();
 
   var css = await input.readAsString();
@@ -92,8 +93,7 @@ Future<TransformResult> inlineImages(Asset input,
 
   if (!transaction.hasEdits) return new TransformResult(false, messages);
 
-  var printer = transaction.commit()
-    ..build(input.id.path);
+  var printer = transaction.commit()..build(input.id.path);
   return new TransformResult(
       true,
       messages,
@@ -101,7 +101,7 @@ Future<TransformResult> inlineImages(Asset input,
       new Asset.fromString(input.id.addExtension('.map'), printer.map));
 }
 
-const _mediaTypeByExtension = const <String, String> {
+const _mediaTypeByExtension = const <String, String>{
   '.jpeg': 'image/jpeg',
   '.jpg': 'image/jpeg',
   '.svg': 'image/svg+xml',
@@ -110,7 +110,8 @@ const _mediaTypeByExtension = const <String, String> {
 
 Future<String> encodeDataAsUri(Asset asset) async {
   var mediaType = _mediaTypeByExtension[asset.id.extension];
-  var data = await asset.read()
+  var data = await asset
+      .read()
       .fold(new BytesBuilder(), (builder, data) => builder..add(data));
   var encodedData = CryptoUtils.bytesToBase64(data.takeBytes(), urlSafe: true);
   return 'data:$mediaType;base64,$encodedData';

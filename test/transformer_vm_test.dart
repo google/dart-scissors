@@ -15,18 +15,23 @@ library scissors.test;
 
 import 'dart:io';
 
-import 'package:barback/barback.dart' show BarbackMode, BarbackSettings, Transformer;
-import 'package:code_transformers/tests.dart' show StringFormatter, applyTransformers;
+import 'package:barback/barback.dart'
+    show BarbackMode, BarbackSettings, Transformer;
+import 'package:code_transformers/tests.dart'
+    show StringFormatter, applyTransformers;
 import 'package:scissors/eager_transformer.dart';
 import 'package:test/test.dart' show test;
 
-final phases = [[
-  new EagerScissorsTransformer.asPlugin(
-      new BarbackSettings({}, BarbackMode.RELEASE))
-]];
+final phases = [
+  [
+    new EagerScissorsTransformer.asPlugin(
+        new BarbackSettings({}, BarbackMode.RELEASE))
+  ]
+];
 
 void main() {
-  _testPhases('leaves css based on angular2 annotations without css url alone', phases, {
+  _testPhases('leaves css based on angular2 annotations without css url alone',
+      phases, {
     'a|foo2_unmatched_css_url.css': r'''
       .used-class {}
       .unused-class {}
@@ -71,7 +76,8 @@ void main() {
       present-element {}
     '''
   });
-  _testPhases('prunes css based on angular2 annotations in .dart companion', phases, {
+  _testPhases(
+      'prunes css based on angular2 annotations in .dart companion', phases, {
     'a|foo2_dart.css': r'''
       .used-class {}
       .unused-class {}
@@ -97,7 +103,8 @@ void main() {
       present-element {}
     '''
   });
-  _testPhases('prunes css based on angular1 annotations in .dart companion', phases, {
+  _testPhases(
+      'prunes css based on angular1 annotations in .dart companion', phases, {
     'a|foo1.css': r'''
       absent-element {}
       present-element {}
@@ -206,7 +213,9 @@ void main() {
       present-element {}
     '''
   });
-  _testPhases('leaves weird css files alone', phases,
+  _testPhases(
+      'leaves weird css files alone',
+      phases,
       {'a|weird.ess.scss.css': r"don't even try to parse me!"},
       {'a|weird.ess.scss.css': r"don't even try to parse me!"});
 
@@ -256,12 +265,10 @@ runSassTests() {
   height: 100%
     '''
   }, {
-    'a|foo.scss.css':
-        '.foo{float:left}\n'
+    'a|foo.scss.css': '.foo{float:left}\n'
         '\n'
         '/*# sourceMappingURL=foo.scss.css.map */',
-    'a|foo.scss.css.map':
-        '{\n'
+    'a|foo.scss.css.map': '{\n'
         '\t"version": 3,\n'
         '\t"file": "foo.scss.css",\n'
         '\t"sources": [\n'
@@ -271,12 +278,10 @@ runSassTests() {
         '\t"mappings": "AAAM,IAAI,AAAC,CACH,KAAK,CAAE,IAAK,CADR",\n'
         '\t"names": []\n'
         '}',
-    'a|foo.sass.css':
-        '.foo{height:100%}\n'
+    'a|foo.sass.css': '.foo{height:100%}\n'
         '\n'
         '/*# sourceMappingURL=foo.sass.css.map */',
-    'a|foo.sass.css.map':
-        '{\n'
+    'a|foo.sass.css.map': '{\n'
         '\t"version": 3,\n'
         '\t"file": "foo.sass.css",\n'
         '\t"sources": [\n'
@@ -334,7 +339,11 @@ _testPhases(String testName, List<List<Transformer>> phases,
     Map<String, String> inputs, Map<String, String> results,
     [List<String> messages,
     StringFormatter formatter = StringFormatter.noTrailingWhitespace]) {
-  test(testName, () async => applyTransformers(phases,
-      inputs: inputs, results: results,
-      messages: messages, formatter: formatter));
+  test(
+      testName,
+      () async => applyTransformers(phases,
+          inputs: inputs,
+          results: results,
+          messages: messages,
+          formatter: formatter));
 }

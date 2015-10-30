@@ -38,13 +38,16 @@ class PathResolver {
     return (await _resolveFileAsset([path]))?.file?.path ?? path;
   }
 
-  Future<Asset> resolveAsset(Transform transform, Iterable<String> alternativePaths, AssetId from) async {
+  Future<Asset> resolveAsset(Transform transform,
+      Iterable<String> alternativePaths, AssetId from) async {
     // First, try relative paths:
     var parent = dirname(from.path);
-    Iterable<AssetId> ids =
-        alternativePaths.map((path) => new AssetId(from.package, join(parent, path)));
-    Asset asset = await findFirstWhere(ids.map((id) => transform.getInput(id)).toList(),
-        (Future<Asset> asset) => asset.then((_) => true, onError: (_) => false));
+    Iterable<AssetId> ids = alternativePaths
+        .map((path) => new AssetId(from.package, join(parent, path)));
+    Asset asset = await findFirstWhere(
+        ids.map((id) => transform.getInput(id)).toList(),
+        (Future<Asset> asset) =>
+            asset.then((_) => true, onError: (_) => false));
 
     if (asset != null) return asset;
 
@@ -73,8 +76,8 @@ class PathResolver {
       _sassIncludeDirectories = []..addAll(roots);
       if (defaultCompassStylesheetsPath == null) {
         // Import compass' SASS partials.
-        var compassDirs = findExistingDirectories(
-            roots.map((d) => new File(join(d.path, defaultCompassStylesheetsPath))));
+        var compassDirs = findExistingDirectories(roots
+            .map((d) => new File(join(d.path, defaultCompassStylesheetsPath))));
         await for (var dir in compassDirs) {
           _sassIncludeDirectories.add(dir);
         }
@@ -87,8 +90,10 @@ class PathResolver {
     var path = id.path;
     if (path.startsWith('lib/')) path = path.substring('lib/'.length);
 
-    var alternativePaths =
-        [path, join('packages', id.package.replaceAll('.', '/'), path)];
+    var alternativePaths = [
+      path,
+      join('packages', id.package.replaceAll('.', '/'), path)
+    ];
 
     var fileAsset = await _resolveFileAsset(alternativePaths);
     if (fileAsset == null) throw new AssetNotFoundException(id);
@@ -116,6 +121,7 @@ class _FileAsset {
   _FileAsset(this.rootDir, this.path) {
     file = new File(join(rootDir.path, path));
   }
-  Asset toAsset() => new Asset.fromFile(new AssetId(_filePseudoPackage, path), file);
+  Asset toAsset() =>
+      new Asset.fromFile(new AssetId(_filePseudoPackage, path), file);
   toString() => file.path;
 }

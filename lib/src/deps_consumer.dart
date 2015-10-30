@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:scissors/src/path_resolver.dart';
 
 final RegExp _importRx = new RegExp(r'''^\s*@import ['"]([^'"]+)['"]''');
-final RegExp _commentsRx = new RegExp(r'''//.*?\n|/\*.*?\*/''', multiLine: true);
+final RegExp _commentsRx =
+    new RegExp(r'''//.*?\n|/\*.*?\*/''', multiLine: true);
 
 /// Eagerly consume transitive sass imports.
 ///
@@ -11,8 +12,7 @@ final RegExp _commentsRx = new RegExp(r'''//.*?\n|/\*.*?\*/''', multiLine: true)
 /// file dependency tree: when pub serve is run with --force-poll, any change
 /// on any of the transitive dependencies will result in a re-compilation
 /// of the SASS file(s).
-consumeTransitiveSassDeps(
-    Transform transform, Asset asset,
+consumeTransitiveSassDeps(Transform transform, Asset asset,
     [Set<AssetId> visitedIds]) async {
   visitedIds ??= new Set<AssetId>();
   if (visitedIds != null && !visitedIds.add(asset.id)) return;
@@ -34,7 +34,8 @@ consumeTransitiveSassDeps(
     }
     futures.add((() async {
       try {
-        var importedAsset = await pathResolver.resolveAsset(transform, urls, asset.id);
+        var importedAsset =
+            await pathResolver.resolveAsset(transform, urls, asset.id);
         consumeTransitiveSassDeps(transform, importedAsset, visitedIds);
       } catch (e, s) {
         transform.logger.warning(

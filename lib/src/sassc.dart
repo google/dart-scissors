@@ -16,7 +16,8 @@ library scissors.sassc;
 import 'dart:async';
 import 'dart:io';
 
-import 'package:barback/barback.dart' show Asset, AssetId, AssetNotFoundException, LogLevel, Transform;
+import 'package:barback/barback.dart'
+    show Asset, AssetId, AssetNotFoundException, LogLevel, Transform;
 import 'package:path/path.dart';
 import 'package:source_span/source_span.dart';
 import 'path_resolver.dart';
@@ -36,7 +37,6 @@ var _tmpDir = Directory.systemTemp.createTemp();
 
 Future<TransformResult> runSassC(Asset sassAsset,
     {bool isDebug, SasscSettings settings}) async {
-
   var sassId = sassAsset.id;
   Future<String> sassContentFuture;
   getSassContent() {
@@ -60,7 +60,8 @@ Future<TransformResult> runSassC(Asset sassAsset,
 
     // TODO(ochafik): What about `sassc -t nested`?
     var args = [
-      '-t', isDebug ? 'expanded' : 'compressed',
+      '-t',
+      isDebug ? 'expanded' : 'compressed',
       '-m',
       relative(sassFile.path, from: dir.path),
       relative(cssFile.path, from: dir.path)
@@ -81,16 +82,19 @@ Future<TransformResult> runSassC(Asset sassAsset,
     */
     var primaryFile = relative(sassFile.path, from: cssFile.path);
     var messageRx = new RegExp(
-      r'(Error|Warning|Info): (.*?)\n'
-      r'\s+on line (\d+) of (.*?)\n'
-      r'>> (.*?)\n'
-      r'   (-*\^)$',
-      multiLine: true);
+        r'(Error|Warning|Info): (.*?)\n'
+        r'\s+on line (\d+) of (.*?)\n'
+        r'>> (.*?)\n'
+        r'   (-*\^)$',
+        multiLine: true);
     convertLevel(String level) {
       switch (level) {
-        case 'Error': return LogLevel.ERROR;
-        case 'Warning': return LogLevel.WARNING;
-        case 'Info': return LogLevel.INFO;
+        case 'Error':
+          return LogLevel.ERROR;
+        case 'Warning':
+          return LogLevel.WARNING;
+        case 'Info':
+          return LogLevel.INFO;
         default:
           throw new StateError("Unknown level: $level");
       }
@@ -106,23 +110,25 @@ Future<TransformResult> runSassC(Asset sassAsset,
 
       if (file == relative(sassFile.path, from: dir.path)) {
         int column = arrow.length;
-        var start = _computeSourceSpan(
-            await getSassContent(), '$sassId', line, column);
+        var start =
+            _computeSourceSpan(await getSassContent(), '$sassId', line, column);
         var span;
         if (start != null) {
-          var end = new SourceLocation(
-              start.offset + excerpt.length,
+          var end = new SourceLocation(start.offset + excerpt.length,
               sourceUrl: start.sourceUrl,
-              line: line, column: column + excerpt.length);
+              line: line,
+              column: column + excerpt.length);
           span = new SourceSpan(start, end, excerpt);
         }
-        messages.add(new TransformMessage(convertLevel(level), message, sassId, span));
+        messages.add(
+            new TransformMessage(convertLevel(level), message, sassId, span));
       } else {
         // TODO(ochafik): Compute asset + span from file if possible here.
         var asset = null;
         var span = null;
         message += '\nIn $file:$line\n  $excerpt\n  $arrow';
-        messages.add(new TransformMessage(convertLevel(level), message, asset, span));
+        messages.add(
+            new TransformMessage(convertLevel(level), message, asset, span));
       }
     }
 
@@ -130,13 +136,18 @@ Future<TransformResult> runSassC(Asset sassAsset,
       var map = await mapFile.readAsString();
       map = map.replaceAll(primaryFile, fileName);
 
-      return new TransformResult(true, messages,
+      return new TransformResult(
+          true,
+          messages,
           new Asset.fromFile(sassId.addExtension('.css'), cssFile),
           new Asset.fromString(sassId.addExtension('.css.map'), map));
     } else {
       if (!messages.any((m) => m.level == LogLevel.ERROR)) {
-        messages.add(new TransformMessage(LogLevel.ERROR,
-            "Failed to run $cmd in ${dir.path}:\n${result.stderr}", null, null));
+        messages.add(new TransformMessage(
+            LogLevel.ERROR,
+            "Failed to run $cmd in ${dir.path}:\n${result.stderr}",
+            null,
+            null));
       }
       return new TransformResult(false, messages, null, null);
     }
@@ -145,12 +156,14 @@ Future<TransformResult> runSassC(Asset sassAsset,
 
 final _multilineRx = new RegExp(r'^.*?$', multiLine: true);
 
-SourceLocation _computeSourceSpan(String content, String sourceUrl, int line, int column) {
+SourceLocation _computeSourceSpan(
+    String content, String sourceUrl, int line, int column) {
   int nextLine = 1;
   for (var match in _multilineRx.allMatches(content)) {
     if (line == nextLine) {
       var offset = match.start + column - 1;
-      return new SourceLocation(offset, sourceUrl: sourceUrl, line: line, column: column);
+      return new SourceLocation(offset,
+          sourceUrl: sourceUrl, line: line, column: column);
     }
     nextLine++;
   }

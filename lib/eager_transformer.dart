@@ -33,6 +33,7 @@ import 'src/settings.dart';
 class _Css {
   final Asset original;
   final Asset content;
+
   /// The source map between original and content;
   final Asset map;
   _Css({this.original, this.content, this.map}) {
@@ -42,7 +43,8 @@ class _Css {
 
 /// This eager transformer is only used in tests.
 /// The *real* transformer is [LazyScissorsTransformer].
-class EagerScissorsTransformer extends Transformer implements DeclaringTransformer {
+class EagerScissorsTransformer extends Transformer
+    implements DeclaringTransformer {
   final ScissorsSettings settings;
 
   EagerScissorsTransformer(this.settings);
@@ -53,7 +55,8 @@ class EagerScissorsTransformer extends Transformer implements DeclaringTransform
   @override
   final String allowedExtensions = ".css .map .scss .sass";
 
-  final RegExp _filesToSkipRx = new RegExp(r'^_.*?\.scss|.*?\.ess\.s[ac]ss\.css(\.map)?$');
+  final RegExp _filesToSkipRx =
+      new RegExp(r'^_.*?\.scss|.*?\.ess\.s[ac]ss\.css(\.map)?$');
 
   bool _shouldSkipAsset(AssetId id) {
     var name = basename(id.path);
@@ -120,12 +123,13 @@ class EagerScissorsTransformer extends Transformer implements DeclaringTransform
     // if (!settings.isDebug && css.content.id != transform.primaryInput.id) {
     //   transform.consumePrimary();
     // }
-        // if (!settings.isDebug)
+    // if (!settings.isDebug)
     transform.consumePrimary();
 
     if (css.original != css.content) {
-      if (css.original != null && css.map != null
-          && css.original.id != css.content?.id) {
+      if (css.original != null &&
+          css.map != null &&
+          css.original.id != css.content?.id) {
         transform.addOutput(css.original);
       }
       transform.addOutput(css.content);
@@ -139,7 +143,8 @@ class EagerScissorsTransformer extends Transformer implements DeclaringTransform
       if (settings.isDebug) transform.logger.info('$title...');
       return await action();
     } finally {
-      transform.logger.info('$title took ${stopwatch.elapsed.inMilliseconds} msec.');
+      transform.logger
+          .info('$title took ${stopwatch.elapsed.inMilliseconds} msec.');
     }
   }
 
@@ -148,8 +153,8 @@ class EagerScissorsTransformer extends Transformer implements DeclaringTransform
         // Mark transitive SASS @imports as barback dependencies.
         var depsConsumption = consumeTransitiveSassDeps(transform, scss);
 
-        var result = await runSassC(scss, isDebug: settings.isDebug,
-            settings: await settings.sasscSettings);
+        var result = await runSassC(scss,
+            isDebug: settings.isDebug, settings: await settings.sasscSettings);
         result.logMessages(transform);
 
         await depsConsumption;
@@ -164,7 +169,8 @@ class EagerScissorsTransformer extends Transformer implements DeclaringTransform
         var sourceFile = new SourceFile(source, url: css.content.id.toString());
 
         var transaction = new TextEditTransaction(source, sourceFile);
-        dropUnusedCssRules(transform, transaction, settings, sourceFile, htmlTemplate);
+        dropUnusedCssRules(
+            transform, transaction, settings, sourceFile, htmlTemplate);
 
         if (!transaction.hasEdits) return css;
 
@@ -175,17 +181,20 @@ class EagerScissorsTransformer extends Transformer implements DeclaringTransform
         return new _Css(
             original: css.content,
             content: new Asset.fromString(css.content.id, printer.text),
-            map: new Asset.fromString(css.content.id.addExtension('.map'), printer.map));
+            map: new Asset.fromString(
+                css.content.id.addExtension('.map'), printer.map));
       });
 
   Future<_Css> _inlineImages(_Css css, Transform transform) =>
       _time(transform, 'Inlining images in ${css.content.id}', () async {
-        var result = await inlineImages(css.content, assetFetcher: (String url, {AssetId from}) {
+        var result = await inlineImages(css.content,
+            assetFetcher: (String url, {AssetId from}) {
           return pathResolver.resolveAsset(transform, [url], from);
         });
         result.logMessages(transform);
         if (!result.success) return css;
-        return new _Css(original: css.content, content: result.css, map: result.map);
+        return new _Css(
+            original: css.content, content: result.css, map: result.map);
       });
 
   @override toString() => "Scissors";

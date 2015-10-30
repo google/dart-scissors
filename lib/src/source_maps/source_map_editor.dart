@@ -24,7 +24,8 @@ class SourceMapEditor {
   final PosConverter targetPosConverter;
   final _edits = <_Edit>[];
 
-  SourceMapEditor(this.filename, this.original, this.sourcePosConverter, this.targetPosConverter);
+  SourceMapEditor(this.filename, this.original, this.sourcePosConverter,
+      this.targetPosConverter);
   // if (original is MultiSectionMapping) {
   //   throw new StateError('TODO: MultiSectionMapping');
   // } else if (original is SingleMapping) {
@@ -41,7 +42,8 @@ class SourceMapEditor {
     for (var line in original.lines) {
       for (var entry in line.entries) {
         var source = new SourceLocation(
-            sourcePosConverter.getOffset(new Pos(entry.sourceLine, entry.sourceColumn)),
+            sourcePosConverter
+                .getOffset(new Pos(entry.sourceLine, entry.sourceColumn)),
             sourceUrl: original.urls[entry.sourceUrlId],
             line: entry.sourceLine,
             column: entry.sourceColumn);

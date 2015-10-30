@@ -18,7 +18,8 @@ import 'package:barback/barback.dart' show Transform, Asset, AssetId;
 import 'package:analyzer/analyzer.dart';
 import 'package:path/path.dart';
 
-Future<List<String>> extractTemplates(Transform transform, Asset dartAsset, AssetId cssAssetId) async {
+Future<List<String>> extractTemplates(
+    Transform transform, Asset dartAsset, AssetId cssAssetId) async {
   String dartSource = await dartAsset.readAsString();
 
   var unit = parseCompilationUnit(dartSource, suppressErrors: true);
@@ -70,7 +71,8 @@ dynamic _eval(Literal expr) {
   if (expr == null) return null;
   if (expr is SimpleStringLiteral) return expr.stringValue;
   if (expr is ListLiteral) return expr.elements.map(_eval).toList();
-  throw new ArgumentError("Unsupported literal type: ${expr.runtimeType} ($expr)");
+  throw new ArgumentError(
+      "Unsupported literal type: ${expr.runtimeType} ($expr)");
 }
 
 String _assetIdToUri(AssetId id) {
@@ -81,8 +83,9 @@ String _assetIdToUri(AssetId id) {
 
 Expression _findNamedArgument(ArgumentList argumentList, String name) {
   for (var arg in argumentList.arguments) {
-    if (arg is AssignmentExpression && arg.leftHandSide is Identifier
-        && arg.leftHandSide.name == name) {
+    if (arg is AssignmentExpression &&
+        arg.leftHandSide is Identifier &&
+        arg.leftHandSide.name == name) {
       return arg.rightHandSide;
     } else if (arg is NamedExpression && arg.name.label.name == name) {
       return arg.expression;

@@ -42,14 +42,14 @@ class ScissorsSettings {
     _INLINE_IMAGES_PARAM
   ];
 
-
   ScissorsSettings.fromSettings(BarbackSettings settings) {
     _isDebug = settings.mode == BarbackMode.DEBUG;
     var config = settings.configuration;
 
     var invalidKeys = config.keys.where((k) => !_VALID_PARAMS.contains(k));
     checkState(invalidKeys.isEmpty,
-        message: () => "Invalid keys in configuration: $invalidKeys (valid keys: ${_VALID_PARAMS})");
+        message: () =>
+            "Invalid keys in configuration: $invalidKeys (valid keys: ${_VALID_PARAMS})");
 
     _sasscSettings = (() async {
       var path = await pathResolver.resolvePath(_resolveEnvVars(
@@ -75,8 +75,6 @@ class ScissorsSettings {
   Future<SasscSettings> get sasscSettings => _sasscSettings;
 }
 
-
-String _resolveEnvVars(String s) =>
-    s.replaceAllMapped(
-        new RegExp(r'\$\{([^}]+)\}'),
-        (Match m) => (Platform.environment[m.group(1)] ?? ''));
+String _resolveEnvVars(String s) => s.replaceAllMapped(
+    new RegExp(r'\$\{([^}]+)\}'),
+    (Match m) => (Platform.environment[m.group(1)] ?? ''));

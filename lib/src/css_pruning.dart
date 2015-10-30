@@ -32,8 +32,7 @@ import 'settings.dart';
 import 'template_extractor.dart' show extractTemplates;
 import 'usage_collector.dart';
 
-Future<String> findHtmlTemplate(
-    Transform transform, AssetId cssAssetId) async {
+Future<String> findHtmlTemplate(Transform transform, AssetId cssAssetId) async {
   try {
     var dartAssetId = _getCssCompanionId(cssAssetId, ".dart");
     var dartAsset = await transform.getInput(dartAssetId);
@@ -53,8 +52,8 @@ AssetId _getCssCompanionId(AssetId cssId, String companionExtension) {
   if (path.endsWith('.scss.css') || path.endsWith('.sass.css')) {
     return new AssetId(
         cssId.package,
-        path.substring(0, path.length - '.scss.css'.length)
-            + companionExtension);
+        path.substring(0, path.length - '.scss.css'.length) +
+            companionExtension);
   } else {
     return cssId.changeExtension(companionExtension);
   }
@@ -62,11 +61,8 @@ AssetId _getCssCompanionId(AssetId cssId, String companionExtension) {
 
 /// Edits [transaction] to drop any CSS rule in [topLevels] that we're sure
 /// is not referred to by any DOM node in [htmlTrees].
-dropUnusedCssRules(
-    Transform transform, TextEditTransaction transaction,
-    ScissorsSettings settings,
-    SourceFile cssSourceFile, String htmlTemplate) {
-
+dropUnusedCssRules(Transform transform, TextEditTransaction transaction,
+    ScissorsSettings settings, SourceFile cssSourceFile, String htmlTemplate) {
   hacks.useCssLib();
 
   final StyleSheet cssTree =
@@ -139,9 +135,9 @@ List<dom.Node> _skipSyntheticNodes(dom.Document doc, String source) {
     final html = doc.firstChild;
     if (html is dom.Element && html.localName == 'html') {
       if (html.sourceSpan != null || source.contains("<html")) return [html];
-      if (html.children.length == 2
-          && html.children[0].localName == 'head'
-          && html.children[1].localName == 'body') {
+      if (html.children.length == 2 &&
+          html.children[0].localName == 'head' &&
+          html.children[1].localName == 'body') {
         final body = html.children.last;
         if (body.sourceSpan != null || source.contains("<body")) return [body];
         return body.children;

@@ -15,20 +15,19 @@ library scissors.src.path_utils;
 
 import 'dart:async';
 import 'dart:io';
-import 'package:barback/barback.dart' show  AssetNotFoundException;
+import 'package:barback/barback.dart' show AssetNotFoundException;
 
 Stream<Directory> findExistingDirectories(Iterable<Directory> dirs) async* {
-  List<Future<File>> futures = dirs
-      .map((dir) async => await dir.exists() ? dir : null)
-      .toList();
+  List<Future<File>> futures =
+      dirs.map((dir) async => await dir.exists() ? dir : null).toList();
   for (var future in futures) {
     var dir = await future;
     if (dir != null) yield dir;
   }
 }
 
-Future findFirstWhere(
-    List values, Future<bool> predicate(dynamic value), {orElse}) async {
+Future findFirstWhere(List values, Future<bool> predicate(dynamic value),
+    {orElse}) async {
   int i = 0;
   // Parallelize the predicates evaluation.
   for (var future in values.map(predicate).toList()) {

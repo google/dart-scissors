@@ -4,6 +4,6 @@ import 'package:angular2/angular2.dart';
 
 @Component(selector: 'foo')
 @View(
-  template: '<present-element class="used-class">Hello!</present-element>',
-  styleUrls: const ['foo.css'])
+    template: '<present-element class="used-class">Hello!</present-element>',
+    styleUrls: const ['foo.css'])
 class FooComponent {}

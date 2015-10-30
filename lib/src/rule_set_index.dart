@@ -91,7 +91,6 @@ _matchedByRegExp(RegExp rx) => (String s) => rx.matchAsPrefix(s) != null;
 
 /// Simple description of a DOM element.
 class ElementDescription {
-
   /// Element tag name without any namespace.
   final String localName;
 
