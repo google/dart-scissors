@@ -2,7 +2,8 @@ import 'package:barback/barback.dart' show Transform, Asset, AssetId;
 import 'dart:async';
 import 'package:scissors/src/path_resolver.dart';
 
-final RegExp _importRx = new RegExp('''@import ['"](.*)['"]''');
+final RegExp _importRx = new RegExp(r'''^\s*@import ['"]([^'"]+)['"]''');
+final RegExp _commentsRx = new RegExp(r'''//.*?\n|/\*.*?\*/''', multiLine: true);
 
 /// Eagerly consume transitive sass imports.
 ///
@@ -19,13 +20,17 @@ consumeTransitiveSassDeps(
   // TODO(ochafik): Handle .sass files?
   var sass = await asset.readAsString();
   var futures = <Future>[];
-  for (var match in _importRx.allMatches(sass)) {
+  for (var match in _importRx.allMatches(sass.replaceAll(_commentsRx, ''))) {
     var url = match.group(1);
-    if (!url.endsWith('.scss')) {
+    var urls = [];
+    if (url.endsWith('.scss')) {
+      urls.add(url);
+    } else {
       // Expand sass partial: foo/bar -> foo/_bar.scss
       var split = url.split('/');
       split[split.length - 1] = '_${split.last}.scss';
-      url = split.join('/');
+      urls.add(split.join('/'));
+      urls.add(url + '.scss');
     }
     futures.add((() async {
       try {
@@ -33,7 +38,7 @@ consumeTransitiveSassDeps(
         consumeTransitiveSassDeps(transform, importedAsset, visitedIds);
       } catch (e, s) {
         transform.logger.warning(
-            "Failed to resolve import of '$url' from ${asset.id}: $e");
+            "Failed to resolve import of '$url' from ${asset.id}: $e\n$s");
       }
     })());
   }
