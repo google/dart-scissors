@@ -1,8 +1,14 @@
 # Current development tree
 
-### Features
+...
 
-- ...
+<a name="0.1.4"></a>
+# 0.1.4 (2015-10-30)
+
+### Bugfixes
+
+- Cleaner path resolution logic (easier to override)
+- Stricter regexp in recursive sass imports consumer
 
 <a name="0.1.3"></a>
 # 0.1.3 (2015-10-28)
