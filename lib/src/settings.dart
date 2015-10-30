@@ -29,7 +29,6 @@ class ScissorsSettings {
   bool _inlineImages;
   Future<SasscSettings> _sasscSettings;
 
-  static const _DEFAULT_SASSC_PATH = 'sassc';
   static const _SASSC_PATH_PARAM = 'sasscPath';
   static const _SASSC_ARGS_PARAM = 'sasscArgs';
   static const _VERBOSE_PARAM = 'verbose';
@@ -53,11 +52,11 @@ class ScissorsSettings {
         message: () => "Invalid keys in configuration: $invalidKeys (valid keys: ${_VALID_PARAMS})");
 
     _sasscSettings = (() async {
-      var path = await resolvePath(_resolveEnvVars(
-          config[_SASSC_PATH_PARAM] ?? _DEFAULT_SASSC_PATH));
+      var path = await pathResolver.resolvePath(_resolveEnvVars(
+          config[_SASSC_PATH_PARAM] ?? pathResolver.defaultSassCPath));
       var args = [];
-      for (var dir in await getRootDirectories()) {
-        args.addAll(["--load-path", dir]);
+      for (var dir in await pathResolver.sassIncludeDirectories) {
+        args..add("--load-path")..add(dir.path);
       }
       args.addAll(config[_SASSC_ARGS_PARAM]?.map(_resolveEnvVars) ?? []);
 

@@ -34,7 +34,7 @@ consumeTransitiveSassDeps(
     }
     futures.add((() async {
       try {
-        var importedAsset = await resolveAsset(transform, url, asset.id);
+        var importedAsset = await pathResolver.resolveAsset(transform, urls, asset.id);
         consumeTransitiveSassDeps(transform, importedAsset, visitedIds);
       } catch (e, s) {
         transform.logger.warning(

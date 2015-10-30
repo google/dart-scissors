@@ -26,6 +26,7 @@ import 'src/css_pruning.dart';
 import 'src/deps_consumer.dart';
 import 'src/image_inliner.dart';
 import 'src/path_resolver.dart';
+import 'src/path_utils.dart';
 import 'src/sassc.dart' show runSassC;
 import 'src/settings.dart';
 
@@ -132,12 +133,6 @@ class EagerScissorsTransformer extends Transformer implements DeclaringTransform
     }
   }
 
-  acceptAssetNotFoundException(e, s) {
-    if (e is! AssetNotFoundException) {
-      throw new StateError('$e (${e.runtimeType})\n$s');
-    }
-  }
-
   _time(Transform transform, String title, Future<_Css> action()) async {
     var stopwatch = new Stopwatch()..start();
     try {
@@ -186,7 +181,7 @@ class EagerScissorsTransformer extends Transformer implements DeclaringTransform
   Future<_Css> _inlineImages(_Css css, Transform transform) =>
       _time(transform, 'Inlining images in ${css.content.id}', () async {
         var result = await inlineImages(css.content, assetFetcher: (String url, {AssetId from}) {
-          return resolveAsset(transform, url, from);
+          return pathResolver.resolveAsset(transform, [url], from);
         });
         result.logMessages(transform);
         if (!result.success) return css;

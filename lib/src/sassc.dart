@@ -16,10 +16,11 @@ library scissors.sassc;
 import 'dart:async';
 import 'dart:io';
 
-import 'package:barback/barback.dart' show Asset, AssetId, LogLevel, Transform;
+import 'package:barback/barback.dart' show Asset, AssetId, AssetNotFoundException, LogLevel, Transform;
 import 'package:path/path.dart';
 import 'package:source_span/source_span.dart';
-import 'path_resolver.dart' show resolveAssetFile;
+import 'path_resolver.dart';
+import 'path_utils.dart';
 
 import 'result.dart' show TransformMessage, TransformResult;
 
@@ -46,8 +47,11 @@ Future<TransformResult> runSassC(Asset sassAsset,
   List<String> cmd;
   {
     var fileName = basename(sassId.path);
-    var sassFile = new File(absolute(await resolveAssetFile(sassId)));
-    if (!await sassFile.exists()) {
+    var sassFile;
+    try {
+      sassFile = (await pathResolver.resolveAssetFile(sassId)).absolute;
+    } catch (e, s) {
+      acceptAssetNotFoundException(e, s);
       sassFile = new File(join(dir.path, fileName));
       await sassFile.writeAsString(await getSassContent());
     }
@@ -65,6 +69,7 @@ Future<TransformResult> runSassC(Asset sassAsset,
     var path = settings.sasscPath;
     cmd = [path]..addAll(args);
 
+    // print('Running $cmd in $dir');
     var result = await Process.run(path, args, workingDirectory: dir.path);
 
     var messages = <TransformMessage>[];
