@@ -22,57 +22,92 @@ import 'package:quiver/check.dart';
 import 'path_resolver.dart';
 import 'sassc.dart';
 
+part 'setting.dart';
+
 class ScissorsSettings {
-  bool _isDebug;
-  bool _isVerbose;
-  bool _pruneCss;
-  bool _inlineImages;
+  final bool isDebug;
+
+  final verbose = new _Setting<bool>('verbose', defaultValue: false);
+
+  final pruneCss = new _Setting<bool>('pruneCss', defaultValue: true);
+
+  final mirrorCss = new _Setting<bool>('mirrorCss',
+      comment:
+          "Whether to perform LTR -> RTL mirroring of .css files with cssjanus.",
+      defaultValue: false);
+
+  final inlineImages = new _Setting<bool>('inlineImages', defaultValue: true);
+
+  final fallbackToRubySass = new _Setting<bool>('fallbackToRubySass',
+      comment: "Whether to fallback to JRuby+Ruby Sass when SassC fails.\n"
+          "This can help with some keyframe syntax in Compass stylesheets.",
+      defaultValue: false);
+
+  final cssJanusPath = new _Setting<String>('cssJanusPath',
+      defaultValue: pathResolver.defaultCssJanusPath);
+
+  final jrubyPath = new _Setting<String>('jrubyPath',
+      defaultValue: pathResolver.defaultJRubyPath);
+
+  final rubySassPath = new _Setting<String>('rubySassPath',
+      defaultValue: pathResolver.defaultRubySassPath);
+
+  final compassStylesheetsPath = new _Setting<String>('compassStylesheetsPath',
+      defaultValue: pathResolver.defaultCompassStylesheetsPath);
+
+  final _sasscPath = new _Setting<String>('sasscPath',
+      defaultValue: pathResolver.defaultSassCPath);
+
+  final _sasscArgs = new _Setting<List<String>>('sasscArgs', defaultValue: []);
+
   Future<SasscSettings> _sasscSettings;
+  Future<SasscSettings> get sasscSettings => _sasscSettings;
 
-  static const _SASSC_PATH_PARAM = 'sasscPath';
-  static const _SASSC_ARGS_PARAM = 'sasscArgs';
-  static const _VERBOSE_PARAM = 'verbose';
-  static const _PRUNE_CSS_PARAM = 'pruneCss';
-  static const _INLINE_IMAGES_PARAM = 'inlineImages';
-  static const _VALID_PARAMS = const [
-    _SASSC_PATH_PARAM,
-    _SASSC_ARGS_PARAM,
-    _VERBOSE_PARAM,
-    _PRUNE_CSS_PARAM,
-    _INLINE_IMAGES_PARAM
-  ];
+  static const _debugConfigKey = 'debug';
+  static const _releaseConfigKey = 'release';
 
-  ScissorsSettings.fromSettings(BarbackSettings settings) {
-    _isDebug = settings.mode == BarbackMode.DEBUG;
+  ScissorsSettings.fromSettings(BarbackSettings settings)
+      : isDebug = settings.mode == BarbackMode.DEBUG {
     var config = settings.configuration;
+    config.addAll(config[isDebug ? _debugConfigKey : _releaseConfigKey] ?? {});
 
-    var invalidKeys = config.keys.where((k) => !_VALID_PARAMS.contains(k));
+    var settingList = <_Setting>[
+      verbose,
+      pruneCss,
+      mirrorCss,
+      inlineImages,
+      fallbackToRubySass,
+      cssJanusPath,
+      jrubyPath,
+      rubySassPath,
+      compassStylesheetsPath,
+      _sasscPath,
+      _sasscArgs,
+    ];
+    var validKeys = []
+      ..addAll(settingList.map((s) => s.key))
+      ..add(_debugConfigKey)
+      ..add(_releaseConfigKey);
+
+    var invalidKeys = config.keys.where((k) => !validKeys.contains(k));
     checkState(invalidKeys.isEmpty,
         message: () =>
-            "Invalid keys in configuration: $invalidKeys (valid keys: ${_VALID_PARAMS})");
+            "Invalid keys in configuration: $invalidKeys (valid keys: ${validKeys})");
+
+    settingList.forEach((s) => s.read(config, isDebug));
 
     _sasscSettings = (() async {
-      var path = await pathResolver.resolvePath(_resolveEnvVars(
-          config[_SASSC_PATH_PARAM] ?? pathResolver.defaultSassCPath));
+      var path =
+          await pathResolver.resolvePath(_resolveEnvVars(_sasscPath.value));
       var args = [];
       for (var dir in await pathResolver.getSassIncludeDirectories()) {
         args..add("--load-path")..add(dir.path);
       }
-      args.addAll(config[_SASSC_ARGS_PARAM]?.map(_resolveEnvVars) ?? []);
+      args.addAll(_sasscArgs.value.map(_resolveEnvVars) ?? []);
 
       return new SasscSettings(path, args);
     })();
-
-    _isVerbose = config[_VERBOSE_PARAM] ?? false;
-    _pruneCss = config[_PRUNE_CSS_PARAM] ?? true;
-    _inlineImages = config[_INLINE_IMAGES_PARAM] ?? true;
   }
-
-  bool get isDebug => _isDebug;
-  bool get isVerbose => _isVerbose;
-  bool get pruneCss => _pruneCss;
-  bool get inlineImages => _inlineImages;
-  Future<SasscSettings> get sasscSettings => _sasscSettings;
 }
 
 String _resolveEnvVars(String s) => s.replaceAllMapped(

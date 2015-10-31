@@ -107,7 +107,7 @@ class EagerScissorsTransformer extends Transformer
         return;
     }
 
-    if (settings.pruneCss) {
+    if (settings.pruneCss.value) {
       try {
         String htmlTemplate = await findHtmlTemplate(transform, css.content.id);
         css = await _pruneCss(transform, css, htmlTemplate);
@@ -116,7 +116,7 @@ class EagerScissorsTransformer extends Transformer
         // No HTML template found: leave the CSS alone!
       }
     }
-    if (settings.inlineImages) {
+    if (settings.inlineImages.value) {
       css = await _inlineImages(css, transform);
     }
 

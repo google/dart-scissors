@@ -84,7 +84,7 @@ dropUnusedCssRules(Transform transform, TextEditTransaction transaction,
 
   final fileLength = transaction.file.length;
   topLevelsToDropWithIndex.forEach((TreeNode topLevel, int i) {
-    if (settings.isVerbose) {
+    if (settings.verbose.value) {
       transform.logger.info("Dropping unused CSS rule: "
           "${_printCss(new StyleSheet([topLevel], null))}");
     }
