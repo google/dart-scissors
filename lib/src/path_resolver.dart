@@ -66,13 +66,15 @@ class PathResolver {
     throw new AssetNotFoundException(ids.first);
   }
 
-  final Future<List<Directory>> rootDirectories =
+  final Future<List<Directory>> _rootDirectories =
       new Future.value(<Directory>[Directory.current]);
 
+  Future<List<Directory>> getRootDirectories() => _rootDirectories;
+
   List<Directory> _sassIncludeDirectories;
-  Future<List<Directory>> get sassIncludeDirectories async {
+  Future<List<Directory>> getSassIncludeDirectories() async {
     if (_sassIncludeDirectories == null) {
-      var roots = await rootDirectories;
+      var roots = await getRootDirectories();
       _sassIncludeDirectories = []..addAll(roots);
       if (defaultCompassStylesheetsPath == null) {
         // Import compass' SASS partials.
@@ -103,7 +105,7 @@ class PathResolver {
 
   Future<_FileAsset> _resolveFileAsset(List<String> alternativePaths) async {
     var assets = <_FileAsset>[];
-    for (var dir in await rootDirectories) {
+    for (var dir in await getRootDirectories()) {
       for (var path in alternativePaths) {
         assets.add(new _FileAsset(dir, path));
       }

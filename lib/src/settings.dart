@@ -55,7 +55,7 @@ class ScissorsSettings {
       var path = await pathResolver.resolvePath(_resolveEnvVars(
           config[_SASSC_PATH_PARAM] ?? pathResolver.defaultSassCPath));
       var args = [];
-      for (var dir in await pathResolver.sassIncludeDirectories) {
+      for (var dir in await pathResolver.getSassIncludeDirectories()) {
         args..add("--load-path")..add(dir.path);
       }
       args.addAll(config[_SASSC_ARGS_PARAM]?.map(_resolveEnvVars) ?? []);
