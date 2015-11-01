@@ -4,6 +4,9 @@ import 'package:angular/angular.dart';
 
 @Component(
     selector: 'foo',
-    template: '<present-element class="used-class">Hello!</present-element>',
+    template: '''
+      <present-element>Hello!</present-element>
+      <div class="used-class">World!</div>
+    ''',
     cssUrl: 'package:scissors_angular1_example/foo.scss.css')
 class FooComponent {}
