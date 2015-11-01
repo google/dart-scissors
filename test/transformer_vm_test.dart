@@ -24,9 +24,12 @@ import 'package:test/test.dart' show test;
 import 'package:scissors/src/image_inliner.dart';
 import 'package:scissors/src/enum_parser.dart';
 
-makePhases(Map config) =>
-    [[new EagerScissorsTransformer.asPlugin(
-        new BarbackSettings(config, BarbackMode.RELEASE))]];
+makePhases(Map config) => [
+      [
+        new EagerScissorsTransformer.asPlugin(
+            new BarbackSettings(config, BarbackMode.RELEASE))
+      ]
+    ];
 
 void main() {
   var phases = makePhases({});
@@ -321,7 +324,6 @@ runSassTests() {
 }
 
 testImageInlining() {
-
   phases(ImageInliningMode mode) =>
       makePhases({'imageInlining': enumName(mode)});
 
@@ -331,7 +333,8 @@ testImageInlining() {
       <rect x="0" y="0" height="10" width="10" style="stroke:#00ff00; fill: #ff0000"/>
     </svg>
   ''';
-  var iconSvgData = 'ICAgIDw_eG1sIHZlcnNpb249IjEuMCIgZW5jb2Rpbmc9InV0Zi04Ij8-CiAgICA8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgICA8cmVjdCB4PSIwIiB5PSIwIiBoZWlnaHQ9IjEwIiB3aWR0aD0iMTAiIHN0eWxlPSJzdHJva2U6IzAwZmYwMDsgZmlsbDogI2ZmMDAwMCIvPgogICAgPC9zdmc-CiAg';
+  var iconSvgData =
+      'ICAgIDw_eG1sIHZlcnNpb249IjEuMCIgZW5jb2Rpbmc9InV0Zi04Ij8-CiAgICA8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgICA8cmVjdCB4PSIwIiB5PSIwIiBoZWlnaHQ9IjEwIiB3aWR0aD0iMTAiIHN0eWxlPSJzdHJva2U6IzAwZmYwMDsgZmlsbDogI2ZmMDAwMCIvPgogICAgPC9zdmc-CiAg';
 
   _testPhases('inlines inlined images when inlineInlinedImages is set',
       phases(ImageInliningMode.inlineInlinedImages), {
@@ -392,8 +395,8 @@ testImageInlining() {
     '''
   });
 
-  _testPhases('does nothing with disablePass',
-      phases(ImageInliningMode.disablePass), {
+  _testPhases(
+      'does nothing with disablePass', phases(ImageInliningMode.disablePass), {
     'a|foo.css': r'''
       div {
         background-image: inline-image('inlined-image.svg');

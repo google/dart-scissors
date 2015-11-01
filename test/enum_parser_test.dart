@@ -3,10 +3,7 @@ library scissors.src.enum_parser;
 import 'package:scissors/src/enum_parser.dart';
 import 'package:test/test.dart';
 
-enum TestEnum {
-  foo,
-  bar
-}
+enum TestEnum { foo, bar }
 
 main() {
   group('EnumParser', () {

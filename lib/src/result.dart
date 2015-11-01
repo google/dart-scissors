@@ -45,7 +45,8 @@ class TransformResult {
   final Asset map;
   final bool success;
   final List<TransformMessage> messages;
-  TransformResult(this.success, [this.messages = const<TransformMessage>[], this.css, this.map]);
+  TransformResult(this.success,
+      [this.messages = const <TransformMessage>[], this.css, this.map]);
 
   void logMessages(Transform transform) {
     messages.forEach((m) => m.log(transform));

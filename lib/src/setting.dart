@@ -14,8 +14,11 @@ class _Setting<T> {
   }
 
   _Setting(this.key,
-      {this.comment, T defaultValue, T debugDefault, T releaseDefault,
-       T this.parser(String s)})
+      {this.comment,
+      T defaultValue,
+      T debugDefault,
+      T releaseDefault,
+      T this.parser(String s)})
       : this.debugDefault = debugDefault ?? defaultValue,
         this.releaseDefault = releaseDefault ?? defaultValue;
 

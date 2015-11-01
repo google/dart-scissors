@@ -18,9 +18,8 @@ class EnumParser<E> {
   E parse(String name) {
     var value = _byName[name];
     if (value == null) {
-      throw new ArgumentError(
-        'Invalid value $name '
-        '(expected one of ${_byName.keys.join(', ')}');
+      throw new ArgumentError('Invalid value $name '
+          '(expected one of ${_byName.keys.join(', ')}');
     }
     return value;
   }

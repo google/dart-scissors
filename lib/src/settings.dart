@@ -56,9 +56,10 @@ class ScissorsSettings {
       defaultValue: pathResolver.defaultCompassStylesheetsPath);
 
   final imageInliningMode = new _Setting<ImageInliningMode>('imageInlining',
-    debugDefault: ImageInliningMode.linkInlinedImages,
-    releaseDefault: ImageInliningMode.inlineInlinedImages,
-    parser: new EnumParser<ImageInliningMode>(ImageInliningMode.values).parse);
+      debugDefault: ImageInliningMode.linkInlinedImages,
+      releaseDefault: ImageInliningMode.inlineInlinedImages,
+      parser:
+          new EnumParser<ImageInliningMode>(ImageInliningMode.values).parse);
 
   final _sasscPath = new _Setting<String>('sasscPath',
       defaultValue: pathResolver.defaultSassCPath);
@@ -73,7 +74,6 @@ class ScissorsSettings {
 
   ScissorsSettings.fromSettings(BarbackSettings settings)
       : isDebug = settings.mode == BarbackMode.DEBUG {
-
     var config = settings.configuration;
     config.addAll(config[isDebug ? _debugConfigKey : _releaseConfigKey] ?? {});
 

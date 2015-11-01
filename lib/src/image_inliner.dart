@@ -86,8 +86,7 @@ class InliningVisitor extends Visitor {
 
 final _urlsRx = new RegExp(r'\b(inline-image|url)\s*\(', multiLine: true);
 
-Future<TransformResult> inlineImages(Asset input,
-    ImageInliningMode mode,
+Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
     {Future<Asset> assetFetcher(String url, {AssetId from})}) async {
   var css = await input.readAsString();
 
@@ -107,8 +106,8 @@ Future<TransformResult> inlineImages(Asset input,
 
   Future<String> encodeUrl(SourceSpan span, String url) async {
     Asset imageAsset = await assetFetcher(url, from: input.id);
-    messages.add(new TransformMessage(LogLevel.INFO,
-        "Inlined '$url' with ${imageAsset.id}", input.id, span));
+    messages.add(new TransformMessage(
+        LogLevel.INFO, "Inlined '$url' with ${imageAsset.id}", input.id, span));
     return encodeDataAsUri(imageAsset);
   }
 
@@ -117,9 +116,7 @@ Future<TransformResult> inlineImages(Asset input,
 
   switch (mode) {
     case ImageInliningMode.inlineAllUrls:
-      urlsToInline = {}
-          ..addAll(visitor.inlineImageUrls)
-          ..addAll(visitor.urls);
+      urlsToInline = {}..addAll(visitor.inlineImageUrls)..addAll(visitor.urls);
       break;
     case ImageInliningMode.inlineInlinedImages:
       urlsToInline = visitor.inlineImageUrls;
@@ -152,7 +149,8 @@ Future<TransformResult> inlineImages(Asset input,
   var transaction = new TextEditTransaction(css, cssSourceFile);
   replacements.forEach((SourceSpan span, String replacement) {
     transaction.edit(span.start.offset, span.end.offset, replacement);
-  });;
+  });
+  ;
   var printer = transaction.commit()..build(input.id.path);
 
   // print(printer.text);
