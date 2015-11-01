@@ -17,3 +17,11 @@ transformers:
     #   - -bar
 - angular
 - dart_to_js_script_rewriter
+- $dart2js:
+    # minify: false
+    commandLineOptions:
+    - --trust-type-annotations
+    - --trust-primitives
+    - --enable-experimental-mirrors
+    # Uncomment to generate summaries from dart2js
+    # - --dump-info
