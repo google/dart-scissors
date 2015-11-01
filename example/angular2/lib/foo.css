@@ -1,4 +1,6 @@
 .used-class {}
 .unused-class {}
 absent-element {}
-present-element {}
+present-element {
+  background-image: inline-image('icon.svg');
+}

@@ -121,7 +121,7 @@ class EagerScissorsTransformer extends Transformer
     switch (id.extension) {
       case '.svg':
         checkState(settings.optimizeSvg.value);
-        await _optimizeSvg(transform, transform.primaryInput);
+        transform.addOutput(await _optimizeSvg(transform, transform.primaryInput));
         return;
       case '.css':
         // TODO(ochafik): Import existing .map file if it exists
