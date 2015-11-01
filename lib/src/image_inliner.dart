@@ -173,6 +173,6 @@ Future<String> encodeDataAsUri(Asset asset) async {
   var data = await asset
       .read()
       .fold(new BytesBuilder(), (builder, data) => builder..add(data));
-  var encodedData = CryptoUtils.bytesToBase64(data.takeBytes(), urlSafe: true);
+  var encodedData = CryptoUtils.bytesToBase64(data.takeBytes(), urlSafe: false);
   return 'data:$mediaType;base64,$encodedData';
 }
