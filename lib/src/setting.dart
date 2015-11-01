@@ -9,7 +9,7 @@ class _Setting<T> {
   bool _read = false;
   T _value;
   T get value {
-    checkState(_read);
+    checkState(_read, message: () => "Setting $key wasn't read yet.");
     return _value;
   }
 

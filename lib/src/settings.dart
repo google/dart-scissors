@@ -31,7 +31,13 @@ class ScissorsSettings {
 
   final verbose = new _Setting<bool>('verbose', defaultValue: false);
 
+  final compileSass = new _Setting<bool>('compileSass', defaultValue: true);
+
   final pruneCss = new _Setting<bool>('pruneCss', defaultValue: true);
+
+  final optimizeSvg = new _Setting<bool>('optimizeSvg',
+      debugDefault: false,
+      releaseDefault: true);
 
   final mirrorCss = new _Setting<bool>('mirrorCss',
       comment:
@@ -79,8 +85,10 @@ class ScissorsSettings {
 
     var settingList = <_Setting>[
       verbose,
+      compileSass,
       pruneCss,
       mirrorCss,
+      optimizeSvg,
       imageInliningMode,
       fallbackToRubySass,
       cssJanusPath,

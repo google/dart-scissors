@@ -29,6 +29,7 @@ import 'src/path_resolver.dart';
 import 'src/path_utils.dart';
 import 'src/sassc.dart' show runSassC;
 import 'src/settings.dart';
+import 'src/svg_optimizer.dart';
 
 class _Css {
   final Asset original;
@@ -46,14 +47,20 @@ class _Css {
 class EagerScissorsTransformer extends Transformer
     implements DeclaringTransformer {
   final ScissorsSettings settings;
+  String _allowedExtensions;
 
-  EagerScissorsTransformer(this.settings);
+  EagerScissorsTransformer(this.settings) {
+    var exts = ['.css', '.map'];
+    if (settings.compileSass.value) exts..add('.sass')..add('.scss');
+    if (settings.optimizeSvg.value) exts.add('.svg');
+    _allowedExtensions = exts.join(' ');
+  }
 
   EagerScissorsTransformer.asPlugin(BarbackSettings settings)
       : this(new ScissorsSettings.fromSettings(settings));
 
   @override
-  final String allowedExtensions = ".css .map .scss .sass";
+  String get allowedExtensions => _allowedExtensions;
 
   final RegExp _filesToSkipRx =
       new RegExp(r'^_.*?\.scss|.*?\.ess\.s[ac]ss\.css(\.map)?$');
@@ -68,30 +75,54 @@ class EagerScissorsTransformer extends Transformer
     var id = transform.primaryId;
     if (_shouldSkipAsset(id)) return;
 
-    transform.consumePrimary();
     switch (id.extension) {
+      case '.svg':
+        transform.consumePrimary();
+        transform.declareOutput(id);
+        break;
       case '.css':
+        transform.consumePrimary();
         transform.declareOutput(id);
         transform.declareOutput(id.addExtension('.map'));
         break;
       case '.scss':
       case '.sass':
+        transform.consumePrimary();
         transform.declareOutput(id.addExtension('.css'));
         transform.declareOutput(id.addExtension('.css.map'));
         break;
       case '.map':
+        transform.consumePrimary();
         break;
     }
   }
 
+  Future<Asset> _optimizeSvg(Transform transform, Asset asset) async {
+    var input = await asset.readAsString();
+    var output = optimizeSvg(input);
+    transform.logger.info(
+        'Optimized SVG: ${input.length} chars -> ${output.length} chars',
+        asset: asset.id);
+    if (settings.verbose.value) {
+      transform.logger.info('Optimized SVG content:\n$output', asset: asset.id);
+    }
+    return new Asset.fromString(asset.id, output);
+  }
+
   Future apply(Transform transform) async {
+    var id = transform.primaryInput.id;
+
     if (_shouldSkipAsset(transform.primaryInput.id)) {
       transform.logger.info("Skipping ${transform.primaryInput.id}");
       return;
     }
 
     _Css css;
-    switch (transform.primaryInput.id.extension) {
+    switch (id.extension) {
+      case '.svg':
+        checkState(settings.optimizeSvg.value);
+        await _optimizeSvg(transform, transform.primaryInput);
+        return;
       case '.css':
         // TODO(ochafik): Import existing .map file if it exists
         // (and parse it + get its original source).
@@ -99,6 +130,7 @@ class EagerScissorsTransformer extends Transformer
         break;
       case '.scss':
       case '.sass':
+        checkState(settings.compileSass.value);
         css = await _convertSass(transform, transform.primaryInput);
         if (css == null) return;
         break;
