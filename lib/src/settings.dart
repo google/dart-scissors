@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.settings;
+library scissors.src.settings;
 
 import 'dart:async';
 import 'dart:io';
@@ -19,6 +19,8 @@ import 'dart:io';
 import 'package:barback/barback.dart';
 import 'package:quiver/check.dart';
 
+import 'enum_parser.dart';
+import 'image_inliner.dart';
 import 'path_resolver.dart';
 import 'sassc.dart';
 
@@ -35,8 +37,6 @@ class ScissorsSettings {
       comment:
           "Whether to perform LTR -> RTL mirroring of .css files with cssjanus.",
       defaultValue: false);
-
-  final inlineImages = new _Setting<bool>('inlineImages', defaultValue: true);
 
   final fallbackToRubySass = new _Setting<bool>('fallbackToRubySass',
       comment: "Whether to fallback to JRuby+Ruby Sass when SassC fails.\n"
@@ -55,6 +55,11 @@ class ScissorsSettings {
   final compassStylesheetsPath = new _Setting<String>('compassStylesheetsPath',
       defaultValue: pathResolver.defaultCompassStylesheetsPath);
 
+  final imageInliningMode = new _Setting<ImageInliningMode>('imageInlining',
+    debugDefault: ImageInliningMode.linkInlinedImages,
+    releaseDefault: ImageInliningMode.inlineInlinedImages,
+    parser: new EnumParser<ImageInliningMode>(ImageInliningMode.values).parse);
+
   final _sasscPath = new _Setting<String>('sasscPath',
       defaultValue: pathResolver.defaultSassCPath);
 
@@ -68,6 +73,7 @@ class ScissorsSettings {
 
   ScissorsSettings.fromSettings(BarbackSettings settings)
       : isDebug = settings.mode == BarbackMode.DEBUG {
+
     var config = settings.configuration;
     config.addAll(config[isDebug ? _debugConfigKey : _releaseConfigKey] ?? {});
 
@@ -75,7 +81,7 @@ class ScissorsSettings {
       verbose,
       pruneCss,
       mirrorCss,
-      inlineImages,
+      imageInliningMode,
       fallbackToRubySass,
       cssJanusPath,
       jrubyPath,

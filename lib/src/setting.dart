@@ -28,6 +28,5 @@ class _Setting<T> {
     } else {
       _value = parser != null ? parser(value) : value;
     }
-    // print("VALUE[$key] = $_value (${config[key]})");
   }
 }

@@ -116,14 +116,10 @@ class EagerScissorsTransformer extends Transformer
         // No HTML template found: leave the CSS alone!
       }
     }
-    if (settings.inlineImages.value) {
+    if (settings.imageInliningMode.value != ImageInliningMode.disablePass) {
       css = await _inlineImages(css, transform);
     }
 
-    // if (!settings.isDebug && css.content.id != transform.primaryInput.id) {
-    //   transform.consumePrimary();
-    // }
-    // if (!settings.isDebug)
     transform.consumePrimary();
 
     if (css.original != css.content) {
@@ -188,6 +184,7 @@ class EagerScissorsTransformer extends Transformer
   Future<_Css> _inlineImages(_Css css, Transform transform) =>
       _time(transform, 'Inlining images in ${css.content.id}', () async {
         var result = await inlineImages(css.content,
+            settings.imageInliningMode.value,
             assetFetcher: (String url, {AssetId from}) {
           return pathResolver.resolveAsset(transform, [url], from);
         });

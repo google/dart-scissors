@@ -21,15 +21,16 @@ import 'package:code_transformers/tests.dart'
     show StringFormatter, applyTransformers;
 import 'package:scissors/eager_transformer.dart';
 import 'package:test/test.dart' show test;
+import 'package:scissors/src/image_inliner.dart';
+import 'package:scissors/src/enum_parser.dart';
 
-final phases = [
-  [
-    new EagerScissorsTransformer.asPlugin(
-        new BarbackSettings({}, BarbackMode.RELEASE))
-  ]
-];
+makePhases(Map config) =>
+    [[new EagerScissorsTransformer.asPlugin(
+        new BarbackSettings(config, BarbackMode.RELEASE))]];
 
 void main() {
+  var phases = makePhases({});
+
   _testPhases('leaves css based on angular2 annotations without css url alone',
       phases, {
     'a|foo2_unmatched_css_url.css': r'''
@@ -244,6 +245,8 @@ void main() {
     '''
   });
 
+  testImageInlining();
+
   if (Process.runSync('which', ['sassc']).exitCode == 0) {
     runSassTests();
   } else {
@@ -254,6 +257,8 @@ void main() {
 }
 
 runSassTests() {
+  var phases = makePhases({});
+
   _testPhases('runs sassc on .scss and .sass inputs', phases, {
     'a|foo.scss': '''
       .foo {
@@ -313,25 +318,97 @@ runSassTests() {
   }, {}, [
     'error: invalid property name (a%7Cfoo.scss 1 12)'
   ]);
+}
 
-  _testPhases('inlines images', phases, {
-    'a|foo.scss': r'''
+testImageInlining() {
+
+  phases(ImageInliningMode mode) =>
+      makePhases({'imageInlining': enumName(mode)});
+
+  var iconSvg = r'''
+    <?xml version="1.0" encoding="utf-8"?>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <rect x="0" y="0" height="10" width="10" style="stroke:#00ff00; fill: #ff0000"/>
+    </svg>
+  ''';
+  var iconSvgData = 'ICAgIDw_eG1sIHZlcnNpb249IjEuMCIgZW5jb2Rpbmc9InV0Zi04Ij8-CiAgICA8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgICA8cmVjdCB4PSIwIiB5PSIwIiBoZWlnaHQ9IjEwIiB3aWR0aD0iMTAiIHN0eWxlPSJzdHJva2U6IzAwZmYwMDsgZmlsbDogI2ZmMDAwMCIvPgogICAgPC9zdmc-CiAg';
+
+  _testPhases('inlines inlined images when inlineInlinedImages is set',
+      phases(ImageInliningMode.inlineInlinedImages), {
+    'a|foo.css': r'''
       div {
         background-image: inline-image('icon.svg');
+        other-image: url('no-inline.svg');
       }
     ''',
-    'a|icon.svg': r'''
-      <?xml version="1.0" encoding="utf-8"?>
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <rect x="0" y="0" height="10" width="10" style="stroke:#00ff00; fill: #ff0000"/>
-      </svg>
-    ''',
+    'a|icon.svg': iconSvg,
     'a|foo.html': r'<div></div>',
   }, {
-    'a|foo.scss.css':
-        'div{background-image:url(data:image/svg+xml;base64,ICAgICAgPD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KICAgICAgPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KICAgICAgICA8cmVjdCB4PSIwIiB5PSIwIiBoZWlnaHQ9IjEwIiB3aWR0aD0iMTAiIHN0eWxlPSJzdHJva2U6IzAwZmYwMDsgZmlsbDogI2ZmMDAwMCIvPgogICAgICA8L3N2Zz4KICAgIA==)}\n'
-        '\n'
-        '/*# sourceMappingURL=foo.scss.css.map */'
+    'a|foo.css': '''
+      div {
+        background-image: url('data:image/svg+xml;base64,$iconSvgData');
+        other-image: url('no-inline.svg');
+      }
+    '''
+  });
+
+  _testPhases('inlines all images when inlineAll is set',
+      phases(ImageInliningMode.inlineAllUrls), {
+    'a|foo.css': r'''
+      div {
+        foo: bar;
+        some-image: url('icon.svg');
+        baz: bam;
+      }
+    ''',
+    'a|icon.svg': iconSvg,
+    'a|foo.html': r'<div></div>',
+  }, {
+    'a|foo.css': '''
+      div {
+        foo: bar;
+        some-image: url('data:image/svg+xml;base64,$iconSvgData');
+        baz: bam;
+      }
+    '''
+  });
+
+  _testPhases('just links to images noInline is set',
+      phases(ImageInliningMode.linkInlinedImages), {
+    'a|foo.css': r'''
+      div {
+        background-image: inline-image('no-inline.svg');
+        other-image: url('no-inline-either.svg');
+      }
+    ''',
+    'a|icon.svg': iconSvg,
+    'a|foo.html': r'<div></div>',
+  }, {
+    'a|foo.css': r'''
+      div {
+        background-image: url('no-inline.svg');
+        other-image: url('no-inline-either.svg');
+      }
+    '''
+  });
+
+  _testPhases('does nothing with disablePass',
+      phases(ImageInliningMode.disablePass), {
+    'a|foo.css': r'''
+      div {
+        background-image: inline-image('inlined-image.svg');
+        other-image: url('linked-image.svg');
+      }
+    ''',
+    'a|icon.svg': iconSvg,
+    'a|foo.html': r'<div></div>',
+  }, {
+    'a|foo.css': r'''
+      div {
+        background-image: inline-image('inlined-image.svg');
+        other-image: url('linked-image.svg');
+      }
+    '''
   });
 }
 
