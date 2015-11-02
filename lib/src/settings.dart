@@ -36,8 +36,7 @@ class ScissorsSettings {
   final pruneCss = new _Setting<bool>('pruneCss', defaultValue: true);
 
   final optimizeSvg = new _Setting<bool>('optimizeSvg',
-      debugDefault: false,
-      releaseDefault: true);
+      debugDefault: false, releaseDefault: true);
 
   final mirrorCss = new _Setting<bool>('mirrorCss',
       comment:
@@ -61,7 +60,7 @@ class ScissorsSettings {
   final compassStylesheetsPath = new _Setting<String>('compassStylesheetsPath',
       defaultValue: pathResolver.defaultCompassStylesheetsPath);
 
-  final imageInliningMode = new _Setting<ImageInliningMode>('imageInlining',
+  final imageInlining = new _Setting<ImageInliningMode>('imageInlining',
       debugDefault: ImageInliningMode.linkInlinedImages,
       releaseDefault: ImageInliningMode.inlineInlinedImages,
       parser:
@@ -89,7 +88,7 @@ class ScissorsSettings {
       pruneCss,
       mirrorCss,
       optimizeSvg,
-      imageInliningMode,
+      imageInlining,
       fallbackToRubySass,
       cssJanusPath,
       jrubyPath,

@@ -121,7 +121,8 @@ class EagerScissorsTransformer extends Transformer
     switch (id.extension) {
       case '.svg':
         checkState(settings.optimizeSvg.value);
-        transform.addOutput(await _optimizeSvg(transform, transform.primaryInput));
+        transform
+            .addOutput(await _optimizeSvg(transform, transform.primaryInput));
         return;
       case '.css':
         // TODO(ochafik): Import existing .map file if it exists
@@ -148,7 +149,7 @@ class EagerScissorsTransformer extends Transformer
         // No HTML template found: leave the CSS alone!
       }
     }
-    if (settings.imageInliningMode.value != ImageInliningMode.disablePass) {
+    if (settings.imageInlining.value != ImageInliningMode.disablePass) {
       css = await _inlineImages(css, transform);
     }
 
@@ -216,7 +217,7 @@ class EagerScissorsTransformer extends Transformer
   Future<_Css> _inlineImages(_Css css, Transform transform) =>
       _time(transform, 'Inlining images in ${css.content.id}', () async {
         var result = await inlineImages(
-            css.content, settings.imageInliningMode.value,
+            css.content, settings.imageInlining.value,
             assetFetcher: (String url, {AssetId from}) {
           return pathResolver.resolveAsset(transform, [url], from);
         });
