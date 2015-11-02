@@ -51,12 +51,10 @@ class PathResolver {
       Iterable<String> alternativePaths, AssetId from) async {
     // First, try package URIs:
     for (var path in alternativePaths) {
-      print(path);
       if (path.contains(':')) {
         try {
           return transform.getInput(_parsePackageUrl(path));
         } catch (e) {
-          print('$e');
           // Do nothing.
         }
       }

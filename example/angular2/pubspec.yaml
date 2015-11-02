@@ -12,6 +12,8 @@ transformers:
 # - scissors/eager_transformer
 - scissors:
     verbose: true
+    # pruneCss: false
+    # optimizeSvg: false
     # sasscPath: path/to/sassc
     # sasscArgs:
     #   - -foo
