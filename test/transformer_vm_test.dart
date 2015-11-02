@@ -273,9 +273,7 @@ runSassTests() {
   height: 100%
     '''
   }, {
-    'a|foo.scss.css': '.foo{float:left}\n'
-        '\n'
-        '/*# sourceMappingURL=foo.scss.css.map */',
+    'a|foo.scss.css': '.foo{float:left}\n',
     'a|foo.scss.css.map': '{\n'
         '\t"version": 3,\n'
         '\t"file": "foo.scss.css",\n'
@@ -286,9 +284,7 @@ runSassTests() {
         '\t"mappings": "AAAM,IAAI,AAAC,CACH,KAAK,CAAE,IAAK,CADR",\n'
         '\t"names": []\n'
         '}',
-    'a|foo.sass.css': '.foo{height:100%}\n'
-        '\n'
-        '/*# sourceMappingURL=foo.sass.css.map */',
+    'a|foo.sass.css': '.foo{height:100%}\n',
     'a|foo.sass.css.map': '{\n'
         '\t"version": 3,\n'
         '\t"file": "foo.sass.css",\n'
