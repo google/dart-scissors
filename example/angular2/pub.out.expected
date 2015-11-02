@@ -2,6 +2,12 @@ Loading source assets...
 Loading dart_to_js_script_rewriter, observe, scissors and smoke/src/default_transformer transformers...
 Loading angular2 transformers...
 Building scissors_angular2_example...
+[Info from Scissors on scissors_angular2_example|lib/icon.svg]:
+Optimized SVG: 671 chars -> 255 chars
+[Info from Scissors on scissors_angular2_example|lib/icon.svg]:
+Optimized SVG content:
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="21px" height="21px" viewBox="0 0 21 21" overflow="visible" enable-background="new 0 0 21 21"><rect x="0" y="0" height="10" width="10" style="stroke:#00ff00;fill:#ff0000"/>
+</svg>
 [Info from Scissors on scissors_angular2_example|lib/foo.css]:
 Dropping unused CSS rule: .unused-class {
 }
@@ -9,8 +15,12 @@ Dropping unused CSS rule: .unused-class {
 Dropping unused CSS rule: absent-element {
 }
 [Info from Scissors]:
-Size[scissors_angular2_example|lib/foo.css]: before = 69, after = 34
+Size[scissors_angular2_example|lib/foo.css]: before = 116, after = 81
 [Info from Scissors]:
+[Info from Scissors on scissors_angular2_example|lib/foo.css]:
+line 1, column 54 of scissors_angular2_example|lib/foo.css: Inlined 'icon.svg' with scissors_angular2_example|lib/icon.svg
+inline-image('icon.svg')
+^^^^^^^^^^^^^^^^^^^^^^^^
 [Info from Scissors]:
 [Info from Dart2JS]:
 Compiling scissors_angular2_example|web/main.dart...
@@ -75,4 +85,4 @@ Try removing 'TypeDecorator' from the 'show' clause.
 export "util/decorators.dart" show Class, ClassDefinition, TypeDecorator;
                                                            ^^^^^^^^^^^^^
 [Info from Dart2JS]:
-Built 538 files to "build".
+Built 539 files to "build".

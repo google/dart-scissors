@@ -1,9 +1,21 @@
 Loading source assets...
-Loading dart_to_js_script_rewriter, di/module_transformer, scissors and smoke/src/default_transformer transformers...
+Loading dart_to_js_script_rewriter, di/module_transformer, observe, scissors and smoke/src/default_transformer transformers...
 Loading angular transformers...
 Building scissors_angular1_example...
 [Info from Scissors]:
 Skipping scissors_angular1_example|lib/_defs.scss
+[Info from Scissors on scissors_angular1_example|lib/icon2.svg]:
+Optimized SVG: 213 chars -> 125 chars
+[Info from Scissors on scissors_angular1_example|lib/icon2.svg]:
+Optimized SVG content:
+<svg xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" height="10" width="10" style="stroke:#0000ff;fill:#00ff00"/>
+</svg>
+[Info from Scissors on scissors_angular1_example|lib/icon.svg]:
+Optimized SVG: 671 chars -> 255 chars
+[Info from Scissors on scissors_angular1_example|lib/icon.svg]:
+Optimized SVG content:
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="21px" height="21px" viewBox="0 0 21 21" overflow="visible" enable-background="new 0 0 21 21"><rect x="0" y="0" height="10" width="10" style="stroke:#00ff00;fill:#ff0000"/>
+</svg>
 [Info from Scissors]:
 [Info from Scissors on scissors_angular1_example|lib/foo.scss]:
 Dropping unused CSS rule: .unused-class {
@@ -14,12 +26,16 @@ Dropping unused CSS rule: absent-element {
   float: left;
 }
 [Info from Scissors]:
-Size[scissors_angular1_example|lib/foo.scss.css]: before = 280, after = 229
+Size[scissors_angular1_example|lib/foo.scss.css]: before = 239, after = 188
 [Info from Scissors]:
 [Info from Scissors on scissors_angular1_example|lib/foo.scss with input scissors_angular1_example|lib/foo.scss.css]:
 line 1, column 163 of scissors_angular1_example|lib/foo.scss.css: Inlined 'icon.svg' with scissors_angular1_example|lib/icon.svg
 inline-image("icon.svg")
 ^^^^^^^^^^^^^^^^^^^^^^^^
+[Info from Scissors on scissors_angular1_example|lib/foo.scss with input scissors_angular1_example|lib/foo.scss.css]:
+line 1, column 68 of scissors_angular1_example|lib/foo.scss.css: Inlined 'package:scissors_angular1_example/icon2.svg' with scissors_angular1_example|lib/icon2.svg
+url("package:scissors_angular1_example/icon2.svg")
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 [Info from Scissors]:
 [Info from Dart2JS]:
 Compiling scissors_angular1_example|web/main.dart...
@@ -54,12 +70,6 @@ Try removing 'ComponentCssRewriter' from the 'show' clause.
     ComponentCssRewriter,
     ^^^^^^^^^^^^^^^^^^^^
 [Warning from Dart2JS on scissors_angular1_example|web/main.dart]:
-packages/angular/core/module.dart:75:5:
-Library 'package:angular/core/module_internal.dart' doesn't export a 'WebPlatform' declaration.
-Try removing 'WebPlatform' from the 'show' clause.
-    WebPlatform,
-    ^^^^^^^^^^^
-[Warning from Dart2JS on scissors_angular1_example|web/main.dart]:
 packages/angular/core/module.dart:50:5:
 Library 'package:angular/core_dom/module_internal.dart' doesn't export a 'NgAnimate' declaration.
 Try removing 'NgAnimate' from the 'show' clause.
@@ -78,6 +88,6 @@ Try removing 'childRoute' the 'hide' clause.
 export 'package:route_hierarchical/client.dart' hide childRoute;
                                                      ^^^^^^^^^^
 [Dart2JS on scissors_angular1_example|web/main.dart]:
-1 warning(s) suppressed in package:angular.
+2 warning(s) suppressed in package:angular.
 [Info from Dart2JS]:
-Built 216 files to "build".
+Built 172 files to "build".
