@@ -25,6 +25,15 @@ import 'path_utils.dart';
 /// Customization entry point for forks of this library.
 PathResolver pathResolver = new PathResolver();
 
+final RegExp _packageUrlRx = new RegExp(r'^package:(\w+)/(.*)$');
+
+AssetId _parsePackageUrl(String url) {
+  var m = _packageUrlRx.matchAsPrefix(url);
+  if (m == null) throw new FormatException('Invalid url format: $url');
+
+  return new AssetId(m[1], 'lib/${m[2]}');
+}
+
 class PathResolver {
   final String defaultSassCPath = 'sassc';
   final String defaultCssJanusPath = 'cssjanus';
@@ -40,6 +49,18 @@ class PathResolver {
 
   Future<Asset> resolveAsset(Transform transform,
       Iterable<String> alternativePaths, AssetId from) async {
+    // First, try package URIs:
+    for (var path in alternativePaths) {
+      print(path);
+      if (path.contains(':')) {
+        try {
+          return transform.getInput(_parsePackageUrl(path));
+        } catch (e) {
+          print('$e');
+          // Do nothing.
+        }
+      }
+    }
     // First, try relative paths:
     var parent = dirname(from.path);
     Iterable<AssetId> ids = alternativePaths
