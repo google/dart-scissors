@@ -59,13 +59,12 @@ Future<TransformResult> runSassC(Asset sassAsset,
     var mapFile = new File(cssFile.path + ".map");
 
     // TODO(ochafik): What about `sassc -t nested`?
-    var args = [
-      '-t',
-      isDebug ? 'expanded' : 'compressed',
-      '-m',
-      relative(sassFile.path, from: dir.path),
-      relative(cssFile.path, from: dir.path)
-    ];
+    var args = [];
+    args..add('-t')..add(isDebug ? 'expanded' : 'compressed');
+    if (!isDebug) args.add('--omit-map-comment');
+    args.add('-m');
+    args.add(relative(sassFile.path, from: dir.path));
+    args.add(relative(cssFile.path, from: dir.path));
     args.addAll(settings.sasscArgs);
     var path = settings.sasscPath;
     cmd = [path]..addAll(args);
