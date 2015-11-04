@@ -85,4 +85,4 @@ Try removing 'TypeDecorator' from the 'show' clause.
 export "util/decorators.dart" show Class, ClassDefinition, TypeDecorator;
                                                            ^^^^^^^^^^^^^
 [Info from Dart2JS]:
-Built 539 files to "build".
+Built 863 files to "build".

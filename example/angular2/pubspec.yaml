@@ -1,7 +1,7 @@
 name: scissors_angular2_example
 version: 0.1.4
 dependencies:
-  angular2: 2.0.0-alpha.44
+  angular2: 2.0.0-alpha.45
   browser: 0.10.0
 dev_dependencies:
   # scissors: 0.1.4
@@ -14,10 +14,7 @@ transformers:
     verbose: true
     # pruneCss: false
     # optimizeSvg: false
-    # sasscPath: path/to/sassc
-    # sasscArgs:
-    #   - -foo
-    #   - -bar
+    # optimizePng: false
 - angular2:
     entry_points: web/main.dart
     html_files: web/index.html
