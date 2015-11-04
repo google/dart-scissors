@@ -15,6 +15,7 @@ transformers:
     imageInlining: inlineAllUrls
     # pruneCss: false
     # optimizeSvg: false
+    # optimizePng: false
     # sasscPath: path/to/sassc
     # sasscArgs:
     #   - -foo

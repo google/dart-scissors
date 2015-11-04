@@ -15,3 +15,6 @@ present-element {
   float: $foo-alignment;
   background-image: inline-image('icon.svg');
 }
+.plus-image {
+  background-image: inline-image('plus.png');
+}
