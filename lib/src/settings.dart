@@ -38,6 +38,9 @@ class ScissorsSettings {
   final optimizeSvg = new _Setting<bool>('optimizeSvg',
       debugDefault: false, releaseDefault: true);
 
+  final optimizePng = new _Setting<bool>('optimizePng',
+      debugDefault: false, releaseDefault: true);
+
   final mirrorCss = new _Setting<bool>('mirrorCss',
       comment:
           "Whether to perform LTR -> RTL mirroring of .css files with cssjanus.",
@@ -50,6 +53,9 @@ class ScissorsSettings {
 
   final cssJanusPath = new _Setting<String>('cssJanusPath',
       defaultValue: pathResolver.defaultCssJanusPath);
+
+  final pngCrushPath = new _Setting<String>('pngCrushPath',
+      defaultValue: pathResolver.defaultPngCrushPath);
 
   final jrubyPath = new _Setting<String>('jrubyPath',
       defaultValue: pathResolver.defaultJRubyPath);
@@ -88,6 +94,7 @@ class ScissorsSettings {
       pruneCss,
       mirrorCss,
       optimizeSvg,
+      optimizePng,
       imageInlining,
       fallbackToRubySass,
       cssJanusPath,

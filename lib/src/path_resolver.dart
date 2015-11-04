@@ -36,6 +36,7 @@ AssetId _parsePackageUrl(String url) {
 
 class PathResolver {
   final String defaultSassCPath = 'sassc';
+  final String defaultPngCrushPath = 'pngcrush';
   final String defaultCssJanusPath = 'cssjanus';
   final String defaultJRubyPath = 'jruby';
   final String defaultRubySassPath = 'sass';

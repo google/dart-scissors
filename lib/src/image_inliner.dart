@@ -14,7 +14,6 @@
 library scissors.image_inliner;
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:barback/barback.dart';
 import 'package:crypto/crypto.dart';
@@ -25,6 +24,7 @@ import 'package:source_maps/refactor.dart';
 import 'package:source_span/source_span.dart';
 
 import 'hacks.dart' as hacks;
+import 'io_utils.dart';
 import 'result.dart' show TransformMessage, TransformResult;
 
 enum ImageInliningMode {
@@ -170,9 +170,7 @@ const _mediaTypeByExtension = const <String, String>{
 
 Future<String> encodeDataAsUri(Asset asset) async {
   var mediaType = _mediaTypeByExtension[asset.id.extension];
-  var data = await asset
-      .read()
-      .fold(new BytesBuilder(), (builder, data) => builder..add(data));
-  var encodedData = CryptoUtils.bytesToBase64(data.takeBytes(), urlSafe: false);
+  var data = await readAll(await asset.read());
+  var encodedData = CryptoUtils.bytesToBase64(data, urlSafe: false);
   return 'data:$mediaType;base64,$encodedData';
 }

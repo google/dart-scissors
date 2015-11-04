@@ -11,14 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.transformer;
+library scissors.src.io_utils;
 
-import 'package:barback/barback.dart';
+import 'dart:async';
+import 'dart:io';
 
-import 'eager_transformer.dart';
-import 'src/lazy_transformer_utils.dart';
-
-class LazyScissorsTransformerGroup extends LazyTransformerGroupWrapper {
-  LazyScissorsTransformerGroup.asPlugin(BarbackSettings settings)
-      : super(new EagerScissorsTransformerGroup.asPlugin(settings));
-}
+Future<List<int>> readAll(Stream<List<int>> data) async =>
+    (await data.fold(
+        new BytesBuilder(),
+        (builder, data) => builder..add(data)))
+            .takeBytes();

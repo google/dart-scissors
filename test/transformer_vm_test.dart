@@ -24,12 +24,9 @@ import 'package:test/test.dart' show test;
 import 'package:scissors/src/image_inliner.dart';
 import 'package:scissors/src/enum_parser.dart';
 
-makePhases(Map config) => [
-      [
-        new EagerScissorsTransformer.asPlugin(
-            new BarbackSettings(config, BarbackMode.RELEASE))
-      ]
-    ];
+makePhases(Map config) =>
+  new EagerScissorsTransformerGroup.asPlugin(
+      new BarbackSettings(config, BarbackMode.RELEASE)).phases;
 
 void main() {
   var phases = makePhases({});
@@ -330,7 +327,7 @@ testImageInlining() {
     </svg>
   ''';
   var iconSvgData =
-      'ICAgIDw/eG1sIHZlcnNpb249IjEuMCIgZW5jb2Rpbmc9InV0Zi04Ij8+CiAgICA8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgICA8cmVjdCB4PSIwIiB5PSIwIiBoZWlnaHQ9IjEwIiB3aWR0aD0iMTAiIHN0eWxlPSJzdHJva2U6IzAwZmYwMDsgZmlsbDogI2ZmMDAwMCIvPgogICAgPC9zdmc+CiAg';
+      'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHg9IjAiIHk9IjAiIGhlaWdodD0iMTAiIHdpZHRoPSIxMCIgc3R5bGU9InN0cm9rZTojMDBmZjAwO2ZpbGw6I2ZmMDAwMCIvPjwvc3ZnPg==';
 
   _testPhases('inlines inlined images when inlineInlinedImages is set',
       phases(ImageInliningMode.inlineInlinedImages), {
