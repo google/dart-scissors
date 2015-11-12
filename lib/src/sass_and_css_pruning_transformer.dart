@@ -29,8 +29,6 @@ import 'path_resolver.dart';
 import 'path_utils.dart';
 import 'sassc.dart' show runSassC;
 import 'settings.dart';
-import 'svg_optimizer.dart';
-import 'png_optimizer.dart';
 
 class _Css {
   final Asset original;
@@ -67,11 +65,6 @@ class SassAndCssPruningTransformer extends Transformer
     if (_shouldSkipAsset(id)) return;
 
     switch (id.extension) {
-      case '.svg':
-      case '.png':
-        transform.consumePrimary();
-        transform.declareOutput(id);
-        break;
       case '.css':
         transform.consumePrimary();
         transform.declareOutput(id);
@@ -86,32 +79,9 @@ class SassAndCssPruningTransformer extends Transformer
       case '.map':
         transform.consumePrimary();
         break;
+      default:
+        throw new StateError("Unexpected extension: $id");
     }
-  }
-
-  Future _optimizeSvg(Transform transform, Asset asset) async {
-    String input = await asset.readAsString();
-    String output = optimizeSvg(input);
-    transform.addOutput(new Asset.fromString(asset.id, output));
-    transform.logger.info(
-        'Optimized SVG: ${input.length} chars -> ${output.length} chars',
-        asset: asset.id);
-    if (settings.verbose.value) {
-      transform.logger.info('Optimized SVG content:\n$output', asset: asset.id);
-    }
-  }
-
-  Future _optimizePng(Transform transform, Asset asset) async {
-    int originalSize;
-    int resultSize;
-    transform.addOutput(await crushPng(asset, (int a, int b) {
-      originalSize = a;
-      resultSize = b;
-    }));
-    transform.logger.info(
-        'Optimized PNG: ${originalSize} bytes -> ${resultSize} bytes',
-        asset: asset.id);
-    ;
   }
 
   Future apply(Transform transform) async {
@@ -124,16 +94,6 @@ class SassAndCssPruningTransformer extends Transformer
 
     _Css css;
     switch (id.extension) {
-      case '.svg':
-        checkState(settings.optimizeSvg.value);
-        transform.consumePrimary();
-        await _optimizeSvg(transform, transform.primaryInput);
-        return;
-      case '.png':
-        checkState(settings.optimizePng.value);
-        transform.consumePrimary();
-        await _optimizePng(transform, transform.primaryInput);
-        return;
       case '.css':
         // TODO(ochafik): Import existing .map file if it exists
         // (and parse it + get its original source).
@@ -226,11 +186,17 @@ class SassAndCssPruningTransformer extends Transformer
 
   Future<_Css> _inlineImages(_Css css, Transform transform) =>
       _time(transform, 'Inlining images in ${css.content.id}', () async {
+
+        var rewritePackage = _getPackageRewriter(settings.packageRewrites.value);
         var result = await inlineImages(
             css.content, settings.imageInlining.value,
             assetFetcher: (String url, {AssetId from}) {
-          return pathResolver.resolveAsset(transform, [url], from);
-        });
+              return pathResolver.resolveAsset(transform, [url], from);
+            },
+            resolveLinkToAsset: (Asset asset) {
+              var uri = pathResolver.assetIdToUri(asset.id);
+              return rewritePackage(uri);
+            });
         result.logMessages(transform);
         if (!result.success) return css;
         return new _Css(
@@ -238,4 +204,13 @@ class SassAndCssPruningTransformer extends Transformer
       });
 
   // @override toString() => "Scissors";
+}
+
+Function _getPackageRewriter(String fromToString) {
+  var fromTo = fromToString.split(',');
+  checkState(fromTo.length == 2,
+      message: () => "Expected from,to pattern, got: $fromToString");
+  var fromRx = new RegExp(fromTo[0]);
+  var to = fromTo[1];
+  return (String s) => s.replaceFirst(fromRx, to);
 }
