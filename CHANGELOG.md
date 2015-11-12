@@ -2,6 +2,18 @@
 
 ...
 
+<a name="0.1.6"></a>
+# 0.1.6 (2015-11-12)
+
+### Bugfixes
+
+- Fixed support of wildcard `*` CSS rules.
+
+### Features
+
+- Added support for LTR/RTL-specific parts in
+  `scissors/permutations_transformer` (see [example/permutations](https://github.com/google/dart-scissors/tree/master/example/permutations)).
+
 <a name="0.1.5"></a>
 # 0.1.5 (2015-11-12)
 

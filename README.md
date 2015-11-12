@@ -23,7 +23,7 @@ _Disclaimer_: This is not an official Google product.
 - Also experimentally supports generating locale permutations with pre-loaded
   deferred messages (concatenates `.part.js` files to speed up load time), and
   reoptimizing the resulting `.js` files with the Closure Compiler.
-  See [example/permutations](example/permutations) for usage example.
+  See [example/permutations](https://github.com/google/dart-scissors/tree/master/example/permutations) for usage example.
 
 ## Usage
 
