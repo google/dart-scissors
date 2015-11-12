@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 library scissors.src.lazy_transformer_utils;
+
 import 'package:barback/barback.dart';
 
 class LazyTransformerWrapper implements Transformer, LazyTransformer {
-
   final Transformer _transformer;
   LazyTransformerWrapper(this._transformer);
 
@@ -27,7 +27,7 @@ class LazyTransformerWrapper implements Transformer, LazyTransformer {
 
   @override
   declareOutputs(DeclaringTransform transform) =>
-    (_transformer as DeclaringTransformer).declareOutputs(transform);
+      (_transformer as DeclaringTransformer).declareOutputs(transform);
 
   @override
   isPrimary(AssetId id) => _transformer.isPrimary(id);

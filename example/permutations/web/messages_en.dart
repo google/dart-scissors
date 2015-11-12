@@ -1,3 +1,1 @@
-const messages = const {
-  'SomeKey': 'I am a value'
-};
+const messages = const {'SomeKey': 'I am a value'};

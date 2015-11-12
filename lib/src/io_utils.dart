@@ -17,7 +17,5 @@ import 'dart:async';
 import 'dart:io';
 
 Future<List<int>> readAll(Stream<List<int>> data) async =>
-    (await data.fold(
-        new BytesBuilder(),
-        (builder, data) => builder..add(data)))
-            .takeBytes();
+    (await data.fold(new BytesBuilder(), (builder, data) => builder..add(data)))
+        .takeBytes();

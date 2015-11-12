@@ -24,9 +24,8 @@ import 'package:test/test.dart' show test;
 import 'package:scissors/src/image_inliner.dart';
 import 'package:scissors/src/enum_parser.dart';
 
-makePhases(Map config) =>
-  new EagerScissorsTransformerGroup.asPlugin(
-      new BarbackSettings(config, BarbackMode.RELEASE)).phases;
+makePhases(Map config) => new EagerScissorsTransformerGroup.asPlugin(
+    new BarbackSettings(config, BarbackMode.RELEASE)).phases;
 
 void main() {
   var phases = makePhases({});

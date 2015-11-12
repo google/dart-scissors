@@ -55,24 +55,20 @@ class ScissorsSettings {
       defaultValue: false);
 
   final cssJanusPath = new _Setting<String>('cssJanusPath',
-      defaultValue: pathResolver.defaultCssJanusPath,
-      parser: _resolveEnvVars);
+      defaultValue: pathResolver.defaultCssJanusPath, parser: _resolveEnvVars);
 
   final closureCompilerJarPath = new _Setting<String>('closureCompilerJar',
       defaultValue: pathResolver.defaultClosureCompilerJarPath,
       parser: _resolveEnvVars);
 
   final pngCrushPath = new _Setting<String>('pngCrushPath',
-      defaultValue: pathResolver.defaultPngCrushPath,
-      parser: _resolveEnvVars);
+      defaultValue: pathResolver.defaultPngCrushPath, parser: _resolveEnvVars);
 
   final jrubyPath = new _Setting<String>('jrubyPath',
-      defaultValue: pathResolver.defaultJRubyPath,
-      parser: _resolveEnvVars);
+      defaultValue: pathResolver.defaultJRubyPath, parser: _resolveEnvVars);
 
   final rubySassPath = new _Setting<String>('rubySassPath',
-      defaultValue: pathResolver.defaultRubySassPath,
-      parser: _resolveEnvVars);
+      defaultValue: pathResolver.defaultRubySassPath, parser: _resolveEnvVars);
 
   final compassStylesheetsPath = new _Setting<String>('compassStylesheetsPath',
       defaultValue: pathResolver.defaultCompassStylesheetsPath,
@@ -85,8 +81,7 @@ class ScissorsSettings {
           new EnumParser<ImageInliningMode>(ImageInliningMode.values).parse);
 
   final _sasscPath = new _Setting<String>('sasscPath',
-      defaultValue: pathResolver.defaultSassCPath,
-      parser: _resolveEnvVars);
+      defaultValue: pathResolver.defaultSassCPath, parser: _resolveEnvVars);
 
   final _sasscArgs = new _Setting<List<String>>('sasscArgs', defaultValue: []);
 

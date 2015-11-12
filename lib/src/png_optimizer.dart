@@ -23,7 +23,8 @@ import 'io_utils.dart';
 
 var _tempDir = Directory.systemTemp.createTemp();
 
-Future<Asset> crushPng(Asset input, sizeReport(int originalSize, int resultSize)) async {
+Future<Asset> crushPng(
+    Asset input, sizeReport(int originalSize, int resultSize)) async {
   var dir = await _tempDir;
   var fileName = basename(input.id.path);
   var inputFile = new File(join(dir.path, fileName));
@@ -31,12 +32,13 @@ Future<Asset> crushPng(Asset input, sizeReport(int originalSize, int resultSize)
 
   await inputFile.writeAsBytes(await readAll(await input.read()));
 
-  var args =
-      "-q -brute -reduce "
+  var args = "-q -brute -reduce "
       "-rem alla -rem allb "
       "-rem gAMA -rem cHRM -rem iCCP -rem sRGB -rem text -rem time";
-  ProcessResult result = await Process.run('pngcrush',
-      []..addAll(args.split(' '))..add(inputFile.path)..add(outputFile.path));
+  ProcessResult result = await Process.run('pngcrush', []
+    ..addAll(args.split(' '))
+    ..add(inputFile.path)
+    ..add(outputFile.path));
   print(result.stdout);
   if (result.exitCode != 0) {
     throw new ArgumentError('Failed to crush ${input.id}:\n${result.stderr}');

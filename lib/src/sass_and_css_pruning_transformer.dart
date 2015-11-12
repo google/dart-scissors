@@ -110,7 +110,8 @@ class SassAndCssPruningTransformer extends Transformer
     }));
     transform.logger.info(
         'Optimized PNG: ${originalSize} bytes -> ${resultSize} bytes',
-        asset: asset.id);;
+        asset: asset.id);
+    ;
   }
 
   Future apply(Transform transform) async {

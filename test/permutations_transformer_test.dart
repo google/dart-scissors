@@ -20,16 +20,18 @@ import 'package:code_transformers/tests.dart'
 import 'package:test/test.dart' show test;
 import 'package:scissors/permutations_transformer.dart';
 
-makePhases(Map config) => [[
-  new PermutationsTransformer.asPlugin(
-      new BarbackSettings(config, BarbackMode.RELEASE))
-]];
+makePhases(Map config) => [
+      [
+        new PermutationsTransformer.asPlugin(
+            new BarbackSettings(config, BarbackMode.RELEASE))
+      ]
+    ];
 
 void main() {
   var phases = makePhases({});
 
-  _testPhases('Concatenates deferred messages in pre-loaded permutations',
-      phases, {
+  _testPhases(
+      'Concatenates deferred messages in pre-loaded permutations', phases, {
     'a|main.deferred_map': r'''
       {
         "_comment": "This mapping shows which compiled `.js` files are needed for a given deferred library import.",
@@ -50,11 +52,9 @@ void main() {
     'a|main.dart.js_1.part.js': 'content of main.dart.js_1.part.js',
     'a|main.dart.js_2.part.js': 'content of main.dart.js_2.part.js',
   }, {
-    'a|main_ar.js':
-        'content of main.dart.js\n'
+    'a|main_ar.js': 'content of main.dart.js\n'
         'content of main.dart.js_2.part.js',
-    'a|main_bg.js':
-        'content of main.dart.js\n'
+    'a|main_bg.js': 'content of main.dart.js\n'
         'content of main.dart.js_1.part.js',
   });
 }

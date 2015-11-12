@@ -26,12 +26,14 @@ List<List<Transformer>> _createPhases(ScissorsSettings settings) {
   if (settings.optimizePng.value) imageExts.add('.png');
   if (settings.optimizeSvg.value) imageExts.add('.svg');
   if (imageExts.isNotEmpty) {
-    phases.add([new ImageOptimizationTransformer(settings, imageExts.join(' '))]);
+    phases
+        .add([new ImageOptimizationTransformer(settings, imageExts.join(' '))]);
   }
 
   var exts = [];
   if (settings.compileSass.value) exts..add('.sass')..add('.scss');
-  if (settings.pruneCss.value || settings.imageInlining != ImageInliningMode.disablePass) {
+  if (settings.pruneCss.value ||
+      settings.imageInlining != ImageInliningMode.disablePass) {
     exts..add('.css')..add('.map');
   }
   if (exts.isNotEmpty) {
@@ -41,7 +43,6 @@ List<List<Transformer>> _createPhases(ScissorsSettings settings) {
 }
 
 class EagerScissorsTransformerGroup extends TransformerGroup {
-
   EagerScissorsTransformerGroup(ScissorsSettings settings)
       : super(_createPhases(settings));
 
