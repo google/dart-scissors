@@ -186,17 +186,16 @@ class SassAndCssPruningTransformer extends Transformer
 
   Future<_Css> _inlineImages(_Css css, Transform transform) =>
       _time(transform, 'Inlining images in ${css.content.id}', () async {
-
-        var rewritePackage = _getPackageRewriter(settings.packageRewrites.value);
+        var rewritePackage =
+            _getPackageRewriter(settings.packageRewrites.value);
         var result = await inlineImages(
             css.content, settings.imageInlining.value,
             assetFetcher: (String url, {AssetId from}) {
-              return pathResolver.resolveAsset(transform, [url], from);
-            },
-            resolveLinkToAsset: (Asset asset) {
-              var uri = pathResolver.assetIdToUri(asset.id);
-              return rewritePackage(uri);
-            });
+          return pathResolver.resolveAsset(transform, [url], from);
+        }, resolveLinkToAsset: (Asset asset) {
+          var uri = pathResolver.assetIdToUri(asset.id);
+          return rewritePackage(uri);
+        });
         result.logMessages(transform);
         if (!result.success) return css;
         return new _Css(

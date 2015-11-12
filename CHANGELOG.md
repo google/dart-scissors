@@ -1,6 +1,11 @@
 # Current development tree
 
-...
+### Bugfixes
+
+- Fixed image linking (`imageInlining: linkInlinedImages`), with a new
+  `packageRewrites` setting (with `fromPattern,toReplacement` syntax; defaults
+  to `^package:,packages/`, which works well with pub serve).
+- Fixed usage of `pngCrushPath` setting.
 
 <a name="0.1.6"></a>
 # 0.1.6 (2015-11-12)

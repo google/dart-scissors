@@ -87,10 +87,9 @@ class InliningVisitor extends Visitor {
 
 final _urlsRx = new RegExp(r'\b(inline-image|url)\s*\(', multiLine: true);
 
-Future<TransformResult> inlineImages(
-    Asset input, ImageInliningMode mode,
+Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
     {Future<Asset> assetFetcher(String url, {AssetId from}),
-     String resolveLinkToAsset(Asset asset)}) async {
+    String resolveLinkToAsset(Asset asset)}) async {
   var css = await input.readAsString();
 
   // Fail fast in case there's no url mention in the css.

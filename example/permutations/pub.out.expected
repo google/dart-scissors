@@ -60,9 +60,9 @@ Creating scissors_permutations_example|web/main_fr.js with:
 	scissors_permutations_example|web/main.dart.js_3.part.js (used by: messages_fr)
 	scissors_permutations_example|web/main.dart.js_5.part.js (used by: tc_ltr)
 [Info from Permutations on scissors_permutations_example|<default>]:
-Ran Closure Compiler on scissors_permutations_example|web/main_en.js: before = 127309, after = 113859
+Ran Closure Compiler on scissors_permutations_example|web/main_fr.js: before = 127260, after = 113817
 [Info from Permutations on scissors_permutations_example|<default>]:
-Ran Closure Compiler on scissors_permutations_example|web/main_fr.js: before = 127315, after = 113865
+Ran Closure Compiler on scissors_permutations_example|web/main_ar.js: before = 127297, after = 113854
 [Info from Permutations on scissors_permutations_example|<default>]:
-Ran Closure Compiler on scissors_permutations_example|web/main_ar.js: before = 127352, after = 113902
+Ran Closure Compiler on scissors_permutations_example|web/main_en.js: before = 127254, after = 113811
 Built 222 files to "build".
