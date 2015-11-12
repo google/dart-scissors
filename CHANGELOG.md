@@ -2,6 +2,33 @@
 
 ...
 
+<a name="0.1.5"></a>
+# 0.1.5 (2015-11-12)
+
+### Bugfixes
+
+- Fixed base64 format in `inline-image`
+
+### Features
+
+- Added experimental SVG optimization (poor-man heuristics, enabled in release,
+  disable with `optimizeSvg: false`)
+- Added experimental PNG optimization relying on `pngcrush` (enabled in release,
+  disable with `optimizePng: false`, provide path to `pngcrush` with
+  `pngCrushPath: path/to/pngcrush`)
+- Added `imageInlining` setting to control image inlining inside CSS files,
+  accepts values:
+  - `inlineAllUrls`: inlines `inline-image` *and* `url` references
+  - `inlineInlinedImages`: inlines `inline-image` only (default in `release`
+    mode)
+  - `linkInlinedImages`: rewrites `inline-image` references into `url`
+    references (default in `debug` mode): images are not inlined.
+  - `disablePass`: don't touch `inline-image` references (may produce invalid
+    CSS).
+- Added experimental `scissors/permutations_transformer` transformer that
+  generates locale-specific .js artefacts when using defer-loaded messages
+  (package:intl).
+
 <a name="0.1.4"></a>
 # 0.1.4 (2015-10-30)
 

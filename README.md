@@ -1,5 +1,5 @@
 # sCiSSors [![Build Status](https://travis-ci.org/google/dart-scissors.svg?branch=master)](https://travis-ci.org/google/dart-scissors) [![Pub Package](https://img.shields.io/pub/v/scissors.svg)](https://pub.dartlang.org/packages/scissors)
-**A CSS minifier / tree-shaker / Sass runner for Angular.**
+**Cuts your Angular Dart builds: resource optimizer (CSS, SVG, PNG), Sass runner and more.**
 
 Bored of tuning your Sass imports to avoid bloated CSS? This is for you!
 
@@ -15,10 +15,15 @@ _Disclaimer_: This is not an official Google product.
   (e.g. `class="some-{{fragmented}}-class and-some-normal-class"`,
   `ng-class="{'some-class': isSome}"`).
 - Compiles `*.sass` and `*.scss` files with [`sassc`](https://github.com/sass/sassc)
-  - Supports Compass's [inline-image](http://compass-style.org/reference/compass/helpers/inline-data/)
-    helper to inline images.
   - Rebuilds `.css` file whenever any transitive `.sass` import is modified.
     (note: requires `pub serve --force-poll`)
+  - Supports Compass's [inline-image](http://compass-style.org/reference/compass/helpers/inline-data/)
+    helper to inline images.
+  - Optimizes `.svg` and `.png` files (with `pngcrush`) before inlining them
+- Also experimentally supports generating locale permutations with pre-loaded
+  deferred messages (concatenates `.part.js` files to speed up load time), and
+  reoptimizing the resulting `.js` files with the Closure Compiler.
+  See [example/permutations](example/permutations) for usage example.
 
 ## Usage
 
