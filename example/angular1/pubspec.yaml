@@ -12,7 +12,8 @@ transformers:
 # - scissors/eager_transformer
 - scissors:
     verbose: true
-    imageInlining: inlineAllUrls
+    release:
+        imageInlining: inlineAllUrls
     # pruneCss: false
     # optimizeSvg: false
     # optimizePng: false
