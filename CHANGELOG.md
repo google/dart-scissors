@@ -2,8 +2,7 @@
 
 ...
 
-<a name="0.1.7"></a>
-# 0.1.7 (2015-11-12)
+## 0.1.7 (2015-11-12)
 
 ### Bugfixes
 
@@ -12,8 +11,7 @@
   to `^package:,packages/`, which works well with pub serve).
 - Fixed usage of `pngCrushPath` setting.
 
-<a name="0.1.6"></a>
-# 0.1.6 (2015-11-12)
+## 0.1.6 (2015-11-12)
 
 ### Bugfixes
 
@@ -24,8 +22,7 @@
 - Added support for LTR/RTL-specific parts in
   `scissors/permutations_transformer` (see [example/permutations](https://github.com/google/dart-scissors/tree/master/example/permutations)).
 
-<a name="0.1.5"></a>
-# 0.1.5 (2015-11-12)
+## 0.1.5 (2015-11-12)
 
 ### Bugfixes
 
@@ -51,16 +48,14 @@
   generates locale-specific .js artefacts when using defer-loaded messages
   (package:intl).
 
-<a name="0.1.4"></a>
-# 0.1.4 (2015-10-30)
+## 0.1.4 (2015-10-30)
 
 ### Bugfixes
 
 - Cleaner path resolution logic (easier to override)
 - Stricter regexp in recursive sass imports consumer
 
-<a name="0.1.3"></a>
-# 0.1.3 (2015-10-28)
+## 0.1.3 (2015-10-28)
 
 ### Features
 
@@ -74,8 +69,7 @@
   - The default (lazy) transformer will just invalidate stale resources, while
     `scissors/eager_transformer` will eagerly rebuild them.
 
-<a name="0.1.2"></a>
-# 0.1.2 (2015-10-26)
+## 0.1.2 (2015-10-26)
 
 ### Features
 
@@ -85,16 +79,14 @@
     fork point (`path_resolver.dart`)
   * Output css sourcemaps
 
-<a name="0.1.1"></a>
-# 0.1.1 (2015-10-23)
+## 0.1.1 (2015-10-23)
 
 ### Features
 
 * Preliminary support for compiling `*.scss` and `*.sass` files with
   [sassc](https://github.com/sass/sassc).
 
-<a name="0.1.0"></a>
-# 0.1.0 (2015-10-22)
+## 0.1.0 (2015-10-22)
 
 ### Features
 
