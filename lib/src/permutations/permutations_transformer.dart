@@ -135,10 +135,11 @@ class PermutationsTransformer extends AggregateTransformer {
 
     if (_settings.reoptimizePermutations.value) {
       try {
+        var javaPath = _settings.javaPath.value;
         var path = await pathResolver
             .resolvePath(_settings.closureCompilerJarPath.value);
         if (await new File(path).exists()) {
-          var result = await simpleClosureCompile(path, content);
+          var result = await simpleClosureCompile(javaPath, path, content);
           transform.logger.info('Ran Closure Compiler on $permutationId: '
               'before = ${content.length}, after = ${result.length}');
 

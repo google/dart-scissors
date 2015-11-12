@@ -20,9 +20,9 @@ import 'dart:io';
 import 'package:scissors/src/io_utils.dart';
 
 Future<String> simpleClosureCompile(
-    String closureCompilerJarPath, String content) async {
+    String javaPath, String closureCompilerJarPath, String content) async {
   var p = await Process.start(
-      'java',
+      javaPath,
       [
         '-jar',
         closureCompilerJarPath,
