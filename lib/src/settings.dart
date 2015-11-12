@@ -38,6 +38,9 @@ class ScissorsSettings {
   final reoptimizePermutations = new _Setting<bool>('reoptimizePermutations',
       debugDefault: false, releaseDefault: true);
 
+  final ltrImport = new _Setting<String>('ltrImport');
+  final rtlImport = new _Setting<String>('rtlImport');
+
   final optimizeSvg = new _Setting<bool>('optimizeSvg',
       debugDefault: false, releaseDefault: true);
 
@@ -104,6 +107,8 @@ class ScissorsSettings {
       optimizeSvg,
       optimizePng,
       reoptimizePermutations,
+      ltrImport,
+      rtlImport,
       imageInlining,
       fallbackToRubySass,
       cssJanusPath,

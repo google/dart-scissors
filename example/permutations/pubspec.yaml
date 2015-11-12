@@ -13,4 +13,6 @@ transformers:
     # minify: false
 - scissors/permutations_transformer:
     closureCompilerJar: ${HOME}/github/closure-compiler/build/compiler.jar
+    ltrImport: tc_ltr
+    rtlImport: tc_rtl
     # reoptimizePermutations: true

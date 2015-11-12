@@ -14,16 +14,15 @@
 library scissors.permutations_transformer;
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:barback/barback.dart';
-import 'package:quiver/check.dart';
 import 'package:path/path.dart';
 
 import 'src/path_resolver.dart';
 import 'src/settings.dart';
 import 'src/closure.dart';
+import 'src/permutations/intl_deferred_map.dart';
 
 /// This transformer stitches deferred message parts together in pre-assembled
 /// .js artefact permutations, to speed up initial loading of pages.
@@ -75,79 +74,74 @@ class PermutationsTransformer extends AggregateTransformer {
             r'Option --deferred-map was not set on $dart2js transformer, '
             'or permutations transformer was executed before it.'));
 
-    var data = JSON.decode(await deferredMapAsset.readAsString());
+    var map = new IntlDeferredMap.fromJson(
+      await deferredMapAsset.readAsString());
+
+    if (_settings.verbose.value) {
+      transform.logger.info(
+          'Found entry points ${map.mainNames}, '
+          'and locales ${map.locales}');
+    }
+
+    Asset getMatchingAsset(String fileName) =>
+        inputs.firstWhere((a) => a.id.path.endsWith(fileName),
+            orElse: () =>
+                throw new ArgumentError('No $fileName in $inputIds'));
 
     var futures = <Future>[];
-    data.forEach((key, value) {
-      // TODO(ochafik): Strengthen matching.
-      if (key.endsWith("messages_all.dart")) {
-        var imports = value['imports'];
-        checkNotNull(imports, message: () => "No imports in $value");
-        imports.forEach((alias, parts) {
-          checkState(alias.startsWith("messages_"));
-          var locale = alias.substring("messages_".length);
+    for (var mainName in map.mainNames) {
+      // TODO(ochafik): check rest of path matches!
+      Asset mainAsset = getMatchingAsset('$mainName.dart.js');
+      transform.logger.info('Processing ${mainAsset.id}');
 
-          var partsByMainName = <String, List<String>>{};
-          for (var part in parts) {
-            Match m = checkNotNull(_partRx.firstMatch(part),
-                message: () => '$part does not look like a part path');
-            var mainName = m[1];
+      for (var locale in map.locales) {
+        var permutationId = new AssetId(mainAsset.id.package,
+            join(dirname(mainAsset.id.path), '${mainName}_${locale}.js'));
 
-            partsByMainName.putIfAbsent(mainName, () => <String>[]).add(part);
-          }
+        var parts = map.getPartsForLocale(
+            locale: locale,
+            rtlImportAlias: _settings.rtlImport.value,
+            ltrImportAlias: _settings.ltrImport.value);
 
-          Asset getMatchingAsset(String fileName) =>
-              inputs.firstWhere((a) => a.id.path.endsWith(fileName),
-                  orElse: () =>
-                      throw new ArgumentError('No $fileName in $inputIds'));
+        List<Asset> assets = [mainAsset]
+          ..addAll(parts.map((part) => getMatchingAsset(part)));
 
-          partsByMainName.forEach((mainName, parts) {
-            // TODO(ochafik): check rest of path matches!
-            Asset mainAsset = getMatchingAsset('$mainName.dart.js');
-            List<Asset> assets = [mainAsset]
-              ..addAll(parts.map((part) => getMatchingAsset(part)));
+        transform.logger.info('Creating $permutationId with:\n'
+            '\t${assets.map((a) => a.id).join("\n\t")}');
 
-            var permutationId = new AssetId(mainAsset.id.package,
-                join(dirname(mainAsset.id.path), '${mainName}_${locale}.js'));
-
-            transform.logger.info('Creating $permutationId with:\n'
-                '\t${assets.map((a) => a.id).join("\n\t")}');
-
-            futures.add((() async {
-              var futureStrings = assets.map((a) => a.readAsString());
-              var content = (await Future.wait(futureStrings)).join('\n');
-
-              if (_settings.reoptimizePermutations.value) {
-                try {
-                  var path = await pathResolver
-                      .resolvePath(_settings.closureCompilerJarPath.value);
-                  if (await new File(path).exists()) {
-                    var result = await simpleClosureCompile(path, content);
-                    transform.logger.info(
-                        'Ran Closure Compiler on $permutationId: '
-                        'before = ${content.length}, after = ${result.length}');
-
-                    transform.addOutput(new Asset.fromString(
-                        permutationId.addExtension('.before_closure.js'),
-                        content));
-                    content = result;
-                  } else {
-                    transform.logger
-                        .warning("Did not find Closure Compiler ($path): "
-                            "permutations won't be fully optimized.");
-                  }
-                } catch (e, s) {
-                  print('$e\n$s');
-                }
-              }
-              transform.addOutput(new Asset.fromString(permutationId, content));
-            })());
-          });
-        });
+        futures.add(_concatenateAssets(transform, permutationId, assets));
       }
-    });
+    }
     await Future.wait(futures);
   }
 
-  static final RegExp _partRx = new RegExp(r'^(.*?)\.dart\.js_\d+\.part\.js$');
+  Future _concatenateAssets(AggregateTransform transform, AssetId permutationId, List<Asset> assets) async {
+    var futureStrings = assets.map((a) => a.readAsString());
+    var content = (await Future.wait(futureStrings)).join('\n');
+
+    if (_settings.reoptimizePermutations.value) {
+      try {
+        var path = await pathResolver
+            .resolvePath(_settings.closureCompilerJarPath.value);
+        if (await new File(path).exists()) {
+          var result = await simpleClosureCompile(path, content);
+          transform.logger.info(
+              'Ran Closure Compiler on $permutationId: '
+              'before = ${content.length}, after = ${result.length}');
+
+          transform.addOutput(new Asset.fromString(
+              permutationId.addExtension('.before_closure.js'),
+              content));
+          content = result;
+        } else {
+          transform.logger
+              .warning("Did not find Closure Compiler ($path): "
+                  "permutations won't be fully optimized.");
+        }
+      } catch (e, s) {
+        print('$e\n$s');
+      }
+    }
+    transform.addOutput(new Asset.fromString(permutationId, content));
+  }
 }
