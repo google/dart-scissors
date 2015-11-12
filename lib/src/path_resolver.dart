@@ -110,13 +110,10 @@ class PathResolver {
   }
 
   Future<File> resolveAssetFile(AssetId id) async {
-    var path = id.path;
-    if (path.startsWith('lib/')) path = path.substring('lib/'.length);
-
-    var alternativePaths = [
-      path,
-      join('packages', id.package.replaceAll('.', '/'), path)
-    ];
+    var alternativePaths = [id.path];
+    var path =
+        id.path.startsWith('lib/') ? id.path.substring('lib/'.length) : id.path;
+    alternativePaths.add(join('packages', id.package, path));
 
     var fileAsset = await _resolveFileAsset(alternativePaths);
     if (fileAsset == null) throw new AssetNotFoundException(id);
@@ -132,6 +129,12 @@ class PathResolver {
       }
     }
     return findFirstWhere(assets, (a) => a.file.exists());
+  }
+
+  String assetIdToUri(AssetId id) {
+    var path = id.path;
+    if (path.startsWith('lib/')) path = path.substring('lib/'.length);
+    return 'package:${id.package}/$path';
   }
 }
 

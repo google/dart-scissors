@@ -25,8 +25,6 @@ main() async {
   await initializeMessages(Intl.getCurrentLocale());
   await initializeTemplateCache(Intl.getCurrentLocale());
 
-  print("templateCache: $templateCache");
-
   document.getElementById('message').innerHtml =
       messages['SomeKey'] + '<br/>' + templateCache['some/resource'];
 }

@@ -26,6 +26,7 @@ import 'package:source_span/source_span.dart';
 import 'hacks.dart' as hacks;
 import 'io_utils.dart';
 import 'result.dart' show TransformMessage, TransformResult;
+import 'package:scissors/src/path_resolver.dart';
 
 enum ImageInliningMode {
   inlineAllUrls,
@@ -86,8 +87,10 @@ class InliningVisitor extends Visitor {
 
 final _urlsRx = new RegExp(r'\b(inline-image|url)\s*\(', multiLine: true);
 
-Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
-    {Future<Asset> assetFetcher(String url, {AssetId from})}) async {
+Future<TransformResult> inlineImages(
+    Asset input, ImageInliningMode mode,
+    {Future<Asset> assetFetcher(String url, {AssetId from}),
+     String resolveLinkToAsset(Asset asset)}) async {
   var css = await input.readAsString();
 
   // Fail fast in case there's no url mention in the css.
@@ -142,7 +145,11 @@ Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
     })());
   });
   urlsToLink.forEach((SourceSpan span, String url) {
-    replacements[span] = "url('$url')";
+    futures.add((() async {
+      var linkedAsset = await assetFetcher(url, from: input.id);
+      var packageUrl = resolveLinkToAsset(linkedAsset);
+      replacements[span] = "url('$packageUrl')";
+    })());
   });
   await Future.wait(futures);
 
@@ -153,7 +160,6 @@ Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
   ;
   var printer = transaction.commit()..build(input.id.path);
 
-  // print(printer.text);
   return new TransformResult(
       true,
       messages,

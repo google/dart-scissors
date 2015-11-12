@@ -17,6 +17,7 @@ import 'dart:async';
 import 'package:barback/barback.dart' show Transform, Asset, AssetId;
 import 'package:analyzer/analyzer.dart';
 import 'package:path/path.dart';
+import 'package:scissors/src/path_resolver.dart';
 
 Future<List<String>> extractTemplates(
     Transform transform, Asset dartAsset, AssetId cssAssetId) async {
@@ -24,14 +25,14 @@ Future<List<String>> extractTemplates(
 
   var unit = parseCompilationUnit(dartSource, suppressErrors: true);
   var templates = <String>[];
-  var cssUrl = _assetIdToUri(cssAssetId);
+  var cssUrl = pathResolver.assetIdToUri(cssAssetId);
 
   var dartAssetId = dartAsset.id;
   String _resolveRelativeUrl(String url) {
     if (url == null || url.contains(':')) return url;
 
     var path = '${dirname(dartAssetId.path)}/$url'.replaceAll('/./', '');
-    return _assetIdToUri(new AssetId(dartAssetId.package, path));
+    return pathResolver.assetIdToUri(new AssetId(dartAssetId.package, path));
   }
 
   for (var decl in unit.declarations) {
@@ -73,12 +74,6 @@ dynamic _eval(Literal expr) {
   if (expr is ListLiteral) return expr.elements.map(_eval).toList();
   throw new ArgumentError(
       "Unsupported literal type: ${expr.runtimeType} ($expr)");
-}
-
-String _assetIdToUri(AssetId id) {
-  var path = id.path;
-  if (path.startsWith('lib/')) path = path.substring('lib/'.length);
-  return 'package:${id.package}/$path';
 }
 
 Expression _findNamedArgument(ArgumentList argumentList, String name) {

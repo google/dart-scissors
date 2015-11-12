@@ -83,6 +83,9 @@ class ScissorsSettings {
       parser:
           new EnumParser<ImageInliningMode>(ImageInliningMode.values).parse);
 
+  final packageRewrites = new _Setting<String>('packageRewrites',
+      defaultValue: "^package:,packages/");
+
   final _sasscPath = new _Setting<String>('sasscPath',
       defaultValue: pathResolver.defaultSassCPath, parser: _resolveEnvVars);
 
@@ -111,11 +114,13 @@ class ScissorsSettings {
       rtlImport,
       imageInlining,
       fallbackToRubySass,
+      pngCrushPath,
       cssJanusPath,
       jrubyPath,
       rubySassPath,
       compassStylesheetsPath,
       closureCompilerJarPath,
+      packageRewrites,
       _sasscPath,
       _sasscArgs,
     ];
