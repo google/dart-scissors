@@ -11,4 +11,6 @@ transformers:
     commandLineOptions:
     - --deferred-map=build
     # minify: false
-- scissors/permutations_transformer
+- scissors/permutations_transformer:
+    closureCompilerJar: ${HOME}/github/closure-compiler/build/compiler.jar
+    # reoptimizePermutations: true

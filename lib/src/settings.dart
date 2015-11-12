@@ -35,6 +35,9 @@ class ScissorsSettings {
 
   final pruneCss = new _Setting<bool>('pruneCss', defaultValue: true);
 
+  final reoptimizePermutations = new _Setting<bool>('reoptimizePermutations',
+      debugDefault: false, releaseDefault: true);
+
   final optimizeSvg = new _Setting<bool>('optimizeSvg',
       debugDefault: false, releaseDefault: true);
 
@@ -52,19 +55,28 @@ class ScissorsSettings {
       defaultValue: false);
 
   final cssJanusPath = new _Setting<String>('cssJanusPath',
-      defaultValue: pathResolver.defaultCssJanusPath);
+      defaultValue: pathResolver.defaultCssJanusPath,
+      parser: _resolveEnvVars);
+
+  final closureCompilerJarPath = new _Setting<String>('closureCompilerJar',
+      defaultValue: pathResolver.defaultClosureCompilerJarPath,
+      parser: _resolveEnvVars);
 
   final pngCrushPath = new _Setting<String>('pngCrushPath',
-      defaultValue: pathResolver.defaultPngCrushPath);
+      defaultValue: pathResolver.defaultPngCrushPath,
+      parser: _resolveEnvVars);
 
   final jrubyPath = new _Setting<String>('jrubyPath',
-      defaultValue: pathResolver.defaultJRubyPath);
+      defaultValue: pathResolver.defaultJRubyPath,
+      parser: _resolveEnvVars);
 
   final rubySassPath = new _Setting<String>('rubySassPath',
-      defaultValue: pathResolver.defaultRubySassPath);
+      defaultValue: pathResolver.defaultRubySassPath,
+      parser: _resolveEnvVars);
 
   final compassStylesheetsPath = new _Setting<String>('compassStylesheetsPath',
-      defaultValue: pathResolver.defaultCompassStylesheetsPath);
+      defaultValue: pathResolver.defaultCompassStylesheetsPath,
+      parser: _resolveEnvVars);
 
   final imageInlining = new _Setting<ImageInliningMode>('imageInlining',
       debugDefault: ImageInliningMode.linkInlinedImages,
@@ -73,7 +85,8 @@ class ScissorsSettings {
           new EnumParser<ImageInliningMode>(ImageInliningMode.values).parse);
 
   final _sasscPath = new _Setting<String>('sasscPath',
-      defaultValue: pathResolver.defaultSassCPath);
+      defaultValue: pathResolver.defaultSassCPath,
+      parser: _resolveEnvVars);
 
   final _sasscArgs = new _Setting<List<String>>('sasscArgs', defaultValue: []);
 
@@ -95,12 +108,14 @@ class ScissorsSettings {
       mirrorCss,
       optimizeSvg,
       optimizePng,
+      reoptimizePermutations,
       imageInlining,
       fallbackToRubySass,
       cssJanusPath,
       jrubyPath,
       rubySassPath,
       compassStylesheetsPath,
+      closureCompilerJarPath,
       _sasscPath,
       _sasscArgs,
     ];

@@ -41,6 +41,7 @@ class PathResolver {
   final String defaultJRubyPath = 'jruby';
   final String defaultRubySassPath = 'sass';
   final String defaultCompassStylesheetsPath = null;
+  final String defaultClosureCompilerJarPath = 'compiler.jar';
 
   Future<String> resolvePath(String path) async {
     // Note: this file is meant to be replaced by custom resolution logic in

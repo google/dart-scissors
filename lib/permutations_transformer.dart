@@ -1,9 +1,16 @@
 library scissors.permutations_transformer;
-import 'package:barback/barback.dart';
+
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+
+import 'package:barback/barback.dart';
 import 'package:quiver/check.dart';
 import 'package:path/path.dart';
-import 'dart:async';
+
+import 'src/path_resolver.dart';
+import 'src/settings.dart';
+import 'src/closure.dart';
 
 /// This transformer stitches deferred message parts together in pre-assembled
 /// .js artefact permutations, to speed up initial loading of pages.
@@ -20,7 +27,8 @@ import 'dart:async';
 /// This lives in sCiSSors so that additional optimizations can be performed on
 /// the stitched output, for instance running Closure Compiler in SIMPLE mode
 /// on the resulting stitched output saves 10% of raw size in
-/// example/permutations/build/web/main_en.js (85kB -> 76kB), and still 1kB / 24kB in gzipped size.
+/// example/permutations/build/web/main_en.js (85kB -> 76kB), and still
+/// 1kB / 24kB in gzipped size.
 ///
 /// cat example/permutations/build/web/main_en.js | gzip -9 | wc -c
 /// cat example/permutations/build/web/main_en.js | java -jar compiler.jar --language_in=ES5 --language_out=ES5 -O SIMPLE | gzip -9 | wc -c
@@ -28,8 +36,12 @@ import 'dart:async';
 /// This might interact with the CSS mirroring feature, in ways still TBD.
 ///
 class PermutationsTransformer extends AggregateTransformer {
+  final ScissorsSettings _settings;
 
-  PermutationsTransformer.asPlugin(BarbackSettings settings);
+  PermutationsTransformer(this._settings);
+
+  PermutationsTransformer.asPlugin(BarbackSettings settings)
+      : this(new ScissorsSettings.fromSettings(settings));
 
   static final _allowedExtensions =
     ".dart.js .part.js .deferred_map".split(' ').toList();
@@ -94,13 +106,28 @@ class PermutationsTransformer extends AggregateTransformer {
             futures.add((() async {
               var futureStrings = assets.map((a) => a.readAsString());
               var content = (await Future.wait(futureStrings)).join('\n');
-              // TODO(ochafik): Reoptimize the content with Closure Compiler:
-              // on example/permutations, can win 10% raw size (4% gzipped) with
-              // `--language_in=ES5 --language_out=ES5 -O SIMPLE`
-              transform.addOutput(
-                  new Asset.fromString(
-                      permutationId,
-                      content));
+
+              if (_settings.reoptimizePermutations.value) {
+                try {
+                  var path = await pathResolver.resolvePath(_settings.closureCompilerJarPath.value);
+                  if (await new File(path).exists()) {
+                    var result = await simpleClosureCompile(
+                        path, content);
+                    transform.logger.info('Ran Closure Compiler on $permutationId: '
+                        'before = ${content.length}, after = ${result.length}');
+
+                    transform.addOutput(new Asset.fromString(permutationId.addExtension('.before_closure.js'), content));
+                    content = result;
+                  } else {
+                    transform.logger.warning(
+                        "Did not find Closure Compiler ($path): "
+                        "permutations won't be fully optimized.");
+                  }
+                } catch (e, s) {
+                  print('$e\n$s');
+                }
+              }
+              transform.addOutput(new Asset.fromString(permutationId, content));
             })());
           });
         });
