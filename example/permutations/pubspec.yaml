@@ -1,0 +1,14 @@
+name: scissors_permutations_example
+version: 0.1.4
+dependencies:
+  browser: 0.10.0
+  intl: any
+dev_dependencies:
+  # scissors: 0.1.4
+  scissors: {path: ../..}
+transformers:
+- $dart2js:
+    commandLineOptions:
+    - --deferred-map=build
+    # minify: false
+- scissors/permutations_transformer
