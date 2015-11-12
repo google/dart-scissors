@@ -18,6 +18,7 @@ import 'package:csslib/visitor.dart';
 
 /// Simple naive index of [RuleSet] by CSS class, by element name, by id.
 class RuleSetIndex {
+  final Set<RuleSet> starRules = new Set<RuleSet>();
   final Map<String, Set<RuleSet>> rulesByClass = <String, Set<RuleSet>>{};
   final Map<String, Set<RuleSet>> rulesByElement = <String, Set<RuleSet>>{};
   final Map<String, Set<RuleSet>> rulesById = <String, Set<RuleSet>>{};
@@ -43,8 +44,16 @@ class RuleSetIndex {
           _indexById(simpleSel.name, ruleSet);
           addedToSomeIndex = true;
         } else if (simpleSel is ElementSelector) {
-          _indexByElement(simpleSel.name, ruleSet);
+          if (simpleSel.isWildcard) {
+            starRules.add(ruleSet);
+          } else {
+            _indexByElement(simpleSel.name, ruleSet);
+          }
           addedToSomeIndex = true;
+        } else if (simpleSel is AttributeSelector) {
+          // Do nothing here: we'll cross-match in [_isSelectorMatch].
+        } else {
+          // print('TODO: Handle simple selector $simpleSel: ${simpleSel.runtimeType}');
         }
       }
     }
@@ -80,6 +89,7 @@ class RuleSetIndex {
     if (node.id != null) addValues(node.id, rulesById);
 
     addValues(node.localName, rulesByElement);
+    result.addAll(starRules);
 
     return result;
   }
@@ -145,7 +155,7 @@ class ElementDescription {
           return false;
         }
       } else if (simpleSelector is ElementSelector) {
-        if (localName != name) {
+        if (localName != name && !simpleSelector.isWildcard) {
           return false;
         }
       } else if (simpleSelector is AttributeSelector) {
@@ -154,6 +164,8 @@ class ElementDescription {
           if (attributes[name] != simpleSelector.value) {
             return false;
           }
+        } else {
+          // print('TODO: handle operator kind ${simpleSelector.operatorKind}: $simpleSelector');
         }
       }
     }

@@ -64,6 +64,9 @@ void main() {
       .unused-class {}
       absent-element {}
       present-element {}
+      * {
+        color: blue;
+      }
     ''',
     'a|foo2_html.html': r'''
       <!-- Spice this up -->
@@ -74,6 +77,9 @@ void main() {
     'a|foo2_html.css': r'''
       .used-class {}
       present-element {}
+      * {
+        color: blue;
+      }
     '''
   });
   _testPhases(
