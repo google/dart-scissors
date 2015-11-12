@@ -382,12 +382,14 @@ testImageInlining() {
         other-image: url('no-inline-either.svg');
       }
     ''',
+    'a|no-inline.svg': 'no inline',
+    'a|no-inline-either.svg': 'no inline either',
     'a|icon.svg': iconSvg,
     'a|foo.html': r'<div></div>',
   }, {
     'a|foo.css': r'''
       div {
-        background-image: url('no-inline.svg');
+        background-image: url('packages/a/no-inline.svg');
         other-image: url('no-inline-either.svg');
       }
     '''
