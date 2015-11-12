@@ -26,6 +26,13 @@ import 'sassc.dart';
 
 part 'setting.dart';
 
+_Setting<String> makePathSetting(String name, String defaultValue) =>
+    new _Setting<String>(name,
+        defaultValue: defaultValue, parser: _resolveEnvVars);
+
+_Setting<bool> makeOptimSetting(String name, [bool enabled = true]) =>
+    new _Setting<bool>(name, debugDefault: false, releaseDefault: enabled);
+
 class ScissorsSettings {
   final bool isDebug;
 
@@ -38,17 +45,13 @@ class ScissorsSettings {
 
   final pruneCss = new _Setting<bool>('pruneCss', defaultValue: true);
 
-  final reoptimizePermutations = new _Setting<bool>('reoptimizePermutations',
-      debugDefault: false, releaseDefault: true);
-
   final ltrImport = new _Setting<String>('ltrImport');
   final rtlImport = new _Setting<String>('rtlImport');
 
-  final optimizeSvg = new _Setting<bool>('optimizeSvg',
-      debugDefault: false, releaseDefault: true);
-
-  final optimizePng = new _Setting<bool>('optimizePng',
-      debugDefault: false, releaseDefault: true);
+  final reoptimizePermutations =
+      makeOptimSetting('reoptimizePermutations', false);
+  final optimizeSvg = makeOptimSetting('optimizeSvg');
+  final optimizePng = makeOptimSetting('optimizePng');
 
   final mirrorCss = new _Setting<bool>('mirrorCss',
       comment:
@@ -60,26 +63,6 @@ class ScissorsSettings {
           "This can help with some keyframe syntax in Compass stylesheets.",
       defaultValue: false);
 
-  final cssJanusPath = new _Setting<String>('cssJanusPath',
-      defaultValue: pathResolver.defaultCssJanusPath, parser: _resolveEnvVars);
-
-  final closureCompilerJarPath = new _Setting<String>('closureCompilerJar',
-      defaultValue: pathResolver.defaultClosureCompilerJarPath,
-      parser: _resolveEnvVars);
-
-  final pngCrushPath = new _Setting<String>('pngCrushPath',
-      defaultValue: pathResolver.defaultPngCrushPath, parser: _resolveEnvVars);
-
-  final jrubyPath = new _Setting<String>('jrubyPath',
-      defaultValue: pathResolver.defaultJRubyPath, parser: _resolveEnvVars);
-
-  final rubySassPath = new _Setting<String>('rubySassPath',
-      defaultValue: pathResolver.defaultRubySassPath, parser: _resolveEnvVars);
-
-  final compassStylesheetsPath = new _Setting<String>('compassStylesheetsPath',
-      defaultValue: pathResolver.defaultCompassStylesheetsPath,
-      parser: _resolveEnvVars);
-
   final imageInlining = new _Setting<ImageInliningMode>('imageInlining',
       debugDefault: ImageInliningMode.linkInlinedImages,
       releaseDefault: ImageInliningMode.inlineInlinedImages,
@@ -89,8 +72,27 @@ class ScissorsSettings {
   final packageRewrites = new _Setting<String>('packageRewrites',
       defaultValue: "^package:,packages/");
 
-  final _sasscPath = new _Setting<String>('sasscPath',
-      defaultValue: pathResolver.defaultSassCPath, parser: _resolveEnvVars);
+  final cssJanusPath =
+      makePathSetting('cssJanusPath', pathResolver.defaultCssJanusPath);
+
+  final javaPath = makePathSetting('javaPath', pathResolver.defaultJavaPath);
+
+  final closureCompilerJarPath = makePathSetting(
+      'closureCompilerJar', pathResolver.defaultClosureCompilerJarPath);
+
+  final pngCrushPath =
+      makePathSetting('pngCrushPath', pathResolver.defaultPngCrushPath);
+
+  final jrubyPath = makePathSetting('jrubyPath', pathResolver.defaultJRubyPath);
+
+  final rubySassPath =
+      makePathSetting('rubySassPath', pathResolver.defaultRubySassPath);
+
+  final compassStylesheetsPath = makePathSetting(
+      'compassStylesheetsPath', pathResolver.defaultCompassStylesheetsPath);
+
+  final _sasscPath =
+      makePathSetting('sasscPath', pathResolver.defaultSassCPath);
 
   final _sasscArgs = new _Setting<List<String>>('sasscArgs', defaultValue: []);
 
@@ -118,6 +120,7 @@ class ScissorsSettings {
       rtlImport,
       imageInlining,
       fallbackToRubySass,
+      javaPath,
       pngCrushPath,
       cssJanusPath,
       jrubyPath,
