@@ -31,6 +31,9 @@ class ScissorsSettings {
 
   final verbose = new _Setting<bool>('verbose', defaultValue: false);
 
+  final expectedPartCounts =
+      new _Setting<Map>('expectedPartCounts', defaultValue: {});
+
   final compileSass = new _Setting<bool>('compileSass', defaultValue: true);
 
   final pruneCss = new _Setting<bool>('pruneCss', defaultValue: true);
@@ -104,6 +107,7 @@ class ScissorsSettings {
 
     var settingList = <_Setting>[
       verbose,
+      expectedPartCounts,
       compileSass,
       pruneCss,
       mirrorCss,

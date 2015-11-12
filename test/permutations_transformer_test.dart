@@ -18,7 +18,7 @@ import 'package:barback/barback.dart'
 import 'package:code_transformers/tests.dart'
     show StringFormatter, applyTransformers;
 import 'package:test/test.dart' show test;
-import 'package:scissors/permutations_transformer.dart';
+import 'package:scissors/src/permutations/permutations_transformer.dart';
 
 makePhases(Map config) => [
       [

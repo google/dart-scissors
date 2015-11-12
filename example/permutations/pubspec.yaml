@@ -16,4 +16,6 @@ transformers:
     ltrImport: tc_ltr
     rtlImport: tc_rtl
     verbose: true
+    expectedPartCounts:
+        web/main.dart.js: 6
     # reoptimizePermutations: true

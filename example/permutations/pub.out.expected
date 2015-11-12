@@ -59,6 +59,8 @@ Creating scissors_permutations_example|web/main_fr.js with:
 	scissors_permutations_example|web/main.dart.js_6.part.js (used by: messages_ar, messages_en, messages_fr)
 	scissors_permutations_example|web/main.dart.js_3.part.js (used by: messages_fr)
 	scissors_permutations_example|web/main.dart.js_5.part.js (used by: tc_ltr)
+[Info from PartsCheck on scissors_permutations_example|web/main.dart.js]:
+Found 6 part files, as expected.
 [Info from Permutations on scissors_permutations_example|<default>]:
 Ran Closure Compiler on scissors_permutations_example|web/main_ar.js: before = 127297, after = 113854
 [Info from Permutations on scissors_permutations_example|<default>]:
