@@ -4,22 +4,19 @@ Loading angular transformers...
 Building scissors_angular1_example...
 [Info from SassAndCssPruning]:
 Skipping scissors_angular1_example|lib/_defs.scss
-[Info from ImageOptimization on scissors_angular1_example|lib/icon.svg]:
-Optimized SVG: 671 chars -> 255 chars
-[Info from ImageOptimization on scissors_angular1_example|lib/icon.svg]:
-Optimized SVG content:
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="21px" height="21px" viewBox="0 0 21 21" overflow="visible" enable-background="new 0 0 21 21"><rect x="0" y="0" height="10" width="10" style="stroke:#00ff00;fill:#ff0000"/>
-</svg>
 [Info from ImageOptimization on scissors_angular1_example|lib/icon2.svg]:
 Optimized SVG: 213 chars -> 125 chars
 [Info from ImageOptimization on scissors_angular1_example|lib/icon2.svg]:
 Optimized SVG content:
 <svg xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" height="10" width="10" style="stroke:#0000ff;fill:#00ff00"/>
 </svg>
+[Info from ImageOptimization on scissors_angular1_example|lib/icon.svg]:
+Optimized SVG: 671 chars -> 255 chars
+[Info from ImageOptimization on scissors_angular1_example|lib/icon.svg]:
+Optimized SVG content:
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="21px" height="21px" viewBox="0 0 21 21" overflow="visible" enable-background="new 0 0 21 21"><rect x="0" y="0" height="10" width="10" style="stroke:#00ff00;fill:#ff0000"/>
+</svg>
 [Info from SassAndCssPruning]:
-
-[Info from ImageOptimization on scissors_angular1_example|lib/plus.png]:
-Optimized PNG: 969 bytes -> 852 bytes
 [Info from SassAndCssPruning on scissors_angular1_example|lib/foo.scss]:
 Dropping unused CSS rule: .unused-class {
   float: left;
@@ -31,18 +28,21 @@ Dropping unused CSS rule: absent-element {
 [Info from SassAndCssPruning]:
 Size[scissors_angular1_example|lib/foo.scss.css]: before = 293, after = 242
 [Info from SassAndCssPruning]:
+
+[Info from ImageOptimization on scissors_angular1_example|lib/plus.png]:
+Optimized PNG: 969 bytes -> 852 bytes
 [Info from SassAndCssPruning on scissors_angular1_example|lib/foo.scss with input scissors_angular1_example|lib/foo.scss.css]:
 line 1, column 163 of scissors_angular1_example|lib/foo.scss.css: Inlined 'icon.svg' with scissors_angular1_example|lib/icon.svg
 inline-image("icon.svg")
 ^^^^^^^^^^^^^^^^^^^^^^^^
 [Info from SassAndCssPruning on scissors_angular1_example|lib/foo.scss with input scissors_angular1_example|lib/foo.scss.css]:
-line 1, column 217 of scissors_angular1_example|lib/foo.scss.css: Inlined 'plus.png' with scissors_angular1_example|lib/plus.png
-inline-image("plus.png")
-^^^^^^^^^^^^^^^^^^^^^^^^
-[Info from SassAndCssPruning on scissors_angular1_example|lib/foo.scss with input scissors_angular1_example|lib/foo.scss.css]:
 line 1, column 68 of scissors_angular1_example|lib/foo.scss.css: Inlined 'package:scissors_angular1_example/icon2.svg' with scissors_angular1_example|lib/icon2.svg
 url("package:scissors_angular1_example/icon2.svg")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[Info from SassAndCssPruning on scissors_angular1_example|lib/foo.scss with input scissors_angular1_example|lib/foo.scss.css]:
+line 1, column 217 of scissors_angular1_example|lib/foo.scss.css: Inlined 'plus.png' with scissors_angular1_example|lib/plus.png
+inline-image("plus.png")
+^^^^^^^^^^^^^^^^^^^^^^^^
 [Info from SassAndCssPruning]:
 [Info from Dart2JS]:
 Compiling scissors_angular1_example|web/main.dart...

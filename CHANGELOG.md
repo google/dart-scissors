@@ -1,5 +1,10 @@
 # Current development tree
 
+...
+
+<a name="0.1.7"></a>
+# 0.1.7 (2015-11-12)
+
 ### Bugfixes
 
 - Fixed image linking (`imageInlining: linkInlinedImages`), with a new
