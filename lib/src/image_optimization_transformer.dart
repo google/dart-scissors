@@ -52,7 +52,8 @@ class ImageOptimizationTransformer extends Transformer
   Future _optimizePng(Transform transform, Asset asset) async {
     int originalSize;
     int resultSize;
-    transform.addOutput(await crushPng(asset, (int a, int b) {
+    transform.addOutput(
+        await crushPng(settings.pngCrushPath.value, asset, (int a, int b) {
       originalSize = a;
       resultSize = b;
     }));
