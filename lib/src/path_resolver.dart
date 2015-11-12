@@ -113,7 +113,8 @@ class PathResolver {
     var alternativePaths = [id.path];
     var path =
         id.path.startsWith('lib/') ? id.path.substring('lib/'.length) : id.path;
-    alternativePaths.add(join('packages', id.package, path));
+    alternativePaths.add(
+        join('packages', id.package.replaceAll('.', '/'), path));
 
     var fileAsset = await _resolveFileAsset(alternativePaths);
     if (fileAsset == null) throw new AssetNotFoundException(id);
