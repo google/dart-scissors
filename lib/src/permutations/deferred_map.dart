@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 library scissors.src.deferred_map;
+
 import 'dart:convert';
 import 'dart:collection';
 
@@ -31,6 +32,7 @@ class DeferredMapEntry {
 
   toString() => 'Entry($name, $imports)';
 }
+
 class DeferredMap {
   final String comment;
   final List<DeferredMapEntry> entries;
@@ -63,14 +65,13 @@ class DeferredMap {
 
   List<String> collectParts(
       {bool entryPredicate(DeferredMapEntry name),
-       bool importsPredicate(DeferredMapImports imports)}) {
+      bool importsPredicate(DeferredMapImports imports)}) {
     var parts = new LinkedHashSet<String>();
-    visitParts(
-      (entry, imports, part) => parts.add(part),
-      entryPredicate: entryPredicate,
-      importsPredicate: importsPredicate);
+    visitParts((entry, imports, part) => parts.add(part),
+        entryPredicate: entryPredicate, importsPredicate: importsPredicate);
     return []..addAll(parts);
   }
+
   void visitImports(
       callback(DeferredMapEntry entry, DeferredMapImports imports),
       {bool entryPredicate(DeferredMapEntry entry)}) {
@@ -82,19 +83,17 @@ class DeferredMap {
       }
     }
   }
+
   void visitParts(
       callback(DeferredMapEntry entry, DeferredMapImports imports, String part),
       {bool entryPredicate(DeferredMapEntry name),
-       bool importsPredicate(DeferredMapImports imports)}) {
-    visitImports(
-      (entry, imports) {
-        if (importsPredicate == null || importsPredicate(imports)) {
-          for (String part in imports.parts) {
-            callback(entry, imports, part);
-          }
+      bool importsPredicate(DeferredMapImports imports)}) {
+    visitImports((entry, imports) {
+      if (importsPredicate == null || importsPredicate(imports)) {
+        for (String part in imports.parts) {
+          callback(entry, imports, part);
         }
-      },
-      entryPredicate: entryPredicate
-    );
+      }
+    }, entryPredicate: entryPredicate);
   }
 }

@@ -23,32 +23,29 @@ class IntlDeferredMap {
   final locales = new Set<String>();
   IntlDeferredMap(this._map) {
     mainNames.addAll(_map.collectParts().map(_getMainName));
-    _map.visitImports(
-      (entry, imports) {
-        if (imports.alias.startsWith("messages_")) {
-          locales.add(imports.alias.substring("messages_".length));
-        }
-      },
-      entryPredicate: _isMessagesAllEntry
-    );
+    _map.visitImports((entry, imports) {
+      if (imports.alias.startsWith("messages_")) {
+        locales.add(imports.alias.substring("messages_".length));
+      }
+    }, entryPredicate: _isMessagesAllEntry);
   }
 
   factory IntlDeferredMap.fromJson(String json) =>
-    new IntlDeferredMap(new DeferredMap.fromJson(json));
+      new IntlDeferredMap(new DeferredMap.fromJson(json));
 
   List<String> _getDirectionSpecificImports(String importAlias) {
     if (importAlias == null) return <String>[];
 
     var res = _map.collectParts(
         importsPredicate: (imports) => imports.alias == importAlias);
-    checkState(res.isNotEmpty, message: () =>
-        "Failed to find any deferred import with alias $importAlias");
+    checkState(res.isNotEmpty,
+        message: () =>
+            "Failed to find any deferred import with alias $importAlias");
     return res;
   }
 
   bool _isMessagesAllEntry(DeferredMapEntry entry) =>
-      entry.key.endsWith("messages_all.dart") ||
-      entry.name == "messages_all";
+      entry.key.endsWith("messages_all.dart") || entry.name == "messages_all";
 
   static final RegExp _partRx = new RegExp(r'^(.*?)\.dart\.js_\d+\.part\.js$');
 
@@ -58,15 +55,15 @@ class IntlDeferredMap {
     return m[1];
   }
 
-  List<String> _getMessagePartsForLocale(locale) =>
-      _map.collectParts(
-          importsPredicate: (imports) => imports.alias == 'messages_$locale',
-          entryPredicate: _isMessagesAllEntry);
+  List<String> _getMessagePartsForLocale(locale) => _map.collectParts(
+      importsPredicate: (imports) => imports.alias == 'messages_$locale',
+      entryPredicate: _isMessagesAllEntry);
 
-  List<String> getPartsForLocale({String locale, String ltrImportAlias, String rtlImportAlias}) =>
+  List<String> getPartsForLocale(
+          {String locale, String ltrImportAlias, String rtlImportAlias}) =>
       <String>[]
-          ..addAll(_getMessagePartsForLocale(locale))
-          ..addAll(Bidi.isRtlLanguage(locale)
-              ? _getDirectionSpecificImports(rtlImportAlias)
-              : _getDirectionSpecificImports(ltrImportAlias));
+        ..addAll(_getMessagePartsForLocale(locale))
+        ..addAll(Bidi.isRtlLanguage(locale)
+            ? _getDirectionSpecificImports(rtlImportAlias)
+            : _getDirectionSpecificImports(ltrImportAlias));
 }

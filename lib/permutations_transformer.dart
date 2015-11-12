@@ -74,19 +74,17 @@ class PermutationsTransformer extends AggregateTransformer {
             r'Option --deferred-map was not set on $dart2js transformer, '
             'or permutations transformer was executed before it.'));
 
-    var map = new IntlDeferredMap.fromJson(
-      await deferredMapAsset.readAsString());
+    var map =
+        new IntlDeferredMap.fromJson(await deferredMapAsset.readAsString());
 
     if (_settings.verbose.value) {
-      transform.logger.info(
-          'Found entry points ${map.mainNames}, '
+      transform.logger.info('Found entry points ${map.mainNames}, '
           'and locales ${map.locales}');
     }
 
     Asset getMatchingAsset(String fileName) =>
         inputs.firstWhere((a) => a.id.path.endsWith(fileName),
-            orElse: () =>
-                throw new ArgumentError('No $fileName in $inputIds'));
+            orElse: () => throw new ArgumentError('No $fileName in $inputIds'));
 
     var futures = <Future>[];
     for (var mainName in map.mainNames) {
@@ -115,7 +113,8 @@ class PermutationsTransformer extends AggregateTransformer {
     await Future.wait(futures);
   }
 
-  Future _concatenateAssets(AggregateTransform transform, AssetId permutationId, List<Asset> assets) async {
+  Future _concatenateAssets(AggregateTransform transform, AssetId permutationId,
+      List<Asset> assets) async {
     var futureStrings = assets.map((a) => a.readAsString());
     var content = (await Future.wait(futureStrings)).join('\n');
 
@@ -125,18 +124,15 @@ class PermutationsTransformer extends AggregateTransformer {
             .resolvePath(_settings.closureCompilerJarPath.value);
         if (await new File(path).exists()) {
           var result = await simpleClosureCompile(path, content);
-          transform.logger.info(
-              'Ran Closure Compiler on $permutationId: '
+          transform.logger.info('Ran Closure Compiler on $permutationId: '
               'before = ${content.length}, after = ${result.length}');
 
           transform.addOutput(new Asset.fromString(
-              permutationId.addExtension('.before_closure.js'),
-              content));
+              permutationId.addExtension('.before_closure.js'), content));
           content = result;
         } else {
-          transform.logger
-              .warning("Did not find Closure Compiler ($path): "
-                  "permutations won't be fully optimized.");
+          transform.logger.warning("Did not find Closure Compiler ($path): "
+              "permutations won't be fully optimized.");
         }
       } catch (e, s) {
         print('$e\n$s');
