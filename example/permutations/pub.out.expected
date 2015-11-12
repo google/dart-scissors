@@ -1,0 +1,68 @@
+Loading source assets...
+Loading scissors/permutations_transformer transformers...
+Building scissors_permutations_example...
+[Info from Dart2JS]:
+Compiling scissors_permutations_example|web/main.dart...
+[Info from Dart2JS]:
+[Info from Permutations on scissors_permutations_example|<default>]:
+Deferred map content:
+{
+  "_comment": "This mapping shows which compiled `.js` files are needed for a given deferred library import.",
+  "main.dart": {
+    "name": "<unnamed>",
+    "imports": {
+      "tc_ltr": [
+        "main.dart.js_5.part.js"
+      ],
+      "tc_rtl": [
+        "main.dart.js_4.part.js"
+      ]
+    }
+  },
+  "messages_all.dart": {
+    "name": "<unnamed>",
+    "imports": {
+      "messages_ar": [
+        "main.dart.js_6.part.js",
+        "main.dart.js_1.part.js"
+      ],
+      "messages_en": [
+        "main.dart.js_6.part.js",
+        "main.dart.js_2.part.js"
+      ],
+      "messages_fr": [
+        "main.dart.js_6.part.js",
+        "main.dart.js_3.part.js"
+      ]
+    }
+  }
+}
+[Info from Permutations on scissors_permutations_example|<default>]:
+Found entry points {main}, and locales {ar, en, fr}
+[Info from Permutations on scissors_permutations_example|<default>]:
+Processing scissors_permutations_example|web/main.dart.js
+[Info from Permutations on scissors_permutations_example|<default>]:
+Creating scissors_permutations_example|web/main_ar.js with:
+	scissors_permutations_example|web/main.dart.js
+	scissors_permutations_example|web/main.dart.js_6.part.js (used by: messages_ar, messages_en, messages_fr)
+	scissors_permutations_example|web/main.dart.js_1.part.js (used by: messages_ar)
+	scissors_permutations_example|web/main.dart.js_4.part.js (used by: tc_rtl)
+[Info from Permutations on scissors_permutations_example|<default>]:
+Creating scissors_permutations_example|web/main_en.js with:
+	scissors_permutations_example|web/main.dart.js
+	scissors_permutations_example|web/main.dart.js_6.part.js (used by: messages_ar, messages_en, messages_fr)
+	scissors_permutations_example|web/main.dart.js_2.part.js (used by: messages_en)
+	scissors_permutations_example|web/main.dart.js_5.part.js (used by: tc_ltr)
+[Info from Permutations on scissors_permutations_example|<default>]:
+Creating scissors_permutations_example|web/main_fr.js with:
+	scissors_permutations_example|web/main.dart.js
+	scissors_permutations_example|web/main.dart.js_6.part.js (used by: messages_ar, messages_en, messages_fr)
+	scissors_permutations_example|web/main.dart.js_3.part.js (used by: messages_fr)
+	scissors_permutations_example|web/main.dart.js_5.part.js (used by: tc_ltr)
+[Info from Permutations on scissors_permutations_example|<default>]:
+Ran Closure Compiler on scissors_permutations_example|web/main_en.js: before = 127309, after = 113859
+[Info from Permutations on scissors_permutations_example|<default>]:
+Ran Closure Compiler on scissors_permutations_example|web/main_fr.js: before = 127315, after = 113865
+[Info from Permutations on scissors_permutations_example|<default>]:
+Ran Closure Compiler on scissors_permutations_example|web/main_ar.js: before = 127352, after = 113902
+Built 222 files to "build".

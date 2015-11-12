@@ -74,8 +74,11 @@ class PermutationsTransformer extends AggregateTransformer {
             r'Option --deferred-map was not set on $dart2js transformer, '
             'or permutations transformer was executed before it.'));
 
-    var map =
-        new IntlDeferredMap.fromJson(await deferredMapAsset.readAsString());
+    var deferredMapJson = await deferredMapAsset.readAsString();
+    if (_settings.verbose.value) {
+      transform.logger.info('Deferred map content:\n$deferredMapJson');
+    }
+    var map = new IntlDeferredMap.fromJson(deferredMapJson);
 
     if (_settings.verbose.value) {
       transform.logger.info('Found entry points ${map.mainNames}, '
@@ -101,11 +104,23 @@ class PermutationsTransformer extends AggregateTransformer {
             rtlImportAlias: _settings.rtlImport.value,
             ltrImportAlias: _settings.ltrImport.value);
 
-        List<Asset> assets = [mainAsset]
-          ..addAll(parts.map((part) => getMatchingAsset(part)));
+        var importAliasesByAssets = <Asset, List<String>>{};
+        importAliasesByAssets[mainAsset] = <String>[];
+        for (var part in parts) {
+          importAliasesByAssets[getMatchingAsset(part)] =
+              map.getImportAliasesForPart(part);
+        }
+        List<Asset> assets = importAliasesByAssets.keys.toList();
 
+        describeAsset(Asset asset) {
+          var importedBy = importAliasesByAssets[asset];
+          var name = "${asset.id}";
+          return importedBy.isEmpty
+              ? name
+              : '$name (used by: ${importedBy.join(", ")})';
+        }
         transform.logger.info('Creating $permutationId with:\n'
-            '\t${assets.map((a) => a.id).join("\n\t")}');
+            '\t${assets.map(describeAsset).join("\n\t")}');
 
         futures.add(_concatenateAssets(transform, permutationId, assets));
       }

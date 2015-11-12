@@ -66,4 +66,12 @@ class IntlDeferredMap {
         ..addAll(Bidi.isRtlLanguage(locale)
             ? _getDirectionSpecificImports(rtlImportAlias)
             : _getDirectionSpecificImports(ltrImportAlias));
+
+  List<String> getImportAliasesForPart(String targetPart) {
+    var aliases = new Set<String>();
+    _map.visitParts((entry, imports, part) {
+      if (part == targetPart) aliases.add(imports.alias);
+    });
+    return aliases.toList();
+  }
 }

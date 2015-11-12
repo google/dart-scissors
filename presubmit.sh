@@ -14,6 +14,7 @@ pub run dart_style:format -w \
 set -x
 
 if (( "${TEST_EXAMPLES:-1}" )); then
+  example/test_example.sh permutations
   example/test_example.sh angular1
   example/test_example.sh angular2
 fi
