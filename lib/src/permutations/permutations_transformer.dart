@@ -112,15 +112,19 @@ class PermutationsTransformer extends AggregateTransformer {
         }
         List<Asset> assets = importAliasesByAssets.keys.toList();
 
-        describeAsset(Asset asset) {
-          var importedBy = importAliasesByAssets[asset];
-          var name = "${asset.id}";
-          return importedBy.isEmpty
-              ? name
-              : '$name (used by: ${importedBy.join(", ")})';
+        if (_settings.verbose.value) {
+          describeAsset(Asset asset) {
+            var importedBy = importAliasesByAssets[asset];
+            var name = "${asset.id}";
+            return importedBy.isEmpty
+                ? name
+                : '$name (used by: ${importedBy.join(", ")})';
+          }
+          transform.logger.info('Creating $permutationId with:\n'
+              '\t${assets.map(describeAsset).join("\n\t")}');
+        } else {
+          transform.logger.info('Creating $permutationId with ${assets.length} assets');
         }
-        transform.logger.info('Creating $permutationId with:\n'
-            '\t${assets.map(describeAsset).join("\n\t")}');
 
         futures.add(_concatenateAssets(transform, permutationId, assets));
       }
