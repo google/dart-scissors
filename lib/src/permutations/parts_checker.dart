@@ -17,28 +17,13 @@ import 'package:barback/barback.dart';
 
 import '../settings.dart';
 
-/// This transformer stitches deferred message parts together in pre-assembled
-/// .js artefact permutations, to speed up initial loading of pages.
+/// Checks that the number of parts for each binary is exactly the one expected.
 ///
-/// It must be run *after* the $dart2js transformer, and $dart2js must have the
-/// a `--deferred-map=something` parameter
-/// (see `example/permutations/pubspec.yaml`).
-///
-/// For instance if `main.dart.js` defer-loads messages for locales `en` and
-/// `fr`, this transformer will create the artefact `main_en.js` (still able
-/// to defer-load the `fr` locale, but with instant loading of locale `en`) and
-/// `main_fr.js` (the opposite).
-///
-/// This lives in sCiSSors so that additional optimizations can be performed on
-/// the stitched output, for instance running Closure Compiler in SIMPLE mode
-/// on the resulting stitched output saves 10% of raw size in
-/// example/permutations/build/web/main_en.js (85kB -> 76kB), and still
-/// 1kB / 24kB in gzipped size.
-///
-/// cat example/permutations/build/web/main_en.js | gzip -9 | wc -c
-/// cat example/permutations/build/web/main_en.js | java -jar compiler.jar --language_in=ES5 --language_out=ES5 -O SIMPLE | gzip -9 | wc -c
-///
-/// This might interact with the CSS mirroring feature, in ways still TBD.
+/// Example:
+///   transformers:
+///   - scissors/src/permutations/parts_checker
+///       expectedPartCounts:
+///           web/main.dart.js: 6
 ///
 class PartsCheckTransformer extends Transformer
     implements DeclaringTransformer {
