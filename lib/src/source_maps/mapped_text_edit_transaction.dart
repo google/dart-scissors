@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.source_maps.mapped_text_edit_transaction;
+library scissors.src.source_maps.mapped_text_edit_transaction;
 
 import 'package:source_maps/parser.dart';
 import 'package:source_maps/source_maps.dart';
@@ -20,6 +20,7 @@ import 'package:source_span/source_span.dart';
 import 'package:path/path.dart';
 import 'package:barback/barback.dart';
 import 'dart:async';
+
 import 'pos_converter.dart';
 import 'source_map_editor.dart';
 

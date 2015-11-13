@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.css_pruning;
+library scissors.src.css_pruning.css_pruning;
 
 import 'dart:async';
 
@@ -25,10 +25,11 @@ import 'package:quiver/check.dart';
 import 'package:source_maps/refactor.dart';
 import 'package:source_span/source_span.dart';
 
-import 'hacks.dart' as hacks;
+import '../utils/hacks.dart' as hacks;
+import '../utils/path_utils.dart';
+import '../settings.dart';
+
 import 'rule_set_index.dart';
-import 'path_utils.dart';
-import 'settings.dart';
 import 'template_extractor.dart' show extractTemplates;
 import 'usage_collector.dart';
 

@@ -11,9 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+library scissors.src.utils.deps_consumer;
+
 import 'package:barback/barback.dart' show Transform, Asset, AssetId;
 import 'dart:async';
-import 'package:scissors/src/path_resolver.dart';
+
+import 'path_resolver.dart';
 
 final RegExp _importRx = new RegExp(r'''^\s*@import ['"]([^'"]+)['"]''');
 final RegExp _commentsRx =

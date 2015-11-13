@@ -13,7 +13,7 @@
 // limitations under the License.
 library scissors.ng_class_parser.test;
 
-import 'package:scissors/src/ng_class_parser.dart';
+import 'package:scissors/src/css_pruning/ng_class_parser.dart';
 import "package:test/test.dart";
 
 main() {

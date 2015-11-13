@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.rule_set_index;
+library scissors.src.css_pruning.rule_set_index;
 
 import 'package:csslib/parser.dart' show TokenKind;
 import 'package:csslib/visitor.dart';

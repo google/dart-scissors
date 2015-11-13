@@ -11,13 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors;
+library scissors.src.js_optimization.closure;
 
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:scissors/src/io_utils.dart';
+import '../utils/io_utils.dart';
 
 Future<String> simpleClosureCompile(
     String javaPath, String closureCompilerJarPath, String content) async {

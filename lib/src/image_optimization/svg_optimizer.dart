@@ -11,9 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.src.svg_optimizer;
+library scissors.src.image_optimization.svg_optimizer;
 
-import 'result.dart';
+import '../utils/result.dart';
 
 class SvgResult {
   final String content;

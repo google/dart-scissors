@@ -11,9 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-part of scissors.src.settings;
+library scissors.src.utils.setting;
 
-class _Setting<T> {
+import 'package:quiver/check.dart';
+
+class Setting<T> {
   final String key;
   final String comment;
   final T debugDefault;
@@ -26,7 +28,7 @@ class _Setting<T> {
     return _value;
   }
 
-  _Setting(this.key,
+  Setting(this.key,
       {this.comment,
       T defaultValue,
       T debugDefault,

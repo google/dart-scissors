@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.image_inliner;
+library scissors.src.image_inlining.image_inliner;
 
 import 'dart:async';
 
@@ -23,10 +23,9 @@ import 'package:quiver/check.dart';
 import 'package:source_maps/refactor.dart';
 import 'package:source_span/source_span.dart';
 
-import 'hacks.dart' as hacks;
-import 'io_utils.dart';
-import 'result.dart' show TransformMessage, TransformResult;
-import 'package:scissors/src/path_resolver.dart';
+import '../utils/hacks.dart' as hacks;
+import '../utils/io_utils.dart';
+import '../utils/result.dart' show TransformMessage, TransformResult;
 
 enum ImageInliningMode {
   inlineAllUrls,

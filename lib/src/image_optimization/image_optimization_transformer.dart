@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.image_optimization_transformer;
+library scissors.src.image_optimization_transformer.image_optimization_transformer;
 
 import 'dart:async';
 
@@ -19,7 +19,7 @@ import 'package:barback/barback.dart';
 
 import 'package:quiver/check.dart';
 
-import 'settings.dart';
+import '../settings.dart';
 import 'svg_optimizer.dart';
 import 'png_optimizer.dart';
 

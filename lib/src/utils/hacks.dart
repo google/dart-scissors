@@ -11,11 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.src.io_utils;
+library scissors.src.utils.hacks;
 
-import 'dart:async';
-import 'dart:io';
+import 'package:csslib/src/messages.dart' as csslib show messages, Messages;
 
-Future<List<int>> readAll(Stream<List<int>> data) async =>
-    (await data.fold(new BytesBuilder(), (builder, data) => builder..add(data)))
-        .takeBytes();
+useCssLib() {
+  // TODO(ochafik): This ugly wart is because of csslib's global messages.
+  // See //third_party/dart/csslib/lib/src/messages.dart.
+  csslib.messages = new csslib.Messages();
+}

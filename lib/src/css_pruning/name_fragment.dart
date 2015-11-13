@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.name_fragment;
+library scissors.src.css_pruning.name_fragment;
 
 final RegExp _INTERPOLATION = new RegExp(r'(?:\{\{.*?\}\})+', multiLine: true);
 

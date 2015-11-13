@@ -11,10 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.src.path_utils;
+library scissors.src.utils.path_utils;
 
 import 'dart:async';
 import 'dart:io';
+
 import 'package:barback/barback.dart' show AssetNotFoundException;
 
 Stream<Directory> findExistingDirectories(Iterable<Directory> dirs) async* {

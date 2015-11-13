@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.src.intl_deferred_map;
+library scissors.src.permutations.intl_deferred_map;
 
 import 'deferred_map.dart';
 import 'package:quiver/check.dart';

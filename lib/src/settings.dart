@@ -19,57 +19,58 @@ import 'dart:io';
 import 'package:barback/barback.dart';
 import 'package:quiver/check.dart';
 
-import 'enum_parser.dart';
-import 'image_inliner.dart';
-import 'path_resolver.dart';
-import 'sassc.dart';
+import 'image_inlining/image_inliner.dart';
+import 'sass/sassc.dart';
+import 'utils/enum_parser.dart';
+import 'utils/path_resolver.dart';
 
-part 'setting.dart';
+import 'utils/setting.dart';
+export 'utils/setting.dart';
 
-_Setting<String> makePathSetting(String name, String defaultValue) =>
-    new _Setting<String>(name,
+Setting<String> makePathSetting(String name, String defaultValue) =>
+    new Setting<String>(name,
         defaultValue: defaultValue, parser: _resolveEnvVars);
 
-_Setting<bool> makeOptimSetting(String name, [bool enabled = true]) =>
-    new _Setting<bool>(name, debugDefault: false, releaseDefault: enabled);
+Setting<bool> makeOptimSetting(String name, [bool enabled = true]) =>
+    new Setting<bool>(name, debugDefault: false, releaseDefault: enabled);
 
 class ScissorsSettings {
   final bool isDebug;
 
-  final verbose = new _Setting<bool>('verbose', defaultValue: false);
+  final verbose = new Setting<bool>('verbose', defaultValue: false);
 
   final expectedPartCounts =
-      new _Setting<Map>('expectedPartCounts', defaultValue: {});
+      new Setting<Map>('expectedPartCounts', defaultValue: {});
 
-  final compileSass = new _Setting<bool>('compileSass', defaultValue: true);
+  final compileSass = new Setting<bool>('compileSass', defaultValue: true);
 
-  final pruneCss = new _Setting<bool>('pruneCss', defaultValue: true);
+  final pruneCss = new Setting<bool>('pruneCss', defaultValue: true);
 
-  final ltrImport = new _Setting<String>('ltrImport');
-  final rtlImport = new _Setting<String>('rtlImport');
+  final ltrImport = new Setting<String>('ltrImport');
+  final rtlImport = new Setting<String>('rtlImport');
 
   final reoptimizePermutations =
       makeOptimSetting('reoptimizePermutations', false);
   final optimizeSvg = makeOptimSetting('optimizeSvg');
   final optimizePng = makeOptimSetting('optimizePng');
 
-  final mirrorCss = new _Setting<bool>('mirrorCss',
+  final mirrorCss = new Setting<bool>('mirrorCss',
       comment:
           "Whether to perform LTR -> RTL mirroring of .css files with cssjanus.",
       defaultValue: false);
 
-  final fallbackToRubySass = new _Setting<bool>('fallbackToRubySass',
+  final fallbackToRubySass = new Setting<bool>('fallbackToRubySass',
       comment: "Whether to fallback to JRuby+Ruby Sass when SassC fails.\n"
           "This can help with some keyframe syntax in Compass stylesheets.",
       defaultValue: false);
 
-  final imageInlining = new _Setting<ImageInliningMode>('imageInlining',
+  final imageInlining = new Setting<ImageInliningMode>('imageInlining',
       debugDefault: ImageInliningMode.linkInlinedImages,
       releaseDefault: ImageInliningMode.inlineInlinedImages,
       parser:
           new EnumParser<ImageInliningMode>(ImageInliningMode.values).parse);
 
-  final packageRewrites = new _Setting<String>('packageRewrites',
+  final packageRewrites = new Setting<String>('packageRewrites',
       defaultValue: "^package:,packages/");
 
   final cssJanusPath =
@@ -94,7 +95,7 @@ class ScissorsSettings {
   final _sasscPath =
       makePathSetting('sasscPath', pathResolver.defaultSassCPath);
 
-  final _sasscArgs = new _Setting<List<String>>('sasscArgs', defaultValue: []);
+  final _sasscArgs = new Setting<List<String>>('sasscArgs', defaultValue: []);
 
   Future<SasscSettings> _sasscSettings;
   Future<SasscSettings> get sasscSettings => _sasscSettings;
@@ -107,7 +108,7 @@ class ScissorsSettings {
     var config = settings.configuration;
     config.addAll(config[isDebug ? _debugConfigKey : _releaseConfigKey] ?? {});
 
-    var settingList = <_Setting>[
+    var settingList = <Setting>[
       verbose,
       expectedPartCounts,
       compileSass,

@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.src.permutations.transformer;
+library scissors.src.permutations.permutations_transformer;
 
 import 'dart:async';
 import 'dart:io';
@@ -19,9 +19,9 @@ import 'dart:io';
 import 'package:barback/barback.dart';
 import 'package:path/path.dart';
 
-import '../path_resolver.dart';
 import '../settings.dart';
-import '../closure.dart';
+import '../utils/path_resolver.dart';
+import '../js_optimization/closure.dart';
 import 'intl_deferred_map.dart';
 
 /// This transformer stitches deferred message parts together in pre-assembled

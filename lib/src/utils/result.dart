@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.result;
+library scissors.src.utils.result;
 
 import 'package:barback/barback.dart' show Asset, AssetId, LogLevel, Transform;
 import 'package:code_transformers/messages/build_logger.dart';

@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.src.enum_parser;
+library scissors.src.utils.enum_parser;
 
 import 'package:quiver/check.dart';
 

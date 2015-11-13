@@ -15,10 +15,10 @@ library scissors.scissors_transformer;
 
 import 'package:barback/barback.dart';
 
-import 'src/image_inliner.dart';
+import 'src/image_inlining/image_inliner.dart';
+import 'src/image_optimization/image_optimization_transformer.dart';
+import 'src/sass/sass_and_css_pruning_transformer.dart';
 import 'src/settings.dart';
-import 'src/image_optimization_transformer.dart';
-import 'src/sass_and_css_pruning_transformer.dart';
 
 List<List<Transformer>> _createPhases(ScissorsSettings settings) {
   var phases = <List<Transformer>>[];

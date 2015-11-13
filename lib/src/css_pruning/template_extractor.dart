@@ -11,13 +11,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.template_extractor;
+library scissors.src.css_pruning.template_extractor;
 
 import 'dart:async';
+
 import 'package:barback/barback.dart' show Transform, Asset, AssetId;
 import 'package:analyzer/analyzer.dart';
 import 'package:path/path.dart';
-import 'package:scissors/src/path_resolver.dart';
+
+import '../utils/path_resolver.dart';
 
 Future<List<String>> extractTemplates(
     Transform transform, Asset dartAsset, AssetId cssAssetId) async {

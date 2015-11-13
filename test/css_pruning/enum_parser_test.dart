@@ -13,7 +13,7 @@
 // limitations under the License.
 library scissors.src.enum_parser;
 
-import 'package:scissors/src/enum_parser.dart';
+import 'package:scissors/src/utils/enum_parser.dart';
 import 'package:test/test.dart';
 
 enum TestEnum { foo, bar }

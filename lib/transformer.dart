@@ -16,7 +16,7 @@ library scissors.transformer;
 import 'package:barback/barback.dart';
 
 import 'eager_transformer.dart';
-import 'src/lazy_transformer_utils.dart';
+import 'src/utils/lazy_transformer_utils.dart';
 
 class LazyScissorsTransformerGroup extends LazyTransformerGroupWrapper {
   LazyScissorsTransformerGroup.asPlugin(BarbackSettings settings)

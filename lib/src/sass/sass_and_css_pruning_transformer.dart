@@ -11,24 +11,23 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.src.sass_and_css_pruning_transformer;
+library scissors.src.sass.sass_and_css_pruning_transformer;
 
 import 'dart:async';
 
 import 'package:barback/barback.dart';
-
 import 'package:path/path.dart';
 import 'package:quiver/check.dart';
 import 'package:source_maps/refactor.dart';
 import 'package:source_span/source_span.dart';
 
-import 'css_pruning.dart';
-import 'deps_consumer.dart';
-import 'image_inliner.dart';
-import 'path_resolver.dart';
-import 'path_utils.dart';
+import '../css_pruning/css_pruning.dart';
+import '../image_inlining/image_inliner.dart';
+import '../utils/deps_consumer.dart';
+import '../utils/path_resolver.dart';
+import '../utils/path_utils.dart';
+import '../settings.dart';
 import 'sassc.dart' show runSassC;
-import 'settings.dart';
 
 class _Css {
   final Asset original;

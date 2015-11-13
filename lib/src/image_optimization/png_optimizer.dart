@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.src.png_optimizer;
+library scissors.src.image_optimization.png_optimizer;
 
 import 'dart:async';
 import 'dart:io';
@@ -19,7 +19,7 @@ import 'dart:io';
 import 'package:barback/barback.dart' show Asset;
 import 'package:path/path.dart';
 
-import 'io_utils.dart';
+import '../utils/io_utils.dart';
 
 var _tempDir = Directory.systemTemp.createTemp();
 

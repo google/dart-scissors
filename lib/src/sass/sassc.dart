@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.sassc;
+library scissors.src.sass.sassc;
 
 import 'dart:async';
 import 'dart:io';
@@ -20,10 +20,10 @@ import 'package:barback/barback.dart'
     show Asset, AssetId, AssetNotFoundException, LogLevel, Transform;
 import 'package:path/path.dart';
 import 'package:source_span/source_span.dart';
-import 'path_resolver.dart';
-import 'path_utils.dart';
 
-import 'result.dart' show TransformMessage, TransformResult;
+import '../utils/path_resolver.dart';
+import '../utils/path_utils.dart';
+import '../utils/result.dart' show TransformMessage, TransformResult;
 
 class SasscSettings {
   final String sasscPath;

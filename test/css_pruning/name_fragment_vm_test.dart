@@ -13,7 +13,7 @@
 // limitations under the License.
 library scissors.name_fragment.test;
 
-import 'package:scissors/src/name_fragment.dart';
+import 'package:scissors/src/css_pruning/name_fragment.dart';
 import "package:test/test.dart";
 
 main() {
