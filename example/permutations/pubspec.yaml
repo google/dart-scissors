@@ -18,4 +18,5 @@ transformers:
     verbose: true
     expectedPartCounts:
         web/main.dart.js: 6
-    reoptimizePermutations: true
+    release:
+        reoptimizePermutations: true
