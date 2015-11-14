@@ -40,15 +40,13 @@ abstract class SassSettings {
   final compassStylesheetsPath = makePathSetting(
       'compassStylesheetsPath', pathResolver.defaultCompassStylesheetsPath);
 
-  final sasscPath =
-      makePathSetting('sasscPath', pathResolver.defaultSassCPath);
+  final sasscPath = makePathSetting('sasscPath', pathResolver.defaultSassCPath);
 
   final sasscArgs = new Setting<List<String>>('sasscArgs', defaultValue: []);
 
   Future<SasscSettings> _sasscSettings;
   Future<SasscSettings> get sasscSettings {
     if (_sasscSettings == null) {
-
       _sasscSettings = (() async {
         var path =
             await pathResolver.resolvePath(resolveEnvVars(sasscPath.value));
@@ -66,8 +64,7 @@ abstract class SassSettings {
 }
 
 class _SassSettings extends SettingsBase with SassSettings {
-  _SassSettings(settings)
-      : super(settings);
+  _SassSettings(settings) : super(settings);
 }
 
 class SassTransformer extends Transformer implements DeclaringTransformer {

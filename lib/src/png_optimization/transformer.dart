@@ -34,7 +34,7 @@ class PngOptimizationTransformer extends Transformer
   @override final String allowedExtensions = ".png";
 
   @override bool isPrimary(AssetId id) =>
-    settings.optimizePng.value && super.isPrimary(id);
+      settings.optimizePng.value && super.isPrimary(id);
 
   @override
   declareOutputs(DeclaringTransform transform) {
@@ -45,13 +45,12 @@ class PngOptimizationTransformer extends Transformer
   Future apply(Transform transform) async {
     int originalSize;
     int resultSize;
-    transform.addOutput(
-        await runPngCrush(settings.pngCrushPath.value, transform.primaryInput,
-          (int a, int b) {
-            originalSize = a;
-            resultSize = b;
-          }));
-    transform.logger.info(
-        'Optimized PNG: ${originalSize} bytes -> ${resultSize} bytes');
+    transform.addOutput(await runPngCrush(
+        settings.pngCrushPath.value, transform.primaryInput, (int a, int b) {
+      originalSize = a;
+      resultSize = b;
+    }));
+    transform.logger
+        .info('Optimized PNG: ${originalSize} bytes -> ${resultSize} bytes');
   }
 }

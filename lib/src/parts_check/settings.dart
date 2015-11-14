@@ -19,5 +19,5 @@ abstract class PartsCheckSettings {
 }
 
 class _PartsCheckSettings extends SettingsBase with PartsCheckSettings {
-  _PartsCheckSettings(settings): super(settings);
+  _PartsCheckSettings(settings) : super(settings);
 }

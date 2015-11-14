@@ -21,10 +21,12 @@ import 'package:test/test.dart' show test;
 import 'package:scissors/src/utils/enum_parser.dart';
 import 'package:scissors/src/image_inlining/transformer.dart';
 
-makePhases(Map config) => [[
-    new ImageInliningTransformer.asPlugin(
-        new BarbackSettings(config, BarbackMode.RELEASE))
-]];
+makePhases(Map config) => [
+      [
+        new ImageInliningTransformer.asPlugin(
+            new BarbackSettings(config, BarbackMode.RELEASE))
+      ]
+    ];
 
 void main() {
   phases(ImageInliningMode mode) =>

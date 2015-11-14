@@ -20,6 +20,7 @@ class PngOptimizationSettings {
       makePathSetting('pngCrushPath', pathResolver.defaultPngCrushPath);
 }
 
-class _PngOptimizationSettings extends SettingsBase with PngOptimizationSettings {
+class _PngOptimizationSettings extends SettingsBase
+    with PngOptimizationSettings {
   _PngOptimizationSettings(settings) : super(settings);
 }

@@ -20,10 +20,12 @@ import 'package:code_transformers/tests.dart'
 import 'package:test/test.dart' show test;
 import 'package:scissors/src/css_pruning/transformer.dart';
 
-makePhases(Map config) => [[
-    new CssPruningTransformer.asPlugin(
-        new BarbackSettings(config, BarbackMode.RELEASE))
-]];
+makePhases(Map config) => [
+      [
+        new CssPruningTransformer.asPlugin(
+            new BarbackSettings(config, BarbackMode.RELEASE))
+      ]
+    ];
 
 void main() {
   var phases = makePhases({});

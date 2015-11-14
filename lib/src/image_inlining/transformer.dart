@@ -27,7 +27,8 @@ import '../utils/enum_parser.dart';
 
 part 'settings.dart';
 
-class ImageInliningTransformer extends Transformer implements DeclaringTransformer {
+class ImageInliningTransformer extends Transformer
+    implements DeclaringTransformer {
   final ImageInliningSettings settings;
 
   ImageInliningTransformer(this.settings);
@@ -39,8 +40,7 @@ class ImageInliningTransformer extends Transformer implements DeclaringTransform
 
   @override final String allowedExtensions = ".css .css.map";
 
-  @override bool isPrimary(AssetId id) =>
-      _isEnabled && super.isPrimary(id);
+  @override bool isPrimary(AssetId id) => _isEnabled && super.isPrimary(id);
 
   final RegExp _filesToSkipRx =
       new RegExp(r'^_.*?\.scss|.*?\.ess\.s[ac]ss\.css(\.map)?$');
@@ -75,11 +75,9 @@ class ImageInliningTransformer extends Transformer implements DeclaringTransform
       return;
     }
 
-    var rewritePackage =
-        _getPackageRewriter(settings.packageRewrites.value);
+    var rewritePackage = _getPackageRewriter(settings.packageRewrites.value);
 
-    var result = await inlineImages(
-        cssAsset, settings.imageInlining.value,
+    var result = await inlineImages(cssAsset, settings.imageInlining.value,
         assetFetcher: (String url, {AssetId from}) {
       return pathResolver.resolveAsset(transform, [url], from);
     }, resolveLinkToAsset: (Asset asset) {

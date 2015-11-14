@@ -24,7 +24,8 @@ abstract class SvgOptimizationSettings {
   final optimizeSvg = makeOptimSetting('optimizeSvg');
 }
 
-class _SvgOptimizationSettings extends SettingsBase with SvgOptimizationSettings {
+class _SvgOptimizationSettings extends SettingsBase
+    with SvgOptimizationSettings {
   _SvgOptimizationSettings(settings) : super(settings);
 }
 
@@ -39,7 +40,7 @@ class SvgOptimizationTransformer extends Transformer
   @override final String allowedExtensions = ".svg";
 
   @override bool isPrimary(AssetId id) =>
-    settings.optimizeSvg.value && super.isPrimary(id);
+      settings.optimizeSvg.value && super.isPrimary(id);
 
   @override
   declareOutputs(DeclaringTransform transform) {

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 library scissors.src.utils.perf;
+
 import 'package:barback/barback.dart';
 import 'dart:async';
 

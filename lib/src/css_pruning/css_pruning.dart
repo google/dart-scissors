@@ -62,8 +62,12 @@ AssetId _getCssCompanionId(AssetId cssId, String companionExtension) {
 
 /// Edits [transaction] to drop any CSS rule in [topLevels] that we're sure
 /// is not referred to by any DOM node in [htmlTrees].
-dropUnusedCssRules(Transform transform, TextEditTransaction transaction,
-    CssPruningSettings settings, SourceFile cssSourceFile, String htmlTemplate) {
+dropUnusedCssRules(
+    Transform transform,
+    TextEditTransaction transaction,
+    CssPruningSettings settings,
+    SourceFile cssSourceFile,
+    String htmlTemplate) {
   hacks.useCssLib();
 
   final StyleSheet cssTree =

@@ -20,10 +20,12 @@ import 'package:code_transformers/tests.dart'
 import 'package:test/test.dart' show test;
 import 'package:scissors/src/svg_optimization/transformer.dart';
 
-makePhases(Map config) => [[
-    new SvgOptimizationTransformer.asPlugin(
-        new BarbackSettings(config, BarbackMode.RELEASE))
-]];
+makePhases(Map config) => [
+      [
+        new SvgOptimizationTransformer.asPlugin(
+            new BarbackSettings(config, BarbackMode.RELEASE))
+      ]
+    ];
 
 void main() {
   _testPhases('trims SVG files', makePhases({}), {
@@ -45,8 +47,7 @@ void main() {
       </svg>
     '''
   }, {
-    'a|foo.svg':
-        '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" '
+    'a|foo.svg': '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" '
         'x="0px" y="0px" width="21px" height="21px" viewBox="0 0 21 21" '
         'overflow="visible" enable-background="new 0 0 21 21">'
         '<rect x="0" y="0" height="10" width="10" style="stroke:#00ff00;fill:#ff0000"/>'

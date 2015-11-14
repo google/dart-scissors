@@ -20,8 +20,7 @@ abstract class PermutationsSettings {
   final ltrImport = new Setting<String>('ltrImport');
   final rtlImport = new Setting<String>('rtlImport');
 
-  final generatePermutations =
-      makeBoolSetting('generatePermutations');
+  final generatePermutations = makeBoolSetting('generatePermutations');
 
   final reoptimizePermutations =
       makeOptimSetting('reoptimizePermutations', false);
@@ -33,5 +32,5 @@ abstract class PermutationsSettings {
 }
 
 class _PermutationsSettings extends SettingsBase with PermutationsSettings {
-  _PermutationsSettings(settings): super(settings);
+  _PermutationsSettings(settings) : super(settings);
 }

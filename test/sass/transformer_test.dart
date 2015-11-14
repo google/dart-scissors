@@ -22,10 +22,12 @@ import 'package:code_transformers/tests.dart'
 import 'package:test/test.dart' show test;
 import 'package:scissors/src/sass/transformer.dart';
 
-makePhases(Map config) => [[
-    new SassTransformer.asPlugin(
-        new BarbackSettings(config, BarbackMode.RELEASE))
-]];
+makePhases(Map config) => [
+      [
+        new SassTransformer.asPlugin(
+            new BarbackSettings(config, BarbackMode.RELEASE))
+      ]
+    ];
 
 void main() {
   if (Process.runSync('which', ['sassc']).exitCode != 0) {

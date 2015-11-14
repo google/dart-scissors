@@ -62,10 +62,8 @@ class PermutationsTransformer extends AggregateTransformer {
       ".dart.js .part.js .deferred_map".split(' ').toList();
 
   @override
-  classifyPrimary(AssetId id) =>
-      _settings.generatePermutations.value &&
-      _allowedExtensions.any((x) => id.path.endsWith(x))
-          ? '<default>' : null;
+  classifyPrimary(AssetId id) => _settings.generatePermutations.value &&
+      _allowedExtensions.any((x) => id.path.endsWith(x)) ? '<default>' : null;
 
   @override
   apply(AggregateTransform transform) async {
@@ -128,7 +126,8 @@ class PermutationsTransformer extends AggregateTransformer {
           transform.logger.info('Creating $permutationId with:\n'
               '\t${assets.map(describeAsset).join("\n\t")}');
         } else {
-          transform.logger.info('Creating $permutationId with ${assets.length} assets');
+          transform.logger
+              .info('Creating $permutationId with ${assets.length} assets');
         }
 
         futures.add(_concatenateAssets(transform, permutationId, assets));

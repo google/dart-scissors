@@ -22,41 +22,44 @@ import 'src/css_pruning/transformer.dart';
 import 'src/sass/transformer.dart';
 import 'src/utils/settings_base.dart';
 
-class _ScissorsSettings extends SettingsBase with
-    SvgOptimizationSettings,
-    PngOptimizationSettings,
-    SassSettings,
-    CssPruningSettings,
-    ImageInliningSettings {
-  _ScissorsSettings(BarbackSettings settings)
-    : super(settings);
+class _ScissorsSettings extends SettingsBase
+    with
+        SvgOptimizationSettings,
+        PngOptimizationSettings,
+        SassSettings,
+        CssPruningSettings,
+        ImageInliningSettings {
+  _ScissorsSettings(BarbackSettings settings) : super(settings);
 }
 
 List<List<Transformer>> _createPhases(_ScissorsSettings settings) {
   var phases = [
     [
-      settings.optimizeSvg.value ? new SvgOptimizationTransformer(settings) : null,
-      settings.optimizePng.value ? new PngOptimizationTransformer(settings) : null,
+      settings.optimizeSvg.value
+          ? new SvgOptimizationTransformer(settings)
+          : null,
+      settings.optimizePng.value
+          ? new PngOptimizationTransformer(settings)
+          : null,
       settings.compileSass.value ? new SassTransformer(settings) : null
     ],
-    [
-      settings.pruneCss.value ? new CssPruningTransformer(settings) : null
-    ],
+    [settings.pruneCss.value ? new CssPruningTransformer(settings) : null],
     [
       settings.imageInlining.value != ImageInliningMode.disablePass
-          ? new ImageInliningTransformer(settings) : null
+          ? new ImageInliningTransformer(settings)
+          : null
     ]
   ];
   return _trimPhases(phases);
 }
 
-_trimPhases(List<List<Transformer>> phases) =>
-    phases.map((phase) => phase.where(_isNotNull).toList())
-        .where(_isNotEmpty).toList();
+_trimPhases(List<List<Transformer>> phases) => phases
+    .map((phase) => phase.where(_isNotNull).toList())
+    .where(_isNotEmpty)
+    .toList();
 
 _isNotNull(x) => x != null;
 _isNotEmpty(List l) => l.isNotEmpty;
-
 
 class EagerScissorsTransformerGroup extends TransformerGroup {
   EagerScissorsTransformerGroup(_ScissorsSettings settings)

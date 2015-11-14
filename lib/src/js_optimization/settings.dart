@@ -17,7 +17,6 @@ import '../utils/settings_base.dart';
 import '../utils/path_resolver.dart';
 
 class JsOptimizationSettings {
-
   final reoptimizePermutations =
       makeOptimSetting('reoptimizePermutations', false);
 
