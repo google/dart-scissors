@@ -31,7 +31,7 @@ class ImageInliningTransformer extends Transformer implements DeclaringTransform
 
   ImageInliningTransformer(this.settings);
   ImageInliningTransformer.asPlugin(BarbackSettings settings)
-      : this(new _ImageInliningSettings.fromSettings(settings));
+      : this(new _ImageInliningSettings(settings));
 
   bool get _isDisabled =>
       settings.imageInlining.value == ImageInliningMode.disablePass;

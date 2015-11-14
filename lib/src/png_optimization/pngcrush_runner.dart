@@ -23,7 +23,7 @@ import '../utils/io_utils.dart';
 
 var _tempDir = Directory.systemTemp.createTemp();
 
-Future<Asset> crushPng(String pngCrushPath, Asset input,
+Future<Asset> runPngCrush(String pngCrushPath, Asset input,
     sizeReport(int originalSize, int resultSize)) async {
   var dir = await _tempDir;
   var fileName = basename(input.id.path);

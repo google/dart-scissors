@@ -54,10 +54,10 @@ class PermutationsTransformerGroup extends TransformerGroup {
         _settings = settings;
 
   PermutationsTransformerGroup.asPlugin(BarbackSettings settings)
-      : this(new _PermutationsGroupSettings.fromSettings(settings));
+      : this(new _PermutationsGroupSettings(settings));
 }
 
 class _PermutationsGroupSettings extends SettingsBase with
     PermutationsSettings, PartsCheckSettings {
-  _PermutationsGroupSettings.fromSettings(settings): super.fromSettings(settings);
+  _PermutationsGroupSettings(settings): super(settings);
 }

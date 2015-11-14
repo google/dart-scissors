@@ -19,7 +19,7 @@ import 'package:barback/barback.dart';
 
 import '../utils/deps_consumer.dart';
 import '../utils/settings_base.dart';
-import 'sassc.dart' show SasscSettings, runSassC;
+import 'sassc_runner.dart' show SasscSettings, runSassC;
 import 'package:scissors/src/utils/path_resolver.dart';
 
 abstract class SassSettings {
@@ -66,8 +66,8 @@ abstract class SassSettings {
 }
 
 class _SassSettings extends SettingsBase with SassSettings {
-  _SassSettings.fromSettings(settings)
-      : super.fromSettings(settings);
+  _SassSettings(settings)
+      : super(settings);
 }
 
 class SassTransformer extends Transformer implements DeclaringTransformer {
@@ -75,7 +75,7 @@ class SassTransformer extends Transformer implements DeclaringTransformer {
 
   SassTransformer(this.settings);
   SassTransformer.asPlugin(BarbackSettings settings)
-      : this(new _SassSettings.fromSettings(settings));
+      : this(new _SassSettings(settings));
 
   @override String get allowedExtensions =>
       settings.compileSass.value ? ".sass .scss" : ".no-such-extension";

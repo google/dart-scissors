@@ -56,7 +56,7 @@ class PermutationsTransformer extends AggregateTransformer {
   PermutationsTransformer(this._settings);
 
   PermutationsTransformer.asPlugin(BarbackSettings settings)
-      : this(new _PermutationsSettings.fromSettings(settings));
+      : this(new _PermutationsSettings(settings));
 
   @override static final _allowedExtensions =
       ".dart.js .part.js .deferred_map".split(' ').toList();

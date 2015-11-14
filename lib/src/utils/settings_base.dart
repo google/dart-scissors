@@ -40,7 +40,7 @@ abstract class SettingsBase {
   static const _debugConfigKey = 'debug';
   static const _releaseConfigKey = 'release';
 
-  SettingsBase.fromSettings(BarbackSettings settings)
+  SettingsBase(BarbackSettings settings)
       : isDebug = settings.mode == BarbackMode.DEBUG {
     var config = settings.configuration;
     config.addAll(config[isDebug ? _debugConfigKey : _releaseConfigKey] ?? {});

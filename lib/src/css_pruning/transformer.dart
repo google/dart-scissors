@@ -33,7 +33,7 @@ class CssPruningTransformer extends Transformer
 
   CssPruningTransformer(this.settings);
   CssPruningTransformer.asPlugin(BarbackSettings settings)
-      : this(new _CssPruningSettings.fromSettings(settings));
+      : this(new _CssPruningSettings(settings));
 
   @override String get allowedExtensions =>
       settings.pruneCss.value ? ".css .css.map" : "";

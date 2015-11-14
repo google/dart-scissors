@@ -28,8 +28,8 @@ class _ScissorsSettings extends SettingsBase with
     SassSettings,
     CssPruningSettings,
     ImageInliningSettings {
-  _ScissorsSettings.fromSettings(BarbackSettings settings)
-    : super.fromSettings(settings);
+  _ScissorsSettings(BarbackSettings settings)
+    : super(settings);
 }
 
 List<List<Transformer>> _createPhases(_ScissorsSettings settings) {
@@ -58,5 +58,5 @@ class EagerScissorsTransformerGroup extends TransformerGroup {
       : super(_createPhases(settings));
 
   EagerScissorsTransformerGroup.asPlugin(BarbackSettings settings)
-      : this(new _ScissorsSettings.fromSettings(settings));
+      : this(new _ScissorsSettings(settings));
 }

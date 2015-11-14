@@ -17,8 +17,6 @@ import 'dart:async';
 
 import 'package:barback/barback.dart';
 
-import 'package:quiver/check.dart';
-
 import '../utils/settings_base.dart';
 import 'svg_optimizer.dart';
 
@@ -27,7 +25,7 @@ abstract class SvgOptimizationSettings {
 }
 
 class _SvgOptimizationSettings extends SettingsBase with SvgOptimizationSettings {
-  _SvgOptimizationSettings.fromSettings(settings) : super.fromSettings(settings);
+  _SvgOptimizationSettings(settings) : super(settings);
 }
 
 class SvgOptimizationTransformer extends Transformer
@@ -36,7 +34,7 @@ class SvgOptimizationTransformer extends Transformer
 
   SvgOptimizationTransformer(this.settings);
   SvgOptimizationTransformer.asPlugin(BarbackSettings settings)
-      : this(new SvgOptimizationSettings.fromSettings(settings));
+      : this(new _SvgOptimizationSettings(settings));
 
   @override final allowedExtensions = ".svg";
 

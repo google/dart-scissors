@@ -19,7 +19,7 @@ import 'package:barback/barback.dart';
 
 import '../utils/path_resolver.dart';
 import '../utils/settings_base.dart';
-import 'png_optimizer.dart';
+import 'pngcrush_runner.dart';
 
 part 'settings.dart';
 
@@ -29,7 +29,7 @@ class PngOptimizationTransformer extends Transformer
 
   PngOptimizationTransformer(this.settings);
   PngOptimizationTransformer.asPlugin(BarbackSettings settings)
-      : this(new _PngOptimizationSettings.fromSettings(settings));
+      : this(new _PngOptimizationSettings(settings));
 
   @override final allowedExtensions = ".png";
 
@@ -43,7 +43,7 @@ class PngOptimizationTransformer extends Transformer
     int originalSize;
     int resultSize;
     transform.addOutput(
-        await crushPng(settings.pngCrushPath.value, transform.primaryInput,
+        await runPngCrush(settings.pngCrushPath.value, transform.primaryInput,
           (int a, int b) {
             originalSize = a;
             resultSize = b;
