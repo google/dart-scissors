@@ -11,11 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.src.permutations.transformer;
+library scissors.src.parts_check.transformer;
 
 import 'package:barback/barback.dart';
 
-import '../settings.dart';
+import '../utils/settings_base.dart';
+
+part 'settings.dart';
 
 /// Checks that the number of parts for each binary is exactly the one expected.
 ///
@@ -27,12 +29,12 @@ import '../settings.dart';
 ///
 class PartsCheckTransformer extends Transformer
     implements DeclaringTransformer {
-  final ScissorsSettings _settings;
+  final PartsCheckSettings _settings;
 
   PartsCheckTransformer(this._settings);
 
   PartsCheckTransformer.asPlugin(BarbackSettings settings)
-      : this(new ScissorsSettings.fromSettings(settings));
+      : this(new _PartsCheckSettings.fromSettings(settings));
 
   @override String get allowedExtensions =>
       expectedPartCounts.isEmpty ? "" : ".dart.js";

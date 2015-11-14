@@ -14,9 +14,9 @@
 library scissors.permutations_transformer;
 
 import 'package:barback/barback.dart';
-import 'src/settings.dart';
-import 'src/permutations/parts_checker.dart';
-import 'src/permutations/permutations_transformer.dart';
+import 'src/permutations/transformer.dart';
+import 'package:scissors/src/utils/settings_base.dart';
+import 'package:scissors/src/parts/parts_checker.dart';
 
 /// This transformer stitches deferred message parts together in pre-assembled
 /// .js artefact permutations, to speed up initial loading of pages.
@@ -42,9 +42,9 @@ import 'src/permutations/permutations_transformer.dart';
 /// This might interact with the CSS mirroring feature, in ways still TBD.
 ///
 class PermutationsTransformerGroup extends TransformerGroup {
-  final ScissorsSettings _settings;
+  final PermutationsSettings _settings;
 
-  PermutationsTransformerGroup(ScissorsSettings settings)
+  PermutationsTransformerGroup(_PermutationsGroupSettings settings)
       : super([
           [
             new PermutationsTransformer(settings),
@@ -54,5 +54,10 @@ class PermutationsTransformerGroup extends TransformerGroup {
         _settings = settings;
 
   PermutationsTransformerGroup.asPlugin(BarbackSettings settings)
-      : this(new ScissorsSettings.fromSettings(settings));
+      : this(new _PermutationsGroupSettings.fromSettings(settings));
+}
+
+class _PermutationsGroupSettings extends SettingsBase with
+    PermutationsSettings, PartsCheckSettings {
+  _PermutationsGroupSettings.fromSettings(settings): super.fromSettings(settings);
 }

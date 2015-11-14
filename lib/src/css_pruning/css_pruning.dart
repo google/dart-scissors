@@ -27,11 +27,11 @@ import 'package:source_span/source_span.dart';
 
 import '../utils/hacks.dart' as hacks;
 import '../utils/path_utils.dart';
-import '../settings.dart';
 
 import 'rule_set_index.dart';
 import 'template_extractor.dart' show extractTemplates;
 import 'usage_collector.dart';
+import 'transformer.dart' show CssPruningSettings;
 
 Future<String> findHtmlTemplate(Transform transform, AssetId cssAssetId) async {
   try {
@@ -63,7 +63,7 @@ AssetId _getCssCompanionId(AssetId cssId, String companionExtension) {
 /// Edits [transaction] to drop any CSS rule in [topLevels] that we're sure
 /// is not referred to by any DOM node in [htmlTrees].
 dropUnusedCssRules(Transform transform, TextEditTransaction transaction,
-    ScissorsSettings settings, SourceFile cssSourceFile, String htmlTemplate) {
+    CssPruningSettings settings, SourceFile cssSourceFile, String htmlTemplate) {
   hacks.useCssLib();
 
   final StyleSheet cssTree =

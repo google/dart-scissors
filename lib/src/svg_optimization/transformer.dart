@@ -19,25 +19,35 @@ import 'package:barback/barback.dart';
 
 import 'package:quiver/check.dart';
 
-import '../settings.dart';
+import '../utils/settings_base.dart';
 import 'svg_optimizer.dart';
-import 'png_optimizer.dart';
 
-class ImageOptimizationTransformer extends Transformer
+abstract class SvgOptimizationSettings {
+  final optimizeSvg = makeOptimSetting('optimizeSvg');
+}
+
+class _SvgOptimizationSettings extends SettingsBase with SvgOptimizationSettings {
+  _SvgOptimizationSettings.fromSettings(settings) : super.fromSettings(settings);
+}
+
+class SvgOptimizationTransformer extends Transformer
     implements DeclaringTransformer {
-  final ScissorsSettings settings;
+  final SvgOptimizationSettings settings;
 
-  @override
-  final String allowedExtensions;
-  ImageOptimizationTransformer(this.settings, this.allowedExtensions);
+  SvgOptimizationTransformer(this.settings);
+  SvgOptimizationTransformer.asPlugin(BarbackSettings settings)
+      : this(new SvgOptimizationSettings.fromSettings(settings));
+
+  @override final allowedExtensions = ".svg";
 
   @override
   declareOutputs(DeclaringTransform transform) {
-    transform.consumePrimary();
+    // transform.consumePrimary();
     transform.declareOutput(transform.primaryId);
   }
 
-  Future _optimizeSvg(Transform transform, Asset asset) async {
+  Future apply(Transform transform) async {
+    var asset = transform.primaryInput;
     String input = await asset.readAsString();
     String output = optimizeSvg(input);
     transform.addOutput(new Asset.fromString(asset.id, output));
@@ -46,36 +56,6 @@ class ImageOptimizationTransformer extends Transformer
         asset: asset.id);
     if (settings.verbose.value) {
       transform.logger.info('Optimized SVG content:\n$output', asset: asset.id);
-    }
-  }
-
-  Future _optimizePng(Transform transform, Asset asset) async {
-    int originalSize;
-    int resultSize;
-    transform.addOutput(
-        await crushPng(settings.pngCrushPath.value, asset, (int a, int b) {
-      originalSize = a;
-      resultSize = b;
-    }));
-    transform.logger.info(
-        'Optimized PNG: ${originalSize} bytes -> ${resultSize} bytes',
-        asset: asset.id);
-    ;
-  }
-
-  Future apply(Transform transform) async {
-    var id = transform.primaryInput.id;
-
-    transform.consumePrimary();
-    switch (id.extension) {
-      case '.svg':
-        checkState(settings.optimizeSvg.value);
-        await _optimizeSvg(transform, transform.primaryInput);
-        break;
-      case '.png':
-        checkState(settings.optimizePng.value);
-        await _optimizePng(transform, transform.primaryInput);
-        break;
     }
   }
 }

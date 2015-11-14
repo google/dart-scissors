@@ -13,7 +13,7 @@
 // limitations under the License.
 library scissors.test.svg_optimizer_test;
 
-import 'package:scissors/src/image_optimization/svg_optimizer.dart';
+import 'package:scissors/src/svg_optimization/svg_optimizer.dart';
 import 'package:test/test.dart';
 
 main() {

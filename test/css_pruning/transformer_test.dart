@@ -11,21 +11,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.test;
-
-import 'dart:io';
+library scissors.test.css_pruning.transformer_test;
 
 import 'package:barback/barback.dart'
     show BarbackMode, BarbackSettings, Transformer;
 import 'package:code_transformers/tests.dart'
     show StringFormatter, applyTransformers;
-import 'package:scissors/eager_transformer.dart';
 import 'package:test/test.dart' show test;
-import 'package:scissors/src/image_inlining/image_inliner.dart';
-import 'package:scissors/src/utils/enum_parser.dart';
+import 'package:scissors/src/css_pruning/transformer.dart';
 
-makePhases(Map config) => new EagerScissorsTransformerGroup.asPlugin(
-    new BarbackSettings(config, BarbackMode.RELEASE)).phases;
+makePhases(Map config) => [[
+    new CssPruningTransformer.asPlugin(
+        new BarbackSettings(config, BarbackMode.RELEASE))
+]];
 
 void main() {
   var phases = makePhases({});
@@ -247,170 +245,6 @@ void main() {
     ''',
     'a|div.css': r'''
       div{font-family:sans-serif}
-    '''
-  });
-
-  testImageInlining();
-
-  if (Process.runSync('which', ['sassc']).exitCode == 0) {
-    runSassTests();
-  } else {
-    // TODO(ochafik): Find a way to get sassc on travis (if possible,
-    // without having to compile it ourselves).
-    print("WARNING: Skipping Sass tests by lack of sassc in the PATH.");
-  }
-}
-
-runSassTests() {
-  var phases = makePhases({});
-
-  _testPhases('runs sassc on .scss and .sass inputs', phases, {
-    'a|foo.scss': '''
-      .foo {
-        float: left;
-      }
-    ''',
-    'a|foo.sass': '''
-.foo
-  height: 100%
-    '''
-  }, {
-    'a|foo.scss.css': '.foo{float:left}\n',
-    'a|foo.scss.css.map': '{\n'
-        '\t"version": 3,\n'
-        '\t"file": "foo.scss.css",\n'
-        '\t"sources": [\n'
-        '\t\t"foo.scss"\n'
-        '\t],\n'
-        '\t"sourcesContent": [],\n'
-        '\t"mappings": "AAAM,IAAI,AAAC,CACH,KAAK,CAAE,IAAK,CADR",\n'
-        '\t"names": []\n'
-        '}',
-    'a|foo.sass.css': '.foo{height:100%}\n',
-    'a|foo.sass.css.map': '{\n'
-        '\t"version": 3,\n'
-        '\t"file": "foo.sass.css",\n'
-        '\t"sources": [\n'
-        '\t\t"foo.sass"\n'
-        '\t],\n'
-        '\t"sourcesContent": [],\n'
-        '\t"mappings": "AAAA,IAAI,AAAC,CACH,MAAM,CAAE,IAAK,CADT",\n'
-        '\t"names": []\n'
-        '}'
-  });
-
-  // _testPhases('does not run sassc on .scss that are already converted', phases, {
-  //   'a|foo.scss': '''
-  //     .foo {
-  //       float: left;
-  //     }
-  //   ''',
-  //   'a|foo.scss.css': '/* do not modify */'
-  // }, {
-  //   'a|foo.scss.css': '/* do not modify */'
-  // });
-
-  _testPhases('reports sassc errors properly', phases, {
-    'a|foo.scss': '''
-      .foo {{
-        float: left;
-      }
-    '''
-  }, {}, [
-    'error: invalid property name (a%7Cfoo.scss 1 12)'
-  ]);
-}
-
-testImageInlining() {
-  phases(ImageInliningMode mode) =>
-      makePhases({'imageInlining': enumName(mode)});
-
-  var iconSvg = r'''
-    <?xml version="1.0" encoding="utf-8"?>
-    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <rect x="0" y="0" height="10" width="10" style="stroke:#00ff00; fill: #ff0000"/>
-    </svg>
-  ''';
-  var iconSvgData =
-      'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHg9IjAiIHk9IjAiIGhlaWdodD0iMTAiIHdpZHRoPSIxMCIgc3R5bGU9InN0cm9rZTojMDBmZjAwO2ZpbGw6I2ZmMDAwMCIvPjwvc3ZnPg==';
-
-  _testPhases('inlines inlined images when inlineInlinedImages is set',
-      phases(ImageInliningMode.inlineInlinedImages), {
-    'a|foo.css': r'''
-      div {
-        background-image: inline-image('icon.svg');
-        other-image: url('no-inline.svg');
-      }
-    ''',
-    'a|icon.svg': iconSvg,
-    'a|foo.html': r'<div></div>',
-  }, {
-    'a|foo.css': '''
-      div {
-        background-image: url('data:image/svg+xml;base64,$iconSvgData');
-        other-image: url('no-inline.svg');
-      }
-    '''
-  });
-
-  _testPhases('inlines all images when inlineAll is set',
-      phases(ImageInliningMode.inlineAllUrls), {
-    'a|foo.css': r'''
-      div {
-        foo: bar;
-        some-image: url('icon.svg');
-        baz: bam;
-      }
-    ''',
-    'a|icon.svg': iconSvg,
-    'a|foo.html': r'<div></div>',
-  }, {
-    'a|foo.css': '''
-      div {
-        foo: bar;
-        some-image: url('data:image/svg+xml;base64,$iconSvgData');
-        baz: bam;
-      }
-    '''
-  });
-
-  _testPhases('just links to images noInline is set',
-      phases(ImageInliningMode.linkInlinedImages), {
-    'a|foo.css': r'''
-      div {
-        background-image: inline-image('no-inline.svg');
-        other-image: url('no-inline-either.svg');
-      }
-    ''',
-    'a|no-inline.svg': 'no inline',
-    'a|no-inline-either.svg': 'no inline either',
-    'a|icon.svg': iconSvg,
-    'a|foo.html': r'<div></div>',
-  }, {
-    'a|foo.css': r'''
-      div {
-        background-image: url('packages/a/no-inline.svg');
-        other-image: url('no-inline-either.svg');
-      }
-    '''
-  });
-
-  _testPhases(
-      'does nothing with disablePass', phases(ImageInliningMode.disablePass), {
-    'a|foo.css': r'''
-      div {
-        background-image: inline-image('inlined-image.svg');
-        other-image: url('linked-image.svg');
-      }
-    ''',
-    'a|icon.svg': iconSvg,
-    'a|foo.html': r'<div></div>',
-  }, {
-    'a|foo.css': r'''
-      div {
-        background-image: inline-image('inlined-image.svg');
-        other-image: url('linked-image.svg');
-      }
     '''
   });
 }

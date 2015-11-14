@@ -15,37 +15,48 @@ library scissors.scissors_transformer;
 
 import 'package:barback/barback.dart';
 
-import 'src/image_inlining/image_inliner.dart';
-import 'src/image_optimization/image_optimization_transformer.dart';
-import 'src/sass/sass_and_css_pruning_transformer.dart';
-import 'src/settings.dart';
+import 'src/image_inlining/transformer.dart';
+import 'src/png_optimization/transformer.dart';
+import 'src/svg_optimization/transformer.dart';
+import 'src/css_pruning/transformer.dart';
+import 'src/sass/transformer.dart';
+import 'package:scissors/src/utils/settings_base.dart';
 
-List<List<Transformer>> _createPhases(ScissorsSettings settings) {
-  var phases = <List<Transformer>>[];
-  var imageExts = [];
-  if (settings.optimizePng.value) imageExts.add('.png');
-  if (settings.optimizeSvg.value) imageExts.add('.svg');
-  if (imageExts.isNotEmpty) {
-    phases
-        .add([new ImageOptimizationTransformer(settings, imageExts.join(' '))]);
-  }
-
-  var exts = [];
-  if (settings.compileSass.value) exts..add('.sass')..add('.scss');
-  if (settings.pruneCss.value ||
-      settings.imageInlining != ImageInliningMode.disablePass) {
-    exts..add('.css')..add('.map');
-  }
-  if (exts.isNotEmpty) {
-    phases.add([new SassAndCssPruningTransformer(settings, exts.join(' '))]);
-  }
-  return phases;
+class _ScissorsSettings extends SettingsBase with
+    SvgOptimizationSettings,
+    PngOptimizationSettings,
+    SassSettings,
+    CssPruningSettings,
+    ImageInliningSettings {
+  _ScissorsSettings.fromSettings(BarbackSettings settings)
+    : super.fromSettings(settings);
 }
 
+List<List<Transformer>> _createPhases(_ScissorsSettings settings) {
+  var phases = [
+    [
+      settings.optimizeSvg.value ? new SvgOptimizationTransformer(settings) : null,
+      settings.optimizePng.value ? new PngOptimizationTransformer(settings) : null,
+      settings.compileSass.value ? new SassTransformer(settings) : null
+    ],
+    [
+      settings.pruneCss.value ? new CssPruningTransformer(settings) : null
+    ],
+    [
+      settings.pruneCss.value ? new ImageInliningTransformer(settings) : null
+    ]
+  ];
+  return phases.map((phase) => phase.where(_isNotNull).toList())
+      .where(_isNotEmpty).toList();
+}
+_isNotNull(x) => x != null;
+_isNotEmpty(List l) => l.isNotEmpty;
+
+
 class EagerScissorsTransformerGroup extends TransformerGroup {
-  EagerScissorsTransformerGroup(ScissorsSettings settings)
+  EagerScissorsTransformerGroup(_ScissorsSettings settings)
       : super(_createPhases(settings));
 
   EagerScissorsTransformerGroup.asPlugin(BarbackSettings settings)
-      : this(new ScissorsSettings.fromSettings(settings));
+      : this(new _ScissorsSettings.fromSettings(settings));
 }

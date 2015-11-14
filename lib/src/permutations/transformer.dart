@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.src.permutations.permutations_transformer;
+library scissors.src.permutations.transformer;
 
 import 'dart:async';
 import 'dart:io';
@@ -19,10 +19,13 @@ import 'dart:io';
 import 'package:barback/barback.dart';
 import 'package:path/path.dart';
 
-import '../settings.dart';
 import '../utils/path_resolver.dart';
 import '../js_optimization/closure.dart';
+import '../utils/settings_base.dart';
+
 import 'intl_deferred_map.dart';
+
+part 'settings.dart';
 
 /// This transformer stitches deferred message parts together in pre-assembled
 /// .js artefact permutations, to speed up initial loading of pages.
@@ -48,19 +51,21 @@ import 'intl_deferred_map.dart';
 /// This might interact with the CSS mirroring feature, in ways still TBD.
 ///
 class PermutationsTransformer extends AggregateTransformer {
-  final ScissorsSettings _settings;
+  final PermutationsSettings _settings;
 
   PermutationsTransformer(this._settings);
 
   PermutationsTransformer.asPlugin(BarbackSettings settings)
-      : this(new ScissorsSettings.fromSettings(settings));
+      : this(new _PermutationsSettings.fromSettings(settings));
 
-  static final _allowedExtensions =
+  @override static final _allowedExtensions =
       ".dart.js .part.js .deferred_map".split(' ').toList();
 
   @override
   classifyPrimary(AssetId id) =>
-      _allowedExtensions.any((x) => id.path.endsWith(x)) ? '<default>' : null;
+      _settings.generatePermutations.value &&
+      _allowedExtensions.any((x) => id.path.endsWith(x))
+          ? '<default>' : null;
 
   @override
   apply(AggregateTransform transform) async {
