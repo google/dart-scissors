@@ -20,6 +20,7 @@ import 'package:path/path.dart';
 import 'package:quiver/check.dart';
 
 import '../image_inlining/image_inliner.dart';
+export '../image_inlining/image_inliner.dart' show ImageInliningMode;
 import '../utils/path_resolver.dart';
 import '../utils/settings_base.dart';
 import '../utils/enum_parser.dart';
@@ -33,11 +34,13 @@ class ImageInliningTransformer extends Transformer implements DeclaringTransform
   ImageInliningTransformer.asPlugin(BarbackSettings settings)
       : this(new _ImageInliningSettings(settings));
 
-  bool get _isDisabled =>
-      settings.imageInlining.value == ImageInliningMode.disablePass;
+  bool get _isEnabled =>
+      settings.imageInlining.value != ImageInliningMode.disablePass;
 
-  @override String get allowedExtensions =>
-      _isDisabled ? ".no-such-extension" : ".css .css.map";
+  @override final String allowedExtensions = ".css .css.map";
+
+  @override bool isPrimary(AssetId id) =>
+      _isEnabled && super.isPrimary(id);
 
   final RegExp _filesToSkipRx =
       new RegExp(r'^_.*?\.scss|.*?\.ess\.s[ac]ss\.css(\.map)?$');
@@ -49,18 +52,22 @@ class ImageInliningTransformer extends Transformer implements DeclaringTransform
 
   @override
   declareOutputs(DeclaringTransform transform) {
-    if (_isDisabled) return;
-
     var id = transform.primaryId;
     if (_shouldSkipAsset(id)) return;
 
-    transform.declareOutput(id);
-    transform.declareOutput(id.addExtension('.map'));
+    if (id.extension == '.map') {
+      transform.consumePrimary();
+    } else {
+      transform.declareOutput(id);
+      transform.declareOutput(id.addExtension('.map'));
+    }
   }
 
   Future apply(Transform transform) async {
-    if (_isDisabled) return;
-
+    if (transform.primaryInput.id.extension == '.map') {
+      transform.consumePrimary();
+      return;
+    }
     var cssAsset = transform.primaryInput;
 
     if (_shouldSkipAsset(cssAsset.id)) {

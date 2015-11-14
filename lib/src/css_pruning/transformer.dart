@@ -23,7 +23,6 @@ import 'package:source_span/source_span.dart';
 import 'css_pruning.dart';
 import '../utils/path_utils.dart';
 import '../utils/settings_base.dart';
-import '../utils/settings_base.dart';
 
 part 'settings.dart';
 
@@ -35,8 +34,10 @@ class CssPruningTransformer extends Transformer
   CssPruningTransformer.asPlugin(BarbackSettings settings)
       : this(new _CssPruningSettings(settings));
 
-  @override String get allowedExtensions =>
-      settings.pruneCss.value ? ".css .css.map" : "";
+  @override final String allowedExtensions = ".css .css.map";
+
+  @override bool isPrimary(AssetId id) =>
+      settings.pruneCss.value && super.isPrimary(id);
 
   final RegExp _filesToSkipRx =
       new RegExp(r'^_.*?\.scss|.*?\.ess\.s[ac]ss\.css(\.map)?$');
@@ -51,12 +52,19 @@ class CssPruningTransformer extends Transformer
     var id = transform.primaryId;
     if (_shouldSkipAsset(id)) return;
 
-    transform.consumePrimary();
-    transform.declareOutput(id.addExtension('.css'));
-    transform.declareOutput(id.addExtension('.css.map'));
+    if (id.extension == '.map') {
+      transform.consumePrimary();
+    } else {
+      transform.declareOutput(id.addExtension('.css'));
+      transform.declareOutput(id.addExtension('.css.map'));
+    }
   }
 
   Future apply(Transform transform) async {
+    if (transform.primaryInput.id.extension == '.map') {
+      transform.consumePrimary();
+      return;
+    }
     var cssAsset = transform.primaryInput;
     if (_shouldSkipAsset(cssAsset.id)) {
       transform.logger.info("Skipping ${transform.primaryInput.id}");

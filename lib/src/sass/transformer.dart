@@ -77,8 +77,10 @@ class SassTransformer extends Transformer implements DeclaringTransformer {
   SassTransformer.asPlugin(BarbackSettings settings)
       : this(new _SassSettings(settings));
 
-  @override String get allowedExtensions =>
-      settings.compileSass.value ? ".sass .scss" : ".no-such-extension";
+  @override final String allowedExtensions = ".sass .scss";
+
+  @override bool isPrimary(AssetId id) =>
+      settings.compileSass.value && super.isPrimary(id);
 
   @override
   declareOutputs(DeclaringTransform transform) {

@@ -20,7 +20,7 @@ import 'src/png_optimization/transformer.dart';
 import 'src/svg_optimization/transformer.dart';
 import 'src/css_pruning/transformer.dart';
 import 'src/sass/transformer.dart';
-import 'package:scissors/src/utils/settings_base.dart';
+import 'src/utils/settings_base.dart';
 
 class _ScissorsSettings extends SettingsBase with
     SvgOptimizationSettings,
@@ -43,12 +43,17 @@ List<List<Transformer>> _createPhases(_ScissorsSettings settings) {
       settings.pruneCss.value ? new CssPruningTransformer(settings) : null
     ],
     [
-      settings.pruneCss.value ? new ImageInliningTransformer(settings) : null
+      settings.imageInlining.value != ImageInliningMode.disablePass
+          ? new ImageInliningTransformer(settings) : null
     ]
   ];
-  return phases.map((phase) => phase.where(_isNotNull).toList())
-      .where(_isNotEmpty).toList();
+  return _trimPhases(phases);
 }
+
+_trimPhases(List<List<Transformer>> phases) =>
+    phases.map((phase) => phase.where(_isNotNull).toList())
+        .where(_isNotEmpty).toList();
+
 _isNotNull(x) => x != null;
 _isNotEmpty(List l) => l.isNotEmpty;
 

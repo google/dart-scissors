@@ -18,7 +18,6 @@ import 'package:barback/barback.dart'
 import 'package:code_transformers/tests.dart'
     show StringFormatter, applyTransformers;
 import 'package:test/test.dart' show test;
-import 'package:scissors/src/image_inlining/image_inliner.dart';
 import 'package:scissors/src/utils/enum_parser.dart';
 import 'package:scissors/src/image_inlining/transformer.dart';
 

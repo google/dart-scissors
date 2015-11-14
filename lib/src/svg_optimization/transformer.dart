@@ -36,7 +36,10 @@ class SvgOptimizationTransformer extends Transformer
   SvgOptimizationTransformer.asPlugin(BarbackSettings settings)
       : this(new _SvgOptimizationSettings(settings));
 
-  @override final allowedExtensions = ".svg";
+  @override final String allowedExtensions = ".svg";
+
+  @override bool isPrimary(AssetId id) =>
+    settings.optimizeSvg.value && super.isPrimary(id);
 
   @override
   declareOutputs(DeclaringTransform transform) {

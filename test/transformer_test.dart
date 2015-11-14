@@ -45,11 +45,8 @@ div
     'a|icon.svg': iconSvg,
     'a|foo.html': r'<div></div>',
   }, {
-    'a|foo.sass.css': '''
-      div {
-        background-image: url('data:image/svg+xml;base64,$iconSvgData');
-      }
-    '''
+    'a|foo.sass.css':
+        '''div{background-image:url('data:image/svg+xml;base64,$iconSvgData')}\n'''
   });
 }
 
