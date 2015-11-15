@@ -17,6 +17,10 @@ abstract class PermutationsSettings {
   final expectedPartCounts =
       new Setting<Map>('expectedPartCounts', defaultValue: {});
 
+  final potentialLocales = new Setting<List<String>>(
+      'potentialLocales',
+      defaultValue: numberFormatSymbols.keys.toList());
+
   final ltrImport = new Setting<String>('ltrImport');
   final rtlImport = new Setting<String>('rtlImport');
 

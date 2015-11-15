@@ -24,6 +24,7 @@ import '../js_optimization/closure.dart';
 import '../utils/settings_base.dart';
 
 import 'intl_deferred_map.dart';
+import 'package:intl/number_symbols_data.dart';
 
 part 'settings.dart';
 
@@ -50,7 +51,8 @@ part 'settings.dart';
 ///
 /// This might interact with the CSS mirroring feature, in ways still TBD.
 ///
-class PermutationsTransformer extends AggregateTransformer {
+class PermutationsTransformer extends AggregateTransformer
+    implements DeclaringAggregateTransformer {
   final PermutationsSettings _settings;
 
   PermutationsTransformer(this._settings);
@@ -63,6 +65,20 @@ class PermutationsTransformer extends AggregateTransformer {
   @override
   classifyPrimary(AssetId id) => _settings.generatePermutations.value &&
       _allowedExtensions.any((x) => id.path.endsWith(x)) ? '<default>' : null;
+
+  @override
+  declareOutputs(DeclaringAggregateTransform transform) async {
+    var dartJsId = (await transform.primaryIds.toList()).firstWhere(
+        (a) => a.path.endsWith('.dart.js'), orElse: () => null);
+    if (dartJsId != null) {
+      for (var locale in _settings.potentialLocales.value) {
+        transform.declareOutput(
+            new AssetId(
+                dartJsId.package,
+                dartJsId.path.replaceAll('.dart.js', '_${locale}.js')));
+      }
+    }
+  }
 
   @override
   apply(AggregateTransform transform) async {
