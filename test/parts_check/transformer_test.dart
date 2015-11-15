@@ -11,50 +11,43 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.test.permutations.transformer_test;
+library scissors.test.parts_check.transformer_test;
 
 import 'package:barback/barback.dart'
     show BarbackMode, BarbackSettings, Transformer;
 import 'package:code_transformers/tests.dart'
     show StringFormatter, applyTransformers;
 import 'package:test/test.dart' show test;
-import 'package:scissors/src/permutations/transformer.dart';
+import 'package:scissors/src/parts_check/transformer.dart';
 
-makePhases(Map config) => [[
-    new PermutationsTransformer.asPlugin(
-        new BarbackSettings(config, BarbackMode.RELEASE))
-]];
+makePhases(Map config) => [
+      [
+        new PartsCheckTransformer.asPlugin(
+            new BarbackSettings(config, BarbackMode.RELEASE))
+      ]
+    ];
 
 void main() {
-  var phases = makePhases({});
+  _testPhases('does not warn when part count matches expectation', makePhases({
+    'expectedPartCounts': {
+      'web/main.dart.js': 2
+    }
+  }), {
+    'a|web/main.dart.js_1.part.js': '',
+    'a|web/main.dart.js_2.part.js': ''
+  }, {}, []);
 
-  _testPhases(
-      'Concatenates deferred messages in pre-loaded permutations', phases, {
-    'a|main.deferred_map': r'''
-      {
-        "_comment": "This mapping shows which compiled `.js` files are needed for a given deferred library import.",
-        "package:a/messages_all.dart": {
-          "name": "messages_all",
-          "imports": {
-            "messages_ar": [
-              "main.dart.js_2.part.js"
-            ],
-            "messages_bg": [
-              "main.dart.js_1.part.js"
-            ]
-          }
-        }
-      }
-    ''',
-    'a|main.dart.js': 'content of main.dart.js',
-    'a|main.dart.js_1.part.js': 'content of main.dart.js_1.part.js',
-    'a|main.dart.js_2.part.js': 'content of main.dart.js_2.part.js',
-  }, {
-    'a|main_ar.js': 'content of main.dart.js\n'
-        'content of main.dart.js_2.part.js',
-    'a|main_bg.js': 'content of main.dart.js\n'
-        'content of main.dart.js_1.part.js',
-  });
+  _testPhases('fails when part count does not match', makePhases({
+    'expectedPartCounts': {
+      'web/main.dart.js': 1
+    }
+  }), {
+    'a|web/main.dart.js': '',
+    'a|web/main.dart.js_1.part.js': '',
+    'a|web/main.dart.js_2.part.js': ''
+  }, {}, [
+    'error: Found 2 part files, but expected 1 !!!'
+  ]);
 }
 
 _testPhases(String testName, List<List<Transformer>> phases,

@@ -54,7 +54,6 @@ class PermutationsTransformer extends AggregateTransformer {
   final PermutationsSettings _settings;
 
   PermutationsTransformer(this._settings);
-
   PermutationsTransformer.asPlugin(BarbackSettings settings)
       : this(new _PermutationsSettings(settings));
 

@@ -32,14 +32,13 @@ class PartsCheckTransformer extends Transformer
   final PartsCheckSettings _settings;
 
   PartsCheckTransformer(this._settings);
-
   PartsCheckTransformer.asPlugin(BarbackSettings settings)
       : this(new _PartsCheckSettings(settings));
 
   @override final String allowedExtensions = ".dart.js";
 
   @override bool isPrimary(AssetId id) =>
-      expectedPartCounts.isEmpty && super.isPrimary(id);
+      expectedPartCounts.isNotEmpty && super.isPrimary(id);
 
   get expectedPartCounts => _settings.expectedPartCounts.value;
 
