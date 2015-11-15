@@ -15,10 +15,9 @@ library scissors.test.permutations.transformer_test;
 
 import 'package:barback/barback.dart'
     show BarbackMode, BarbackSettings, Transformer;
-import 'package:code_transformers/tests.dart'
-    show StringFormatter, applyTransformers;
-import 'package:test/test.dart' show test;
 import 'package:scissors/src/permutations/transformer.dart';
+
+import '../src/transformer_test_utils.dart';
 
 makePhases(Map config) => [
       [
@@ -30,7 +29,7 @@ makePhases(Map config) => [
 void main() {
   var phases = makePhases({});
 
-  _testPhases(
+  testPhases(
       'Concatenates deferred messages in pre-loaded permutations', phases, {
     'a|main.deferred_map': r'''
       {
@@ -57,17 +56,4 @@ void main() {
     'a|main_bg.js': 'content of main.dart.js\n'
         'content of main.dart.js_1.part.js',
   });
-}
-
-_testPhases(String testName, List<List<Transformer>> phases,
-    Map<String, String> inputs, Map<String, String> results,
-    [List<String> messages,
-    StringFormatter formatter = StringFormatter.noTrailingWhitespace]) {
-  test(
-      testName,
-      () async => applyTransformers(phases,
-          inputs: inputs,
-          results: results,
-          messages: messages,
-          formatter: formatter));
 }

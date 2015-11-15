@@ -15,10 +15,9 @@ library scissors.test.parts_check.transformer_test;
 
 import 'package:barback/barback.dart'
     show BarbackMode, BarbackSettings, Transformer;
-import 'package:code_transformers/tests.dart'
-    show StringFormatter, applyTransformers;
-import 'package:test/test.dart' show test;
 import 'package:scissors/src/parts_check/transformer.dart';
+
+import '../src/transformer_test_utils.dart';
 
 makePhases(Map config) => [
       [
@@ -28,7 +27,7 @@ makePhases(Map config) => [
     ];
 
 void main() {
-  _testPhases(
+  testPhases(
       'does not warn when part count matches expectation',
       makePhases({
         'expectedPartCounts': {'web/main.dart.js': 2}
@@ -37,7 +36,7 @@ void main() {
       {},
       []);
 
-  _testPhases(
+  testPhases(
       'fails when part count does not match',
       makePhases({
         'expectedPartCounts': {'web/main.dart.js': 1}
@@ -51,17 +50,4 @@ void main() {
       [
     'error: Found 2 part files, but expected 1 !!!'
   ]);
-}
-
-_testPhases(String testName, List<List<Transformer>> phases,
-    Map<String, String> inputs, Map<String, String> results,
-    [List<String> messages,
-    StringFormatter formatter = StringFormatter.noTrailingWhitespace]) {
-  test(
-      testName,
-      () async => applyTransformers(phases,
-          inputs: inputs,
-          results: results,
-          messages: messages,
-          formatter: formatter));
 }

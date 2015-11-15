@@ -15,10 +15,9 @@ library scissors.test;
 
 import 'package:barback/barback.dart'
     show BarbackMode, BarbackSettings, Transformer;
-import 'package:code_transformers/tests.dart'
-    show StringFormatter, applyTransformers;
 import 'package:scissors/eager_transformer.dart';
-import 'package:test/test.dart' show test;
+
+import 'src/transformer_test_utils.dart';
 
 makePhases(Map config) => new EagerScissorsTransformerGroup.asPlugin(
     new BarbackSettings(config, BarbackMode.RELEASE)).phases;
@@ -35,7 +34,7 @@ void main() {
   var iconSvgData =
       'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHg9IjAiIHk9IjAiIGhlaWdodD0iMTAiIHdpZHRoPSIxMCIgc3R5bGU9InN0cm9rZTojMDBmZjAwO2ZpbGw6I2ZmMDAwMCIvPjwvc3ZnPg==';
 
-  _testPhases(
+  testPhases(
       'inlines inlined images when inlineInlinedImages is set', phases, {
     'a|foo.sass': '''
 .unused-class
@@ -49,17 +48,4 @@ div
     'a|foo.sass.css':
         '''div{background-image:url('data:image/svg+xml;base64,$iconSvgData')}\n'''
   });
-}
-
-_testPhases(String testName, List<List<Transformer>> phases,
-    Map<String, String> inputs, Map<String, String> results,
-    [List<String> messages,
-    StringFormatter formatter = StringFormatter.noTrailingWhitespace]) {
-  test(
-      testName,
-      () async => applyTransformers(phases,
-          inputs: inputs,
-          results: results,
-          messages: messages,
-          formatter: formatter));
 }

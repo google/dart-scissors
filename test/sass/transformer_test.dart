@@ -17,10 +17,9 @@ import 'dart:io';
 
 import 'package:barback/barback.dart'
     show BarbackMode, BarbackSettings, Transformer;
-import 'package:code_transformers/tests.dart'
-    show StringFormatter, applyTransformers;
-import 'package:test/test.dart' show test;
 import 'package:scissors/src/sass/transformer.dart';
+
+import '../src/transformer_test_utils.dart';
 
 makePhases(Map config) => [
       [
@@ -30,7 +29,7 @@ makePhases(Map config) => [
     ];
 
 void main() {
-  if (Process.runSync('which', ['sassc']).exitCode != 0) {
+  if (!hasExecutable('sassc')) {
     // TODO(ochafik): Find a way to get sassc on travis (if possible,
     // without having to compile it ourselves).
     print("WARNING: Skipping Sass tests by lack of sassc in the PATH.");
@@ -38,7 +37,7 @@ void main() {
   }
   var phases = makePhases({});
 
-  _testPhases('runs sassc on .scss and .sass inputs', phases, {
+  testPhases('runs sassc on .scss and .sass inputs', phases, {
     'a|foo.scss': '''
       .foo {
         float: left;
@@ -73,7 +72,7 @@ void main() {
         '}'
   });
 
-  // _testPhases('does not run sassc on .scss that are already converted', phases, {
+  // testPhases('does not run sassc on .scss that are already converted', phases, {
   //   'a|foo.scss': '''
   //     .foo {
   //       float: left;
@@ -84,7 +83,7 @@ void main() {
   //   'a|foo.scss.css': '/* do not modify */'
   // });
 
-  _testPhases('reports sassc errors properly', phases, {
+  testPhases('reports sassc errors properly', phases, {
     'a|foo.scss': '''
       .foo {{
         float: left;
@@ -93,17 +92,4 @@ void main() {
   }, {}, [
     'error: invalid property name (a%7Cfoo.scss 1 12)'
   ]);
-}
-
-_testPhases(String testName, List<List<Transformer>> phases,
-    Map<String, String> inputs, Map<String, String> results,
-    [List<String> messages,
-    StringFormatter formatter = StringFormatter.noTrailingWhitespace]) {
-  test(
-      testName,
-      () async => applyTransformers(phases,
-          inputs: inputs,
-          results: results,
-          messages: messages,
-          formatter: formatter));
 }

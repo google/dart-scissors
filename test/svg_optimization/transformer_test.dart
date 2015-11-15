@@ -15,10 +15,9 @@ library scissors.test.svg_optimization.transformer_test;
 
 import 'package:barback/barback.dart'
     show BarbackMode, BarbackSettings, Transformer;
-import 'package:code_transformers/tests.dart'
-    show StringFormatter, applyTransformers;
-import 'package:test/test.dart' show test;
 import 'package:scissors/src/svg_optimization/transformer.dart';
+
+import '../src/transformer_test_utils.dart';
 
 makePhases(Map config) => [
       [
@@ -28,7 +27,7 @@ makePhases(Map config) => [
     ];
 
 void main() {
-  _testPhases('trims SVG files', makePhases({}), {
+  testPhases('trims SVG files', makePhases({}), {
     'a|foo.svg': r'''
       <?xml version="1.0" encoding="utf-8"?>
       <!-- Generator: Adobe Illustrator 15.0.0, SVG Export Plug-In  -->
@@ -53,17 +52,4 @@ void main() {
         '<rect x="0" y="0" height="10" width="10" style="stroke:#00ff00;fill:#ff0000"/>'
         '</svg>'
   });
-}
-
-_testPhases(String testName, List<List<Transformer>> phases,
-    Map<String, String> inputs, Map<String, String> results,
-    [List<String> messages,
-    StringFormatter formatter = StringFormatter.noTrailingWhitespace]) {
-  test(
-      testName,
-      () async => applyTransformers(phases,
-          inputs: inputs,
-          results: results,
-          messages: messages,
-          formatter: formatter));
 }

@@ -15,10 +15,9 @@ library scissors.test.css_pruning.transformer_test;
 
 import 'package:barback/barback.dart'
     show BarbackMode, BarbackSettings, Transformer;
-import 'package:code_transformers/tests.dart'
-    show StringFormatter, applyTransformers;
-import 'package:test/test.dart' show test;
 import 'package:scissors/src/css_pruning/transformer.dart';
+
+import '../src/transformer_test_utils.dart';
 
 makePhases(Map config) => [
       [
@@ -30,7 +29,7 @@ makePhases(Map config) => [
 void main() {
   var phases = makePhases({});
 
-  _testPhases('leaves css based on angular2 annotations without css url alone',
+  testPhases('leaves css based on angular2 annotations without css url alone',
       phases, {
     'a|foo2_unmatched_css_url.css': r'''
       .used-class {}
@@ -58,7 +57,7 @@ void main() {
       present-element {}
     '''
   });
-  _testPhases('does basic class and element selector pruning', phases, {
+  testPhases('does basic class and element selector pruning', phases, {
     'a|foo2_html.css': r'''
       .used-class {}
       .unused-class {}
@@ -82,7 +81,7 @@ void main() {
       }
     '''
   });
-  _testPhases(
+  testPhases(
       'prunes css based on angular2 annotations in .dart companion', phases, {
     'a|foo2_dart.css': r'''
       .used-class {}
@@ -109,7 +108,7 @@ void main() {
       present-element {}
     '''
   });
-  _testPhases(
+  testPhases(
       'prunes css based on angular1 annotations in .dart companion', phases, {
     'a|foo1.css': r'''
       absent-element {}
@@ -128,7 +127,7 @@ void main() {
       present-element {}
     '''
   });
-  _testPhases('resolves local css files in angular2', phases, {
+  testPhases('resolves local css files in angular2', phases, {
     'a|foo2_local.css': r'''
       absent-element {}
       present-element {}
@@ -146,7 +145,7 @@ void main() {
     '''
   });
 
-  _testPhases('only prunes css which html it could resolve', phases, {
+  testPhases('only prunes css which html it could resolve', phases, {
     'a|foo.css': r'.some-class {}',
     'a|bar.css': r'.some-class {}',
     'a|baz.scss.css': r'.some-class {}',
@@ -158,7 +157,7 @@ void main() {
     'a|baz.scss.css': r'',
   });
 
-  _testPhases('supports descending and attribute selectors', phases, {
+  testPhases('supports descending and attribute selectors', phases, {
     'a|foo.css': r'''
       html body input[type="submit"] {}
       html body input[type="checkbox"] {}
@@ -172,7 +171,7 @@ void main() {
     ''',
   });
 
-  _testPhases('processes class attributes with mustaches', phases, {
+  testPhases('processes class attributes with mustaches', phases, {
     'a|foo.css': r'''
       .what_1 {}
       .what-2 {}
@@ -199,7 +198,7 @@ void main() {
     ''',
   });
 
-  _testPhases('uses constant class names from ng-class', phases, {
+  testPhases('uses constant class names from ng-class', phases, {
     'a|foo.css': r'''
       .used-class {}
       .unused-class {}
@@ -219,7 +218,7 @@ void main() {
       present-element {}
     '''
   });
-  _testPhases(
+  testPhases(
       'leaves weird css files alone',
       phases,
       {'a|weird.ess.scss.css': r"don't even try to parse me!"},
@@ -230,7 +229,7 @@ void main() {
       body{font-family:sans-serif}
       div{font-family:sans-serif}
     ''';
-  _testPhases('deals with synthetic html and body', phases, {
+  testPhases('deals with synthetic html and body', phases, {
     'a|html.css': htmlBodyDiv,
     'a|html.html': r'<html></html>',
     'a|body.css': htmlBodyDiv,
@@ -249,17 +248,4 @@ void main() {
       div{font-family:sans-serif}
     '''
   });
-}
-
-_testPhases(String testName, List<List<Transformer>> phases,
-    Map<String, String> inputs, Map<String, String> results,
-    [List<String> messages,
-    StringFormatter formatter = StringFormatter.noTrailingWhitespace]) {
-  test(
-      testName,
-      () async => applyTransformers(phases,
-          inputs: inputs,
-          results: results,
-          messages: messages,
-          formatter: formatter));
 }

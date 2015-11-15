@@ -15,11 +15,10 @@ library scissors.test.image_inlining.transformer_test;
 
 import 'package:barback/barback.dart'
     show BarbackMode, BarbackSettings, Transformer;
-import 'package:code_transformers/tests.dart'
-    show StringFormatter, applyTransformers;
-import 'package:test/test.dart' show test;
 import 'package:scissors/src/utils/enum_parser.dart';
 import 'package:scissors/src/image_inlining/transformer.dart';
+
+import '../src/transformer_test_utils.dart';
 
 makePhases(Map config) => [
       [
@@ -41,7 +40,7 @@ void main() {
   var iconSvgData =
       'ICAgIDw/eG1sIHZlcnNpb249IjEuMCIgZW5jb2Rpbmc9InV0Zi04Ij8+CiAgICA8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgICA8cmVjdCB4PSIwIiB5PSIwIiBoZWlnaHQ9IjEwIiB3aWR0aD0iMTAiIHN0eWxlPSJzdHJva2U6IzAwZmYwMDsgZmlsbDogI2ZmMDAwMCIvPgogICAgPC9zdmc+CiAg';
 
-  _testPhases('inlines inlined images when inlineInlinedImages is set',
+  testPhases('inlines inlined images when inlineInlinedImages is set',
       phases(ImageInliningMode.inlineInlinedImages), {
     'a|foo.css': r'''
       div {
@@ -60,7 +59,7 @@ void main() {
     '''
   });
 
-  _testPhases('inlines all images when inlineAll is set',
+  testPhases('inlines all images when inlineAll is set',
       phases(ImageInliningMode.inlineAllUrls), {
     'a|foo.css': r'''
       div {
@@ -81,7 +80,7 @@ void main() {
     '''
   });
 
-  _testPhases('just links to images noInline is set',
+  testPhases('just links to images noInline is set',
       phases(ImageInliningMode.linkInlinedImages), {
     'a|foo.css': r'''
       div {
@@ -102,7 +101,7 @@ void main() {
     '''
   });
 
-  _testPhases(
+  testPhases(
       'does nothing with disablePass', phases(ImageInliningMode.disablePass), {
     'a|foo.css': r'''
       div {
@@ -120,17 +119,4 @@ void main() {
       }
     '''
   });
-}
-
-_testPhases(String testName, List<List<Transformer>> phases,
-    Map<String, String> inputs, Map<String, String> results,
-    [List<String> messages,
-    StringFormatter formatter = StringFormatter.noTrailingWhitespace]) {
-  test(
-      testName,
-      () async => applyTransformers(phases,
-          inputs: inputs,
-          results: results,
-          messages: messages,
-          formatter: formatter));
 }
