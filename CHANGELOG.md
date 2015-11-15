@@ -2,6 +2,27 @@
 
 ...
 
+## 0.1.8 (2015-11-14)
+
+This version comes with a massive refactoring that splits out most features into
+their own transformer. Please note that there are still only
+3 officially-supported transformer entry points:
+- `scissors/transformer` (lazy Sass compilation, CSS and image optimizations)
+- `scissors/eager_transformer` (eager version of the previous: builds all the
+  assets upfront when pub serve is run)
+- `scissors/permutations_transformer` (lazy locale-specific permutations with
+  optional Closure Compilation to reoptimize the outputs)
+
+### Bugfixes
+
+- Permutations transformer (`scissors/permutations_transformer`):
+  - Permutations are now built lazily (fixes `pub serve` + Dartium experience)
+  - Disabled `reoptimizePermutations` by default
+  - Respect `javaPath` when running the Closure Compiler.
+  - Added `expectedPartCounts` check (takes a map of `.dart.js` script path to
+    number of expected parts, see [example/permutations](https://github.com/google/dart-scissors/tree/master/example/permutations))
+- Fixed path resolution regression (dotted package names)
+
 ## 0.1.7 (2015-11-12)
 
 ### Bugfixes
