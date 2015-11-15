@@ -19,7 +19,6 @@ import 'package:barback/barback.dart';
 import 'package:intl/number_symbols_data.dart';
 import 'package:path/path.dart';
 
-import '../utils/path_resolver.dart';
 import '../utils/settings_base.dart';
 
 import 'intl_deferred_map.dart';
