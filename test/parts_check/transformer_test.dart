@@ -28,24 +28,27 @@ makePhases(Map config) => [
     ];
 
 void main() {
-  _testPhases('does not warn when part count matches expectation', makePhases({
-    'expectedPartCounts': {
-      'web/main.dart.js': 2
-    }
-  }), {
-    'a|web/main.dart.js_1.part.js': '',
-    'a|web/main.dart.js_2.part.js': ''
-  }, {}, []);
+  _testPhases(
+      'does not warn when part count matches expectation',
+      makePhases({
+        'expectedPartCounts': {'web/main.dart.js': 2}
+      }),
+      {'a|web/main.dart.js_1.part.js': '', 'a|web/main.dart.js_2.part.js': ''},
+      {},
+      []);
 
-  _testPhases('fails when part count does not match', makePhases({
-    'expectedPartCounts': {
-      'web/main.dart.js': 1
-    }
-  }), {
+  _testPhases(
+      'fails when part count does not match',
+      makePhases({
+        'expectedPartCounts': {'web/main.dart.js': 1}
+      }),
+      {
     'a|web/main.dart.js': '',
     'a|web/main.dart.js_1.part.js': '',
     'a|web/main.dart.js_2.part.js': ''
-  }, {}, [
+  },
+      {},
+      [
     'error: Found 2 part files, but expected 1 !!!'
   ]);
 }
