@@ -110,9 +110,6 @@ class SassTransformer extends AggregateTransformer
       }
     }
 
-    // Don't consume the sass file in debug, for maps to work.
-    if (!_settings.isDebug) transform.consumePrimary(scss.id);
-
     var result = await runSassC(scss,
         isDebug: _settings.isDebug, settings: await _settings.sasscSettings);
     result.logMessages(transform.logger);
@@ -121,6 +118,7 @@ class SassTransformer extends AggregateTransformer
 
     if (!result.success) return;
 
+    // Don't consume the sass file in debug, for maps to work.
     if (!_settings.isDebug) transform.consumePrimary(scss.id);
     transform.addOutput(result.css);
     if (result.map != null) transform.addOutput(result.map);
