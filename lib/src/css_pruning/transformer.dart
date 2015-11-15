@@ -28,16 +28,16 @@ part 'settings.dart';
 
 class CssPruningTransformer extends Transformer
     implements DeclaringTransformer {
-  final CssPruningSettings settings;
+  final CssPruningSettings _settings;
 
-  CssPruningTransformer(this.settings);
+  CssPruningTransformer(this._settings);
   CssPruningTransformer.asPlugin(BarbackSettings settings)
       : this(new _CssPruningSettings(settings));
 
   @override final String allowedExtensions = ".css .css.map";
 
   @override bool isPrimary(AssetId id) =>
-      settings.pruneCss.value && super.isPrimary(id);
+      _settings.pruneCss.value && super.isPrimary(id);
 
   final RegExp _filesToSkipRx =
       new RegExp(r'^_.*?\.scss|.*?\.ess\.s[ac]ss\.css(\.map)?$');
@@ -79,7 +79,7 @@ class CssPruningTransformer extends Transformer
 
       var transaction = new TextEditTransaction(source, sourceFile);
       dropUnusedCssRules(
-          transform, transaction, settings, sourceFile, htmlTemplate);
+          transform, transaction, _settings, sourceFile, htmlTemplate);
 
       if (transaction.hasEdits) {
         var printer = transaction.commit()..build(cssAsset.id.path);

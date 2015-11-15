@@ -25,16 +25,16 @@ part 'settings.dart';
 
 class PngOptimizationTransformer extends Transformer
     implements DeclaringTransformer {
-  final PngOptimizationSettings settings;
+  final PngOptimizationSettings _settings;
 
-  PngOptimizationTransformer(this.settings);
+  PngOptimizationTransformer(this._settings);
   PngOptimizationTransformer.asPlugin(BarbackSettings settings)
       : this(new _PngOptimizationSettings(settings));
 
   @override final String allowedExtensions = ".png";
 
   @override bool isPrimary(AssetId id) =>
-      settings.optimizePng.value && super.isPrimary(id);
+      _settings.optimizePng.value && super.isPrimary(id);
 
   @override
   declareOutputs(DeclaringTransform transform) {
@@ -46,7 +46,7 @@ class PngOptimizationTransformer extends Transformer
     int originalSize;
     int resultSize;
     transform.addOutput(await runPngCrush(
-        settings.pngCrushPath.value, transform.primaryInput, (int a, int b) {
+        _settings.pngCrushPath.value, transform.primaryInput, (int a, int b) {
       originalSize = a;
       resultSize = b;
     }));

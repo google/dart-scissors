@@ -29,14 +29,14 @@ part 'settings.dart';
 
 class ImageInliningTransformer extends Transformer
     implements DeclaringTransformer {
-  final ImageInliningSettings settings;
+  final ImageInliningSettings _settings;
 
-  ImageInliningTransformer(this.settings);
+  ImageInliningTransformer(this._settings);
   ImageInliningTransformer.asPlugin(BarbackSettings settings)
       : this(new _ImageInliningSettings(settings));
 
   bool get _isEnabled =>
-      settings.imageInlining.value != ImageInliningMode.disablePass;
+      _settings.imageInlining.value != ImageInliningMode.disablePass;
 
   @override final String allowedExtensions = ".css .css.map";
 
@@ -75,9 +75,9 @@ class ImageInliningTransformer extends Transformer
       return;
     }
 
-    var rewritePackage = _getPackageRewriter(settings.packageRewrites.value);
+    var rewritePackage = _getPackageRewriter(_settings.packageRewrites.value);
 
-    var result = await inlineImages(cssAsset, settings.imageInlining.value,
+    var result = await inlineImages(cssAsset, _settings.imageInlining.value,
         assetFetcher: (String url, {AssetId from}) {
       return pathResolver.resolveAsset(transform, [url], from);
     }, resolveLinkToAsset: (Asset asset) {

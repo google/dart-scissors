@@ -22,66 +22,23 @@ import '../utils/settings_base.dart';
 import 'sassc_runner.dart' show SasscSettings, runSassC;
 import 'package:scissors/src/utils/path_resolver.dart';
 
-abstract class SassSettings {
-  bool get isDebug;
-
-  final compileSass = new Setting<bool>('compileSass', defaultValue: true);
-
-  // final fallbackToRubySass = new Setting<bool>('fallbackToRubySass',
-  //     comment: "Whether to fallback to JRuby+Ruby Sass when SassC fails.\n"
-  //         "This can help with some keyframe syntax in Compass stylesheets.",
-  //     defaultValue: false);
-
-  // final jrubyPath = makePathSetting('jrubyPath', pathResolver.defaultJRubyPath);
-
-  // final rubySassPath =
-  //     makePathSetting('rubySassPath', pathResolver.defaultRubySassPath);
-
-  final compassStylesheetsPath = makePathSetting(
-      'compassStylesheetsPath', pathResolver.defaultCompassStylesheetsPath);
-
-  final sasscPath = makePathSetting('sasscPath', pathResolver.defaultSassCPath);
-
-  final sasscArgs = new Setting<List<String>>('sasscArgs', defaultValue: []);
-
-  Future<SasscSettings> _sasscSettings;
-  Future<SasscSettings> get sasscSettings {
-    if (_sasscSettings == null) {
-      _sasscSettings = (() async {
-        var path =
-            await pathResolver.resolvePath(resolveEnvVars(sasscPath.value));
-        var args = [];
-        for (var dir in await pathResolver.getSassIncludeDirectories()) {
-          args..add("--load-path")..add(dir.path);
-        }
-        args.addAll(sasscArgs.value.map(resolveEnvVars) ?? []);
-
-        return new SasscSettings(path, args);
-      })();
-    }
-    return _sasscSettings;
-  }
-}
-
-class _SassSettings extends SettingsBase with SassSettings {
-  _SassSettings(settings) : super(settings);
-}
+part 'settings.dart';
 
 class SassTransformer extends Transformer implements DeclaringTransformer {
-  final SassSettings settings;
+  final SassSettings _settings;
 
-  SassTransformer(this.settings);
+  SassTransformer(this._settings);
   SassTransformer.asPlugin(BarbackSettings settings)
       : this(new _SassSettings(settings));
 
   @override final String allowedExtensions = ".sass .scss";
 
   @override bool isPrimary(AssetId id) =>
-      settings.compileSass.value && super.isPrimary(id);
+      _settings.compileSass.value && super.isPrimary(id);
 
   @override
   declareOutputs(DeclaringTransform transform) {
-    if (!settings.isDebug) transform.consumePrimary();
+    if (!_settings.isDebug) transform.consumePrimary();
 
     var id = transform.primaryId;
     transform.declareOutput(id.addExtension('.css'));
@@ -95,14 +52,14 @@ class SassTransformer extends Transformer implements DeclaringTransformer {
     var depsConsumption = consumeTransitiveSassDeps(transform, scss);
 
     var result = await runSassC(scss,
-        isDebug: settings.isDebug, settings: await settings.sasscSettings);
+        isDebug: _settings.isDebug, settings: await _settings.sasscSettings);
     result.logMessages(transform);
 
     await depsConsumption;
 
     if (!result.success) return null;
 
-    if (!settings.isDebug) transform.consumePrimary();
+    if (!_settings.isDebug) transform.consumePrimary();
     transform.addOutput(result.css);
     if (result.map != null) transform.addOutput(result.map);
   }
