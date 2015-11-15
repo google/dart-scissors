@@ -19,8 +19,7 @@ import 'dart:mirrors';
 import 'package:barback/barback.dart';
 import 'package:quiver/check.dart';
 
-import 'setting.dart';
-export 'setting.dart';
+part 'setting.dart';
 
 Setting<String> makePathSetting(String name, String defaultValue) =>
     new Setting<String>(name,
