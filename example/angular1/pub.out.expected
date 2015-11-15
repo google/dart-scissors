@@ -29,8 +29,8 @@ Dropping unused CSS rule: .unused-class {
 Dropping unused CSS rule: absent-element {
   float: left;
 }
-[Info from CssPruning]:
-Size[scissors_angular1_example|lib/foo.scss.css]: before = 293, after = 242
+[Info from CssPruning on scissors_angular1_example|lib/foo.scss.css]:
+Pruned CSS: 293 chars → 242 chars (-51 chars = -17.5%)
 [Info from ImageInlining on scissors_angular1_example|lib/foo.scss.css]:
 line 1, column 163 of scissors_angular1_example|lib/foo.scss.css: Inlined 'icon.svg' with scissors_angular1_example|lib/icon.svg
 inline-image("icon.svg")

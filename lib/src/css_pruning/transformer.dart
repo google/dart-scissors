@@ -23,6 +23,7 @@ import 'css_pruning.dart';
 import '../utils/path_utils.dart';
 import '../utils/settings_base.dart';
 import '../utils/file_skipping.dart';
+import '../utils/delta_format.dart';
 
 part 'settings.dart';
 
@@ -75,12 +76,14 @@ class CssPruningTransformer extends Transformer
 
       if (transaction.hasEdits) {
         var printer = transaction.commit()..build(cssAsset.id.path);
+        var result = printer.text;
         // TODO(ochafik): Better stats / reporting (delta + %).
-        transform.logger.info("Size[${cssAsset.id}]: "
-            "before = ${source.length}, after = ${printer.text.length}");
+        transform.logger.info(
+          "Pruned CSS: ${formatDeltaChars(source.length, result.length)}",
+          asset: cssAsset.id);
 
         transform.consumePrimary();
-        transform.addOutput(new Asset.fromString(cssAsset.id, printer.text));
+        transform.addOutput(new Asset.fromString(cssAsset.id, result));
         transform.addOutput(new Asset.fromString(
             cssAsset.id.addExtension('.map'), printer.map));
       }
