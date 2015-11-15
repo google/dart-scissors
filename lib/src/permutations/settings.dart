@@ -14,6 +14,9 @@
 part of scissors.src.permutations.transformer;
 
 abstract class PermutationsSettings {
+
+  Setting<bool> get verbose;
+
   final expectedPartCounts =
       new Setting<Map>('expectedPartCounts', defaultValue: {});
 

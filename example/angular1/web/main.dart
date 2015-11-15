@@ -11,5 +11,5 @@ class MyModule extends Module {
 }
 
 main() {
-  var app = applicationFactory().addModule(new MyModule()).run();
+  applicationFactory().addModule(new MyModule()).run();
 }

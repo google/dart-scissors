@@ -13,7 +13,10 @@
 // limitations under the License.
 part of scissors.src.css_pruning.transformer;
 
-class CssPruningSettings {
+abstract class CssPruningSettings {
+
+  Setting<bool> get verbose;
+
   final pruneCss = new Setting<bool>('pruneCss', defaultValue: true);
 
   // final mirrorCss = new Setting<bool>('mirrorCss',
