@@ -16,7 +16,6 @@ library scissors.src.image_inlining.transformer;
 import 'dart:async';
 
 import 'package:barback/barback.dart';
-import 'package:path/path.dart';
 import 'package:quiver/check.dart';
 
 import '../image_inlining/image_inliner.dart';
@@ -24,6 +23,7 @@ export '../image_inlining/image_inliner.dart' show ImageInliningMode;
 import '../utils/path_resolver.dart';
 import '../utils/settings_base.dart';
 import '../utils/enum_parser.dart';
+import '../utils/file_skipping.dart';
 
 part 'settings.dart';
 
@@ -42,18 +42,10 @@ class ImageInliningTransformer extends Transformer
 
   @override bool isPrimary(AssetId id) => _isEnabled && super.isPrimary(id);
 
-  final RegExp _filesToSkipRx =
-      new RegExp(r'^_.*?\.scss|.*?\.ess\.s[ac]ss\.css(\.map)?$');
-
-  bool _shouldSkipAsset(AssetId id) {
-    var name = basename(id.path);
-    return _filesToSkipRx.matchAsPrefix(name) != null;
-  }
-
   @override
   declareOutputs(DeclaringTransform transform) {
     var id = transform.primaryId;
-    if (_shouldSkipAsset(id)) return;
+    if (shouldSkipAsset(id)) return;
 
     if (id.extension == '.map') {
       transform.consumePrimary();
@@ -70,7 +62,7 @@ class ImageInliningTransformer extends Transformer
     }
     var cssAsset = transform.primaryInput;
 
-    if (_shouldSkipAsset(cssAsset.id)) {
+    if (shouldSkipAsset(cssAsset.id)) {
       transform.logger.info("Skipping ${transform.primaryInput.id}");
       return;
     }

@@ -16,13 +16,13 @@ library scissors.src.css_pruning.transformer;
 import 'dart:async';
 
 import 'package:barback/barback.dart';
-import 'package:path/path.dart';
 import 'package:source_maps/refactor.dart';
 import 'package:source_span/source_span.dart';
 
 import 'css_pruning.dart';
 import '../utils/path_utils.dart';
 import '../utils/settings_base.dart';
+import '../utils/file_skipping.dart';
 
 part 'settings.dart';
 
@@ -39,18 +39,10 @@ class CssPruningTransformer extends Transformer
   @override bool isPrimary(AssetId id) =>
       _settings.pruneCss.value && super.isPrimary(id);
 
-  final RegExp _filesToSkipRx =
-      new RegExp(r'^_.*?\.scss|.*?\.ess\.s[ac]ss\.css(\.map)?$');
-
-  bool _shouldSkipAsset(AssetId id) {
-    var name = basename(id.path);
-    return _filesToSkipRx.matchAsPrefix(name) != null;
-  }
-
   @override
   declareOutputs(DeclaringTransform transform) {
     var id = transform.primaryId;
-    if (_shouldSkipAsset(id)) return;
+    if (shouldSkipAsset(id)) return;
 
     if (id.extension == '.map') {
       transform.consumePrimary();
@@ -66,7 +58,7 @@ class CssPruningTransformer extends Transformer
       return;
     }
     var cssAsset = transform.primaryInput;
-    if (_shouldSkipAsset(cssAsset.id)) {
+    if (shouldSkipAsset(cssAsset.id)) {
       transform.logger.info("Skipping ${transform.primaryInput.id}");
       return;
     }
