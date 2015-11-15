@@ -18,7 +18,8 @@ abstract class SassSettings {
 
   final compileSass = new Setting<bool>('compileSass', defaultValue: true);
 
-  final onlyCompileOutOfDateSass = new Setting<bool>('onlyCompileOutOfDateSass', defaultValue: true);
+  final onlyCompileOutOfDateSass =
+      new Setting<bool>('onlyCompileOutOfDateSass', defaultValue: true);
 
   // final fallbackToRubySass = new Setting<bool>('fallbackToRubySass',
   //     comment: "Whether to fallback to JRuby+Ruby Sass when SassC fails.\n"

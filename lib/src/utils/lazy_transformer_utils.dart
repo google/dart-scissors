@@ -54,7 +54,8 @@ class _LazyTransformerWrapper extends LazyTransformerWrapper
 class _LazyAggregateTransformerWrapper extends LazyTransformerWrapper
     implements AggregateTransformer, LazyAggregateTransformer {
   AggregateTransformer get wrapped => super.wrapped;
-  _LazyAggregateTransformerWrapper(AggregateTransformer wrapped) : super._(wrapped) {
+  _LazyAggregateTransformerWrapper(AggregateTransformer wrapped)
+      : super._(wrapped) {
     checkState(wrapped is AggregateTransformer);
   }
 

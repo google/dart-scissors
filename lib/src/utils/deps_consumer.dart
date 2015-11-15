@@ -30,8 +30,8 @@ final RegExp _commentsRx =
 /// on any of the transitive dependencies will result in a re-compilation
 /// of the SASS file(s).
 Future<Set<AssetId>> consumeTransitiveSassDeps(
-    Future<Asset> inputGetter(AssetId id), TransformLogger logger,
-    Asset asset, [Set<AssetId> visitedIds]) async {
+    Future<Asset> inputGetter(AssetId id), TransformLogger logger, Asset asset,
+    [Set<AssetId> visitedIds]) async {
   visitedIds ??= new Set<AssetId>();
   if (visitedIds.add(asset.id)) {
     // TODO(ochafik): Handle .sass files?
@@ -53,7 +53,8 @@ Future<Set<AssetId>> consumeTransitiveSassDeps(
         try {
           var importedAsset =
               await pathResolver.resolveAsset(inputGetter, urls, asset.id);
-          consumeTransitiveSassDeps(inputGetter, logger, importedAsset, visitedIds);
+          consumeTransitiveSassDeps(
+              inputGetter, logger, importedAsset, visitedIds);
         } catch (e, s) {
           logger.warning(
               "Failed to resolve import of '$url' from ${asset.id}: $e\n$s");

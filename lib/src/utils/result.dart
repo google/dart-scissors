@@ -13,7 +13,8 @@
 // limitations under the License.
 library scissors.src.utils.result;
 
-import 'package:barback/barback.dart' show Asset, AssetId, LogLevel, TransformLogger;
+import 'package:barback/barback.dart'
+    show Asset, AssetId, LogLevel, TransformLogger;
 import 'package:source_span/source_span.dart';
 
 class TransformMessage {

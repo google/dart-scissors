@@ -128,4 +128,5 @@ class SassTransformer extends AggregateTransformer
 }
 
 Future<DateTime> _getLastModified(id) async =>
-    (await pathResolver.resolveAssetFile(id is Future ? await id : id))?.lastModified();
+    (await pathResolver.resolveAssetFile(id is Future ? await id : id))
+        ?.lastModified();
