@@ -23,6 +23,10 @@ makePhases(Map config) => new EagerScissorsTransformerGroup.asPlugin(
     new BarbackSettings(config, BarbackMode.RELEASE)).phases;
 
 void main() {
+  if (!hasExecutable('sassc')) {
+    print("WARNING: Skipping integration test by lack of sassc in the PATH.");
+    return;
+  }
   var phases = makePhases({});
 
   var iconSvg = r'''
