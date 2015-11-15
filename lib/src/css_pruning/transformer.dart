@@ -19,11 +19,11 @@ import 'package:barback/barback.dart';
 import 'package:source_maps/refactor.dart';
 import 'package:source_span/source_span.dart';
 
-import 'css_pruning.dart';
 import '../utils/path_utils.dart';
 import '../utils/settings_base.dart';
 import '../utils/file_skipping.dart';
 import '../utils/delta_format.dart';
+import 'css_pruning.dart';
 
 part 'settings.dart';
 
@@ -79,8 +79,8 @@ class CssPruningTransformer extends Transformer
         var result = printer.text;
         // TODO(ochafik): Better stats / reporting (delta + %).
         transform.logger.info(
-          "Pruned CSS: ${formatDeltaChars(source.length, result.length)}",
-          asset: cssAsset.id);
+            "Pruned CSS: ${formatDeltaChars(source.length, result.length)}",
+            asset: cssAsset.id);
 
         transform.consumePrimary();
         transform.addOutput(new Asset.fromString(cssAsset.id, result));

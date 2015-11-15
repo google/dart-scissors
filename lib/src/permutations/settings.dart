@@ -13,15 +13,13 @@
 // limitations under the License.
 part of scissors.src.permutations.transformer;
 
-abstract class PermutationsSettings {
-
+abstract class PermutationsSettings implements JsOptimizationSettings {
   Setting<bool> get verbose;
 
   final expectedPartCounts =
       new Setting<Map>('expectedPartCounts', defaultValue: {});
 
-  final potentialLocales = new Setting<List<String>>(
-      'potentialLocales',
+  final potentialLocales = new Setting<List<String>>('potentialLocales',
       defaultValue: numberFormatSymbols.keys.toList());
 
   final ltrImport = new Setting<String>('ltrImport');
@@ -31,13 +29,9 @@ abstract class PermutationsSettings {
 
   final reoptimizePermutations =
       makeOptimSetting('reoptimizePermutations', false);
-
-  final javaPath = makePathSetting('javaPath', pathResolver.defaultJavaPath);
-
-  final closureCompilerJarPath = makePathSetting(
-      'closureCompilerJar', pathResolver.defaultClosureCompilerJarPath);
 }
 
-class _PermutationsSettings extends SettingsBase with PermutationsSettings {
+class _PermutationsSettings extends SettingsBase
+    with PermutationsSettings, JsOptimizationSettings {
   _PermutationsSettings(settings) : super(settings);
 }

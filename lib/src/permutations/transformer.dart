@@ -14,17 +14,17 @@
 library scissors.src.permutations.transformer;
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:barback/barback.dart';
+import 'package:intl/number_symbols_data.dart';
 import 'package:path/path.dart';
 
 import '../utils/path_resolver.dart';
-import '../js_optimization/closure.dart';
 import '../utils/settings_base.dart';
 
 import 'intl_deferred_map.dart';
-import 'package:intl/number_symbols_data.dart';
+import '../js_optimization/js_optimization.dart';
+import '../js_optimization/settings.dart';
 
 part 'settings.dart';
 
@@ -68,14 +68,12 @@ class PermutationsTransformer extends AggregateTransformer
 
   @override
   declareOutputs(DeclaringAggregateTransform transform) async {
-    var dartJsId = (await transform.primaryIds.toList()).firstWhere(
-        (a) => a.path.endsWith('.dart.js'), orElse: () => null);
+    var dartJsId = (await transform.primaryIds.toList())
+        .firstWhere((a) => a.path.endsWith('.dart.js'), orElse: () => null);
     if (dartJsId != null) {
       for (var locale in _settings.potentialLocales.value) {
-        transform.declareOutput(
-            new AssetId(
-                dartJsId.package,
-                dartJsId.path.replaceAll('.dart.js', '_${locale}.js')));
+        transform.declareOutput(new AssetId(dartJsId.package,
+            dartJsId.path.replaceAll('.dart.js', '_${locale}.js')));
       }
     }
   }
@@ -155,28 +153,19 @@ class PermutationsTransformer extends AggregateTransformer
       List<Asset> assets) async {
     var futureStrings = assets.map((a) => a.readAsString());
     var content = (await Future.wait(futureStrings)).join('\n');
+    var contentAsset = new Asset.fromString(permutationId, content);
 
     if (_settings.reoptimizePermutations.value) {
       try {
-        var javaPath = _settings.javaPath.value;
-        var path = await pathResolver
-            .resolvePath(_settings.closureCompilerJarPath.value);
-        if (await new File(path).exists()) {
-          var result = await simpleClosureCompile(javaPath, path, content);
-          transform.logger.info('Ran Closure Compiler on $permutationId: '
-              'before = ${content.length}, after = ${result.length}');
-
-          transform.addOutput(new Asset.fromString(
-              permutationId.addExtension('.before_closure.js'), content));
-          content = result;
-        } else {
-          transform.logger.warning("Did not find Closure Compiler ($path): "
-              "permutations won't be fully optimized.");
-        }
+        contentAsset =
+            await optimizeJsAsset(transform.logger, contentAsset, _settings);
+        transform.addOutput(new Asset.fromString(
+            permutationId.addExtension('.before_closure.js'), content));
       } catch (e, s) {
-        print('$e\n$s');
+        transform.logger.warning(
+            "Unexpected error while running the Closure Compiler: permutations won't be fully optimized.\n$e\n$s");
       }
     }
-    transform.addOutput(new Asset.fromString(permutationId, content));
+    transform.addOutput(contentAsset);
   }
 }

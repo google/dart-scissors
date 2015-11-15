@@ -13,8 +13,9 @@
 // limitations under the License.
 library scissors.src.utils.deps_consumer;
 
-import 'package:barback/barback.dart' show Transform, Asset, AssetId;
 import 'dart:async';
+
+import 'package:barback/barback.dart' show Transform, Asset, AssetId;
 
 import 'path_resolver.dart';
 

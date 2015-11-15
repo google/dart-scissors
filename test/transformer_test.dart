@@ -34,8 +34,7 @@ void main() {
   var iconSvgData =
       'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHg9IjAiIHk9IjAiIGhlaWdodD0iMTAiIHdpZHRoPSIxMCIgc3R5bGU9InN0cm9rZTojMDBmZjAwO2ZpbGw6I2ZmMDAwMCIvPjwvc3ZnPg==';
 
-  testPhases(
-      'inlines inlined images when inlineInlinedImages is set', phases, {
+  testPhases('inlines inlined images when inlineInlinedImages is set', phases, {
     'a|foo.sass': '''
 .unused-class
   foo: 0;

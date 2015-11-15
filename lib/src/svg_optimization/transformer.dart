@@ -22,7 +22,6 @@ import '../utils/settings_base.dart';
 import 'svg_optimizer.dart';
 
 abstract class SvgOptimizationSettings {
-
   Setting<bool> get verbose;
 
   final optimizeSvg = makeOptimSetting('optimizeSvg');

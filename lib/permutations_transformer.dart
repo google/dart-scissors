@@ -14,9 +14,11 @@
 library scissors.permutations_transformer;
 
 import 'package:barback/barback.dart';
+
+import 'src/js_optimization/settings.dart';
+import 'src/parts_check/transformer.dart';
 import 'src/permutations/transformer.dart';
 import 'src/utils/settings_base.dart';
-import 'src/parts_check/transformer.dart';
 
 /// This transformer stitches deferred message parts together in pre-assembled
 /// .js artefact permutations, to speed up initial loading of pages.
@@ -58,6 +60,6 @@ class PermutationsTransformerGroup extends TransformerGroup {
 }
 
 class _PermutationsGroupSettings extends SettingsBase
-    with PermutationsSettings, PartsCheckSettings {
+    with PermutationsSettings, PartsCheckSettings, JsOptimizationSettings {
   _PermutationsGroupSettings(settings) : super(settings);
 }

@@ -17,10 +17,10 @@ String _formatBytes(int count) => '$count bytes';
 String _formatChars(int count) => '$count chars';
 
 String formatDeltaBytes(int from, int to) =>
-  _formatDelta(from, to, _formatBytes);
+    _formatDelta(from, to, _formatBytes);
 
 String formatDeltaChars(int from, int to) =>
-  _formatDelta(from, to, _formatChars);
+    _formatDelta(from, to, _formatChars);
 
 String _formatDelta(int from, int to, String unitFormatter(int value)) {
   var delta = to - from;
