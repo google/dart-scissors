@@ -71,12 +71,12 @@ class ImageInliningTransformer extends Transformer
 
     var result = await inlineImages(cssAsset, _settings.imageInlining.value,
         assetFetcher: (String url, {AssetId from}) {
-      return pathResolver.resolveAsset(transform, [url], from);
+      return pathResolver.resolveAsset(transform.getInput, [url], from);
     }, resolveLinkToAsset: (Asset asset) {
       var uri = pathResolver.assetIdToUri(asset.id);
       return rewritePackage(uri);
     });
-    result.logMessages(transform);
+    result.logMessages(transform.logger);
     if (result.success) {
       transform.addOutput(result.css);
       if (result.map != null) transform.addOutput(result.map);

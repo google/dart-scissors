@@ -13,8 +13,7 @@
 // limitations under the License.
 library scissors.src.utils.result;
 
-import 'package:barback/barback.dart' show Asset, AssetId, LogLevel, Transform;
-import 'package:code_transformers/messages/build_logger.dart';
+import 'package:barback/barback.dart' show Asset, AssetId, LogLevel, TransformLogger;
 import 'package:source_span/source_span.dart';
 
 class TransformMessage {
@@ -24,8 +23,7 @@ class TransformMessage {
   final SourceSpan span;
   TransformMessage(this.level, this.message, this.asset, this.span);
 
-  log(Transform transform) {
-    var logger = new BuildLogger(transform, primaryId: asset);
+  log(TransformLogger logger) {
     switch (level) {
       case LogLevel.ERROR:
         logger.error(message, asset: asset, span: span);
@@ -48,7 +46,7 @@ class TransformResult {
   TransformResult(this.success,
       [this.messages = const <TransformMessage>[], this.css, this.map]);
 
-  void logMessages(Transform transform) {
-    messages.forEach((m) => m.log(transform));
+  void logMessages(TransformLogger logger) {
+    messages.forEach((m) => m.log(logger));
   }
 }

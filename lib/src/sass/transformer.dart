@@ -18,49 +18,114 @@ import 'dart:async';
 import 'package:barback/barback.dart';
 
 import '../utils/deps_consumer.dart';
+import '../utils/file_skipping.dart';
+import '../utils/path_resolver.dart';
 import '../utils/settings_base.dart';
 import 'sassc_runner.dart' show SasscSettings, runSassC;
-import 'package:scissors/src/utils/path_resolver.dart';
+import 'package:quiver/check.dart';
 
 part 'settings.dart';
 
-class SassTransformer extends Transformer implements DeclaringTransformer {
+class SassTransformer extends AggregateTransformer
+    implements DeclaringAggregateTransformer {
   final SassSettings _settings;
 
   SassTransformer(this._settings);
   SassTransformer.asPlugin(BarbackSettings settings)
       : this(new _SassSettings(settings));
 
-  @override final String allowedExtensions = ".sass .scss";
-
-  @override bool isPrimary(AssetId id) =>
-      _settings.compileSass.value && super.isPrimary(id);
+  final RegExp _classifierRx =
+      new RegExp(r'^(.*?\.s[ac]ss)(?:\.css(?:\.map)?)?$');
 
   @override
-  declareOutputs(DeclaringTransform transform) {
-    if (!_settings.isDebug) transform.consumePrimary();
+  classifyPrimary(AssetId id) {
+    var path = id.path;
+    if (!_settings.compileSass.value || shouldSkipAsset(id)) return null;
 
-    var id = transform.primaryId;
-    transform.declareOutput(id.addExtension('.css'));
-    transform.declareOutput(id.addExtension('.css.map'));
+    var m = _classifierRx.matchAsPrefix(path);
+    var key = m?.group(1);
+    return key;
   }
 
-  Future apply(Transform transform) async {
-    var scss = transform.primaryInput;
+  @override
+  declareOutputs(DeclaringAggregateTransform transform) async {
+    List<AssetId> ids = await transform.primaryIds.toList();
+
+    AssetId scss;
+    for (var id in ids) {
+      switch (id.extension) {
+        case '.sass':
+        case '.scss':
+          scss = id;
+          break;
+      }
+    }
+    if (scss != null) {
+      // Don't consume the sass file in debug, for maps to work.
+      if (!_settings.isDebug) transform.consumePrimary(scss);
+      transform.declareOutput(scss.addExtension('.css'));
+      transform.declareOutput(scss.addExtension('.css.map'));
+    }
+  }
+
+  Future apply(AggregateTransform transform) async {
+    List<Asset> inputs = await transform.primaryInputs.toList();
+
+    Asset css, scss;
+    for (var input in inputs) {
+      switch (input.id.extension) {
+        case '.css':
+          css = input;
+          break;
+        case '.sass':
+        case '.scss':
+          scss = input;
+          break;
+      }
+    }
+
+    checkState(scss != null, message: () => "Didn't find scss in ${inputs}");
 
     // Mark transitive SASS @imports as barback dependencies.
-    var depsConsumption = consumeTransitiveSassDeps(transform, scss);
+    Future<Set<AssetId>> depsFuture =
+        consumeTransitiveSassDeps(transform.getInput, transform.logger, scss);
+
+    if (css != null && _settings.onlyCompileOutOfDateSass.value) {
+      Future<DateTime> cssTimeFuture = _getLastModified(css.id);
+      List<DateTime> depsTimes =
+          (await Future.wait((await depsFuture).map(_getLastModified)));
+
+      var cssTime = await cssTimeFuture;
+      var moreRecentInputs = depsTimes.where((t) => t.compareTo(cssTime) > 0);
+      if (moreRecentInputs.isEmpty) {
+        // Don't do anything: css is more recent than its inputs!
+        transform.logger.info(
+            'File is more recent than its ${depsTimes.length} inputs, skipping',
+            asset: css.id);
+        return;
+      } else {
+        transform.logger.info(
+            'File is older than ${moreRecentInputs.length}/${depsTimes.length} of its inputs: recompiling',
+            asset: css.id);
+      }
+    }
+
+    // Don't consume the sass file in debug, for maps to work.
+    if (!_settings.isDebug) transform.consumePrimary(scss.id);
 
     var result = await runSassC(scss,
         isDebug: _settings.isDebug, settings: await _settings.sasscSettings);
-    result.logMessages(transform);
+    result.logMessages(transform.logger);
 
-    await depsConsumption;
+    await depsFuture;
 
-    if (!result.success) return null;
+    if (!result.success) return;
 
-    if (!_settings.isDebug) transform.consumePrimary();
+    if (!_settings.isDebug) transform.consumePrimary(scss.id);
     transform.addOutput(result.css);
     if (result.map != null) transform.addOutput(result.map);
   }
 }
+
+Future<DateTime> _getLastModified(id) async =>
+    (await pathResolver.resolveAssetFile(id is Future ? await id : id))?.lastModified();

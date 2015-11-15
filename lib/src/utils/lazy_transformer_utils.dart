@@ -11,29 +11,62 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.src.utils.lazy_transformer_utils;
+library scissors.src.utils.lazywrapped_utils;
 
 import 'package:barback/barback.dart';
+import 'package:quiver/check.dart';
 
-class LazyTransformerWrapper implements Transformer, LazyTransformer {
-  final Transformer _transformer;
-  LazyTransformerWrapper(this._transformer);
+abstract class LazyTransformerWrapper {
+  final wrapped;
+  LazyTransformerWrapper._(this.wrapped);
+
+  factory LazyTransformerWrapper(wrapped) {
+    return wrapped is AggregateTransformer
+        ? new _LazyAggregateTransformerWrapper(wrapped)
+        : new _LazyTransformerWrapper(wrapped);
+  }
 
   @override
-  String get allowedExtensions => _transformer.allowedExtensions;
+  toString() => wrapped.toString();
+}
+
+class _LazyTransformerWrapper extends LazyTransformerWrapper
+    implements Transformer, LazyTransformer {
+  Transformer get wrapped => super.wrapped;
+  _LazyTransformerWrapper(Transformer wrapped) : super._(wrapped) {
+    checkState(wrapped is Transformer);
+  }
 
   @override
-  apply(Transform transform) => _transformer.apply(transform);
+  String get allowedExtensions => wrapped.allowedExtensions;
+
+  @override
+  apply(Transform transform) => wrapped.apply(transform);
 
   @override
   declareOutputs(DeclaringTransform transform) =>
-      (_transformer as DeclaringTransformer).declareOutputs(transform);
+      (wrapped as DeclaringTransformer).declareOutputs(transform);
 
   @override
-  isPrimary(AssetId id) => _transformer.isPrimary(id);
+  isPrimary(AssetId id) => wrapped.isPrimary(id);
+}
+
+class _LazyAggregateTransformerWrapper extends LazyTransformerWrapper
+    implements AggregateTransformer, LazyAggregateTransformer {
+  AggregateTransformer get wrapped => super.wrapped;
+  _LazyAggregateTransformerWrapper(AggregateTransformer wrapped) : super._(wrapped) {
+    checkState(wrapped is AggregateTransformer);
+  }
 
   @override
-  toString() => _transformer.toString();
+  apply(AggregateTransform transform) => wrapped.apply(transform);
+
+  @override
+  declareOutputs(DeclaringAggregateTransform transform) =>
+      (wrapped as DeclaringAggregateTransformer).declareOutputs(transform);
+
+  @override
+  classifyPrimary(AssetId id) => wrapped.classifyPrimary(id);
 }
 
 class LazyTransformerGroupWrapper implements TransformerGroup {

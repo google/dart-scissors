@@ -50,13 +50,13 @@ class PathResolver {
     return (await _resolveFileAsset([path]))?.file?.path ?? path;
   }
 
-  Future<Asset> resolveAsset(Transform transform,
+  Future<Asset> resolveAsset(Future<Asset> inputGetter(AssetId id),
       Iterable<String> alternativePaths, AssetId from) async {
     // First, try package URIs:
     for (var path in alternativePaths) {
       if (path.contains(':')) {
         try {
-          return transform.getInput(_parsePackageUrl(path));
+          return inputGetter(_parsePackageUrl(path));
         } catch (e) {
           // Do nothing.
         }
@@ -67,7 +67,7 @@ class PathResolver {
     Iterable<AssetId> ids = alternativePaths
         .map((path) => new AssetId(from.package, join(parent, path)));
     Asset asset = await findFirstWhere(
-        ids.map((id) => transform.getInput(id)).toList(),
+        ids.map(inputGetter).toList(),
         (Future<Asset> asset) =>
             asset.then((_) => true, onError: (_) => false));
 
