@@ -3,13 +3,13 @@ Loading dart_to_js_script_rewriter, di/module_transformer, observe, scissors and
 Loading angular transformers...
 Building scissors_angular1_example...
 [Info from SvgOptimization on scissors_angular1_example|lib/icon.svg]:
-Optimized SVG: 671 chars -> 255 chars
+Optimized SVG: 671 chars → 255 chars (-416 chars = -62.0%)
 [Info from SvgOptimization on scissors_angular1_example|lib/icon.svg]:
 Optimized SVG content:
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="21px" height="21px" viewBox="0 0 21 21" overflow="visible" enable-background="new 0 0 21 21"><rect x="0" y="0" height="10" width="10" style="stroke:#00ff00;fill:#ff0000"/>
 </svg>
 [Info from SvgOptimization on scissors_angular1_example|lib/icon2.svg]:
-Optimized SVG: 213 chars -> 125 chars
+Optimized SVG: 213 chars → 125 chars (-88 chars = -41.4%)
 [Info from SvgOptimization on scissors_angular1_example|lib/icon2.svg]:
 Optimized SVG content:
 <svg xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" height="10" width="10" style="stroke:#0000ff;fill:#00ff00"/>
@@ -18,6 +18,9 @@ Optimized SVG content:
 Skipping scissors_angular1_example|lib/_defs.scss.css
 [Info from ImageInlining]:
 Skipping scissors_angular1_example|lib/_defs.scss.css
+
+[Info from PngOptimization on scissors_angular1_example|lib/plus.png]:
+Optimized PNG: 969 bytes → 852 bytes (-117 bytes = -12.1%)
 [Info from CssPruning on scissors_angular1_example|lib/foo.scss.css]:
 Dropping unused CSS rule: .unused-class {
   float: left;
@@ -28,9 +31,6 @@ Dropping unused CSS rule: absent-element {
 }
 [Info from CssPruning]:
 Size[scissors_angular1_example|lib/foo.scss.css]: before = 293, after = 242
-
-[Info from PngOptimization on scissors_angular1_example|lib/plus.png]:
-Optimized PNG: 969 bytes -> 852 bytes
 [Info from ImageInlining on scissors_angular1_example|lib/foo.scss.css]:
 line 1, column 163 of scissors_angular1_example|lib/foo.scss.css: Inlined 'icon.svg' with scissors_angular1_example|lib/icon.svg
 inline-image("icon.svg")

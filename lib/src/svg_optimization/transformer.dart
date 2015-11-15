@@ -17,10 +17,14 @@ import 'dart:async';
 
 import 'package:barback/barback.dart';
 
+import '../utils/delta_format.dart';
 import '../utils/settings_base.dart';
 import 'svg_optimizer.dart';
 
 abstract class SvgOptimizationSettings {
+
+  Setting<bool> get verbose;
+
   final optimizeSvg = makeOptimSetting('optimizeSvg');
 }
 
@@ -54,7 +58,7 @@ class SvgOptimizationTransformer extends Transformer
     String output = optimizeSvg(input);
     transform.addOutput(new Asset.fromString(asset.id, output));
     transform.logger.info(
-        'Optimized SVG: ${input.length} chars -> ${output.length} chars',
+        'Optimized SVG: ${formatDeltaChars(input.length, output.length)}',
         asset: asset.id);
     if (settings.verbose.value) {
       transform.logger.info('Optimized SVG content:\n$output', asset: asset.id);

@@ -19,6 +19,7 @@ import 'package:barback/barback.dart';
 
 import '../utils/path_resolver.dart';
 import '../utils/settings_base.dart';
+import '../utils/delta_format.dart';
 import 'pngcrush_runner.dart';
 
 part 'settings.dart';
@@ -51,6 +52,6 @@ class PngOptimizationTransformer extends Transformer
       resultSize = b;
     }));
     transform.logger
-        .info('Optimized PNG: ${originalSize} bytes -> ${resultSize} bytes');
+        .info('Optimized PNG: ${formatDeltaBytes(originalSize, resultSize)}');
   }
 }
