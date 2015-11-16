@@ -29,6 +29,7 @@ abstract class LazyTransformerWrapper {
   @override
   toString() => wrapped.toString();
 }
+
 abstract class EagerTransformerWrapper {
   final wrapped;
   EagerTransformerWrapper._(this.wrapped);
@@ -107,12 +108,10 @@ class _TransformerGroupWrapper implements TransformerGroup {
   final TransformerGroup group;
   final Iterable<Iterable> phases;
   _TransformerGroupWrapper(
-      TransformerGroup group,
-      transformerWrapper(dynamic transformer))
-          : this.group = group,
-            this.phases = group.phases
-                .map((ts) => ts.map(transformerWrapper))
-                .toList();
+      TransformerGroup group, transformerWrapper(dynamic transformer))
+      : this.group = group,
+        this.phases =
+            group.phases.map((ts) => ts.map(transformerWrapper)).toList();
 
   @override
   toString() => group.toString();

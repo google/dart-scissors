@@ -30,16 +30,16 @@ const _timestampAggregate = 'web/timestamp';
 class AutoReloadTransformerGroup extends TransformerGroup {
   AutoReloadTransformerGroup.asPlugin(BarbackSettings settings)
       : super(settings.mode == BarbackMode.RELEASE
-        ? [
-          [new _ReloaderRemovalTransformer()]
-        ]
-        : [
-          [new _TimestamperTransformer()],
-          [new _TimestampAggregateTransformer()]
-        ]) {
+            ? [
+                [new _ReloaderRemovalTransformer()]
+              ]
+            : [
+                [new _TimestamperTransformer()],
+                [new _TimestampAggregateTransformer()]
+              ]) {
     if (settings.configuration.isNotEmpty) {
       throw new ArgumentError(
-        "Unsupported settings: ${settings.configuration}");
+          "Unsupported settings: ${settings.configuration}");
     }
   }
 }
@@ -69,7 +69,6 @@ class _TimestamperTransformer extends Transformer
 
 class _TimestampAggregateTransformer extends AggregateTransformer
     implements LazyAggregateTransformer {
-
   @override
   classifyPrimary(AssetId id) =>
       id.extension == _extension ? 'timestamps' : null;
@@ -89,13 +88,14 @@ class _TimestampAggregateTransformer extends AggregateTransformer
 
     transform.logger.info('maxTimestamp = $maxTimestamp');
     transform.addOutput(new Asset.fromString(
-      new AssetId(transform.package, _timestampAggregate),
-      maxTimestamp.toString()));
+        new AssetId(transform.package, _timestampAggregate),
+        maxTimestamp.toString()));
   }
 
   @override
   declareOutputs(DeclaringAggregateTransform transform) {
-    transform.declareOutput(new AssetId(transform.package, _timestampAggregate));
+    transform
+        .declareOutput(new AssetId(transform.package, _timestampAggregate));
   }
 }
 
@@ -107,9 +107,14 @@ String _spaces(int count) {
 
 /// Replaces import and usage of the reloader runtime support script by spaces.
 /// This means we don't mess up with the sourcemaps.
-class _ReloaderRemovalTransformer extends Transformer implements LazyTransformer {
-  final RegExp _importRx = new RegExp(r'''\bimport\s*['"]package:scissors/reloader/reloader.dart['"]\s*(?:as\s*(\w+)\s*)?;''', multiLine: true);
-  final RegExp _setupRx = new RegExp(r'''\b(?:(\w+)\s*\.\s*)?setupReloader\s*\([^;]*?\)\s*;''', multiLine: true);
+class _ReloaderRemovalTransformer extends Transformer
+    implements LazyTransformer {
+  final RegExp _importRx = new RegExp(
+      r'''\bimport\s*['"]package:scissors/reloader/reloader.dart['"]\s*(?:as\s*(\w+)\s*)?;''',
+      multiLine: true);
+  final RegExp _setupRx = new RegExp(
+      r'''\b(?:(\w+)\s*\.\s*)?setupReloader\s*\([^;]*?\)\s*;''',
+      multiLine: true);
 
   @override final String allowedExtensions = ".dart";
 

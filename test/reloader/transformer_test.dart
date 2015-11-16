@@ -20,10 +20,9 @@ import 'package:scissors/reloader/transformer.dart';
 import 'package:scissors/src/utils/lazy_transformer_utils.dart';
 import '../src/transformer_test_utils.dart';
 
-makePhases(BarbackMode mode) =>
-    new EagerTransformerGroupWrapper(
-        new AutoReloadTransformerGroup.asPlugin(
-            new BarbackSettings({}, mode))).phases;
+makePhases(BarbackMode mode) => new EagerTransformerGroupWrapper(
+        new AutoReloadTransformerGroup.asPlugin(new BarbackSettings({}, mode)))
+    .phases;
 
 void main() {
   testPhases('removes mentions of the reloader lib in release mode',
@@ -56,9 +55,5 @@ void main() {
     }
   ''';
   testPhases('leaves reloader alone in debug mode',
-      makePhases(BarbackMode.DEBUG), {
-    'a|foo.dart': src
-  }, {
-    'a|foo.dart': src
-  });
+      makePhases(BarbackMode.DEBUG), {'a|foo.dart': src}, {'a|foo.dart': src});
 }

@@ -39,7 +39,6 @@ bool setupReloader([delay = const Duration(seconds: 1)]) {
   return true;
 }
 
-
 Future<int> _getTimestamp() {
   var completer = new Completer();
   new HttpRequest()
