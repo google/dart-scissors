@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-part of scissors.src.sass.sass_and_css_pruning_transformer;
+part of scissors.src.sass.transformer;
 
 abstract class SassSettings {
   bool get isDebug;
