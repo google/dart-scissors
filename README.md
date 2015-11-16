@@ -1,33 +1,73 @@
 # sCiSSors [![Build Status](https://travis-ci.org/google/dart-scissors.svg?branch=master)](https://travis-ci.org/google/dart-scissors) [![Pub Package](https://img.shields.io/pub/v/scissors.svg)](https://pub.dartlang.org/packages/scissors)
-**Cuts your Angular Dart builds: resource optimizer (CSS, SVG, PNG), Sass runner and more.**
-
-Bored of tuning your Sass imports to avoid bloated CSS? This is for you!
+**Build smaller resources for Angular apps, faster: CSS pruning, SVG+PNG optimization, Sass compilation, locale permutations, automatic reload.**
 
 _Disclaimer_: This is not an official Google product.
 
-## Features
+# Features
 
-- For each .css file, prunes rules that aren't used in its .html companion or
-  in the templates inlined in its .dart companion
-  (see [tests](./test/transformer_vm_test.dart) and [examples](./example))
-- Supports Angular(1,2) templates inside `@Component` / `@View` annotations.
-- Supports `ng-class` and `class` names with programmatic interpolated fragments
-  (e.g. `class="some-{{fragmented}}-class and-some-normal-class"`,
-  `ng-class="{'some-class': isSome}"`).
-- Compiles `*.sass` and `*.scss` files with [`sassc`](https://github.com/sass/sassc)
-  - Rebuilds `.css` file whenever any transitive `.sass` import is modified.
-    (note: requires `pub serve --force-poll`)
-  - Supports Compass's [inline-image](http://compass-style.org/reference/compass/helpers/inline-data/)
-    helper to inline images.
-  - Optimizes `.svg` and `.png` files (with `pngcrush`) before inlining them
-- Also experimentally supports generating locale permutations with pre-loaded
-  deferred messages (concatenates `.part.js` files to speed up load time), and
-  reoptimizing the resulting `.js` files with the Closure Compiler.
-  See [example/permutations](https://github.com/google/dart-scissors/tree/master/example/permutations) for usage example.
+All of the following features are _lazy_ (only triggered when needed) and
+most of them are disabled or optimized for speed with `pub serve` in debug mode.
+(note: may need `pub serve --force-poll` on MacOS X)
 
-## Usage
+- CSS pruning for Angular (see [example/angular1](https://github.com/google/dart-scissors/tree/master/example/angular1), [example/angular2](https://github.com/google/dart-scissors/tree/master/example/angular2)):
+  - Finds which .css rules are not used by Angular templates and removes them.
+  - Supports `ng-class` and `class` with programmatic interpolated fragments
+    (e.g. `class="some-{{fragmented}}-class and-some-normal-class"`,
+    `ng-class="{'some-class': isSome}"`).
+  - Disabled by default in debug mode.
+- [Sass](http://sass-lang.com) compilation:
+  - Compiles `*.sass` and `*.scss` files with [`sassc`](https://github.com/sass/sassc),
+    the lightning-fast C++ port of Ruby Sass.
+  - Rebuilds `.css` files whenever their `.sass` sources are modified.
+- Image inlining:
+  - Expands [inline-image](http://compass-style.org/reference/compass/helpers/inline-data/)
+    calls in CSS files into data URI links, like Compass does.
+  - By default in debug mode, links to images instead of inlining them.
+- PNG optimization:
+  - Calls `pngcrush` to remove all metadata that is useless for rendering.
+  - Disabled by default in debug mode.
+- SVG optimization:
+  - Removes comments, doctypes, unused namespaces.
+  - Disabled by default in debug mode.
+- Locale-specific permutations generation (Optional, see [example/permutations](https://github.com/google/dart-scissors/tree/master/example/permutations)):
+  - Generates one .js per locale (e.g. `main_en.js`, `main_fr.js`...) with the
+    deferred parts needed for that locale, which speeds up load time.
+  - Supports deferred messages and deferred LTR/RTL template caches.
+  - Optionally optimizes the resulting `.js` files with the Closure Compiler.
+- Automatic reload support (Optional): zero-turnaround for Dart!
 
-- Add the sCiSSors dep and transformer:
+# Usage
+
+## Defaults vs. debug vs. release
+
+sCiSSors is fine-tuned for fast build in `debug` mode (default for `pub serve`)
+small code size in `release` mode (default for `pub build`).
+
+It supports full customization of its settings. For instance, to enable PNG
+optimizations in all modes, and enable SVG optimizations in `debug` only:
+
+```yaml
+transformers:
+- scissors:
+    optimizePng: true
+    release:
+        optimizeSvg: false
+    debug:
+        optimizeSvg: false
+```
+
+## Using the `scissors` transformer
+
+The default transformer will build your Sass files in a blink of an
+eye and will optimize your CSS, PNG and SVG assets in `release` mode
+(`pub build`).
+
+Please only setup sCiSSors's transformer on projects you know respect sCiSSors'
+conventions and limitations (see below).
+
+Examples: see [example/angular1](https://github.com/google/dart-scissors/tree/master/example/angular1), [example/angular2](https://github.com/google/dart-scissors/tree/master/example/angular2)).
+
+`pubspec.yaml`:
 
   ```
   dev_dependencies:
@@ -36,21 +76,19 @@ _Disclaimer_: This is not an official Google product.
   - scissors
   ```
 
-- You can optionally point sCiSSors to your local [`sassc`](https://github.com/sass/sassc) install if it's not in the path (hint: install with `brew install sassc` on MacOS X) and provide it with extra args:
+Valid settings:
+- `pruneCss` (boolean): by default, `true` in `release` only
+- `imageInlining`: default is `linkInlinedImages` in `debug`, `inlineInlinedImages` in `release`
+    - `inlineAllUrls`: treats `url` as `inline-image`
+    - `inlineInlinedImages`: simply honours `inline-image`
+    - `linkInlinedImages`: replaces `inline-image` by `url`
+    - `disablePass`: leaves `inline-image` untouched
+- `optimizePng` (boolean): by default, `true` in `release` only
+- `optimizeSvg` (boolean): by default, `true` in `release` only
+- `sasscPath`: default is `sassc`
+- `pngCrushPath`: default is `pngcrush`
 
-  ```
-  transformers:
-  - scissors:
-      sasscPath: path/to/sassc
-      sasscArgs:
-        - -foo
-        - -bar
-  ```
-
-Please only setup sCiSSors's transformer on projects you know respect sCiSSors'
-conventions and limitations.
-
-## Limitations
+### Limitations
 
 - Assumes if foo.html exists, foo.css is only used from there (conventions
   matter). This means sCiSSors should be disabled or used with caution when
@@ -64,7 +102,7 @@ conventions and limitations.
 - No CSS renaming yet (just pruning for now),
 - No Polymer.dart support yet.
 
-## Style Isolation in Angular
+### Style Isolation in Angular
 
 Angular(1,2) provide the following [strategies](http://blog.thoughtram.io/angular/2015/06/29/shadow-dom-strategies-in-angular2.html):
 
@@ -85,6 +123,66 @@ The last "unscoped" strategy means there's no file- or
 component-local way of deciding if a style *could* be used elsewhere. You should
 not use sCiSSors on packages / projects with that strategy.
 
-## TODO
+## Using `scissors/permutations_transformer`
+
+Example: see [example/permutations](https://github.com/google/dart-scissors/tree/master/example/permutations).
+
+`pubspec.yaml`:
+
+  ```
+  dev_dependencies:
+    scissors
+  transformers:
+  - scissors/permutations_transformer
+  ```
+
+Valid settings:
+- `generatePermutations`: `true` by default
+- `ltrImport` and `rtlImport`: unset by default.
+   If you're deferred-loading LTR/RTL-specific template caches, these settings
+   should take the alias you're importing them under. See [example/permutations](https://github.com/google/dart-scissors/tree/master/example/permutations) for a concrete example.
+- `expectedPartCounts` (map of .dart.js artifact to number of expected parts): unset by default.
+  For instance: `{ web/main.dart.js: 3 }`.
+- `reoptimizePermutations`: `false` by default.
+  Whether to optimize permutations with the Closure Compiler.
+- `closureCompilerJarPath`: `compiler.jar` by default
+- `javaPath`: `java` by default.
+
+## Using `scissors/reloader/transformer`
+
+This provides an amazing development turnaround experience, whether you're using
+the other sCiSSors transformers or not.
+
+With `pub serve --force-poll`, as soon as you save an asset (say, `foo.scss`)
+and it finished building the dependent assets (say, `foo.scss.css`), your app
+will reload. That's typically before you even have the time to tab-switch to
+your browser (+ no need to Ctrl+R).
+
+The transformer ensures the automatic reload logic is removed in `release`
+builds (`pub build`), without interfering with source maps.
+
+Example: see [example/permutations](https://github.com/google/dart-scissors/tree/master/example/permutations).
+
+Just edit your `pubspec.yaml` (note: it's in `dev_dependencies`, not `dependencies`):
+
+  ```
+  dev_dependencies:
+    scissors
+  transformers:
+  - scissors/reloader/transformer
+  ```
+
+And your `main.dart`:
+
+  ```dart
+  import 'package:scissors/reloader/reloader.dart';
+
+  main() {
+    setupReloader();
+    ...
+  }
+  ```
+
+# TODO
 
 Please see issues.
