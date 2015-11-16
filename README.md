@@ -41,10 +41,12 @@ most of them are disabled or optimized for speed with `pub serve` in debug mode.
 ## Defaults vs. debug vs. release
 
 sCiSSors is fine-tuned for fast build in `debug` mode (default for `pub serve`)
-small code size in `release` mode (default for `pub build`).
+and small code size in `release` mode (default for `pub build`).
 
-It supports full customization of its settings. For instance, to enable PNG
-optimizations in all modes, and enable SVG optimizations in `debug` only:
+Its behaviour can be fully customized through transformer settings in
+`pubspec.yaml`.
+For instance, to enable PNG optimizations in all modes, and enable SVG
+optimizations in `debug` only:
 
 ```yaml
 transformers:
@@ -58,8 +60,8 @@ transformers:
 
 ## Using the `scissors` transformer
 
-The default transformer will build your Sass files in a blink of an
-eye and will optimize your CSS, PNG and SVG assets in `release` mode
+The default transformer will build Sass files in a blink of an
+eye and will optimize CSS, PNG and SVG assets in `release` mode
 (`pub build`).
 
 Please only setup sCiSSors's transformer on projects you know respect sCiSSors'
@@ -154,16 +156,16 @@ This provides an amazing development turnaround experience, whether you're using
 the other sCiSSors transformers or not.
 
 With `pub serve --force-poll`, as soon as you save an asset (say, `foo.scss`)
-and it finished building the dependent assets (say, `foo.scss.css`), your app
+and it finished building the dependent assets (say, `foo.scss.css`), the app
 will reload. That's typically before you even have the time to tab-switch to
-your browser (+ no need to Ctrl+R).
+the browser (+ no need to Ctrl+R).
 
 The transformer ensures the automatic reload logic is removed in `release`
 builds (`pub build`), without interfering with source maps.
 
 Example: see [example/permutations](https://github.com/google/dart-scissors/tree/master/example/permutations).
 
-Just edit your `pubspec.yaml` (note: it's in `dev_dependencies`, not `dependencies`):
+Just edit `pubspec.yaml` (note: it's in `dev_dependencies`, not `dependencies`):
 
   ```
   dev_dependencies:
@@ -172,7 +174,7 @@ Just edit your `pubspec.yaml` (note: it's in `dev_dependencies`, not `dependenci
   - scissors/reloader/transformer
   ```
 
-And your `main.dart`:
+And edit `main.dart`:
 
   ```dart
   import 'package:scissors/reloader/reloader.dart';
@@ -189,4 +191,4 @@ Valid settings:
 
 # TODO
 
-Please see issues.
+Please see [issues](https://github.com/google/dart-scissors/issues).
