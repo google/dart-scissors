@@ -16,9 +16,8 @@ part of scissors.src.css_pruning.transformer;
 abstract class CssPruningSettings {
   Setting<bool> get verbose;
 
-  final pruneCss = new Setting<bool>('pruneCss',
-    debugDefault: false,
-    releaseDefault: true);
+  final pruneCss =
+      new Setting<bool>('pruneCss', debugDefault: false, releaseDefault: true);
 
   // final mirrorCss = new Setting<bool>('mirrorCss',
   //     comment:

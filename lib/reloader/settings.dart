@@ -15,12 +15,10 @@ part of scissors.src.reloader.transformer;
 
 abstract class ReloaderSettings {
   final serveTimestamps = new Setting<bool>('serveTimestamps',
-      debugDefault: true,
-      releaseDefault: false);
+      debugDefault: true, releaseDefault: false);
 
   final removeReloader = new Setting<bool>('removeReloader',
-      debugDefault: false,
-      releaseDefault: true);
+      debugDefault: false, releaseDefault: true);
 }
 
 class _ReloaderSettings extends SettingsBase with ReloaderSettings {

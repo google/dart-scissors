@@ -32,13 +32,24 @@ part '_timestamper_transformer.dart';
 ///   aggregates the most recent timestamps, so that the reloader library can
 ///   query `/timestamp` and decide whether to reload the page or not.
 class AutoReloadTransformerGroup extends TransformerGroup {
-
   AutoReloadTransformerGroup.asPlugin(BarbackSettings settings)
       : this(new _ReloaderSettings(settings));
   AutoReloadTransformerGroup(ReloaderSettings settings)
       : super(trimPhases([
-          [settings.removeReloader.value ? new _ReloaderRemovalTransformer() : null],
-          [settings.serveTimestamps.value ? new _TimestamperTransformer() : null],
-          [settings.serveTimestamps.value ? new _TimestampAggregateTransformer() : null]
-      ]));
+          [
+            settings.removeReloader.value
+                ? new _ReloaderRemovalTransformer()
+                : null
+          ],
+          [
+            settings.serveTimestamps.value
+                ? new _TimestamperTransformer()
+                : null
+          ],
+          [
+            settings.serveTimestamps.value
+                ? new _TimestampAggregateTransformer()
+                : null
+          ]
+        ]));
 }

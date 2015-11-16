@@ -2,6 +2,22 @@
 
 ...
 
+## 0.1.9 (2015-11-15)
+
+### Features
+
+- Added new `scissors/reloader/transformer` + runtime lib that allow instant
+  reload whenever assets are updated (triggered at the end of the pub build).
+  Reloader usage is erased from `release` builds by default (respecting source
+  maps).
+- Don't prune css in debug by default
+
+### Bugfixes
+
+- Sass transformer respects existing `.scss.css` input and only rebuilds them
+  from the `.scss` sources when it's out of date (timestamp-based; can be
+  disabled with `onlyCompileOutOfDateSass: false`).
+
 ## 0.1.8 (2015-11-14)
 
 This version comes with a massive refactoring that splits out most features into
@@ -16,11 +32,13 @@ their own transformer. Please note that there are still only
 ### Bugfixes
 
 - Permutations transformer (`scissors/permutations_transformer`):
+
   - Permutations are now built lazily (fixes `pub serve` + Dartium experience)
   - Disabled `reoptimizePermutations` by default
   - Respect `javaPath` when running the Closure Compiler.
   - Added `expectedPartCounts` check (takes a map of `.dart.js` script path to
     number of expected parts, see [example/permutations](https://github.com/google/dart-scissors/tree/master/example/permutations))
+
 - Fixed path resolution regression (dotted package names)
 
 ## 0.1.7 (2015-11-12)
@@ -58,6 +76,7 @@ their own transformer. Please note that there are still only
   `pngCrushPath: path/to/pngcrush`)
 - Added `imageInlining` setting to control image inlining inside CSS files,
   accepts values:
+
   - `inlineAllUrls`: inlines `inline-image` *and* `url` references
   - `inlineInlinedImages`: inlines `inline-image` only (default in `release`
     mode)
@@ -65,6 +84,7 @@ their own transformer. Please note that there are still only
     references (default in `debug` mode): images are not inlined.
   - `disablePass`: don't touch `inline-image` references (may produce invalid
     CSS).
+
 - Added experimental `scissors/permutations_transformer` transformer that
   generates locale-specific .js artefacts when using defer-loaded messages
   (package:intl).
@@ -86,6 +106,7 @@ their own transformer. Please note that there are still only
   [inline-image](http://compass-style.org/reference/compass/helpers/inline-data/)
   helper to inline images.
 - Rebuilds `.css` files when any transitive `.sass` import is modified:
+
   - Requires `pub serve --force-poll`
   - The default (lazy) transformer will just invalidate stale resources, while
     `scissors/eager_transformer` will eagerly rebuild them.
@@ -95,6 +116,7 @@ their own transformer. Please note that there are still only
 ### Features
 
 * Improved [sassc](https://github.com/sass/sassc) integration:
+
   * Resolving `${FOO}` environment variables in `sasscPath` and `sasscArgs` settings
   * Automatically set `--load-path` arguments with list of root directories, with clean
     fork point (`path_resolver.dart`)
