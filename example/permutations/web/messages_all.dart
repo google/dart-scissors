@@ -1,3 +1,5 @@
+library scissors.example.permutations.messages_all;
+
 import 'dart:async';
 
 import 'messages_ar.dart' deferred as messages_ar;
