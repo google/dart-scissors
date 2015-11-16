@@ -11,12 +11,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.src.parts_check.transformer;
+library scissors.src.reloader.transformer;
 
 import 'package:barback/barback.dart';
 
 import 'dart:math';
 import 'dart:async';
+import '../src/utils/phase_utils.dart';
+import '../src/utils/settings_base.dart';
+
+part 'settings.dart';
 
 const _extension = '.timestamp';
 const _timestampAggregate = 'web/timestamp';
@@ -28,20 +32,15 @@ const _timestampAggregate = 'web/timestamp';
 ///   aggregates the most recent timestamps, so that the reloader library can
 ///   query `/timestamp` and decide whether to reload the page or not.
 class AutoReloadTransformerGroup extends TransformerGroup {
+
   AutoReloadTransformerGroup.asPlugin(BarbackSettings settings)
-      : super(settings.mode == BarbackMode.RELEASE
-            ? [
-                [new _ReloaderRemovalTransformer()]
-              ]
-            : [
-                [new _TimestamperTransformer()],
-                [new _TimestampAggregateTransformer()]
-              ]) {
-    if (settings.configuration.isNotEmpty) {
-      throw new ArgumentError(
-          "Unsupported settings: ${settings.configuration}");
-    }
-  }
+      : this(new _ReloaderSettings(settings));
+  AutoReloadTransformerGroup(ReloaderSettings settings)
+      : super(trimPhases([
+          [settings.removeReloader.value ? new _ReloaderRemovalTransformer() : null],
+          [settings.serveTimestamps.value ? new _TimestamperTransformer() : null],
+          [settings.serveTimestamps.value ? new _TimestampAggregateTransformer() : null]
+      ]));
 }
 
 class _TimestamperTransformer extends Transformer

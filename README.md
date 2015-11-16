@@ -183,6 +183,10 @@ And your `main.dart`:
   }
   ```
 
+Valid settings:
+- `serveTimestamps` (boolean): by default, `true` in `debug` only
+- `removeReloader` (boolean): by default, `true` in `release` only
+
 # TODO
 
 Please see issues.
