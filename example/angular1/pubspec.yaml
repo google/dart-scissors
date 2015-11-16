@@ -22,6 +22,9 @@ transformers:
     #   - -foo
     #   - -bar
 # - template_cache_transformer
+# This enables automatic reloader support in debug, and removal of
+# reloader.dart import + calls in release.
+- scissors/reloader/transformer
 - angular:
     generate_template_cache: true
     entry_points:

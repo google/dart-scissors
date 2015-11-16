@@ -1,5 +1,5 @@
 Loading source assets...
-Loading dart_to_js_script_rewriter, di/module_transformer, observe, scissors and smoke/src/default_transformer transformers...
+Loading dart_to_js_script_rewriter, di/module_transformer, observe, scissors, scissors/reloader/transformer and smoke/src/default_transformer transformers...
 Loading angular transformers...
 Building scissors_angular1_example...
 [Info from SvgOptimization on scissors_angular1_example|lib/icon.svg]:
@@ -14,13 +14,8 @@ Optimized SVG: 213 chars → 125 chars (-88 chars = -41.4%)
 Optimized SVG content:
 <svg xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" height="10" width="10" style="stroke:#0000ff;fill:#00ff00"/>
 </svg>
-[Info from CssPruning]:
-Skipping scissors_angular1_example|lib/_defs.scss.css
-[Info from ImageInlining]:
-Skipping scissors_angular1_example|lib/_defs.scss.css
-
-[Info from PngOptimization on scissors_angular1_example|lib/plus.png]:
-Optimized PNG: 969 bytes → 852 bytes (-117 bytes = -12.1%)
+[Info from ReloaderRemoval on scissors_angular1_example|web/main.dart]:
+Removing reference to reloader
 [Info from CssPruning on scissors_angular1_example|lib/foo.scss.css]:
 Dropping unused CSS rule: .unused-class {
   float: left;
@@ -31,6 +26,9 @@ Dropping unused CSS rule: absent-element {
 }
 [Info from CssPruning on scissors_angular1_example|lib/foo.scss.css]:
 Pruned CSS: 293 chars → 242 chars (-51 chars = -17.5%)
+
+[Info from PngOptimization on scissors_angular1_example|lib/plus.png]:
+Optimized PNG: 969 bytes → 852 bytes (-117 bytes = -12.1%)
 [Info from ImageInlining on scissors_angular1_example|lib/foo.scss.css]:
 line 1, column 163 of scissors_angular1_example|lib/foo.scss.css: Inlined 'icon.svg' with scissors_angular1_example|lib/icon.svg
 inline-image("icon.svg")

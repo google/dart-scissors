@@ -3,6 +3,7 @@ import 'package:angular/application_factory.dart';
 import 'package:di/di.dart' show Module;
 
 import 'package:scissors_angular1_example/foo.dart';
+import 'package:scissors/reloader/reloader.dart';
 
 class MyModule extends Module {
   MyModule() {
@@ -12,4 +13,5 @@ class MyModule extends Module {
 
 main() {
   applicationFactory().addModule(new MyModule()).run();
+  setupReloader();
 }
