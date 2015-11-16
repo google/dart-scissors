@@ -23,6 +23,7 @@
 This version comes with a massive refactoring that splits out most features into
 their own transformer. Please note that there are still only
 3 officially-supported transformer entry points:
+
 - `scissors/transformer` (lazy Sass compilation, CSS and image optimizations)
 - `scissors/eager_transformer` (eager version of the previous: builds all the
   assets upfront when pub serve is run)
