@@ -21,6 +21,7 @@ import 'src/svg_optimization/transformer.dart';
 import 'src/css_pruning/transformer.dart';
 import 'src/sass/transformer.dart';
 import 'src/utils/settings_base.dart';
+import 'src/utils/phase_utils.dart';
 
 class _ScissorsSettings extends SettingsBase
     with
@@ -50,16 +51,8 @@ List<List<Transformer>> _createPhases(_ScissorsSettings settings) {
           : null
     ]
   ];
-  return _trimPhases(phases);
+  return trimPhases(phases);
 }
-
-_trimPhases(List<List<Transformer>> phases) => phases
-    .map((phase) => phase.where(_isNotNull).toList())
-    .where(_isNotEmpty)
-    .toList();
-
-_isNotNull(x) => x != null;
-_isNotEmpty(List l) => l.isNotEmpty;
 
 class EagerScissorsTransformerGroup extends TransformerGroup {
   EagerScissorsTransformerGroup(_ScissorsSettings settings)
