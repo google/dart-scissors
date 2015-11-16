@@ -26,13 +26,16 @@ bool setupReloader([delay = const Duration(seconds: 1)]) {
     var initialTimestamp = await _getTimestamp();
     Future.doWhile(() async {
       await new Future.delayed(const Duration(seconds: 1));
-      var timestamp = await _getTimestamp();
-      if (timestamp != initialTimestamp) {
-        window.location.reload();
-        return false;
-      } else {
-        return true;
+      try {
+        var timestamp = await _getTimestamp();
+        if (timestamp != initialTimestamp) {
+          window.location.reload();
+          return false;
+        }
+      } catch (e) {
+        // Do nothing and retry: maybe pub serve went down.
       }
+      return true;
     });
   }
   run();
@@ -48,6 +51,7 @@ Future<int> _getTimestamp() {
       var timestamp = int.parse(req.responseText);
       completer.complete(timestamp);
     })
+    ..onError.listen(completer.completeError)
     ..send();
   return completer.future;
 }
