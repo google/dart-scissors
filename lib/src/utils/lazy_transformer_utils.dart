@@ -29,59 +29,101 @@ abstract class LazyTransformerWrapper {
   @override
   toString() => wrapped.toString();
 }
+abstract class EagerTransformerWrapper {
+  final wrapped;
+  EagerTransformerWrapper._(this.wrapped);
+
+  factory EagerTransformerWrapper(wrapped) {
+    return wrapped is AggregateTransformer
+        ? new _EagerAggregateTransformerWrapper(wrapped)
+        : new _EagerTransformerWrapper(wrapped);
+  }
+
+  @override
+  toString() => wrapped.toString();
+}
+
+abstract class _TransformerWrapper implements Transformer {
+  Transformer get wrapped;
+
+  String get allowedExtensions => wrapped.allowedExtensions;
+
+  apply(Transform transform) => wrapped.apply(transform);
+
+  declareOutputs(DeclaringTransform transform) =>
+      (wrapped as DeclaringTransformer).declareOutputs(transform);
+
+  isPrimary(AssetId id) => wrapped.isPrimary(id);
+}
+
+class _EagerTransformerWrapper extends EagerTransformerWrapper
+    with _TransformerWrapper
+    implements Transformer, LazyTransformer {
+  Transformer get wrapped => super.wrapped;
+  _EagerTransformerWrapper(Transformer wrapped) : super._(wrapped) {
+    checkState(wrapped is Transformer);
+  }
+}
 
 class _LazyTransformerWrapper extends LazyTransformerWrapper
+    with _TransformerWrapper
     implements Transformer, LazyTransformer {
   Transformer get wrapped => super.wrapped;
   _LazyTransformerWrapper(Transformer wrapped) : super._(wrapped) {
     checkState(wrapped is Transformer);
   }
+}
 
-  @override
-  String get allowedExtensions => wrapped.allowedExtensions;
+abstract class _AggregateTransformerWrapper {
+  AggregateTransformer get wrapped;
 
-  @override
-  apply(Transform transform) => wrapped.apply(transform);
+  apply(AggregateTransform transform) => wrapped.apply(transform);
 
-  @override
-  declareOutputs(DeclaringTransform transform) =>
-      (wrapped as DeclaringTransformer).declareOutputs(transform);
+  declareOutputs(DeclaringAggregateTransform transform) =>
+      (wrapped as DeclaringAggregateTransformer).declareOutputs(transform);
 
-  @override
-  isPrimary(AssetId id) => wrapped.isPrimary(id);
+  classifyPrimary(AssetId id) => wrapped.classifyPrimary(id);
+}
+
+class _EagerAggregateTransformerWrapper extends EagerTransformerWrapper
+    with _AggregateTransformerWrapper
+    implements AggregateTransformer, LazyAggregateTransformer {
+  _EagerAggregateTransformerWrapper(AggregateTransformer wrapped)
+      : super._(wrapped) {
+    checkState(wrapped is AggregateTransformer);
+  }
 }
 
 class _LazyAggregateTransformerWrapper extends LazyTransformerWrapper
+    with _AggregateTransformerWrapper
     implements AggregateTransformer, LazyAggregateTransformer {
-  AggregateTransformer get wrapped => super.wrapped;
   _LazyAggregateTransformerWrapper(AggregateTransformer wrapped)
       : super._(wrapped) {
     checkState(wrapped is AggregateTransformer);
   }
-
-  @override
-  apply(AggregateTransform transform) => wrapped.apply(transform);
-
-  @override
-  declareOutputs(DeclaringAggregateTransform transform) =>
-      (wrapped as DeclaringAggregateTransformer).declareOutputs(transform);
-
-  @override
-  classifyPrimary(AssetId id) => wrapped.classifyPrimary(id);
 }
 
-class LazyTransformerGroupWrapper implements TransformerGroup {
+class _TransformerGroupWrapper implements TransformerGroup {
   final TransformerGroup group;
-  Iterable<Iterable> _phases;
-  LazyTransformerGroupWrapper(this.group) {
-    _phases = group.phases
-        .map((ts) => ts.map((t) => new LazyTransformerWrapper(t)))
-        .toList();
-  }
-
-  @override
-  Iterable<Iterable> get phases => _phases;
+  final Iterable<Iterable> phases;
+  _TransformerGroupWrapper(
+      TransformerGroup group,
+      transformerWrapper(dynamic transformer))
+          : this.group = group,
+            this.phases = group.phases
+                .map((ts) => ts.map(transformerWrapper))
+                .toList();
 
   @override
   toString() => group.toString();
+}
+
+class LazyTransformerGroupWrapper extends _TransformerGroupWrapper {
+  LazyTransformerGroupWrapper(group)
+      : super(group, (t) => new LazyTransformerWrapper(t));
+}
+
+class EagerTransformerGroupWrapper extends _TransformerGroupWrapper {
+  EagerTransformerGroupWrapper(group)
+      : super(group, (t) => new EagerTransformerWrapper(t));
 }
