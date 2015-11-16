@@ -51,7 +51,7 @@ part 'settings.dart';
 /// This might interact with the CSS mirroring feature, in ways still TBD.
 ///
 class PermutationsTransformer extends AggregateTransformer
-    implements DeclaringAggregateTransformer {
+    implements LazyAggregateTransformer {
   final PermutationsSettings _settings;
 
   PermutationsTransformer(this._settings);
