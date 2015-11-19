@@ -68,8 +68,7 @@ class PathResolver {
         .map((path) => new AssetId(from.package, join(parent, path)));
     Asset asset = await findFirstWhere(
         ids.map(inputGetter).toList(),
-        (Future<Asset> asset) =>
-            asset.then((_) => true, onError: (e, [s]) {
+        (Future<Asset> asset) => asset.then((_) => true, onError: (e, [s]) {
               acceptAssetNotFoundException(e, s);
               return false;
             }));
@@ -114,8 +113,8 @@ class PathResolver {
 
   Future<File> resolveAssetFile(AssetId id) async {
     var alternativePaths = [
-        join(id.package.replaceAll('.', '/'), id.path),
-        id.path
+      join(id.package.replaceAll('.', '/'), id.path),
+      id.path
     ];
     var path =
         id.path.startsWith('lib/') ? id.path.substring('lib/'.length) : id.path;

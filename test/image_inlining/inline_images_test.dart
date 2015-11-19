@@ -21,9 +21,10 @@ import '../../bin/inline_images.dart' as inline_images;
 main() {
   group('inline_images', () {
     test('inlines images it can find', () async {
-      var tmpOut = new File(
-          join((await Directory.systemTemp.create()).path, 'out.css'));
-      var expected = new File('test/image_inlining/data/output.css').readAsString();
+      var tmpOut =
+          new File(join((await Directory.systemTemp.create()).path, 'out.css'));
+      var expected =
+          new File('test/image_inlining/data/output.css').readAsString();
       await inline_images.main([
         '-I', 'test/image_inlining',
         'test/image_inlining/data/input.css',
