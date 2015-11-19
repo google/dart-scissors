@@ -19,17 +19,18 @@ import 'package:test/test.dart';
 import '../../bin/inline_images.dart' as inline_images;
 
 main() {
-  print("PWD: " + Directory.current.path);
-  test('inline_images works as expected', () async {
-    var tmpOut = new File(
-        join((await Directory.systemTemp.create()).path, 'out.css'));
-    var expected = new File('test/image_inlining/data/output.css').readAsString();
-    await inline_images.main([
-      '-I', 'test/image_inlining',
-      'test/image_inlining/data/input.css',
-      // '-',
-      tmpOut.path,
-    ]);
-    expect(await tmpOut.readAsString(), await expected);
+  group('inline_images', () {
+    test('inlines images it can find', () async {
+      var tmpOut = new File(
+          join((await Directory.systemTemp.create()).path, 'out.css'));
+      var expected = new File('test/image_inlining/data/output.css').readAsString();
+      await inline_images.main([
+        '-I', 'test/image_inlining',
+        'test/image_inlining/data/input.css',
+        // '-',
+        tmpOut.path,
+      ]);
+      expect(await tmpOut.readAsString(), await expected);
+    });
   });
 }
