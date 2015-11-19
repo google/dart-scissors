@@ -111,7 +111,10 @@ class PathResolver {
   }
 
   Future<File> resolveAssetFile(AssetId id) async {
-    var alternativePaths = [id.path];
+    var alternativePaths = [
+        join(id.package.replaceAll('.', '/'), id.path),
+        id.path
+    ];
     var path =
         id.path.startsWith('lib/') ? id.path.substring('lib/'.length) : id.path;
     alternativePaths
