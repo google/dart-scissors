@@ -1,10 +1,10 @@
 name: scissors_permutations_example
-version: 0.1.9
+version: 0.2.0
 dependencies:
   browser: 0.10.0
   intl: any
 dev_dependencies:
-  # scissors: 0.1.9
+  # scissors: 0.2.0
   scissors: {path: ../..}
 transformers:
 - $dart2js:

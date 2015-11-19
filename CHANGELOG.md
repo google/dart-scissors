@@ -2,6 +2,17 @@
 
 ...
 
+## 0.2.0 (2015-11-19)
+
+### Features
+
+- Added inline_images.dart entry point for standalone inlining
+
+### Bugfixes
+
+- Improved asset file resolution with package_name/path pattern.
+- Made permutations transformer lazy
+
 ## 0.1.9 (2015-11-15)
 
 ### Features
