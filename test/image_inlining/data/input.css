@@ -1,0 +1,5 @@
+.foo {
+  background-image: inline-image("icon.svg");
+  background-image2: inline-image("data/icon.svg");
+  background-image3: inline-image("test/image_inlining/data/icon.svg");
+}
