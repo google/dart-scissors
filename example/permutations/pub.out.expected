@@ -4,6 +4,8 @@ Building scissors_permutations_example...
 [Info from Dart2JS]:
 Compiling scissors_permutations_example|web/main.dart...
 [Info from Dart2JS]:
+[Info from PartsCheck on scissors_permutations_example|web/main.dart.js]:
+Found 6 part files, as expected.
 [Info from Permutations on scissors_permutations_example|<default>]:
 Deferred map content:
 {
@@ -20,7 +22,7 @@ Deferred map content:
     }
   },
   "messages_all.dart": {
-    "name": "<unnamed>",
+    "name": "scissors.example.permutations.messages_all",
     "imports": {
       "messages_ar": [
         "main.dart.js_6.part.js",
@@ -59,12 +61,10 @@ Creating scissors_permutations_example|web/main_fr.js with:
 	scissors_permutations_example|web/main.dart.js_6.part.js (used by: messages_ar, messages_en, messages_fr)
 	scissors_permutations_example|web/main.dart.js_3.part.js (used by: messages_fr)
 	scissors_permutations_example|web/main.dart.js_5.part.js (used by: tc_ltr)
-[Info from PartsCheck on scissors_permutations_example|web/main.dart.js]:
-Found 6 part files, as expected.
 [Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_fr.js]:
 Ran Closure Compiler: 127260 chars → 113817 chars (-13443 chars = -10.6%)
-[Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_ar.js]:
-Ran Closure Compiler: 127297 chars → 113854 chars (-13443 chars = -10.6%)
 [Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_en.js]:
 Ran Closure Compiler: 127254 chars → 113811 chars (-13443 chars = -10.6%)
+[Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_ar.js]:
+Ran Closure Compiler: 127297 chars → 113854 chars (-13443 chars = -10.6%)
 Built 222 files to "build".
