@@ -69,8 +69,10 @@ class PathResolver {
     Asset asset = await findFirstWhere(
         ids.map(inputGetter).toList(),
         (Future<Asset> asset) =>
-            asset.then((_) => true, onError: (_) => false));
-
+            asset.then((_) => true, onError: (e, [s]) {
+              acceptAssetNotFoundException(e, s);
+              return false;
+            }));
     if (asset != null) return asset;
 
     var paths = []..addAll(alternativePaths);

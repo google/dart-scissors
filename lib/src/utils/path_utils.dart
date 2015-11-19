@@ -34,7 +34,9 @@ Future findFirstWhere(List values, Future<bool> predicate(dynamic value),
   for (var future in values.map(predicate).toList()) {
     try {
       if (await future) return values[i];
-    } catch (_) {}
+    } catch (e, s) {
+      acceptAssetNotFoundException(e, s);
+    }
     i++;
   }
   return orElse;
