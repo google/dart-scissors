@@ -10,7 +10,7 @@ echo "+ pub run dart_style:format ..."
 pub run dart_style:format -w \
   `find lib -name '*.dart'` \
   `find example -name '*.dart'` \
-  `find test -name '*.dart'`
+  `find test -name '*.dart'` | ( grep -v "^Unchanged " || true )
 set -x
 
 if (( "${TEST_EXAMPLES:-1}" )); then

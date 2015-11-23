@@ -19,7 +19,6 @@ import 'package:test/test.dart';
 import '../../bin/inline_images.dart' as inline_images;
 
 main() {
-
   group('inline_images', () {
     test('inlines images it can find', () async {
       var expectedFile = new File('test/image_inlining/data/output.css');
