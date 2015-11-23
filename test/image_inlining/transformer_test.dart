@@ -18,7 +18,7 @@ import 'package:barback/barback.dart'
 import 'package:scissors/src/utils/enum_parser.dart';
 import 'package:scissors/src/image_inlining/transformer.dart';
 
-import '../src/transformer_test_utils.dart';
+import 'package:scissors/testing/transformer_test_utils.dart';
 
 makePhases(Map config) => [
       [
