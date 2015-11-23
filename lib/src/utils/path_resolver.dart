@@ -94,6 +94,40 @@ class PathResolver {
 
   Future<List<Directory>> getRootDirectories() => _rootDirectories;
 
+  Future<Map<String, Directory>> _packageLibDirectories;
+  Future<Map<String, Directory>> getPackageLibDirectories() {
+    if (_packageLibDirectories == null) {
+      _packageLibDirectories = (() async {
+        var map = {};
+        var rootDirs = await getRootDirectories();
+        File packagesFile = await findFirstWhere(
+          rootDirs.map((d) => new File(join(d.path, '.packages'))).toList(),
+          (f) => f.exists());
+        var content = await packagesFile.readAsString();
+        for (var line in content.split('\n')) {
+          line = line.trim();
+          if (line.startsWith('#') || line == '') continue;
+
+          int i = line.indexOf(':');
+          if (i < 0) continue;
+
+          var package = line.substring(0, i);
+          var uri = line.substring(i+1);
+          var dir;
+          if (!uri.contains(":")) {
+            dir = new Directory(
+              isAbsolute(uri) ? uri : join(dirname(packagesFile.path), uri));
+          } else {
+            dir = new Directory(Uri.parse(uri).path);
+          }
+          map[package] = dir;
+        }
+        return map;
+      })();
+    }
+    return _packageLibDirectories;
+  }
+
   List<Directory> _sassIncludeDirectories;
   Future<List<Directory>> getSassIncludeDirectories() async {
     if (_sassIncludeDirectories == null) {
@@ -112,19 +146,15 @@ class PathResolver {
   }
 
   Future<File> resolveAssetFile(AssetId id) async {
-    var alternativePaths = [
-      join(id.package.replaceAll('.', '/'), id.path),
-      id.path
-    ];
-    var path =
-        id.path.startsWith('lib/') ? id.path.substring('lib/'.length) : id.path;
-    alternativePaths
-        .add(join('packages', id.package.replaceAll('.', '/'), path));
-
-    var fileAsset = await _resolveFileAsset(alternativePaths);
-    if (fileAsset == null) throw new AssetNotFoundException(id);
-
-    return fileAsset.file;
+    var packageLibDirectories = await getPackageLibDirectories();
+    var libDir = packageLibDirectories[id.package];
+    if (libDir != null && await libDir.exists()) {
+      var file = new File(join(libDir.path, '..', id.path));
+      if (await file.exists()) {
+        return file;
+      }
+    }
+    throw new AssetNotFoundException(id);
   }
 
   Future<_FileAsset> _resolveFileAsset(List<String> alternativePaths) async {
