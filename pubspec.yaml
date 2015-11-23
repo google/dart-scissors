@@ -17,6 +17,6 @@ dependencies:
 dev_dependencies:
   dart_style: ">=0.2.0"
   test: ">=0.12.0 <0.13.0"
-  unittest: ">=0.11.0 <0.12.0"
+  unittest: ">=0.12.0 <0.13.0"
 executables:
   scissors-inline-images: inline_images
