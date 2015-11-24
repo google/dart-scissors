@@ -25,14 +25,10 @@ class _TimestampAggregateTransformer extends AggregateTransformer
   apply(AggregateTransform transform) async {
     var maxTimestamp = 0;
 
-    var futures = [];
     await for (var input in transform.primaryInputs) {
-      futures.add((() async {
-        var timestamp = int.parse(await input.readAsString());
-        maxTimestamp = max(timestamp, maxTimestamp);
-      })());
+      var timestamp = int.parse(await input.readAsString());
+      maxTimestamp = max(timestamp, maxTimestamp);
     }
-    await Future.wait(futures);
 
     transform.logger.info('maxTimestamp = $maxTimestamp');
     transform.addOutput(new Asset.fromString(
