@@ -21,31 +21,28 @@ import 'dart:async';
 ///
 /// Note that calls to this function and imports of this file are
 /// removed by `scissors/reloader/transformer` in release mode.
-bool setupReloader([delay = const Duration(seconds: 1)]) {
-  run() async {
-    var initialTimestamp = await _getTimestamp();
-    Future.doWhile(() async {
-      await new Future.delayed(const Duration(seconds: 1));
-      try {
-        var timestamp = await _getTimestamp();
-        if (timestamp != initialTimestamp) {
-          window.location.reload();
-          return false;
-        }
-      } catch (e) {
-        // Do nothing and retry: maybe pub serve went down.
+setupReloader(
+    {timestampBaseUrl : '/', delay : const Duration(seconds: 1)}) async {
+  var initialTimestamp = await _getTimestamp(timestampBaseUrl);
+  Future.doWhile(() async {
+    await new Future.delayed(const Duration(seconds: 1));
+    try {
+      var timestamp = await _getTimestamp(timestampBaseUrl);
+      if (timestamp != initialTimestamp) {
+        window.location.reload();
+        return false;
       }
-      return true;
-    });
-  }
-  run();
-  return true;
+    } catch (e) {
+      // Do nothing and retry: maybe pub serve went down.
+    }
+    return true;
+  });
 }
 
-Future<int> _getTimestamp() {
+Future<int> _getTimestamp(timestampBaseUrl) {
   var completer = new Completer();
   new HttpRequest()
-    ..open('GET', '/timestamp')
+    ..open('GET', timestampBaseUrl + 'timestamp')
     ..onLoad.listen((ProgressEvent event) {
       HttpRequest req = event.target;
       var timestamp = int.parse(req.responseText);
