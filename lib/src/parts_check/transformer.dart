@@ -68,6 +68,7 @@ class PartsCheckTransformer extends Transformer
       transform.logger.error(
           "Found $count part files, but expected $expectedPartCount !!!",
           asset: id);
+      transform.consumePrimary();
     }
   }
 
