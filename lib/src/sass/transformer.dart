@@ -27,7 +27,7 @@ import 'package:quiver/check.dart';
 part 'settings.dart';
 
 class SassTransformer extends AggregateTransformer
-    implements DeclaringAggregateTransformer {
+    implements LazyAggregateTransformer {
   final SassSettings _settings;
 
   SassTransformer(this._settings);
