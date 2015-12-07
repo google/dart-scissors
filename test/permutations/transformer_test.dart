@@ -17,7 +17,7 @@ import 'package:barback/barback.dart'
     show BarbackMode, BarbackSettings, Transformer;
 import 'package:scissors/src/permutations/transformer.dart';
 
-import 'package:scissors/testing/transformer_test_utils.dart';
+import 'package:code_transformers/tests.dart' show testPhases;
 
 makePhases(Map config) => [
       [

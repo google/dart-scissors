@@ -19,7 +19,6 @@ import 'package:barback/barback.dart' show Asset, AssetId, AssetNotFoundExceptio
 import 'package:path/path.dart';
 import 'package:scissors/src/utils/path_resolver.dart';
 import 'dart:async';
-import 'dart:collection';
 
 const _package = 'file';
 
