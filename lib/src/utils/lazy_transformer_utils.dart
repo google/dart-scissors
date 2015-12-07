@@ -59,7 +59,7 @@ abstract class _TransformerWrapper implements Transformer {
 
 class _EagerTransformerWrapper extends EagerTransformerWrapper
     with _TransformerWrapper
-    implements Transformer, LazyTransformer {
+    implements Transformer {
   Transformer get wrapped => super.wrapped;
   _EagerTransformerWrapper(Transformer wrapped) : super._(wrapped) {
     checkState(wrapped is Transformer);
@@ -88,7 +88,7 @@ abstract class _AggregateTransformerWrapper {
 
 class _EagerAggregateTransformerWrapper extends EagerTransformerWrapper
     with _AggregateTransformerWrapper
-    implements AggregateTransformer, LazyAggregateTransformer {
+    implements AggregateTransformer {
   _EagerAggregateTransformerWrapper(AggregateTransformer wrapped)
       : super._(wrapped) {
     checkState(wrapped is AggregateTransformer);

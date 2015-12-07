@@ -16,13 +16,13 @@ library scissors.test.sass.transformer_test;
 import 'package:barback/barback.dart'
     show BarbackMode, BarbackSettings, Transformer;
 import 'package:scissors/src/sass/transformer.dart';
-
+import 'package:scissors/src/utils/lazy_transformer_utils.dart';
 import 'package:scissors/testing/transformer_test_utils.dart';
 
 makePhases(Map config) => [
       [
-        new SassTransformer.asPlugin(
-            new BarbackSettings(config, BarbackMode.RELEASE))
+        new EagerTransformerWrapper(new SassTransformer.asPlugin(
+            new BarbackSettings(config, BarbackMode.RELEASE)))
       ]
     ];
 
