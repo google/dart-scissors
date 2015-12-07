@@ -1,0 +1,86 @@
+Loading source assets...
+Loading dart_to_js_script_rewriter, observe, scissors and smoke/src/default_transformer transformers...
+Loading angular2 transformers...
+Building scissors_angular2_example...
+[Info from SvgOptimization on scissors_angular2_example|lib/icon.svg]:
+Optimized SVG: 671 chars → 255 chars (-416 chars = -62.0%)
+[Info from SvgOptimization on scissors_angular2_example|lib/icon.svg]:
+Optimized SVG content:
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="21px" height="21px" viewBox="0 0 21 21" overflow="visible" enable-background="new 0 0 21 21"><rect x="0" y="0" height="10" width="10" style="stroke:#00ff00;fill:#ff0000"/>
+</svg>
+[Info from CssPruning on scissors_angular2_example|lib/foo.css]:
+Dropping unused CSS rule: .unused-class {
+}
+[Info from CssPruning on scissors_angular2_example|lib/foo.css]:
+Dropping unused CSS rule: absent-element {
+}
+[Info from CssPruning on scissors_angular2_example|lib/foo.css]:
+Pruned CSS: 116 chars → 81 chars (-35 chars = -30.2%)
+[Info from ImageInlining on scissors_angular2_example|lib/foo.css]:
+line 1, column 54 of scissors_angular2_example|lib/foo.css: Inlined 'icon.svg' with scissors_angular2_example|lib/icon.svg
+inline-image('icon.svg')
+^^^^^^^^^^^^^^^^^^^^^^^^
+[Info from Dart2JS]:
+Compiling scissors_angular2_example|web/main.dart...
+[Warning from Dart2JS on scissors_angular2_example|web/main.dart]:
+packages/angular2/src/core/facade.ng_deps.dart:8:32:
+Library 'package:angular2/src/core/facade/lang.dart' doesn't export a 'ConcreteType' declaration.
+Try removing 'ConcreteType' from the 'show' clause.
+export 'facade/lang.dart' show ConcreteType, Type;
+                               ^^^^^^^^^^^^
+[Warning from Dart2JS on scissors_angular2_example|web/main.dart]:
+packages/angular2/src/core/facade.dart:4:32:
+Library 'package:angular2/src/core/facade/lang.dart' doesn't export a 'ConcreteType' declaration.
+Try removing 'ConcreteType' from the 'show' clause.
+export "facade/lang.dart" show ConcreteType, Type;
+                               ^^^^^^^^^^^^
+[Warning from Dart2JS on scissors_angular2_example|web/main.dart]:
+packages/angular2/src/core/facade/collection.dart:3:45:
+Library 'dart:collection' doesn't export a 'Iterator' declaration.
+Try removing 'Iterator' from the 'show' clause.
+import 'dart:collection' show IterableBase, Iterator;
+                                            ^^^^^^^^
+[Warning from Dart2JS on scissors_angular2_example|web/main.dart]:
+packages/angular2/src/core/facade/browser.dart:12:9:
+Library 'dart:html' doesn't export a 'location' declaration.
+Try removing 'location' from the 'show' clause.
+        location,
+        ^^^^^^^^
+[Warning from Dart2JS on scissors_angular2_example|web/main.dart]:
+packages/angular2/src/core/util.ng_deps.dart:6:36:
+Library 'package:angular2/src/core/util/decorators.dart' doesn't export a 'Class' declaration.
+Try removing 'Class' from the 'show' clause.
+export 'util/decorators.dart' show Class, ClassDefinition, TypeDecorator;
+                                   ^^^^^
+[Warning from Dart2JS on scissors_angular2_example|web/main.dart]:
+packages/angular2/src/core/util.ng_deps.dart:6:43:
+Library 'package:angular2/src/core/util/decorators.dart' doesn't export a 'ClassDefinition' declaration.
+Try removing 'ClassDefinition' from the 'show' clause.
+export 'util/decorators.dart' show Class, ClassDefinition, TypeDecorator;
+                                          ^^^^^^^^^^^^^^^
+[Warning from Dart2JS on scissors_angular2_example|web/main.dart]:
+packages/angular2/src/core/util.ng_deps.dart:6:60:
+Library 'package:angular2/src/core/util/decorators.dart' doesn't export a 'TypeDecorator' declaration.
+Try removing 'TypeDecorator' from the 'show' clause.
+export 'util/decorators.dart' show Class, ClassDefinition, TypeDecorator;
+                                                           ^^^^^^^^^^^^^
+[Warning from Dart2JS on scissors_angular2_example|web/main.dart]:
+packages/angular2/src/core/util.dart:4:36:
+Library 'package:angular2/src/core/util/decorators.dart' doesn't export a 'Class' declaration.
+Try removing 'Class' from the 'show' clause.
+export "util/decorators.dart" show Class, ClassDefinition, TypeDecorator;
+                                   ^^^^^
+[Warning from Dart2JS on scissors_angular2_example|web/main.dart]:
+packages/angular2/src/core/util.dart:4:43:
+Library 'package:angular2/src/core/util/decorators.dart' doesn't export a 'ClassDefinition' declaration.
+Try removing 'ClassDefinition' from the 'show' clause.
+export "util/decorators.dart" show Class, ClassDefinition, TypeDecorator;
+                                          ^^^^^^^^^^^^^^^
+[Warning from Dart2JS on scissors_angular2_example|web/main.dart]:
+packages/angular2/src/core/util.dart:4:60:
+Library 'package:angular2/src/core/util/decorators.dart' doesn't export a 'TypeDecorator' declaration.
+Try removing 'TypeDecorator' from the 'show' clause.
+export "util/decorators.dart" show Class, ClassDefinition, TypeDecorator;
+                                                           ^^^^^^^^^^^^^
+[Info from Dart2JS]:
+Built 863 files to "build".

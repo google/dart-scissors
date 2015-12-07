@@ -1,0 +1,50 @@
+.used-class {}
+.unused-class {}
+absent-element {}
+present-element {
+  background-image: inline-image('icon.svg');
+  color: blue;
+    margin-left: 1000em;
+}
+
+a {
+  foo: bar;
+  margin-left: 1em;
+  margin: .25em -2px 3px 0;
+  background-position:25% 75%;
+  background-position:50% 50%;
+}
+
+table-class {
+    color: blue;
+    margin-left: 2000em;
+}
+
+ul li {
+    color: gray;
+}
+
+/* Adjacent sibling selectors */
+li + li {
+    color: red;
+    margin-left: 2em;
+}
+
+/* General sibling selectors */
+a ~ a {
+    color: purple;
+    margin-left: 3em;
+}
+
+/* Child selectors */
+li > a {
+    color: orange;
+    margin-left: 4em;
+}
+
+/* https://developer.mozilla.org/en-US/docs/CSS/Attribute_selectors */
+a[href="three.html"] {
+    color: green;
+    margin-left: 5em;
+    float: left;
+}

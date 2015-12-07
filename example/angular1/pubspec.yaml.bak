@@ -10,13 +10,11 @@ dev_dependencies:
 transformers:
 # Use this transformer instead to force-build all the css files upfront:
 # - scissors/eager_transformer
-#- scissors/src/css_pruning/transformer
 - scissors:
     verbose: true
     release:
         imageInlining: inlineAllUrls
-    #pruneCss: true
-    mirrorCss: true
+    # pruneCss: false
     # optimizeSvg: false
     # optimizePng: false
     # sasscPath: path/to/sassc

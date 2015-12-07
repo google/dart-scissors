@@ -20,3 +20,4 @@ transformers:
     entry_points: web/main.dart
     html_files: web/index.html
 - dart_to_js_script_rewriter
+
