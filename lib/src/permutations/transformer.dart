@@ -104,6 +104,7 @@ class PermutationsTransformer extends AggregateTransformer
         inputs.firstWhere((a) => a.id.path.endsWith(fileName),
             orElse: () => throw new ArgumentError('No $fileName in $inputIds'));
 
+    var futureAssetStrings = <Asset, Future<String>>{};
     var futures = <Future>[];
     for (var mainName in map.mainNames) {
       // TODO(ochafik): check rest of path matches!
@@ -126,6 +127,9 @@ class PermutationsTransformer extends AggregateTransformer
               map.getImportAliasesForPart(part);
         }
         List<Asset> assets = importAliasesByAssets.keys.toList();
+        for (var asset in assets) {
+          futureAssetStrings.putIfAbsent(asset, () => asset.readAsString());
+        }
 
         if (_settings.verbose.value) {
           describeAsset(Asset asset) {
@@ -142,15 +146,16 @@ class PermutationsTransformer extends AggregateTransformer
               .info('Creating $permutationId with ${assets.length} assets');
         }
 
-        futures.add(_concatenateAssets(transform, permutationId, assets));
+        futures.add(_concatenateAssets(
+            transform, permutationId, assets, futureAssetStrings));
       }
     }
     await Future.wait(futures);
   }
 
   Future _concatenateAssets(AggregateTransform transform, AssetId permutationId,
-      List<Asset> assets) async {
-    var futureStrings = assets.map((a) => a.readAsString());
+      List<Asset> assets, Map<Asset, Future<String>> futureAssetStrings) async {
+    var futureStrings = assets.map((a) => futureAssetStrings[a]);
     var content = (await Future.wait(futureStrings)).join('\n');
     var contentAsset = new Asset.fromString(permutationId, content);
 
