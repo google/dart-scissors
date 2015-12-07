@@ -101,8 +101,8 @@ class PathResolver {
         var map = {};
         var rootDirs = await getRootDirectories();
         File packagesFile = await findFirstWhere(
-          rootDirs.map((d) => new File(join(d.path, '.packages'))).toList(),
-          (f) => f.exists());
+            rootDirs.map((d) => new File(join(d.path, '.packages'))).toList(),
+            (f) => f.exists());
         var content = await packagesFile.readAsString();
         for (var line in content.split('\n')) {
           line = line.trim();
@@ -112,11 +112,11 @@ class PathResolver {
           if (i < 0) continue;
 
           var package = line.substring(0, i);
-          var uri = line.substring(i+1);
+          var uri = line.substring(i + 1);
           var dir;
           if (!uri.contains(":")) {
             dir = new Directory(
-              isAbsolute(uri) ? uri : join(dirname(packagesFile.path), uri));
+                isAbsolute(uri) ? uri : join(dirname(packagesFile.path), uri));
           } else {
             dir = new Directory(Uri.parse(uri).path);
           }

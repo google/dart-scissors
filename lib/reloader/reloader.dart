@@ -22,7 +22,7 @@ import 'dart:async';
 /// Note that calls to this function and imports of this file are
 /// removed by `scissors/reloader/transformer` in release mode.
 setupReloader(
-    {timestampBaseUrl : '/', delay : const Duration(seconds: 1)}) async {
+    {timestampBaseUrl: '/', delay: const Duration(seconds: 1)}) async {
   var initialTimestamp = await _getTimestamp(timestampBaseUrl);
   Future.doWhile(() async {
     await new Future.delayed(const Duration(seconds: 1));
