@@ -1,0 +1,110 @@
+/**
+ * Copyright 2008 Google Inc.
+ * All Rights Reserved.
+ *
+ * CSS JANUS
+ * @author elsigh@google.com (Lindsey Simon)
+ */
+
+
+.g-doc-1024 {
+  width: 1024px;
+  padding-top: 2em;
+}
+.cssj-tpl-50-50 .cssj-unit {
+  display: inline;
+  margin: 0;
+  width: 49%;
+  float: right;
+}
+.cssj-tpl-50-50 .cssj-first {
+  display: inline;
+  margin: 0;
+  width: 49%;
+  float: left;
+}
+label {
+  display: block;
+  font-weight: bold;
+}
+form em {
+  display: block;
+  font-size: 85%;
+}
+form div {
+  margin: 1em 0 0 0;
+}
+
+a img {
+  border: none;
+}
+pre {
+  background: #eee none repeat scroll 0%;
+  border: 1px solid #999999;
+  color: #666;
+  padding: 1em;
+  width: 33em;
+  margin-top: 0;
+  direction: ltr; /* notice that this shouldn't get flipped */
+  float: left;
+}
+/* @noflip */
+pre {
+  text-align: left;
+}
+fieldset {
+  margin: 1.6em 80px 0 0;
+  border: 1px dotted #999;
+  padding: 0 1.5em 1.5em;
+}
+fieldset label {
+  display: inline;
+  margin: 0 1em 0 0;
+}
+legend {
+  padding: 3px 8px;
+  font-weight: bold;
+  font-style: italic;
+  background: #eee;
+  color: #000;
+}
+textarea {
+  border: 2px solid #999;
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  width: 32em;
+  direction: ltr;
+}
+#cssj-altuse {
+  margin-top: 2.5em;
+  border-top: 1px dashed #666;
+  padding-top: 15px;
+}
+.cssj-submit {
+  margin: 1em 0 0 0;
+}
+#cssj-submit {
+  margin-right: 1em;
+  font-weight: bold;
+  font-size: 2em;
+}
+#cssj-csstext {
+  margin-bottom: 2em;
+}
+#cssj-msg {
+  color: red;
+}
+#cssj-example {
+  float: right;
+  margin: 0 90px 0 0;
+  text-decoration: underline;
+  color: #00c;
+  cursor: pointer;
+}
+#cssj-lang {
+  float: right;
+}
+#poweredby {
+  margin-top: 8em;
+  margin-left: 3em;
+}

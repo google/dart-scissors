@@ -10,14 +10,18 @@ dev_dependencies:
 transformers:
 # Use this transformer instead to force-build all the css files upfront:
 # - scissors/eager_transformer
-- scissors:
-    verbose: true
-    mirrorCss: true
+#- scissors:
+#    verbose: true
+#    mirrorCss: true
     # pruneCss: false
     # optimizeSvg: false
     # optimizePng: false
+- scissors/cssmirroring_transformer:
+    verbose: true
+    mirrorCss: true
 - angular2:
     entry_points: web/main.dart
     html_files: web/index.html
 - dart_to_js_script_rewriter
+
 

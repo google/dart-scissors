@@ -1,0 +1,74 @@
+# translation of django.po to CSSJanus
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# cssjanus <elsigh@google.com>, 2008.
+# Translation to Persian by Aziz Ashofte Bargi <aziz@aziza.ir>
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-03-23 18:42-0700\n"
+"PO-Revision-Date: 2008-03-27 16:24+0530\n"
+"Last-Translator: MotSmart <MotSmart@Gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: cssjanus.html:48
+msgid "Change Language"
+msgstr "تغییر زبان"
+
+#: cssjanus.html:52
+msgid "Left-to-Right-to-Left-ifyer"
+msgstr "چپ به راست با چپ چین"
+
+#: cssjanus.html:61
+msgid "This webapp uses cssjanus.py to convert LTR(left to right) properties and values in a CSS file to RTL counterparts and vice-versa."
+msgstr "این وب ابزار از ccsjanus.py برای تبدیل دستورات و مقادیر چیدمان \"چپ به راست\" در یک فایل CSS به مقایر و دستورات معادل آنها در یک چیدمان \"راست به چپ\" استفاده می‌کند."
+
+#: cssjanus.html:71
+msgid "Author:"
+msgstr "برنامه نویس:"
+
+#: cssjanus.html:87
+msgid "Paste or Type CSS:"
+msgstr "محتوای CSS خود را بنویسید یا منتقل کنید:"
+
+#: cssjanus.html:94
+msgid "OR use an URI to a CSS file:"
+msgstr "یا محل یک فایل CSS را وارد کنید:"
+
+#: cssjanus.html:100
+msgid "Flags"
+msgstr "امکانات"
+
+#: cssjanus.html:116
+msgid "Run CSSJanus!"
+msgstr "اجرای  CSSJanus!"
+
+#: cssjanus.html:117
+msgid "Reset"
+msgstr "از نو"
+
+#: cssjanus.html:125
+msgid "Result CSS:"
+msgstr "CSS تغییریافته:"
+
+#: cssjanus.html:129
+msgid "Results will appear here..."
+msgstr "نتیجه کار در اینجا نمایش داده خواهد شد..."
+
+#: cssjanus.html:138
+msgid "You could also embed this webapp directly in your markup with your publicly accessible CSS files like so:"
+msgstr "شما می توانید از طریق CSS فایل در دسترس عام این ابزار وب را مستقیما در وبگاه خود استفاده کنید:"
+
+#: cssjanus.html:160
+msgid "Try this example CSS!"
+msgstr "این CSS آزمایشی را امتحان کنید!"
+
+#: django_cssjanus.py:62
+msgid "You need to put some text in the css field or uri field."
+msgstr "شما بایستی مقداری در فیلد css یا در فیلد محل آن وارد کنید."
+

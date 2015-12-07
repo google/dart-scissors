@@ -15,6 +15,10 @@ most of them are disabled or optimized for speed with `pub serve` in debug mode.
     (e.g. `class="some-{{fragmented}}-class and-some-normal-class"`,
     `ng-class="{'some-class': isSome}"`).
   - Disabled by default in debug mode.
+- CSS mirroring for Angular (see [example/mirroring](https://github.com/google/dart-scissors/tree/master/example/mirroring)):
+  - Performs RTL mirroring of CSS.
+  - Uses cssjanus, with extra logic to know which properties are flippable and to recombine the three portions: orientation-neutral, non-flipped orientation-specific, flipped orientation-specific.
+  - Disabled by default in debug mode.
 - [Sass](http://sass-lang.com) compilation:
   - Compiles `*.sass` and `*.scss` files with [`sassc`](https://github.com/sass/sassc),
     the lightning-fast C++ port of Ruby Sass.
@@ -124,6 +128,23 @@ assumption by which sCiSSors lives, so you're safe with it.
 The last "unscoped" strategy means there's no file- or
 component-local way of deciding if a style *could* be used elsewhere. You should
 not use sCiSSors on packages / projects with that strategy.
+
+## Using `scissors/cssmirroring_transformer`
+
+Example: see [example/mirroring](https://github.com/google/dart-scissors/tree/master/example/mirroring).
+
+`pubspec.yaml`:
+
+  ```
+  dev_dependencies:
+    scissors
+  transformers:
+  - scissors/cssmirroring_transformer
+  ```
+
+Valid settings:
+- `mirrorCss`: `true` by default in release mode and false by default in debug mode.
+- `cssJanusPath`: `cssJanus` by default.
 
 ## Using `scissors/permutations_transformer`
 

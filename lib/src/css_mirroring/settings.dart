@@ -13,16 +13,15 @@
 // limitations under the License.
 part of scissors.src.css_mirroring.transformer;
 
-abstract class CssMirroringSettings {
+class CssMirroringSettings {
   Setting<bool> get verbose;
 
   final mirrorCss =
       new Setting<bool>('mirrorCss', debugDefault: false, releaseDefault: true);
+  final cssJanusPath =
+    makePathSetting('cssJanusPath', pathResolver.defaultCssJanusPath);
 
-  // final mirrorCss = new Setting<bool>('mirrorCss',
-  //     comment:
-  //         "Whether to perform LTR -> RTL mirroring of .css files with cssjanus.",
-  //     defaultValue: false);
+
 }
 
 class _CssMirroringSettings extends SettingsBase with CssMirroringSettings {

@@ -19,6 +19,7 @@ import 'package:barback/barback.dart';
 import 'package:source_maps/refactor.dart';
 import 'package:source_span/source_span.dart';
 
+import '../utils/path_resolver.dart';
 import '../utils/path_utils.dart';
 import '../utils/settings_base.dart';
 import '../utils/file_skipping.dart';
@@ -73,7 +74,8 @@ class CssMirroringTransformer extends Transformer
       var sourceFile = new SourceFile(source, url: cssAsset.id.toString());
       var transaction = new TextEditTransaction(source, sourceFile);
 
-      Process process = await Process.start('python', ['/Users/monama/project2/cssjanus/cssjanus.py']);
+      var cssJanusPath = '../../' + _settings.cssJanusPath.value;
+      Process process = await Process.start('python', [cssJanusPath]);
       cssAsset.read().pipe(process.stdin);
       var out = readAll(process.stdout);
       var err = readAll(process.stderr);

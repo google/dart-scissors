@@ -29,17 +29,7 @@ makePhases(Map config) => [
 void main() {
   var phases = makePhases({});
 
-  testPhases('Only one empty rule',
-      phases, {
-        'a|foo2_unmatched_css_url.css': r'''
-        .used-class {}
-    '''
-      }, {
-        'a|foo2_unmatched_css_url.css': r'''
-        .used-class {}
-    '''
-      });
-  testPhases('2 empty rules',
+  testPhases('keeps empty rules same',
       phases, {
         'a|foo2_unmatched_css_url.css': r'''
         .used-class {}
@@ -51,48 +41,9 @@ void main() {
         .unused-class {}
     '''
       });
-  testPhases('one rule with one changing declaration',
-      phases, {
-        'a|foo2_unmatched_css_url.css': r'''
-          absent-element {
-            float: left;
-          }
-        '''
-      }, {
-        'a|foo2_unmatched_css_url.css': r'''
 
-          :host-context([dir="ltr"]) absent-element {
-            float: left;
-          }
+  testPhases('changes rules contaning only direction dependent declarations to direction dependent rules without any rule for common values',
 
-          :host-context([dir="rtl"]) absent-element {
-            float: right;
-          }
-        '''
-      });
-  testPhases('one rule with multiple changing declaration',
-      phases, {
-        'a|foo2_unmatched_css_url.css': r'''
-          absent-element {
-            float: left;
-            margin-left: 100px;
-        }
-        '''
-      }, {
-        'a|foo2_unmatched_css_url.css': r'''
-
-          :host-context([dir="ltr"]) absent-element {
-            float: left;
-            margin-left: 100px;
-        }
-
-          :host-context([dir="rtl"]) absent-element {
-            float: right;
-            margin-right: 100px;
-        }
-        '''
-      });
-  testPhases('one rule with multiple changing declaration',
       phases, {
         'a|foo2_unmatched_css_url.css': r'''
           absent-element {
@@ -126,21 +77,7 @@ void main() {
         }
         '''
       });
-  testPhases('one rule with no changing declaration',
-      phases, {
-        'a|foo2_unmatched_css_url.css': r'''
-          absent-element {
-            color: blue;
-        }
-        '''
-      }, {
-        'a|foo2_unmatched_css_url.css': r'''
-          absent-element {
-            color: blue;
-        }
-        '''
-      });
-  testPhases('two rule with no changing declaration',
+  testPhases('keeps the rule with no changing declaration as same',
       phases, {
         'a|foo2_unmatched_css_url.css': r'''
           absent-element {
@@ -160,7 +97,7 @@ void main() {
         }
         '''
       });
-  testPhases('two rule with second changing declaration',
+  testPhases('splits the rule with language dependent declaration to common rule and language dependent rules',
       phases, {
         'a|foo2_unmatched_css_url.css': r'''
           absent-element {
@@ -189,56 +126,9 @@ void main() {
         }
         '''
       });
-  testPhases('one rule with second changing declaration',
-      phases, {
-        'a|foo2_unmatched_css_url.css': r'''
-        absent-element {
-        color: blue;
-        float: right;
-        }
-        '''
-      }, {
-        'a|foo2_unmatched_css_url.css': r'''
-        absent-element {
-        color: blue;
-        }
-
-        :host-context([dir="ltr"]) absent-element {
-        float: right;
-        }
-
-        :host-context([dir="rtl"]) absent-element {
-        float: left;
-        }
-        '''
-      });
 
 
-  testPhases('one rule with second changing declaration',
-      phases, {
-        'a|foo2_unmatched_css_url.css': r'''
-        absent-element {
-        color: blue;
-        float: right;
-        }
-        '''
-      }, {
-        'a|foo2_unmatched_css_url.css': r'''
-        absent-element {
-        color: blue;
-        }
-
-        :host-context([dir="ltr"]) absent-element {
-        float: right;
-        }
-
-        :host-context([dir="rtl"]) absent-element {
-        float: left;
-        }
-        '''
-      });
-
-  testPhases('one rule with second changing declaration',
+  testPhases('splits the exotic rules with language dependent declaration to common rule and language dependent rules',
       phases, {
         'a|foo2_unmatched_css_url.css': r'''
         li + li {

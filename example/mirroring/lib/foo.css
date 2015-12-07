@@ -4,7 +4,7 @@ absent-element {}
 present-element {
   background-image: inline-image('icon.svg');
   color: blue;
-    margin-left: 1000em;
+    margin-left: 10em;
 }
 
 a {
