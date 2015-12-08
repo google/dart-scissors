@@ -15,13 +15,8 @@ present-element {
   float: $foo-alignment;
   background-image: inline-image('icon.svg');
 }
-foo {
-  background-image: inline-image('icon.svg');
-  float: $foo-alignment;
-}
 .plus-image {
   background-image: inline-image('plus.png');
   // background-color: yellow;
-  background-size: 16px 16px
+  background-size: 16px 16px;
 }
-

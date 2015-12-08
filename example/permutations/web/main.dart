@@ -9,7 +9,6 @@ import 'dart:async';
 var templateCache;
 Future initializeTemplateCache(String locale) async {
   if (Bidi.isRtlLanguage(locale)) {
-    document.querySelector('body').dir = 'rtl';
     await tc_rtl.loadLibrary();
     templateCache = tc_rtl.templateCache;
   } else {

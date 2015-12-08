@@ -1,22 +1,20 @@
 name: scissors_angular1_example
-version: 0.1.9
+version: 0.2.0
 dependencies:
   angular: ">=1.1.2+2"
 dev_dependencies:
-  # scissors: {path: ../..}
+  # scissors: 0.2.0
   scissors: {path: ../..}
   dart_to_js_script_rewriter: ^0.1.0
   # template_cache_transformer: any
 transformers:
 # Use this transformer instead to force-build all the css files upfront:
 # - scissors/eager_transformer
-#- scissors/src/css_pruning/transformer
 - scissors:
     verbose: true
     release:
         imageInlining: inlineAllUrls
-    #pruneCss: true
-    mirrorCss: true
+    # pruneCss: false
     # optimizeSvg: false
     # optimizePng: false
     # sasscPath: path/to/sassc
