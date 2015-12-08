@@ -35,7 +35,7 @@ generatecommon(Transform transform,
   hacks.useCssLib();
 
   /// Assuming default css to be left to right oriented.
-  bool ltrDirection = true;
+  String ltrDirection = settings.cssDirection.value;
 
   /// Get topLevels for original css.
   final StyleSheet cssTree =
@@ -129,8 +129,8 @@ generatecommon(Transform transform,
     }
   }
 
-  modifyTransaction(transaction, false, true, ltrDirection ? "ltr" : "rtl");
-  modifyTransaction(transaction1, false, false, ltrDirection ? "rtl" : "ltr");
+  modifyTransaction(transaction, false, true, ltrDirection);
+  modifyTransaction(transaction1, false, false, ltrDirection == "ltr" ? "rtl" : "ltr");
   modifyTransaction(transaction2, true, false, '');
 }
 

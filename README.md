@@ -148,6 +148,7 @@ Example: see [example/mirroring](https://github.com/google/dart-scissors/tree/ma
 
 Valid settings:
 - `mirrorCss`: `true` by default in release mode and false by default in debug mode.
+- `cssDirection` `ltr` by default in debug and release mode.
 - `cssJanusPath`: `cssJanus` by default.
 
 ## Using `scissors/permutations_transformer`

@@ -19,6 +19,8 @@ class CssMirroringSettings {
 
   final mirrorCss =
   new Setting<bool>('mirrorCss', debugDefault: false, releaseDefault: true);
+  final cssDirection =
+  new Setting<String>('cssDirection', debugDefault: "ltr", releaseDefault: "ltr");
   final cssJanusPath =
   makePathSetting('cssJanusPath', pathResolver.defaultCssJanusPath);
 
