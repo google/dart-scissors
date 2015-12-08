@@ -74,7 +74,7 @@ class CssMirroringTransformer extends Transformer
       var sourceFile = new SourceFile(source, url: cssAsset.id.toString());
       var transaction = new TextEditTransaction(source, sourceFile);
 
-      var cssJanusPath = '../../' + _settings.cssJanusPath.value;
+      var cssJanusPath = _settings.cssJanusPath.value;
       Process process = await Process.start('python', [cssJanusPath]);
       cssAsset.read().pipe(process.stdin);
       var out = readAll(process.stdout);
@@ -103,14 +103,6 @@ class CssMirroringTransformer extends Transformer
 //            "Mirrored CSS: ${formatDeltaChars(source.length, result.length)}",
 //            asset: cssAsset.id);
 
-//        print('common');
-//        print(result);
-//        print('diff file1');
-//        print((transaction.commit()..build('')).text);
-//        print('diff file2');
-//        print((transaction1.commit()..build(cssAsset.id.path)).text);
-//        print('Asset Id');
-//        print(cssAsset.id.toString());
         result = result + '\n' + (transaction.commit()..build('')).text;
         result = result + '\n' + (transaction1.commit()..build('')).text;
         print(result);
