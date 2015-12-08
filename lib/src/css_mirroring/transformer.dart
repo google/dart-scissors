@@ -24,10 +24,11 @@ import '../utils/path_utils.dart';
 import '../utils/settings_base.dart';
 import '../utils/file_skipping.dart';
 import '../utils/delta_format.dart';
-import 'css_mirroring.dart';
 import '../utils/io_utils.dart';
 import 'dart:io';
 import 'dart:convert';
+
+import 'rtl_convertor.dart';
 
 part 'settings.dart';
 
@@ -93,8 +94,7 @@ class CssMirroringTransformer extends Transformer
       var transaction1 = new TextEditTransaction(source1, sourceFile1);
       var transaction2 = new TextEditTransaction(source1, sourceFile1);
 
-      mirrorCssRules(
-          transform, transaction, transaction1, transaction2, _settings, sourceFile, sourceFile1);
+      generatecommon(transform, transaction, transaction1, transaction2, _settings, sourceFile, sourceFile1, sourceFile1);
       if (transaction2.hasEdits) {
         var printer = transaction2.commit()..build(cssAsset.id.path);
         var result = printer.text;

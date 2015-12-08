@@ -37,8 +37,8 @@ void main() {
     '''
       }, {
         'a|foo2_unmatched_css_url.css': r'''
-        .used-class {}
-        .unused-class {}
+
+
     '''
       });
 

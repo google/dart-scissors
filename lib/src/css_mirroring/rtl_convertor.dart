@@ -25,7 +25,6 @@ import 'package:source_span/source_span.dart';
 import '../utils/hacks.dart' as hacks;
 import 'transformer.dart' show CssMirroringSettings;
 
-import 'signature_generator.dart';
 
 /// Edits [transaction] to drop any CSS rule in [topLevels] that we're sure
 /// is not referred to by any DOM node in [htmlTrees].
@@ -39,171 +38,76 @@ generatecommon(Transform transform,
     SourceFile cssSourceFile2) {
   hacks.useCssLib();
 
+  bool ltrDirection = true;
+
   final StyleSheet cssTree =
   new css_parser.Parser(cssSourceFile, transaction.original).parse();
   List<TreeNode> topLevels = cssTree.topLevels;
-  var to = new TreeOutput();
-  var tp = new SignatureGenerator(to, false);
-  cssTree.visit(tp);
 
   final StyleSheet cssTree1 = new css_parser.Parser(
       cssSourceFile1, transaction1.original).parse();
   List<TreeNode> topLevels1 = cssTree1.topLevels;
-  var to1 = new TreeOutput();
-  var tp1 = new SignatureGenerator(to1, false);
-  cssTree1.visit(tp1);
 
-  bool ltrDirection = true;
-
-  void _commonmap(TextEditTransaction t) {
-    for (int i = 0; i < tp.lr.length; i++) {
-      bool saved = false;
-      int ruleid = i;
-      List<int> startpoint = new List();
-      List<int> endpoint = new List();
-      while (i < tp.lr.length &&
-          (tp1.lr[i].span.text == tp1.lr[ruleid].span.text)) {
-        if ((tp.lr[i].span.text == tp1.lr[i].span.text)) {
-          if (tp.ld[i].span.text != tp1.ld[i].span.text) {
-            var start = tp1.ld[i].span.start.offset;
-            var end = tp1.ld[i].span.end.offset;
-            if ((i < tp1.lr.length - 1) && (tp1.lr[i].span.text == tp1.lr[i + 1].span.text)) {
-                end = tp1.ld[i + 1].span.start.offset;
-            } else {
-              while (t.file.getText(end, end + 1) != '}') {
-                end++;
+  createTransaction(TextEditTransaction t, bool common, bool fileid, direction) {
+    for (int iTopLevel = 0; iTopLevel < topLevels.length; iTopLevel++) {
+      var topLevel_tree1 = topLevels[iTopLevel];
+      var topLevel_tree2 = topLevels1[iTopLevel];
+      if (topLevel_tree1 is RuleSet) {
+        print(topLevels[iTopLevel].span.text);
+        var decls_tree1 = topLevel_tree1.declarationGroup.declarations;
+        var decls_tree2 = topLevel_tree2.declarationGroup.declarations;
+        List<int> startpoint = new List();
+        List<int> endpoint = new List();
+        bool saved = false;
+        for (int iDecl = 0; iDecl < decls_tree1.length; iDecl++) {
+          var declaration_tree1 = decls_tree1[iDecl];
+          var declaration_tree2 = decls_tree2[iDecl];
+          if (declaration_tree1 is Declaration) {
+            if (common ? (declaration_tree1.span.text != declaration_tree2.span.text) : (declaration_tree1.span.text == declaration_tree2.span.text)) {
+              var start =  fileid ? declaration_tree1.span.start.offset : declaration_tree2.span.start.offset;
+              var end = fileid ? declaration_tree1.span.end.offset : declaration_tree2.span.end.offset;
+              if (iDecl < decls_tree1.length - 1) {
+                end = fileid ? decls_tree1[iDecl + 1].span.start.offset : decls_tree2[iDecl + 1].span.start.offset;
+              } else {
+                while (t.file.getText(end, end + 1) != '}') {
+                  end++;
+                }
               }
+              startpoint.add(start);
+              endpoint.add(end);
             }
-            startpoint.add(start);
-            endpoint.add(end);
+            else {
+              saved = true;
+            }
+          }
+        }
+        var ruleStartLocation = fileid ? topLevel_tree1.span.start.offset : topLevel_tree2.span.start.offset;
+        var ruleEndLocation = fileid ? topLevel_tree1.span.end.offset : topLevel_tree2.span.end.offset;
+        if (saved == false) {
+          print('Rule getting deleted ${topLevels[iTopLevel].span.text}');
+          if (iTopLevel < topLevels.length - 1) {
+            t.edit(
+                ruleStartLocation, fileid ? topLevels[iTopLevel + 1].span.start.offset : topLevels1[iTopLevel + 1].span.start.offset, '');
           }
           else {
-            saved = true;
-
+            t.edit(
+                ruleStartLocation, t.file.length, '');
           }
         }
-        i++;
-      }
-      if (saved == false) {
-        if (i < tp1.lr.length) {
-        //  print(tp1.lr[ruleid].span.text);
-          t.edit(
-              tp1.lr[ruleid].span.start.offset, tp1.lr[i].span.start.offset, '');
-        }
         else {
-          t.edit(
-              tp1.lr[ruleid].span.start.offset, t.file.length, '');
+          for (int i = 0; i < startpoint.length; i++) {
+            t.edit(startpoint[i], endpoint[i], '');
+          }
+          if(!common)
+            t.edit(ruleStartLocation, ruleEndLocation, ':host-context([dir="${direction}"]) ' + topLevels[iTopLevel].span.text);
         }
       }
-      else {
-        for (int i = 0; i < startpoint.length; i++) {
-          t.edit(startpoint[i], endpoint[i], '');
-        }
-      }
-      i--;
     }
   }
 
-  void _differentmapfile1(TextEditTransaction t) {
-    for (int i = 0; i < tp.lr.length; i++) {
-      bool saved = false;
-      int ruleid = i;
-      List<int> startpoint = new List();
-      List<int> endpoint = new List();
-      while (i < tp.lr.length &&
-          (tp.lr[i].span.text == tp.lr[ruleid].span.text)) {
-        if ((tp.lr[i].span.text == tp1.lr[i].span.text)) {
-          if (tp.ld[i].span.text == tp1.ld[i].span.text) {
-            var start = tp.ld[i].span.start.offset;
-            var end = tp.ld[i].span.end.offset;
-            if ((i < tp.lr.length - 1) && (tp.lr[i].span.text == tp.lr[i + 1].span.text)) {
-              end = tp.ld[i + 1].span.start.offset;
-            } else {
-              while (t.file.getText(end, end + 1) != '}') {
-                end++;
-              }
-            }
-            startpoint.add(start);
-            endpoint.add(end);
-          }
-          else {
-            saved = true;
-          }
-        }
-        i++;
-      }
-      if (saved == false) {
-        if (i < tp.lr.length) {
-          t.edit(
-              tp.lr[ruleid].span.start.offset, tp.lr[i].span.start.offset, '');
-        }
-        else {
-          t.edit(
-              tp.lr[ruleid].span.start.offset, t.file.length, '');
-        }
-      }
-      else {
-        for (int i = 0; i < startpoint.length; i++) {
-          t.edit(startpoint[i], endpoint[i], '');
-        }
-        t.edit(tp.lr[ruleid].span.start.offset, tp.lr[ruleid].span.end.offset, ':host-context([dir="${ltrDirection ? "ltr" : "rtl"}"]) ' + tp.lr[ruleid].span.text);
-      }
-      i--;
-    }
-  }
-
-  void _differentmapfile2(TextEditTransaction t) {
-    for (int i = 0; i < tp.lr.length; i++) {
-      bool saved = false;
-      int ruleid = i;
-      List<int> startpoint = new List();
-      List<int> endpoint = new List();
-      while (i < tp.lr.length &&
-          (tp.lr[i].span.text == tp.lr[ruleid].span.text)) {
-        if ((tp.lr[i].span.text == tp1.lr[i].span.text)) {
-          if (tp.ld[i].span.text == tp1.ld[i].span.text) {
-            var start = tp1.ld[i].span.start.offset;
-            var end = tp1.ld[i].span.end.offset;
-            if ((i < tp1.lr.length - 1) && (tp1.lr[i].span.text == tp.lr[i + 1].span.text)) {
-              end = tp1.ld[i + 1].span.start.offset;
-            } else {
-              while (t.file.getText(end, end + 1) != '}') {
-                end++;
-              }
-            }
-            startpoint.add(start);
-            endpoint.add(end);
-          }
-          else {
-            saved = true;
-          }
-        }
-        i++;
-      }
-      if (saved == false) {
-        if (i < tp1.lr.length) {
-          t.edit(
-              tp1.lr[ruleid].span.start.offset, tp1.lr[i].span.start.offset, '');
-        }
-        else {
-          t.edit(
-              tp1.lr[ruleid].span.start.offset, t.file.length, '');
-        }
-      }
-      else {
-        for (int i = 0; i < startpoint.length; i++) {
-          t.edit(startpoint[i], endpoint[i], '');
-        }
-        t.edit(tp1.lr[ruleid].span.start.offset, tp1.lr[ruleid].span.end.offset, ':host-context([dir="${ltrDirection ? "rtl" : "ltr"}"]) ' + tp1.lr[ruleid].span.text);
-      }
-      i--;
-    }
-  }
-
-//  _common(transaction);
-  _differentmapfile1(transaction);
-  _differentmapfile2(transaction1);
-  _commonmap(transaction2);
+  createTransaction(transaction, false, true, ltrDirection ? "ltr" : "rtl");
+  createTransaction(transaction1, false, false, ltrDirection ? "rtl" : "ltr");
+  createTransaction(transaction2, true, false, '');
 }
 String _printCss(tree) =>
     (new CssPrinter()..visitTree(tree, pretty: true)).toString();
