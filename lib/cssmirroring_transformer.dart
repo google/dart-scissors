@@ -49,8 +49,7 @@ class CssMirroringTransformerGroup extends TransformerGroup {
   CssMirroringTransformerGroup(_CssMirroringGroupSettings settings)
       : super([
           [
-            new CssMirroringTransformer(settings),
-            new PartsCheckTransformer(settings)
+            new CssMirroringTransformer(settings)
           ]
         ]),
         _settings = settings;

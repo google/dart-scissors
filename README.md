@@ -131,6 +131,10 @@ not use sCiSSors on packages / projects with that strategy.
 
 ## Using `scissors/cssmirroring_transformer`
 
+Required: Css janus.
+          Run the following command in shell:
+            svn checkout http://cssjanus.googlecode.com/svn/trunk/ $HOME/bin
+
 Example: see [example/mirroring](https://github.com/google/dart-scissors/tree/master/example/mirroring).
 
 `pubspec.yaml`:

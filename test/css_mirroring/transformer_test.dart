@@ -1,4 +1,5 @@
 // Copyright 2015 Google Inc. All Rights Reserved.
+
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,32 +21,31 @@ import 'package:scissors/src/css_mirroring/transformer.dart';
 import '../src/transformer_test_utils.dart';
 
 makePhases(Map config) => [
-      [
-        new CssMirroringTransformer.asPlugin(
-            new BarbackSettings(config, BarbackMode.RELEASE))
-      ]
-    ];
+  [
+    new CssMirroringTransformer.asPlugin(
+        new BarbackSettings(config, BarbackMode.RELEASE))
+  ]
+];
 
 void main() {
   var phases = makePhases({});
 
-  testPhases('keeps empty rules same',
-      phases, {
-        'a|foo2_unmatched_css_url.css': r'''
+  testPhases('removes empty rules', phases, {
+    'a|foo2_unmatched_css_url.css': r'''
         .used-class {}
         .unused-class {}
     '''
-      }, {
-        'a|foo2_unmatched_css_url.css': r'''
+  }, {
+    'a|foo2_unmatched_css_url.css': r'''
 
 
     '''
-      });
+  });
 
-  testPhases('changes rules contaning only direction dependent declarations to direction dependent rules without any rule for common values',
-
+  testPhases(
+      'changes rules contaning only direction dependent declarations to direction dependent rules without any rule for common values',
       phases, {
-        'a|foo2_unmatched_css_url.css': r'''
+    'a|foo2_unmatched_css_url.css': r'''
           absent-element {
             float: left;
             margin-left: 100px;
@@ -55,8 +55,8 @@ void main() {
             margin-right: 100px;
         }
         '''
-      }, {
-        'a|foo2_unmatched_css_url.css': r'''
+  }, {
+    'a|foo2_unmatched_css_url.css': r'''
 
           :host-context([dir="ltr"]) absent-element {
             float: left;
@@ -76,10 +76,9 @@ void main() {
             margin-left: 100px;
         }
         '''
-      });
-  testPhases('keeps the rule with no changing declaration as same',
-      phases, {
-        'a|foo2_unmatched_css_url.css': r'''
+  });
+  testPhases('keeps the rule with no changing declaration as same', phases, {
+    'a|foo2_unmatched_css_url.css': r'''
           absent-element {
             color: blue;
         }
@@ -87,8 +86,8 @@ void main() {
             background-size: 16px 16px;
         }
         '''
-      }, {
-        'a|foo2_unmatched_css_url.css': r'''
+  }, {
+    'a|foo2_unmatched_css_url.css': r'''
           absent-element {
             color: blue;
         }
@@ -96,10 +95,11 @@ void main() {
             background-size: 16px 16px;
         }
         '''
-      });
-  testPhases('splits the rule with language dependent declaration to common rule and language dependent rules',
+  });
+  testPhases(
+      'splits the rule with language dependent declaration to common rule and language dependent rules',
       phases, {
-        'a|foo2_unmatched_css_url.css': r'''
+    'a|foo2_unmatched_css_url.css': r'''
           absent-element {
             color: blue;
             float: right;
@@ -108,8 +108,8 @@ void main() {
             background-size: 16px 16px;
         }
        '''
-      }, {
-        'a|foo2_unmatched_css_url.css': r'''
+  }, {
+    'a|foo2_unmatched_css_url.css': r'''
           absent-element {
             color: blue;
             }
@@ -125,12 +125,12 @@ void main() {
             float: left;
         }
         '''
-      });
+  });
 
-
-  testPhases('splits the exotic rules with language dependent declaration to common rule and language dependent rules',
+  testPhases(
+      'splits the exotic rules with language dependent declaration to common rule and language dependent rules',
       phases, {
-        'a|foo2_unmatched_css_url.css': r'''
+    'a|foo2_unmatched_css_url.css': r'''
         li + li {
         color: blue;
         float: right;
@@ -140,8 +140,8 @@ void main() {
           margin-left: 3em;
         }
         '''
-      }, {
-        'a|foo2_unmatched_css_url.css': r'''
+  }, {
+    'a|foo2_unmatched_css_url.css': r'''
         li + li {
         color: blue;
         }
@@ -163,6 +163,5 @@ void main() {
           margin-right: 3em;
         }
         '''
-      });
-
+  });
 }

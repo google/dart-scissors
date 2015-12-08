@@ -1,4 +1,5 @@
 // Copyright 2015 Google Inc. All Rights Reserved.
+
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,9 +18,9 @@ class CssMirroringSettings {
   Setting<bool> get verbose;
 
   final mirrorCss =
-      new Setting<bool>('mirrorCss', debugDefault: false, releaseDefault: true);
+  new Setting<bool>('mirrorCss', debugDefault: false, releaseDefault: true);
   final cssJanusPath =
-    makePathSetting('cssJanusPath', pathResolver.defaultCssJanusPath);
+  makePathSetting('cssJanusPath', pathResolver.defaultCssJanusPath);
 
 
 }
