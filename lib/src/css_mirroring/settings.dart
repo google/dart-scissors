@@ -14,7 +14,7 @@
 // limitations under the License.
 part of scissors.src.css_mirroring.transformer;
 
-class CssMirroringSettings {
+abstract class CssMirroringSettings {
   Setting<bool> get verbose;
 
   final mirrorCss =
