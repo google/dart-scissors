@@ -16,7 +16,7 @@ library scissors.test.image_inlining.inline_images_test;
 import 'dart:io';
 import 'package:path/path.dart';
 import 'package:test/test.dart';
-import '../../bin/inline_images.dart' as inline_images;
+import 'package:scissors/src/image_inlining/main.dart' as inline_images;
 
 main() {
   group('inline_images', () {
