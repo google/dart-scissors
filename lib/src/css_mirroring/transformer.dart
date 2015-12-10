@@ -15,19 +15,14 @@
 library scissors.src.css_mirroring.transformer;
 
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:barback/barback.dart';
-import 'package:source_maps/refactor.dart';
-import 'package:source_span/source_span.dart';
 
+import '../utils/enum_parser.dart';
 import '../utils/file_skipping.dart';
-import '../utils/io_utils.dart';
 import '../utils/path_resolver.dart';
-import '../utils/path_utils.dart';
 import '../utils/settings_base.dart';
-import 'rtl_convertor.dart';
+import 'bidi_css_generator.dart';
 
 part 'settings.dart';
 
@@ -52,10 +47,10 @@ class CssMirroringTransformer extends Transformer
     if (shouldSkipAsset(id)) return;
 
     if (id.extension == '.map') {
+      // TODO(monama): comment!
       transform.consumePrimary();
     } else {
       transform.declareOutput(id.addExtension('.css'));
-      transform.declareOutput(id.addExtension('.css.map'));
     }
   }
 
@@ -69,70 +64,9 @@ class CssMirroringTransformer extends Transformer
       transform.logger.info("Skipping ${transform.primaryInput.id}");
       return;
     }
-
-    try {
       /// Read original source css.
       var source = await cssAsset.readAsString();
-      var sourceFile = new SourceFile(source, url: cssAsset.id.toString());
-      var transaction = new TextEditTransaction(source, sourceFile);
-
-      /// Pass the original to cssJanus to generate flipped version.
-      var cssJanusPath = _settings.cssJanusPath.value;
-      Process process = await Process.start('python', [cssJanusPath]);
-      cssAsset.read().pipe(process.stdin);
-      var out = readAll(process.stdout);
-      var err = readAll(process.stderr);
-      var sourceFlipped;
-      if ((await process.exitCode ?? 0) != 0) {
-        var errStr = new Utf8Decoder().convert(await err);
-        throw new ArgumentError(
-            'Failed to run Closure Compiler (exit code = ${await process
-                .exitCode}):\n$errStr');
-      }
-      else {
-        sourceFlipped = new Utf8Decoder().convert(await out);
-      }
-
-      /// Create flipped source from cssJanus output.
-      var sourceFileFlipped = new SourceFile(
-          sourceFlipped, url: cssAsset.id.toString());
-      var transactionFlipped = new TextEditTransaction(
-          sourceFlipped, sourceFileFlipped);
-      var transactionFlippedCopy = new TextEditTransaction(
-          sourceFlipped, sourceFileFlipped);
-
-      /// Generate a single css with three portions: orientation-neutral, non-flipped orientation-specific, flipped orientation-specific.
-      generatecommon(
-          transform,
-          transaction,
-          transactionFlipped,
-          transactionFlippedCopy,
-          _settings,
-          sourceFile,
-          sourceFileFlipped);
-      if (transactionFlippedCopy.hasEdits) {
-        var printer = transactionFlippedCopy.commit()
-          ..build(cssAsset.id.path);
-        var result = printer.text;
-        // TODO(ochafik): Better stats / reporting (delta + %).
-//        transform.logger.info(
-//            "Mirrored CSS: ${formatDeltaChars(source.length, result.length)}",
-//            asset: cssAsset.id);
-
-        result = result + '\n' + (transaction.commit()
-          ..build('')).text;
-        result = result + '\n' + (transactionFlipped.commit()
-          ..build('')).text;
-        print(result);
-
-        transform.consumePrimary();
-        transform.addOutput(new Asset.fromString(cssAsset.id, result));
-        transform.addOutput(new Asset.fromString(
-            cssAsset.id.addExtension('.map'), printer.map));
-      }
-    } catch (e, s) {
-      acceptAssetNotFoundException(e, s);
-      // No HTML template found: leave the CSS alone!
-    }
+      print(await generateBidiCss(source, cssAsset.id.toString(), _settings));
+      transform.addOutput(new Asset.fromString(cssAsset.id, await generateBidiCss(source, cssAsset.id.toString(), _settings)));
   }
 }

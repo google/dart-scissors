@@ -2,17 +2,17 @@
 .unused-class {}
 absent-element {}
 present-element {
-  background-image: inline-image('icon.svg');
-  color: blue;
+    background-image: inline-image('icon.svg');
+    color: blue;
     margin-left: 10em;
 }
 
 a {
-  foo: bar;
-  margin-left: 1em;
-  margin: .25em -2px 3px 0;
-  background-position:25% 75%;
-  background-position:50% 50%;
+    foo: bar;
+    margin-left: 1em;
+    margin: .25em -2px 3px 0;
+    background-position:25% 75%;
+    background-position:50% 50%;
 }
 
 table-class {

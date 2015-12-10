@@ -14,13 +14,18 @@
 // limitations under the License.
 part of scissors.src.css_mirroring.transformer;
 
+enum Direction {
+  ltr, rtl
+}
+
 abstract class CssMirroringSettings {
   Setting<bool> get verbose;
 
   final mirrorCss =
   new Setting<bool>('mirrorCss', debugDefault: false, releaseDefault: true);
   final cssDirection =
-  new Setting<String>('cssDirection', debugDefault: "ltr", releaseDefault: "ltr");
+  new Setting<Direction>(
+      'orignalCssDirection', defaultValue: Direction.ltr, parser: new EnumParser<Direction>(Direction.values).parse);
   final cssJanusPath =
   makePathSetting('cssJanusPath', pathResolver.defaultCssJanusPath);
 
