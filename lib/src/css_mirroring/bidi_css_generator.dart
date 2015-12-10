@@ -43,17 +43,20 @@ generateBidiCss (String sourceData, String sourceFileId, CssMirroringSettings se
   TextEditTransaction orientationSpecificTransaction = generateTransaction(sourceData);
   TextEditTransaction flippedOrientationSpecificTransaction = generateTransaction(flippedSourceData);
 
-  modifyTransaction(TextEditTransaction trans, bool isOrientationNeutral, bool useOriginalSource, Direction dir) {
+  modifyTransaction(TextEditTransaction trans, bool isOrientationNeutral,
+      bool useOriginalSource, Direction dir) {
     /// Iterate over topLevels.
     for (int iTopLevel = 0; iTopLevel < originalTopLevels.length; iTopLevel++) {
       var originalTopLevelNode = originalTopLevels[iTopLevel];
       var flippedTopLevelNode = flippedTopLevels[iTopLevel];
+
       /// Check if topLevel is a RuleSet.
       if (isRuleSet(originalTopLevelNode, flippedTopLevelNode)) {
-
         // If topLevel is a RuleSet get declarationGroup in it.
-        var originalRuleSetDecls = originalTopLevelNode.declarationGroup.declarations;
-        var flippedRuleSetDecls = flippedTopLevelNode.declarationGroup.declarations;
+        var originalRuleSetDecls = originalTopLevelNode.declarationGroup
+            .declarations;
+        var flippedRuleSetDecls = flippedTopLevelNode.declarationGroup
+            .declarations;
 
         bool isSomeDeclarationSaved = false;
         var startPoint = <int>[];
@@ -64,32 +67,28 @@ generateBidiCss (String sourceData, String sourceFileId, CssMirroringSettings se
           var originalDeclarationNode = originalRuleSetDecls[iDecl];
           var flippedDeclarationNode = flippedRuleSetDecls[iDecl];
 
+          var start;
+          var end;
+
           if (isDeclaration(originalDeclarationNode, flippedDeclarationNode)) {
             if (deleteDeclaration(isOrientationNeutral, originalDeclarationNode,
                 flippedDeclarationNode)) {
-              var start;
-              var end;
+
               setStartEnd(span) {
                 start = span.start.offset;
                 end = span.end.offset;
+                if (iDecl < originalRuleSetDecls.length - 1) {
+                  end = useOriginalSource
+                      ? originalRuleSetDecls[iDecl + 1].span.start.offset
+                      : flippedRuleSetDecls[iDecl + 1].span.start.offset;
+                } else {
+                  end = getEndOfRuleSet(trans, end);
+                }
               }
+
               setStartEnd(useOriginalSource
                   ? originalDeclarationNode.span
                   : flippedDeclarationNode.span);
-
-              if (iDecl < originalRuleSetDecls.length - 1) {
-                end = useOriginalSource
-                    ? originalRuleSetDecls[iDecl + 1].span.start.offset
-                    : flippedRuleSetDecls[iDecl + 1].span.start.offset;
-              } else {
-//                indexOF('}')
-                // .foo { float: left /* becaue `foo: right;` would not work */; /* Haha { } */ }
-
-                //       end = getEndOfRuleSet(....);
-                while (trans.file.getText(end, end + 1) != '}') {
-                  end++;
-                }
-              }
               startPoint.add(start);
               endPoint.add(end);
             }
@@ -104,17 +103,13 @@ generateBidiCss (String sourceData, String sourceFileId, CssMirroringSettings se
           ruleStartLocation = span.start.offset;
           ruleEndLocation = span.end.offset;
         }
-        setRuleStartEnd(useOriginalSource ? originalTopLevelNode.span : flippedTopLevelNode.span);
+        setRuleStartEnd(
+            useOriginalSource ? originalTopLevelNode.span : flippedTopLevelNode
+                .span);
 
         /// Remove a Ruleset from transaction if all declarations in a RuleSet are to be removed.
         /// Else Remove declarations of a RuleSet from transaction.
-        if (isSomeDeclarationSaved == false) {
-          var end = iTopLevel < originalTopLevels.length - 1
-              ? (useOriginalSource ? originalTopLevels[iTopLevel + 1].span.start.offset : flippedTopLevels[iTopLevel + 1].span.start.offset)
-              : trans.file.length;
-          trans.edit(ruleStartLocation, end, '');
-        }
-        else {
+        if (isSomeDeclarationSaved == true) {
           for (int i = 0; i < startPoint.length; i++) {
             trans.edit(startPoint[i], endPoint[i], '');
           }
@@ -126,6 +121,13 @@ generateBidiCss (String sourceData, String sourceFileId, CssMirroringSettings se
                     originalTopLevels[iTopLevel].span.text);
           }
         }
+        else {
+          var end = iTopLevel < originalTopLevels.length - 1
+              ? (useOriginalSource ? originalTopLevels[iTopLevel + 1].span.start
+              .offset : flippedTopLevels[iTopLevel + 1].span.start.offset)
+              : trans.file.length;
+          trans.edit(ruleStartLocation, end, '');
+        }
       }
     }
   }
@@ -133,8 +135,6 @@ generateBidiCss (String sourceData, String sourceFileId, CssMirroringSettings se
   modifyTransaction(orientationNeutralTransaction, true, true, Direction.ltr);
   modifyTransaction(orientationSpecificTransaction, false, true, Direction.ltr);
   modifyTransaction(flippedOrientationSpecificTransaction, false, false, Direction.rtl);
-  //print('end');
-  //print ((orientationSpecificTransaction.commit()..build('')).text);
   return (orientationNeutralTransaction.commit()..build('')).text + '\n' + (orientationSpecificTransaction.commit()..build('')).text + '\n' + (flippedOrientationSpecificTransaction.commit()..build('')).text;
 }
 
@@ -150,4 +150,13 @@ bool isRuleSet(var originalTopLevelNode, var flippedTopLevelNode) {
 
 bool isDeclaration(var originalDeclarationNode, var flippedDeclarationNode) {
   return (originalDeclarationNode is Declaration) && (flippedDeclarationNode is Declaration);
+}
+
+getEndOfRuleSet(TextEditTransaction trans, var end) {
+  //                indexOF('}')
+  // .foo { float: left /* becaue `foo: right;` would not work */; /* Haha { } */ }
+  while (trans.file.getText(end, end + 1) != '}') {
+    end++;
+  }
+  return end;
 }
