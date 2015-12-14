@@ -2,6 +2,15 @@
 
 ...
 
+## 0.2.1 (2015-12-14)
+
+### Bugfixes
+
+- Resolve files with the `.packages` file to prepare for disappearance of `packages/`.
+- `scissors/transformer`: made Sass transformer really lazy.
+- `scissors/permutations_transformer`: hard-fail when parts check fails (consume the `.dart.js`)
+- `scissors/reloader/transformer`: added named argument `timestampBaseUrl` to `setupReloader`.
+
 ## 0.2.0 (2015-11-19)
 
 ### Features
