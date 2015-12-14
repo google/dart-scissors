@@ -1,5 +1,8 @@
 .used-class {}
 .unused-class {}
+
+.used-class {}
+.unused-class {}
 absent-element {}
 present-element {
     background-image: inline-image('icon.svg');
@@ -48,3 +51,25 @@ a[href="three.html"] {
     margin-left: 5em;
     float: left;
 }
+
+@charset "UTF-8";
+
+@import 'global.css';
+
+@namespace url(http://www.w3.org/1999/xhtml);
+
+@font-face {
+    font-family: 'MyWebFont';
+    src:  url('myfont.woff2') format('woff2'),
+    url('myfont.woff') format('woff');
+}
+
+@keyframes pulse {
+    0% {
+        background-color: #001f3f;
+    }
+    100% {
+        background-color: #ff4136;
+    }
+}
+@host { :scope { color: red; } }

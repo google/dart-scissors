@@ -23,7 +23,7 @@ import '../utils/file_skipping.dart';
 import '../utils/path_resolver.dart';
 import '../utils/settings_base.dart';
 import 'bidi_css_generator.dart';
-
+import 'bidi_css_gen.dart';
 part 'settings.dart';
 
 
@@ -50,7 +50,7 @@ class CssMirroringTransformer extends Transformer
       // TODO(monama): comment!
       transform.consumePrimary();
     } else {
-      transform.declareOutput(id.addExtension('.css'));
+      transform.declareOutput(id);
     }
   }
 
@@ -64,9 +64,13 @@ class CssMirroringTransformer extends Transformer
       transform.logger.info("Skipping ${transform.primaryInput.id}");
       return;
     }
-      /// Read original source css.
-      var source = await cssAsset.readAsString();
-      print(await generateBidiCss(source, cssAsset.id.toString(), _settings));
-      transform.addOutput(new Asset.fromString(cssAsset.id, await generateBidiCss(source, cssAsset.id.toString(), _settings)));
+
+    /// Read original source css.
+    var source = await cssAsset.readAsString();
+    BidiCssGenerator bcg = new BidiCssGenerator(source, cssAsset.id.toString(), _settings.cssDirection.value, _settings.cssJanusPath.value);
+    var output = await bcg.getOutputCss();
+    print(output);
+    if (_settings.verbose.value) transform.logger.info(output);
+    transform.addOutput(new Asset.fromString(cssAsset.id, output));
   }
 }

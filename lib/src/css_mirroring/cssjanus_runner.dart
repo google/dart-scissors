@@ -5,16 +5,18 @@ import 'dart:convert';
 import 'dart:io';
 
 import '../utils/io_utils.dart';
-import 'transformer.dart' show CssMirroringSettings;
 
-// Executes cssJanus and returns flipped css.
-runCssJanus(String source, CssMirroringSettings settings) async {
-  var cssJanusPath = settings.cssJanusPath.value;
+/// Executes cssjanus(https://github.com/cegov/wiki/tree/master/maintenance/cssjanus).
+/// Takes [source] css and [cssJanusPath] which points to an executable as the Input.
+/// Pipes in the source css to cssjanus.
+/// Output css flipped from ltr to rtl orientation and vice-versa.
+Future<String> runCssJanus(String source, String cssJanusPath) async {
   Process process = await Process.start(cssJanusPath, []);
 
-  Stream<List<int>> stream = new Stream.fromIterable([UTF8.encode(source)]);
-  stream.pipe(process.stdin);
+  new Stream.fromIterable([UTF8.encode(source)])
+    ..pipe(process.stdin);
 
+  // TODO(ochafik): Extract some common process util.
   var out = readAll(process.stdout);
   var err = readAll(process.stderr);
   if ((await process.exitCode ?? 0) != 0) {
@@ -23,6 +25,6 @@ runCssJanus(String source, CssMirroringSettings settings) async {
         'Failed to run Closure Compiler (exit code = ${await process
             .exitCode}):\n$errStr');
   }
-  var sourceFlipped = new Utf8Decoder().convert(await out);
+  var sourceFlipped = await new Utf8Decoder().convert(await out);
   return sourceFlipped;
 }

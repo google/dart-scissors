@@ -14,89 +14,114 @@
 // limitations under the License.
 library scissors.src.css_pruning.rtl_convertor;
 
+import 'dart:async';
+
 import 'package:csslib/parser.dart' show parse;
 import 'package:csslib/visitor.dart'
-    show RuleSet, StyleSheet, TreeNode, Declaration;
+    show RuleSet, StyleSheet, TreeNode, Declaration, MediaDirective;
 import 'package:quiver/check.dart';
 import 'package:source_maps/refactor.dart';
 import 'package:source_span/source_span.dart';
 
 import 'cssjanus_runner.dart';
+import '../utils/enum_parser.dart';
 import 'transformer.dart' show CssMirroringSettings, Direction;
 
+enum RetensionMode {
+  keepBidiNeutral,
+  keepOriginalBidiSpecific,
+  keepFlippedBidiSpecific
+}
 
 
-generateBidiCss (String sourceData, String sourceFileId, CssMirroringSettings settings) async {
-  String nativeDirection = settings.cssDirection.value;
-  String originalSourceData = sourceData;
-  String flippedSourceData = await runCssJanus(sourceData, settings);
+/// GenerateBidiCss generates a Css which comprises of Orientationn Neutral, Orientation Specific and Flipped Orientation Specific parts.
+/// Its takes a css string, sourcefile name, nativeDirection of input css and path to cssjanus.
+/// It generates a flipped version of the input css by passing it to cssJanus.
+/// Toplevels of the originalCss and flippedCss are extracted. It iterates over these topLevels to and checks if they are of the type RuleSet.
+/// If they are of type rule set it iterates over declarations in them.
+/// Depending on the mode of execution which could be [keepBidiNeutral], [keepOriginalBidiSpecific], [keepFlippedBidiSpecific],
+/// it checks if the declaration is to be removed and stores their [start] and [end] points.
+/// It then removes the entire ruleSet if all the declarations in it are to be removed. Otherwise it removes the declarations.
+/// How to pass function.
+Future<String> generateBidiCss(String sourceData, String sourceFileId,
+    Direction nativeDirection, String cssJanusPath) async {
+  String flippedSourceData = await runCssJanus(sourceData, cssJanusPath);
 
   // Get Treenodes for original css.
-  List<TreeNode> originalTopLevels = _getCssTopLevels(originalSourceData);
+  List<TreeNode> originalTopLevels = _getCssTopLevels(sourceData);
   // Get Treenodes for flipped css.
   List<TreeNode> flippedTopLevels = _getCssTopLevels(flippedSourceData);
 
+  print(sourceFileId);
   // Generate Transactions.
-  TextEditTransaction generateTransaction(String sourceData) =>
-      new TextEditTransaction(sourceData, new SourceFile(sourceData, url: sourceFileId));
-  TextEditTransaction orientationNeutralTransaction = generateTransaction(sourceData);
-  TextEditTransaction orientationSpecificTransaction = generateTransaction(sourceData);
-  TextEditTransaction flippedOrientationSpecificTransaction = generateTransaction(flippedSourceData);
+  TextEditTransaction makeTransaction(String original) =>
+      new TextEditTransaction(original, new SourceFile(original, url: sourceFileId));
 
-  modifyTransaction(TextEditTransaction trans, bool isOrientationNeutral,
-      bool useOriginalSource, Direction dir) {
+  var orientationNeutralTransaction = makeTransaction(sourceData);
+  var orientationSpecificTransaction = makeTransaction(sourceData);
+  var flippedOrientationSpecificTransaction = makeTransaction(flippedSourceData);
+
+  //dropCssDeclarations(tr, OrientationSensitivity kindOfDeclToDrop, ...)
+  modifyTransaction(TextEditTransaction trans, RetensionMode mode, String dir) {
     /// Iterate over topLevels.
     for (int iTopLevel = 0; iTopLevel < originalTopLevels.length; iTopLevel++) {
-      var originalTopLevelNode = originalTopLevels[iTopLevel];
-      var flippedTopLevelNode = flippedTopLevels[iTopLevel];
+      var originalTopLevel = originalTopLevels[iTopLevel];
+      var flippedTopLevel = flippedTopLevels[iTopLevel];
 
       /// Check if topLevel is a RuleSet.
-      if (isRuleSet(originalTopLevelNode, flippedTopLevelNode)) {
+      if (originalTopLevel is RuleSet && flippedTopLevel is RuleSet) {
         // If topLevel is a RuleSet get declarationGroup in it.
-        var originalRuleSetDecls = originalTopLevelNode.declarationGroup
-            .declarations;
-        var flippedRuleSetDecls = flippedTopLevelNode.declarationGroup
-            .declarations;
+        var originalDecls = originalTopLevel.declarationGroup.declarations;
+        var flippedDecls = flippedTopLevel.declarationGroup.declarations;
 
-        bool isSomeDeclarationSaved = false;
-        var startPoint = <int>[];
-        var endPoint = <int>[];
+        bool didRetainDecls = false;
+        var startPoints = <int>[];
+        var endPoints = <int>[];
 
-        // Iterate over Declarations in RuleSet.
-        for (int iDecl = 0; iDecl < originalRuleSetDecls.length; iDecl++) {
-          var originalDeclarationNode = originalRuleSetDecls[iDecl];
-          var flippedDeclarationNode = flippedRuleSetDecls[iDecl];
+        // Iterate over Declarations in RuleSet and store start and end points of declarations to be removed.
+        for (int iDecl = 0; iDecl < originalDecls.length; iDecl++) {
+          var originalDecl = originalDecls[iDecl];
+          var flippedDecl = flippedDecls[iDecl];
 
-          var start;
-          var end;
+          if (originalDecl is Declaration && flippedDecl is Declaration) {
+            // If the mode is [RetensionMode.keepBidiNeutral] then declarations which are different in original and flipped css need to be dropped(Neutral declarations needs to be kept).
+            // Otherwise declaration  which are common need to be dropped.
+            bool isDroppableDeclaration(RetensionMode mode, Declaration originalDeclarationNode, Declaration flippedDeclarationNode) =>
+                mode == RetensionMode.keepBidiNeutral
+                    ? originalDeclarationNode.span.text !=
+                    flippedDeclarationNode.span.text
+                    : originalDeclarationNode.span.text ==
+                    flippedDeclarationNode.span.text;
 
-          if (isDeclaration(originalDeclarationNode, flippedDeclarationNode)) {
-            if (deleteDeclaration(isOrientationNeutral, originalDeclarationNode,
-                flippedDeclarationNode)) {
-
-              setStartEnd(span) {
-                start = span.start.offset;
-                end = span.end.offset;
-                if (iDecl < originalRuleSetDecls.length - 1) {
-                  end = useOriginalSource
-                      ? originalRuleSetDecls[iDecl + 1].span.start.offset
-                      : flippedRuleSetDecls[iDecl + 1].span.start.offset;
+            if (isDroppableDeclaration(mode, originalDecl, flippedDecl)) {
+              setStartEnd(decls) {
+                var currentDecl = decls[iDecl];
+                int start = currentDecl.span.start.offset;
+                int end;
+                // TODO comment
+                if (iDecl < originalDecls.length - 1) {
+                  var nextDecl = decls[iDecl + 1];
+                  end = nextDecl.span.start.offset;
                 } else {
-                  end = getEndOfRuleSet(trans, end);
+                  end = _getEndOfRuleSet(trans, currentDecl.span.end.offset);
                 }
+                startPoints.add(start);
+                endPoints.add(end);
               }
-
-              setStartEnd(useOriginalSource
-                  ? originalDeclarationNode.span
-                  : flippedDeclarationNode.span);
-              startPoint.add(start);
-              endPoint.add(end);
+              setStartEnd(mode == RetensionMode.keepFlippedBidiSpecific ? flippedDecls : originalDecls);
             }
             else {
-              isSomeDeclarationSaved = true;
+              didRetainDecls = true;
             }
           }
+          else {
+            checkState(
+                originalTopLevel.runtimeType == flippedTopLevel.runtimeType);
+            // what of not declaration.
+            // TODO inline test here and check if expectation shattererd
+          }
         }
+
         var ruleStartLocation;
         var ruleEndLocation;
         setRuleStartEnd(span) {
@@ -104,55 +129,58 @@ generateBidiCss (String sourceData, String sourceFileId, CssMirroringSettings se
           ruleEndLocation = span.end.offset;
         }
         setRuleStartEnd(
-            useOriginalSource ? originalTopLevelNode.span : flippedTopLevelNode
-                .span);
-
+            mode == RetensionMode.keepFlippedBidiSpecific
+                ? flippedTopLevel.span
+                : originalTopLevel.span);
         /// Remove a Ruleset from transaction if all declarations in a RuleSet are to be removed.
         /// Else Remove declarations of a RuleSet from transaction.
-        if (isSomeDeclarationSaved == true) {
-          for (int i = 0; i < startPoint.length; i++) {
-            trans.edit(startPoint[i], endPoint[i], '');
+        if (didRetainDecls) {
+          removeDeclarations() {
+            for (int i = 0; i < startPoints.length; i++) {
+              trans.edit(startPoints[i], endPoints[i], '');
+            }
           }
+          removeDeclarations();
 
           /// Add direction attribute to RuleId for direction-specific RuleSet.
-          if (!isOrientationNeutral) {
+          if (mode != RetensionMode.keepBidiNeutral) {
             trans.edit(ruleStartLocation, ruleEndLocation,
                 ':host-context([dir="${dir}"]) ' +
                     originalTopLevels[iTopLevel].span.text);
           }
         }
         else {
-          var end = iTopLevel < originalTopLevels.length - 1
-              ? (useOriginalSource ? originalTopLevels[iTopLevel + 1].span.start
-              .offset : flippedTopLevels[iTopLevel + 1].span.start.offset)
-              : trans.file.length;
-          trans.edit(ruleStartLocation, end, '');
+          removeRule() {
+            var end = iTopLevel < originalTopLevels.length - 1
+                ? (mode == RetensionMode.keepFlippedBidiSpecific
+                ? flippedTopLevels[iTopLevel + 1].span.start.offset
+                : originalTopLevels[iTopLevel + 1].span.start.offset)
+                : trans.file.length;
+            trans.edit(ruleStartLocation, end, '');
+          }
+          removeRule();
         }
+      } else {
+        checkState(originalTopLevel.runtimeType == flippedTopLevel.runtimeType);
+        // TODO: handle non-RuleSets...
       }
     }
   }
 
-  modifyTransaction(orientationNeutralTransaction, true, true, Direction.ltr);
-  modifyTransaction(orientationSpecificTransaction, false, true, Direction.ltr);
-  modifyTransaction(flippedOrientationSpecificTransaction, false, false, Direction.rtl);
+
+  modifyTransaction(orientationNeutralTransaction, RetensionMode.keepBidiNeutral, '');
+  modifyTransaction(orientationSpecificTransaction, RetensionMode.keepOriginalBidiSpecific, enumName(nativeDirection));
+  modifyTransaction(flippedOrientationSpecificTransaction, RetensionMode.keepFlippedBidiSpecific, nativeDirection == Direction.ltr ? 'rtl' : 'ltr');
   return (orientationNeutralTransaction.commit()..build('')).text + '\n' + (orientationSpecificTransaction.commit()..build('')).text + '\n' + (flippedOrientationSpecificTransaction.commit()..build('')).text;
 }
 
 List<TreeNode> _getCssTopLevels(String path) =>
-     parse(path).topLevels;
+    parse(path).topLevels;
 
-bool deleteDeclaration(bool getOrientationNeutral,Declaration originalDeclarationNode,Declaration flippedDeclarationNode) =>
-  getOrientationNeutral ? originalDeclarationNode.span.text != flippedDeclarationNode.span.text : originalDeclarationNode.span.text == flippedDeclarationNode.span.text;
-
-bool isRuleSet(var originalTopLevelNode, var flippedTopLevelNode) {
-  return (originalTopLevelNode is RuleSet) && (flippedTopLevelNode is RuleSet);
-}
-
-bool isDeclaration(var originalDeclarationNode, var flippedDeclarationNode) {
-  return (originalDeclarationNode is Declaration) && (flippedDeclarationNode is Declaration);
-}
-
-getEndOfRuleSet(TextEditTransaction trans, var end) {
+// todo comment
+// todo private helpers throughout
+// todo return types
+int _getEndOfRuleSet(TextEditTransaction trans, int /*fromIndex*/end) {
   //                indexOF('}')
   // .foo { float: left /* becaue `foo: right;` would not work */; /* Haha { } */ }
   while (trans.file.getText(end, end + 1) != '}') {
