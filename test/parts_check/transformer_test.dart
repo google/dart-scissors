@@ -42,12 +42,12 @@ void main() {
         'expectedPartCounts': {'web/main.dart.js': 1}
       }),
       {
-    'a|web/main.dart.js': '',
-    'a|web/main.dart.js_1.part.js': '',
-    'a|web/main.dart.js_2.part.js': ''
-  },
+        'a|web/main.dart.js': '',
+        'a|web/main.dart.js_1.part.js': '',
+        'a|web/main.dart.js_2.part.js': ''
+      },
       {},
       [
-    'error: Found 2 part files, but expected 1 !!!'
-  ]);
+        'error: Found 2 part files, but expected 1 !!!'
+      ]);
 }

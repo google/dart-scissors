@@ -35,10 +35,12 @@ Future<Asset> runPngCrush(String pngCrushPath, Asset input,
   var args = "-q -brute -reduce "
       "-rem alla -rem allb "
       "-rem gAMA -rem cHRM -rem iCCP -rem sRGB -rem text -rem time";
-  ProcessResult result = await Process.run(pngCrushPath, []
-    ..addAll(args.split(' '))
-    ..add(inputFile.path)
-    ..add(outputFile.path));
+  ProcessResult result = await Process.run(
+      pngCrushPath,
+      []
+        ..addAll(args.split(' '))
+        ..add(inputFile.path)
+        ..add(outputFile.path));
   print(result.stdout);
   if (result.exitCode != 0) {
     throw new ArgumentError('Failed to crush ${input.id}:\n${result.stderr}');

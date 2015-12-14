@@ -176,7 +176,8 @@ class ElementDescription {
       List<SimpleSelectorSequence> selectors) {
     var i = 0;
     final n = selectors.length;
-    isDescLike(int kind) => kind == TokenKind.COMBINATOR_DESCENDANT ||
+    isDescLike(int kind) =>
+        kind == TokenKind.COMBINATOR_DESCENDANT ||
         kind == TokenKind.COMBINATOR_GREATER;
 
     while (i < n - 1 && isDescLike(selectors[i + 1].combinator)) {

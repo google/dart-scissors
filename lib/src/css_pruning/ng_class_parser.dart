@@ -29,7 +29,7 @@ class NgClassParsingResults {
   /// For test purposes.
   @override operator ==(NgClassParsingResults other) =>
       hasVariableClasses == other.hasVariableClasses &&
-          "$classes" == "${other.classes}";
+      "$classes" == "${other.classes}";
   @override get hashCode => hasVariableClasses.hashCode ^ "${classes}".hashCode;
 }
 
