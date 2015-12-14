@@ -4,6 +4,8 @@ description: A CSS minifier / tree-shaker for AngularDart 1.x / Angular2.
 authors:
 - Olivier Chafik <ochafik@google.com>
 homepage: http://github.com/google/dart-scissors
+environment:
+  sdk: ">=1.8.0 <2.0.0"
 dependencies:
   barback: ^0.15.0
   code_transformers: ^0.3.0+1
