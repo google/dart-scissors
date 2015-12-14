@@ -36,8 +36,7 @@ enum ImageInliningMode {
 
 String _unquote(String s) {
   // TODO(ochafik): What about url encode, escapes, etc?
-  if (s.startsWith('"'))
-    checkArgument(s.endsWith('"'));
+  if (s.startsWith('"')) checkArgument(s.endsWith('"'));
   else {
     checkArgument(s.startsWith("'"));
     checkArgument(s.endsWith("'"));

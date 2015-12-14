@@ -21,8 +21,7 @@ import 'package:code_transformers/tests.dart' show testPhases;
 import 'package:scissors/testing/transformer_test_utils.dart';
 
 makePhases(Map config) => new EagerScissorsTransformerGroup.asPlugin(
-        new BarbackSettings(config, BarbackMode.RELEASE))
-    .phases;
+    new BarbackSettings(config, BarbackMode.RELEASE)).phases;
 
 void main() {
   if (!hasExecutable('sassc')) {

@@ -19,12 +19,9 @@ main(List<String> args) async {
     if (arg == '-I') {
       includeDirs.add(args[++i]);
     } else {
-      if (input == null)
-        input = new File(arg);
-      else if (output == null)
-        output = new File(arg);
-      else
-        throw new ArgumentError('Unexpected: $arg');
+      if (input == null) input = new File(arg);
+      else if (output == null) output = new File(arg);
+      else throw new ArgumentError('Unexpected: $arg');
     }
   }
 
@@ -59,8 +56,6 @@ main(List<String> args) async {
   });
 
   var stream = result.css.read();
-  if (output.path == '-')
-    stream.pipe(stdout);
-  else
-    stream.pipe(output.openWrite());
+  if (output.path == '-') stream.pipe(stdout);
+  else stream.pipe(output.openWrite());
 }
