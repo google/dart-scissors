@@ -74,7 +74,6 @@ class CssMirroringTransformer extends Transformer
           return await runCssJanus(css, _settings.cssJanusPath.value);
         });
     var output = generator.getOutputCss();
-   // print(output);
     if (_settings.verbose.value) transform.logger.info(output);
     transform.addOutput(new Asset.fromString(cssAsset.id, output));
   }
