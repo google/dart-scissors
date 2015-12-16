@@ -38,7 +38,7 @@ class PathResolver {
   final String defaultJavaPath = 'java';
   final String defaultSassCPath = 'sassc';
   final String defaultPngCrushPath = 'pngcrush';
-  final String defaultCssJanusPath = 'cssjanus';
+  final String defaultCssJanusPath = '/Users/monama/bin/cssjanus/cssjanus.py';
   final String defaultJRubyPath = 'jruby';
   final String defaultRubySassPath = 'sass';
   final String defaultCompassStylesheetsPath = null;

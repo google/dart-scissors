@@ -1,0 +1,22 @@
+name: scissors_permutations_example
+version: 0.1.9
+dependencies:
+  browser: 0.10.0
+  intl: any
+dev_dependencies:
+  # scissors: {path: ../..}
+  scissors: {path: ../..}
+transformers:
+- $dart2js:
+    commandLineOptions:
+    - --deferred-map=build
+    # minify: false
+- scissors/permutations_transformer:
+    closureCompilerJar: ${HOME}/github/closure-compiler/build/compiler.jar
+    ltrImport: tc_ltr
+    rtlImport: tc_rtl
+    verbose: true
+    expectedPartCounts:
+        web/main.dart.js: 6
+    release:
+        reoptimizePermutations: true

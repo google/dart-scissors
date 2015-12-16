@@ -1,0 +1,28 @@
+name: scissors_angular2_example
+version: 0.1.9
+dependencies:
+  angular2: 2.0.0-alpha.45
+  browser: 0.10.0
+dev_dependencies:
+  # scissors: 0.1.9
+  scissors: {path: ../..}
+  dart_to_js_script_rewriter: ^0.1.0
+transformers:
+# Use this transformer instead to force-build all the css files upfront:
+# - scissors/eager_transformer
+#- scissors:
+#    verbose: true
+#    mirrorCss: true
+    # pruneCss: false
+    # optimizeSvg: false
+    # optimizePng: false
+- scissors/cssmirroring_transformer:
+    verbose: true
+    mirrorCss: true
+    cssJanusPath: '/Users/monama/bin/cssjanus/cssjanus.py'
+- angular2:
+    entry_points: web/main.dart
+    html_files: web/index.html
+- dart_to_js_script_rewriter
+
+

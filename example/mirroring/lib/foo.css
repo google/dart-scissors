@@ -1,0 +1,68 @@
+.used-class {}
+.unused-class {}
+absent-element {}
+present-element {
+    background-image: inline-image('icon.svg');
+    color: blue;
+    margin-left: 10em;
+}
+
+a {
+    foo: bar;
+    margin-left: 1em;
+    background-position:25% 75%;
+}
+
+table-class {
+    color: blue;
+    margin-left: 2000em;
+}
+
+ul li {
+    color: gray;
+}
+
+/* Adjacent sibling selectors */
+li + li {
+    color: red;
+    margin-left: 2em;
+}
+
+/* General sibling selectors */
+a ~ a {
+    color: purple;
+    margin-left: 3em;
+}
+
+/* Child selectors */
+li > a {
+    color: orange;
+    margin-left: 4em; width: 10px;
+}
+
+/* https://developer.mozilla.org/en-US/docs/CSS/Attribute_selectors */
+a[href="three.html"] {
+    color: green;
+    margin-left: 5em;
+}
+.foo { color: blue;float: left /* because `foo: right;` would not work */; /* Haha { } */}
+@charset "UTF-8";
+@namespace url(http://www.w3.org/1999/xhtml);
+@font-face {
+    font-family: 'MyWebFont';
+    src: url('myfont.woff2') format('woff2'),
+    url('myfont.woff') format('woff');
+}
+@host { :scope { color: red; } }
+@media screen and (min-width: 401px) {
+    body { margin-left: 13px }
+}
+@keyframes pulse {
+    0% {
+        background-color: #001f3f;
+    }
+    100% {
+        background-color: #ff4136;
+    }
+}
+
