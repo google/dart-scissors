@@ -14,7 +14,7 @@ most of them are disabled or optimized for speed with `pub serve` in debug mode.
   - Supports `ng-class` and `class` with programmatic interpolated fragments
     (e.g. `class="some-{{fragmented}}-class and-some-normal-class"`,
     `ng-class="{'some-class': isSome}"`).
-  - Disabled by default in debug mode.
+  - Enabled by default in debug mode.
 - CSS mirroring for Angular (see [example/mirroring](https://github.com/google/dart-scissors/tree/master/example/mirroring)):
   - Performs RTL mirroring of CSS.
   - Uses cssjanus, with extra logic to know which properties are flippable and to recombine the three portions: orientation-neutral, non-flipped orientation-specific, flipped orientation-specific.
@@ -150,6 +150,10 @@ Valid settings:
 - `mirrorCss`: `true` by default in release mode and false by default in debug mode.
 - `cssDirection` `ltr` by default in debug and release mode.
 - `cssJanusPath`: `cssJanus` by default.
+
+###Limitations
+ - Works only on css files. Pre-processors like sass and less are not supported. 
+ - Does not handle directives like KeyFrames and page.
 
 ## Using `scissors/permutations_transformer`
 

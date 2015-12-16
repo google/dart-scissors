@@ -114,8 +114,7 @@ void main() {
     'a|foo2_unmatched_css_url.css': r'''
           absent-element {
             color: blue;
-
-        }
+            }
           .usedclass {
             background-size: 16px 16px;
         }
@@ -147,12 +146,10 @@ void main() {
     'a|foo2_unmatched_css_url.css': r'''
         li + li {
         color: blue;
-
         }
         a ~ a {
           color: purple;
-
-        }
+          }
 
         :host-context([dir="ltr"]) li + li {
         float: right;

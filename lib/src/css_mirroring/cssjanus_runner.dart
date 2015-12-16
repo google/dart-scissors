@@ -7,9 +7,9 @@ import 'dart:io';
 import '../utils/io_utils.dart';
 
 /// Executes cssjanus(https://github.com/cegov/wiki/tree/master/maintenance/cssjanus).
-/// Takes [source] css and [cssJanusPath] which points to an executable as the Input.
+/// Input: [source] css and [cssJanusPath] which points to an executable.
 /// Pipes in the source css to cssjanus.
-/// Output css flipped from ltr to rtl orientation and vice-versa.
+/// Output: css flipped from ltr to rtl orientation and vice-versa.
 Future<String> runCssJanus(String source, String cssJanusPath) async {
   Process process = await Process.start(cssJanusPath, []);
 

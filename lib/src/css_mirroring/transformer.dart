@@ -22,8 +22,9 @@ import '../utils/enum_parser.dart';
 import '../utils/file_skipping.dart';
 import '../utils/path_resolver.dart';
 import '../utils/settings_base.dart';
-import 'bidi_css_generator.dart';
 import 'bidi_css_gen.dart';
+import 'cssjanus_runner.dart';
+
 part 'settings.dart';
 
 
@@ -47,7 +48,7 @@ class CssMirroringTransformer extends Transformer
     if (shouldSkipAsset(id)) return;
 
     if (id.extension == '.map') {
-      // TODO(monama): comment!
+      // The transformer converts input css to new bidi css so the input .css.map will no longer be valid.
       transform.consumePrimary();
     } else {
       transform.declareOutput(id);
@@ -67,9 +68,13 @@ class CssMirroringTransformer extends Transformer
 
     /// Read original source css.
     var source = await cssAsset.readAsString();
-    BidiCssGenerator bcg = new BidiCssGenerator(source, cssAsset.id.toString(), _settings.cssDirection.value, _settings.cssJanusPath.value);
-    var output = await bcg.getOutputCss();
-    print(output);
+
+    BidiCssGenerator generator = await BidiCssGenerator.build(source, cssAsset.id.toString(), _settings.cssDirection.value,
+        (String css) async {
+          return await runCssJanus(css, _settings.cssJanusPath.value);
+        });
+    var output = generator.getOutputCss();
+   // print(output);
     if (_settings.verbose.value) transform.logger.info(output);
     transform.addOutput(new Asset.fromString(cssAsset.id, output));
   }

@@ -18,11 +18,13 @@ enum Direction {
   ltr, rtl
 }
 
+Direction flipDirection(Direction dir) => dir == Direction.ltr ? Direction.rtl : Direction.ltr;
+
 abstract class CssMirroringSettings {
   Setting<bool> get verbose;
 
   final mirrorCss =
-  new Setting<bool>('mirrorCss', debugDefault: false, releaseDefault: true);
+  new Setting<bool>('mirrorCss', debugDefault: true, releaseDefault: true);
   final cssDirection =
   new Setting<Direction>(
       'orignalCssDirection', defaultValue: Direction.ltr, parser: new EnumParser<Direction>(Direction.values).parse);
