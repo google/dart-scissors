@@ -244,7 +244,7 @@ class BidiCssGenerator {
           }
         }
     }
-    if(_ruleStartPoints.length == originalRuleSets.length) {
+    if(_ruleStartPoints.length == originalRuleSets.length ) { // All rules are to be deleted
       _removeDirective(removals, usedDirective);
     }
     else {
@@ -290,14 +290,14 @@ class BidiCssGenerator {
     removals._transaction.edit(_getRuleSetStart(topLevel) , topLevel.span.end.offset, '');
   }
 
-  int _getRuleSetStart(TreeNode node) {
+  static int _getRuleSetStart(TreeNode node) {
     if(node is RuleSet)
       return node.span.start.offset;
     // In case of Directives since the node span start does not include '@' so additional -1 is required.
     return node.span.start.offset - 1;
   }
 
-  int _getRuleSetEnd(List<RuleSet> ruleSets, int iTopLevel, int parentEnd) {
+  static int _getRuleSetEnd(List<RuleSet> ruleSets, int iTopLevel, int parentEnd) {
     var end = iTopLevel < ruleSets.length - 1
         ? _getRuleSetStart(ruleSets[iTopLevel + 1])
         : parentEnd;
