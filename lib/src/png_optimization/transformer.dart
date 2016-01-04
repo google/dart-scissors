@@ -47,7 +47,8 @@ class PngOptimizationTransformer extends Transformer
     int originalSize;
     int resultSize;
     transform.addOutput(await runPngCrush(
-        _settings.pngCrushPath.value, transform.primaryInput, (int a, int b) {
+        await _settings.pngCrushPath.value, transform.primaryInput,
+        (int a, int b) {
       originalSize = a;
       resultSize = b;
     }));

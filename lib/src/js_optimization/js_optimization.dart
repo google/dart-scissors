@@ -19,20 +19,20 @@ import 'dart:io';
 import 'package:barback/barback.dart';
 
 import '../utils/delta_format.dart';
-import '../utils/path_resolver.dart';
 import 'closure.dart';
 import 'settings.dart';
 
 Future<Asset> optimizeJsAsset(TransformLogger logger, Asset input,
     JsOptimizationSettings settings) async {
   var content = await input.readAsString();
-  var javaPath = settings.javaPath.value;
-  var path =
-      await pathResolver.resolvePath(settings.closureCompilerJarPath.value);
-  if (!await new File(path).exists()) {
-    throw new StateError("Did not find Closure Compiler ($path)");
+  var javaPath = await settings.javaPath.value;
+  var closureCompilerJarPath = await settings.closureCompilerJarPath.value;
+  if (!await new File(closureCompilerJarPath).exists()) {
+    throw new StateError(
+        "Did not find Closure Compiler ($closureCompilerJarPath)");
   }
-  var result = await simpleClosureCompile(javaPath, path, content);
+  var result =
+      await simpleClosureCompile(javaPath, closureCompilerJarPath, content);
   logger.info(
       'Ran Closure Compiler: ${formatDeltaChars(content.length, result.length)}',
       asset: input.id);

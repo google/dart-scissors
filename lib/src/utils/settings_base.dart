@@ -13,17 +13,24 @@
 // limitations under the License.
 library scissors.src.utils.settings_base;
 
+import 'dart:async';
 import 'dart:io';
 import 'dart:mirrors';
 
 import 'package:barback/barback.dart';
 import 'package:quiver/check.dart';
 
+import 'path_resolver.dart';
+
 part 'setting.dart';
 
-Setting<String> makePathSetting(String name, String defaultValue) =>
-    new Setting<String>(name,
-        defaultValue: defaultValue, parser: resolveEnvVars);
+Future<String> _resolve(String path) =>
+    pathResolver.resolvePath(resolveEnvVars(path));
+
+Setting<Future<String>> makePathSetting(String name, String defaultValue) =>
+    new Setting<Future<String>>(name,
+        defaultValue: new Future.value(_resolve(defaultValue)),
+        parser: _resolve);
 
 Setting<bool> makeBoolSetting(String name, [bool enabled = true]) =>
     new Setting<bool>(name, defaultValue: enabled);
@@ -71,7 +78,7 @@ abstract class SettingsBase {
   }
 }
 
-String resolveEnvVars(String s) => s.replaceAllMapped(
+String resolveEnvVars(String s) => s?.replaceAllMapped(
     new RegExp(r'\$\{([^}]+)\}'),
     (Match m) => (Platform.environment[m.group(1)] ?? ''));
 

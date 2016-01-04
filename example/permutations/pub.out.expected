@@ -63,8 +63,8 @@ Creating scissors_permutations_example|web/main_fr.js with:
 	scissors_permutations_example|web/main.dart.js_5.part.js (used by: tc_ltr)
 [Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_en.js]:
 Ran Closure Compiler: 127532 chars → 114053 chars (-13479 chars = -10.6%)
-[Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_fr.js]:
-Ran Closure Compiler: 127538 chars → 114059 chars (-13479 chars = -10.6%)
 [Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_ar.js]:
 Ran Closure Compiler: 127575 chars → 114096 chars (-13479 chars = -10.6%)
+[Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_fr.js]:
+Ran Closure Compiler: 127538 chars → 114059 chars (-13479 chars = -10.6%)
 Built 180 files to "build".

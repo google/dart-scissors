@@ -42,8 +42,7 @@ abstract class SassSettings {
   Future<SasscSettings> get sasscSettings {
     if (_sasscSettings == null) {
       _sasscSettings = (() async {
-        var path =
-            await pathResolver.resolvePath(resolveEnvVars(sasscPath.value));
+        var path = await sasscPath.value;
         var args = [];
         for (var dir in await pathResolver.getSassIncludeDirectories()) {
           args..add("--load-path")..add(dir.path);

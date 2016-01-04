@@ -45,8 +45,7 @@ class PathResolver {
   final String defaultClosureCompilerJarPath = 'compiler.jar';
 
   Future<String> resolvePath(String path) async {
-    // Note: this file is meant to be replaced by custom resolution logic in
-    // forks of this package.
+    if (path == null) return null;
     return (await _resolveFileAsset([path]))?.file?.path ?? path;
   }
 
