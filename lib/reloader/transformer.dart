@@ -16,7 +16,6 @@ library scissors.src.reloader.transformer;
 import 'package:barback/barback.dart';
 
 import 'dart:math';
-import 'dart:async';
 import '../src/utils/phase_utils.dart';
 import '../src/utils/settings_base.dart';
 
