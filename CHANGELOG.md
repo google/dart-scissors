@@ -2,6 +2,14 @@
 
 ...
 
+## 0.2.2 (2016-01-05)
+
+### Bugfixes
+
+- Systematically resolve paths from settings (for pngcrush, sassc, etc)
+- `scissors/permutations_transformer`: generate permutation for `defaultLocale`
+  (language in which the messages are written in the source, defaults to `en_US`)
+
 ## 0.2.1 (2015-12-14)
 
 ### Bugfixes
