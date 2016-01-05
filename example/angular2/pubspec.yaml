@@ -4,8 +4,7 @@ dependencies:
   angular2: 2.0.0-alpha.45
   browser: 0.10.0
 dev_dependencies:
-  # scissors: 0.2.0
-  scissors: {path: ../..}
+  scissors: ^0.2.2
   dart_to_js_script_rewriter: ^0.1.0
 transformers:
 # Use this transformer instead to force-build all the css files upfront:
@@ -19,3 +18,7 @@ transformers:
     entry_points: web/main.dart
     html_files: web/index.html
 - dart_to_js_script_rewriter
+
+# Do not use this line in your projects: this is just to use the enclosing
+# version of Scissors:
+dependency_overrides: {scissors: {path: ../..}}

@@ -9,8 +9,8 @@ readonly EXAMPLE_NAME="$1"
 
 cd "`dirname $0`/$EXAMPLE_NAME"
 
-# Use local version of scissors:
-sed -i.bak -E 's!scissors: .+!scissors: {path: ../..}!' pubspec.yaml
+# TODO(ochafik): Update pubspec with current version of scissors
+# sed -i.bak -E 's!scissors: .+!scissors: '$version'!' pubspec.yaml
 
 echo "# Building $EXAMPLE_NAME"
 pub get
@@ -18,9 +18,6 @@ pub build 2>&1 | \
   egrep -v "^Took .*? to compile " | \
   egrep -v ".*? took .*? msec." | \
   tee pub.out
-
-# Restore pubspec.yaml
-mv pubspec.yaml.bak pubspec.yaml
 
 if [[ -f pub.out.expected ]]; then
   echo "# Diffing pub output with its expectation"
