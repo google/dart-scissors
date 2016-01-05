@@ -24,6 +24,8 @@ abstract class PermutationsSettings implements JsOptimizationSettings {
 
   final ltrImport = new Setting<String>('ltrImport');
   final rtlImport = new Setting<String>('rtlImport');
+  final defaultLocale = new Setting<String>('defaultLocale',
+      defaultValue: "en_US");
 
   final generatePermutations = makeBoolSetting('generatePermutations');
 
