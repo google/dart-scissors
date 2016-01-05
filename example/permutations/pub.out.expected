@@ -40,7 +40,7 @@ Deferred map content:
   }
 }
 [Info from Permutations on scissors_permutations_example|<default>]:
-Found entry points {main}, and locales {ar, en, fr}
+Found entry points {main}, and locales {ar, en, fr} with default locale en_US
 [Info from Permutations on scissors_permutations_example|<default>]:
 Processing scissors_permutations_example|web/main.dart.js
 [Info from Permutations on scissors_permutations_example|<default>]:
@@ -61,10 +61,16 @@ Creating scissors_permutations_example|web/main_fr.js with:
 	scissors_permutations_example|web/main.dart.js_6.part.js (used by: messages_ar, messages_en, messages_fr)
 	scissors_permutations_example|web/main.dart.js_3.part.js (used by: messages_fr)
 	scissors_permutations_example|web/main.dart.js_5.part.js (used by: tc_ltr)
-[Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_en.js]:
-Ran Closure Compiler: 127532 chars → 114053 chars (-13479 chars = -10.6%)
-[Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_ar.js]:
-Ran Closure Compiler: 127575 chars → 114096 chars (-13479 chars = -10.6%)
+[Info from Permutations on scissors_permutations_example|<default>]:
+Creating scissors_permutations_example|web/main_en_US.js with:
+	scissors_permutations_example|web/main.dart.js
+	scissors_permutations_example|web/main.dart.js_5.part.js (used by: tc_ltr)
 [Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_fr.js]:
-Ran Closure Compiler: 127538 chars → 114059 chars (-13479 chars = -10.6%)
-Built 180 files to "build".
+Ran Closure Compiler: 127538 chars → 114058 chars (-13480 chars = -10.6%)
+[Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_en.js]:
+Ran Closure Compiler: 127532 chars → 114052 chars (-13480 chars = -10.6%)
+[Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_ar.js]:
+Ran Closure Compiler: 127575 chars → 114095 chars (-13480 chars = -10.6%)
+[Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_en_US.js]:
+Ran Closure Compiler: 125937 chars → 113566 chars (-12371 chars = -9.9%)
+Built 182 files to "build".
