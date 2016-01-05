@@ -18,6 +18,7 @@ import 'package:barback/barback.dart'
 import 'package:scissors/src/permutations/transformer.dart';
 
 import 'package:code_transformers/tests.dart' show testPhases;
+import 'package:test/test.dart';
 
 makePhases(Map config) => [
       [
@@ -27,11 +28,8 @@ makePhases(Map config) => [
     ];
 
 void main() {
-  var phases = makePhases({});
-
-  testPhases(
-      'Concatenates deferred messages in pre-loaded permutations', phases, {
-    'a|main.deferred_map': r'''
+  group('PermutationsTransformer', () {
+    var deferredMap = r'''
       {
         "_comment": "This mapping shows which compiled `.js` files are needed for a given deferred library import.",
         "package:a/messages_all.dart": {
@@ -42,18 +40,55 @@ void main() {
             ],
             "messages_bg": [
               "main.dart.js_1.part.js"
+            ],
+            "tc_ltr": [
+              "main.dart.js_100.part.js"
+            ],
+            "tc_rtl": [
+              "main.dart.js_200.part.js"
             ]
           }
         }
       }
-    ''',
-    'a|main.dart.js': 'content of main.dart.js',
-    'a|main.dart.js_1.part.js': 'content of main.dart.js_1.part.js',
-    'a|main.dart.js_2.part.js': 'content of main.dart.js_2.part.js',
-  }, {
-    'a|main_ar.js': 'content of main.dart.js\n'
-        'content of main.dart.js_2.part.js',
-    'a|main_bg.js': 'content of main.dart.js\n'
-        'content of main.dart.js_1.part.js',
+    ''';
+    testPhases('Concatenates deferred messages in pre-loaded permutations',
+        makePhases({}), {
+      'a|main.deferred_map': deferredMap,
+      'a|main.dart.js': 'content of main.dart.js',
+      'a|main.dart.js_1.part.js': 'content of main.dart.js_1.part.js',
+      'a|main.dart.js_2.part.js': 'content of main.dart.js_2.part.js',
+    }, {
+      'a|main_ar.js': 'content of main.dart.js\n'
+          'content of main.dart.js_2.part.js',
+      'a|main_bg.js': 'content of main.dart.js\n'
+          'content of main.dart.js_1.part.js',
+      'a|main_en_US.js': 'content of main.dart.js'
+    });
+
+    testPhases(
+        'Concatenates deferred messages and ltr / rtl imports in permutations',
+        makePhases({
+          "ltrImport": "tc_ltr",
+          "rtlImport": "tc_rtl",
+          "defaultLocale": "fr_CA"
+        }),
+        {
+          'a|main.deferred_map': deferredMap,
+          'a|main.dart.js': 'content of main.dart.js',
+          'a|main.dart.js_1.part.js': 'content of main.dart.js_1.part.js',
+          'a|main.dart.js_2.part.js': 'content of main.dart.js_2.part.js',
+          'a|main.dart.js_100.part.js': 'content of LTR template cache',
+          'a|main.dart.js_200.part.js': 'content of RTL template cache',
+        },
+        {
+          'a|main_ar.js': 'content of main.dart.js\n'
+              'content of main.dart.js_2.part.js\n'
+              'content of RTL template cache',
+          'a|main_bg.js': 'content of main.dart.js\n'
+              'content of main.dart.js_1.part.js\n'
+              'content of LTR template cache',
+          'a|main_fr_CA.js': 'content of main.dart.js\n'
+              'content of RTL template cache',
+        });
   });
 }
