@@ -95,9 +95,13 @@ class PermutationsTransformer extends AggregateTransformer
     }
     var map = new IntlDeferredMap.fromJson(deferredMapJson);
 
+    var defaultLocale = _settings.defaultLocale.value;
+    var allLocales = []..addAll(map.locales);
+    if (defaultLocale != null) allLocales.add(defaultLocale);
+    
     if (_settings.verbose.value) {
       transform.logger.info('Found entry points ${map.mainNames}, '
-          'and locales ${map.locales}');
+          'and locales ${map.locales} with default locale $defaultLocale');
     }
 
     Asset getMatchingAsset(String fileName) =>
@@ -111,7 +115,7 @@ class PermutationsTransformer extends AggregateTransformer
       Asset mainAsset = getMatchingAsset('$mainName.dart.js');
       transform.logger.info('Processing ${mainAsset.id}');
 
-      for (var locale in map.locales) {
+      for (var locale in allLocales) {
         var permutationId = new AssetId(mainAsset.id.package,
             join(dirname(mainAsset.id.path), '${mainName}_${locale}.js'));
 
