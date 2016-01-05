@@ -1,17 +1,20 @@
 #!/bin/bash
-set -eux
+set -eu
 
 pub get
-pub run test
+
+#pub run test
+for test in `find test -name '*.dart'` ; do
+  echo "TESTING $test"
+  pub run $test
+done
 pub publish --dry-run
 
-set +x
 echo "+ pub run dart_style:format ..."
 pub run dart_style:format -w \
   `find lib -name '*.dart'` \
   `find example -name '*.dart'` \
   `find test -name '*.dart'` | ( grep -v "^Unchanged " || true )
-set -x
 
 if (( "${TEST_EXAMPLES:-1}" )); then
   example/test_example.sh permutations

@@ -98,7 +98,7 @@ class PermutationsTransformer extends AggregateTransformer
     var defaultLocale = _settings.defaultLocale.value;
     var allLocales = []..addAll(map.locales);
     if (defaultLocale != null) allLocales.add(defaultLocale);
-    
+
     if (_settings.verbose.value) {
       transform.logger.info('Found entry points ${map.mainNames}, '
           'and locales ${map.locales} with default locale $defaultLocale');

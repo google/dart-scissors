@@ -73,22 +73,22 @@ void main() {
           "defaultLocale": "fr_CA"
         }),
         {
-          'a|main.deferred_map': deferredMap,
-          'a|main.dart.js': 'content of main.dart.js',
-          'a|main.dart.js_1.part.js': 'content of main.dart.js_1.part.js',
-          'a|main.dart.js_2.part.js': 'content of main.dart.js_2.part.js',
-          'a|main.dart.js_100.part.js': 'content of LTR template cache',
-          'a|main.dart.js_200.part.js': 'content of RTL template cache',
-        },
+      'a|main.deferred_map': deferredMap,
+      'a|main.dart.js': 'content of main.dart.js',
+      'a|main.dart.js_1.part.js': 'content of main.dart.js_1.part.js',
+      'a|main.dart.js_2.part.js': 'content of main.dart.js_2.part.js',
+      'a|main.dart.js_100.part.js': 'content of LTR template cache',
+      'a|main.dart.js_200.part.js': 'content of RTL template cache',
+    },
         {
-          'a|main_ar.js': 'content of main.dart.js\n'
-              'content of main.dart.js_2.part.js\n'
-              'content of RTL template cache',
-          'a|main_bg.js': 'content of main.dart.js\n'
-              'content of main.dart.js_1.part.js\n'
-              'content of LTR template cache',
-          'a|main_fr_CA.js': 'content of main.dart.js\n'
-              'content of RTL template cache',
-        });
+      'a|main_ar.js': 'content of main.dart.js\n'
+          'content of main.dart.js_2.part.js\n'
+          'content of RTL template cache',
+      'a|main_bg.js': 'content of main.dart.js\n'
+          'content of main.dart.js_1.part.js\n'
+          'content of LTR template cache',
+      'a|main_fr_CA.js': 'content of main.dart.js\n'
+          'content of LTR template cache',
+    });
   });
 }
