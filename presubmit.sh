@@ -6,7 +6,7 @@ pub get
 #pub run test
 for test in `find test -name '*.dart'` ; do
   echo "TESTING $test"
-  pub run $test
+  TRAVIS=true pub run $test
 done
 pub publish --dry-run
 

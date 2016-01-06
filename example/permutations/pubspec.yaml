@@ -1,5 +1,5 @@
 name: scissors_permutations_example
-version: 0.2.0
+version: 0.2.2
 dependencies:
   browser: 0.10.0
   intl: any

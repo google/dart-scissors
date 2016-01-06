@@ -1,5 +1,5 @@
 name: scissors_angular2_example
-version: 0.2.0
+version: 0.2.2
 dependencies:
   angular2: 2.0.0-alpha.45
   browser: 0.10.0

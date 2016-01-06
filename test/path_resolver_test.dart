@@ -27,7 +27,6 @@ main() {
   }
 
   group('pathResolver', () {
-
     var executables = {
       'sassc': pathResolver.defaultSassCPath,
       'pngcrush': pathResolver.defaultPngCrushPath,
@@ -43,7 +42,8 @@ main() {
       'compass stylesheets': pathResolver.defaultCompassStylesheetsPath,
     };
 
-    check(String kind, String name, String path, Future action(String resolved)) {
+    check(
+        String kind, String name, String path, Future action(String resolved)) {
       if (path == null) {
         print("WARNING: No path set for $name.");
       } else {
