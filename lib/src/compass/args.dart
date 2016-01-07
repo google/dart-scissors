@@ -102,7 +102,7 @@ class SassArgs {
     if (path == null) {
       path = _findCompassStylesheets(gem).path;
       if (verbose) {
-          stderr.writeln('INFO: Found Compass stylesheets at $path');
+        stderr.writeln('INFO: Found Compass stylesheets at $path');
       }
     }
     return path;
@@ -111,7 +111,6 @@ class SassArgs {
   bool get fallbackToSass => _results['fallback_to_sass'];
   bool get verbose => _results['verbose'];
   bool get silentSasscErrors => _results['silent_sassc_errors'];
-
 
   List<String> get sasscCommand => concat([
         [sassc],
@@ -128,8 +127,8 @@ class SassArgs {
 }
 
 Directory _findCompassStylesheets(String gemPath) {
-  var dir = new Directory(getGemPath(
-      gemPath, gemName: 'compass-core', path: 'stylesheets'));
+  var dir = new Directory(
+      getGemPath(gemPath, gemName: 'compass-core', path: 'stylesheets'));
   if (!dir.existsSync()) throw new ArgumentError('Directory not found: $dir');
   return dir;
 }

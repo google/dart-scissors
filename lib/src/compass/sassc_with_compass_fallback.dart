@@ -70,13 +70,14 @@ Future<CompilationResult> compile(SassArgs args, input) async {
   if (!args.silentSasscErrors) {
     var errors = result.stderr.trim();
     if (errors.isNotEmpty) {
-      stderr.writeln(errors.split('\n')
-          .map((s) => 'WARNING: [SassC] $s').join('\n'));
+      stderr.writeln(
+          errors.split('\n').map((s) => 'WARNING: [SassC] $s').join('\n'));
     }
     stderr.writeln('WARNING: SassC failed... running Sass');
   }
 
-  result = await _runCommand(args.rubySassCommand, input: input, verbose: args.verbose);
+  result = await _runCommand(args.rubySassCommand,
+      input: input, verbose: args.verbose);
   return wrapResult(Compiler.RubySass);
 }
 

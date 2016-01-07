@@ -29,10 +29,10 @@ _compile(List<String> args, String input) {
 }
 
 main() {
-  if (!hasExecutable('gem')) {
+  if (!hasExecutable('gem') || !hasExecutable('sassc')) {
     // TODO(ochafik): Find a way to get sassc on travis (if possible,
     // without having to compile it ourselves).
-    print("WARNING: Skipping Compass tests by lack of gem in the PATH.");
+    print("WARNING: Skipping Compass tests by lack of gem or sassc in the PATH.");
     return;
   }
 
@@ -58,7 +58,8 @@ main() {
   });
 
   test('does not inline image when disabled', () async {
-    var result = await _compile(['--no-support_inline_image', '--'], inlineImageInput);
+    var result =
+        await _compile(['--no-support_inline_image', '--'], inlineImageInput);
     expect(result.compiler, Compiler.SassC);
     expect(result.stdout, inlineImageInput);
   });
