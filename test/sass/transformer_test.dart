@@ -18,7 +18,7 @@ import 'package:barback/barback.dart'
 import 'package:scissors/src/sass/transformer.dart';
 import 'package:scissors/src/utils/lazy_transformer_utils.dart';
 import 'package:code_transformers/tests.dart' show testPhases;
-import 'package:scissors/testing/transformer_test_utils.dart';
+import 'package:scissors/src/utils/process_utils.dart';
 
 makePhases(Map config) => [
       [

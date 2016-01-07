@@ -18,7 +18,7 @@ import 'dart:io';
 
 import 'package:test/test.dart';
 import 'package:scissors/src/utils/path_resolver.dart' show pathResolver;
-import 'package:scissors/testing/transformer_test_utils.dart';
+import 'package:scissors/src/utils/process_utils.dart';
 
 main() {
   if (Platform.environment['TRAVIS'] == 'true') {

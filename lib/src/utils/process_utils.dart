@@ -11,24 +11,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.src.utils.io_utils;
+library scissors.src.utils.process_utils;
 
-import 'dart:async';
 import 'dart:io';
 
-Future<List<int>> readAll(Stream<List<int>> data) async =>
-    (await data.fold(new BytesBuilder(), (builder, data) => builder..add(data)))
-        .takeBytes();
-
-List<int> readStdinSync() {
-  final List input = <int>[];
-  while (true) {
-    int byte = stdin.readByteSync();
-    if (byte < 0) {
-      if (input.isEmpty) return null;
-      break;
-    }
-    input.add(byte);
+String successString(ProcessResult result) {
+  if (result.exitCode != 0) {
+    throw new StateError('Exit code: ${result.exitCode}\n${result.stderr}');
   }
-  return input;
+  return result.stdout;
 }
+
+ProcessResult _which(String path) => Process.runSync('which', [path]);
+
+String which(String path) => successString(_which(path)).trim();
+
+bool hasExecutable(String name) => _which(name).exitCode == 0;

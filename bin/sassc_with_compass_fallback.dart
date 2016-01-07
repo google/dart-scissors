@@ -1,3 +1,4 @@
+#!/usr/bin/env dart
 // Copyright 2015 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,9 +12,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.test.src.test_utils;
+library scissors.bin.sassc_with_compass_fallback;
 
-import 'dart:io';
-
-bool hasExecutable(String name) =>
-    Process.runSync('which', [name]).exitCode == 0;
+export 'package:scissors/src/compass/sassc_with_compass_fallback.dart' show main;

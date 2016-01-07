@@ -7,6 +7,7 @@ homepage: http://github.com/google/dart-scissors
 environment:
   sdk: ">=1.8.0 <2.0.0"
 dependencies:
+  args: ^0.13.2
   barback: ^0.15.0
   code_transformers: ^0.2.9
   crypto: ^0.9.0
@@ -21,3 +22,4 @@ dev_dependencies:
   test: ^0.12.6
 executables:
   scissors-inline-images: inline_images
+  scissors-sassc-compass: sassc_with_compass_fallback

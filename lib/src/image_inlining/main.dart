@@ -24,13 +24,13 @@ import 'dart:async';
 const _package = 'file';
 
 main(List<String> args) async {
-  var includeDirs = <String>[];
+  var includeDirs = <Directory>[];
   File input;
   File output;
   for (int i = 0, n = args.length; i < n; i++) {
     var arg = args[i];
     if (arg == '-I') {
-      includeDirs.add(args[++i]);
+      includeDirs.add(new Directory(args[++i]));
     } else {
       if (input == null) input = new File(arg);
       else if (output == null) output = new File(arg);
@@ -42,11 +42,24 @@ main(List<String> args) async {
     throw new ArgumentError('Expected (-I path)* input output');
   }
 
-  makeFileAsset(File file) {
-    var path = relative(file.path, from: Directory.current.path);
-    return new Asset.fromFile(new AssetId(_package, path), new File(path));
-  }
+  var stream = (await inlineImagesWithIncludeDirs(
+      makeFileAsset(input), includeDirs)).read();
+  if (output.path == '-') stream.pipe(stdout);
+  else stream.pipe(output.openWrite());
+}
 
+makeFileAsset(File file) {
+  var path = relative(file.path, from: Directory.current.path);
+  return new Asset.fromFile(new AssetId(_package, path), new File(path));
+}
+
+makeStdinAsset(String input) {
+  return new Asset.fromString(new AssetId(_package, "<stdin>"), input);
+}
+
+/// Returns null if the input didn't have any inline-image() call.
+Future<Asset> inlineImagesWithIncludeDirs(
+    Asset input, List<Directory> includeDirs) async {
   var assets = <AssetId, Future<Asset>>{};
   Future<Asset> getAsset(AssetId id) => assets.putIfAbsent(id, () async {
         var path = id.path;
@@ -55,20 +68,18 @@ main(List<String> args) async {
         if (await file.exists()) return makeFileAsset(file);
 
         for (var dir in includeDirs) {
-          var file = new File(join(dir, path));
+          var file = new File(join(dir.path, path));
           if (await file.exists()) return makeFileAsset(file);
         }
         throw new AssetNotFoundException(id);
       });
 
-  var result = await inlineImages(
-      makeFileAsset(input), ImageInliningMode.inlineInlinedImages,
+  var result = await inlineImages(input, ImageInliningMode.inlineInlinedImages,
       assetFetcher: (String url, {AssetId from}) {
-    var alternativeUrls = [url]..addAll(includeDirs.map(((d) => join(d, url))));
+    var alternativeUrls = [url]
+      ..addAll(includeDirs.map(((d) => join(d.path, url))));
     return pathResolver.resolveAsset(getAsset, alternativeUrls, from);
   });
 
-  var stream = result.css.read();
-  if (output.path == '-') stream.pipe(stdout);
-  else stream.pipe(output.openWrite());
+  return result.css;
 }
