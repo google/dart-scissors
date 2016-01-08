@@ -22,20 +22,20 @@ import 'package:scissors/src/utils/process_utils.dart';
 
 main() {
   if (Platform.environment['SKIP_PATH_RESOLVER_TESTS'] == 'true') {
-    print("WARNING: Skipping path resolver tests on Travis.");
+    print("WARNING: Skipping path resolver tests.");
     return;
   }
 
   group('pathResolver', () {
     var executables = {
-      'sassc': pathResolver.defaultSassCPath,
-      'pngcrush': pathResolver.defaultPngCrushPath,
       'cssjanus': pathResolver.defaultCssJanusPath,
       'java': pathResolver.defaultJavaPath,
-    };
-    var files = {
+      'pngcrush': pathResolver.defaultPngCrushPath,
       'ruby': pathResolver.defaultRubyPath,
       'ruby sass': pathResolver.defaultRubySassPath,
+      'sassc': pathResolver.defaultSassCPath,
+    };
+    var files = {
       'closure': pathResolver.defaultClosureCompilerJarPath
     };
     var dirs = {

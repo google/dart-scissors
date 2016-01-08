@@ -189,6 +189,23 @@ Valid settings:
 - `serveTimestamps` (boolean): by default, `true` in `debug` only
 - `removeReloader` (boolean): by default, `true` in `release` only
 
-# TODO
+# Development
 
-Please see [issues](https://github.com/google/dart-scissors/issues).
+For things to do, please see [issues](https://github.com/google/dart-scissors/issues).
+
+To setup dependencies, please run:
+```
+. scripts/install_dependencies.sh
+```
+This will download some executables used by Scissors and will export the following environment vars
+- `SASSC_BIN`
+- `CSSJANUS_BIN`
+- `CLOSURE_COMPILER_JAR`
+- `PNGCRUSH_BIN`
+
+To test your changes:
+```
+TEST_EXAMPLES=0 scripts/presubmit.sh
+```
+
+(run with `TEST_EXAMPLES=1` to see how the example logs change)

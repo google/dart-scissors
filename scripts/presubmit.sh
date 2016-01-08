@@ -29,6 +29,8 @@ function run_travis_lint() {
   travis lint -x --skip-completion-check
 }
 
+cd $(dirname ${BASH_SOURCE[0]})/..
+
 pub get
 run_travis_lint
 run_analyzer
@@ -37,9 +39,9 @@ run_formatter
 pub publish --dry-run
 
 if (( "${TEST_EXAMPLES:-1}" )); then
-  example/test_example.sh permutations
-  example/test_example.sh angular1
-  example/test_example.sh angular2
+  scripts/test_example.sh permutations
+  scripts/test_example.sh angular1
+  scripts/test_example.sh angular2
 fi
 
 echo "# SUCCESS: good to go!"
