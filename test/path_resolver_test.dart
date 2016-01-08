@@ -35,9 +35,7 @@ main() {
       'ruby sass': pathResolver.defaultRubySassPath,
       'sassc': pathResolver.defaultSassCPath,
     };
-    var files = {
-      'closure': pathResolver.defaultClosureCompilerJarPath
-    };
+    var files = {'closure': pathResolver.defaultClosureCompilerJarPath};
     var dirs = {
       'compass stylesheets': pathResolver.defaultCompassStylesheetsPath,
     };

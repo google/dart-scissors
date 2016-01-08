@@ -32,6 +32,8 @@ function run_travis_lint() {
 cd $(dirname ${BASH_SOURCE[0]})/..
 
 pub get
+. scripts/install_dependencies.sh
+
 run_travis_lint
 run_analyzer
 run_tests

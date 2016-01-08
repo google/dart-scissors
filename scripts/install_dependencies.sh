@@ -26,32 +26,40 @@ if ! has_exec sass || ! has_exec compass ; then
   gem install sass compass
 fi
 
-if [[ ! -f "$SASSC_BIN" ]]; then
-  print_title "Installing SassC..."
-  git clone https://github.com/sass/libsass.git
-  export SASS_LIBSASS_PATH=$PWD/libsass
-  git clone https://github.com/sass/sassc.git
-  cd sassc && make && cd ..
+if ! has_exec "${SASSC_BIN:-sassc}" ; then
   export SASSC_BIN=$PWD/sassc/bin/sassc
+  if [[ ! -x "$SASSC_BIN" ]]; then
+    SASSC_VERSION="3.3.1"
+
+    print_title "Installing SassC..."
+    git clone --branch $SASSC_VERSION https://github.com/sass/libsass.git
+    export SASS_LIBSASS_PATH=$PWD/libsass
+    git clone --branch $SASSC_VERSION https://github.com/sass/sassc.git
+    cd sassc && make && cd ..
+  fi
 fi
 
-if [[ ! -f "$CSSJANUS_BIN" ]]; then
-  print_title "Installing CSSJanus..."
-  svn checkout http://cssjanus.googlecode.com/svn/trunk/ cssjanus
+if ! has_exec "${CSSJANUS_BIN:-cssjanus.py}" ; then
   export CSSJANUS_BIN=$PWD/cssjanus/cssjanus.py
+  if [[ ! -x "$CSSJANUS_BIN" ]]; then
+    print_title "Installing CSSJanus to $CSSJANUS_BIN..."
+    svn checkout http://cssjanus.googlecode.com/svn/trunk/ cssjanus
+  fi
 fi
 
-if [[ ! -f "$CLOSURE_COMPILER_JAR" ]]; then
-  print_title "Installing Closure Compiler..."
+if ! has_exec pngcrush ; then
+  export PNGCRUSH_BIN=$PWD/node_modules/pngcrush-bin/cli.js
+  if [[ ! -x "$PNGCRUSH_BIN" ]]; then
+    print_title "Installing pngcrush to $PNGCRUSH_BIN..."
+    npm install pngcrush-bin
+  fi
+fi
+
+if [[ ! -f "${CLOSURE_COMPILER_JAR:-.dependencies/compiler.jar}" ]]; then
+  print_title "Installing Closure Compiler to $CLOSURE_COMPILER_JAR..."
   curl https://dl.google.com/closure-compiler/compiler-latest.zip > compiler-latest.zip
   unzip -o compiler-latest.zip
   export CLOSURE_COMPILER_JAR=$PWD/compiler.jar
-fi
-
-if [[ ! -f "$PNGCRUSH_BIN" ]]; then
-  print_title "Installing pngcrush..."
-  npm install pngcrush-bin
-  export PNGCRUSH_BIN=$PWD/node_modules/pngcrush-bin/cli.js
 fi
 
 cd ..
