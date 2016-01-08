@@ -1,8 +1,6 @@
 #!/bin/bash
 set -eu
 
-pub get
-
 function run_analyzer() {
   echo "Running the analyzer"
   dartanalyzer --fatal-warnings `find bin -name '*.dart'` `find lib -name '*.dart'`
@@ -25,6 +23,14 @@ function run_formatter() {
     `find test -name '*.dart'` | ( grep -v "^Unchanged " || true )
 }
 
+function run_travis_lint() {
+  echo "Checking travis config"
+  which travis || gem install travis --no-rdoc --no-ri
+  travis lint -x --skip-completion-check
+}
+
+pub get
+run_travis_lint
 run_analyzer
 run_tests
 run_formatter

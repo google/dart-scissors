@@ -6,19 +6,24 @@ cache:
   directories:
     - $HOME/.pub-cache/hosted
 script:
-- TEST_EXAMPLES=0 ./presubmit.sh
+  - TEST_EXAMPLES=0 ./presubmit.sh
 before_install:
-- rvm install jruby
-- gem install sass compass
-- git clone https://github.com/sass/libsass.git
-- export SASS_LIBSASS_PATH=$PWD/libsass
-- git clone https://github.com/sass/sassc.git
-- cd sassc && make && cd ..
-- export SASSC_PATH=$PWD/sassc/bin/sassc
-- svn checkout http://cssjanus.googlecode.com/svn/trunk/ cssjanus
-- export CSSJANUS_PATH=$PWD/cssjanus/cssjanus.py
-- curl https://dl.google.com/closure-compiler/compiler-latest.zip > compiler-latest.zip
-- unzip compiler-latest.zip
-- export CLOSURE_COMPILER_PATH=$PWD/compiler.jar
-- npm install pngcrush-bin
-- export PNGCRUSH_PATH=$PWD/node_modules/pngcrush-bin/cli.js 
+  # Install Ruby Sass
+  - rvm install jruby
+  - gem install sass compass
+  # Install SassC
+  - git clone https://github.com/sass/libsass.git
+  - export SASS_LIBSASS_PATH=$PWD/libsass
+  - git clone https://github.com/sass/sassc.git
+  - cd sassc && make && cd ..
+  - export SASSC_PATH=$PWD/sassc/bin/sassc
+  # Install CSSJanus
+  - svn checkout http://cssjanus.googlecode.com/svn/trunk/ cssjanus
+  - export CSSJANUS_PATH=$PWD/cssjanus/cssjanus.py
+  # Install Closure Compiler
+  - curl https://dl.google.com/closure-compiler/compiler-latest.zip > compiler-latest.zip
+  - unzip compiler-latest.zip
+  - export CLOSURE_COMPILER_PATH=$PWD/compiler.jar
+  # Install pngcrush
+  - npm install pngcrush-bin
+  - export PNGCRUSH_PATH=$PWD/node_modules/pngcrush-bin/cli.js
