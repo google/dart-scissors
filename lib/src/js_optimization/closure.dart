@@ -32,6 +32,6 @@ Future<String> simpleClosureCompile(
       ],
       mode: ProcessStartMode.DETACHED_WITH_STDIO);
 
-  return successString('Closure Compiler',
-      await pipeInAndOutOfNewProcess(p, content));
+  return successString(
+      'Closure Compiler', await pipeInAndOutOfNewProcess(p, content));
 }

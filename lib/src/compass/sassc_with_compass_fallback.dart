@@ -51,7 +51,8 @@ Future<CompilationResult> compile(SassArgs args) async {
   CompilationResult wrapResult(Compiler compiler) => new CompilationResult(
       compiler, result.stdout, result.stderr, result.exitCode);
 
-  result = await _runCommand(await args.getSasscCommand(), verbose: args.verbose);
+  result =
+      await _runCommand(await args.getSasscCommand(), verbose: args.verbose);
   result = _fixSassCExitCode(result);
   if (result.exitCode == 0) {
     if (args.supportInlineImage) {
@@ -77,10 +78,12 @@ Future<CompilationResult> compile(SassArgs args) async {
       stderr.writeln(
           errors.split('\n').map((s) => 'WARNING: [SassC] $s').join('\n'));
     }
-    stderr.writeln('WARNING: SassC failed... falling back to Sass (use --no-fallback_to_sass to prevent)');
+    stderr.writeln(
+        'WARNING: SassC failed... falling back to Sass (use --no-fallback_to_sass to prevent)');
   }
 
-  result = await _runCommand(await args.getRubySassCommand(), verbose: args.verbose);
+  result =
+      await _runCommand(await args.getRubySassCommand(), verbose: args.verbose);
   return wrapResult(Compiler.RubySass);
 }
 

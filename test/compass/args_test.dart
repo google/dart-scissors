@@ -24,10 +24,9 @@ main() {
         {List<String> options,
         String input,
         String output,
-        bool useCompass : false,
-        bool scssSyntax : false,
-        List<String> includeDirs : const []}) {
-
+        bool useCompass: false,
+        bool scssSyntax: false,
+        List<String> includeDirs: const []}) {
       var p = parse(args);
       if (options != null) expect(p.options, options);
       expect(p.input?.path, input);
@@ -37,22 +36,11 @@ main() {
       expect(p.includeDirs.map((d) => d.path), includeDirs);
     }
     test('parses options input output', () {
-      check(['--', 'a', 'b'],
-          options: ['a', 'b'],
-          input: 'a',
-          output: 'b');
+      check(['--', 'a', 'b'], options: ['a', 'b'], input: 'a', output: 'b');
       check(['--foo', 'a', 'b'],
-          options: ['--foo', 'a', 'b'],
-          input: 'a',
-          output: 'b');
-      check(['--foo', 'a'],
-          options: ['--foo', 'a'],
-          input: 'a',
-          output: null);
-      check(['--foo'],
-          options: ['--foo'],
-          input: null,
-          output: null);
+          options: ['--foo', 'a', 'b'], input: 'a', output: 'b');
+      check(['--foo', 'a'], options: ['--foo', 'a'], input: 'a', output: null);
+      check(['--foo'], options: ['--foo'], input: null, output: null);
     });
     test('parses compass options', () {
       check(['--compass'], options: [], useCompass: true);

@@ -19,20 +19,18 @@ import 'dart:io';
 
 import 'io_utils.dart';
 
-String getOutputString(stdio) => stdio is String
-    ? stdio
-    : new Utf8Decoder().convert(stdio);
+String getOutputString(stdio) =>
+    stdio is String ? stdio : new Utf8Decoder().convert(stdio);
 
 String successString(String command, ProcessResult result) {
   var err = getOutputString(result.stderr).trim();
   var exitCode = result.exitCode ?? (err.isNotEmpty ? -1 : 0);
   if (exitCode != 0) {
-      throw new ArgumentError(
-          'Failed to run $command (exit code = ${result.exitCode}):\n$err');
+    throw new ArgumentError(
+        'Failed to run $command (exit code = ${result.exitCode}):\n$err');
   }
   return getOutputString(result.stdout);
 }
-
 
 ProcessResult _which(String path) => Process.runSync('which', [path]);
 

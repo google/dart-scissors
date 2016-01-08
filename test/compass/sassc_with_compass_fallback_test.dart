@@ -28,7 +28,8 @@ _compile(List<String> args, String input) {
     args = ['--verbose']..addAll(args);
   }
   var opts = new SassArgs.parse(args);
-  if (opts.input == null) opts.addInput('test_input.scss', new Utf8Encoder().convert(input));
+  if (opts.input == null) opts.addInput(
+      'test_input.scss', new Utf8Encoder().convert(input));
   return compile(opts);
 }
 
@@ -36,7 +37,8 @@ main() {
   if (!hasExecutable('gem') || !hasExecutable('sassc')) {
     // TODO(ochafik): Find a way to get sassc on travis (if possible,
     // without having to compile it ourselves).
-    print("WARNING: Skipping Compass tests by lack of gem or sassc in the PATH.");
+    print(
+        "WARNING: Skipping Compass tests by lack of gem or sassc in the PATH.");
     return;
   }
 

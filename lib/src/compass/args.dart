@@ -35,7 +35,8 @@ ArgParser _createArgsParser() {
     ..addOption('gem', defaultsTo: 'gem')
     ..addOption('ruby', defaultsTo: pathResolver.defaultRubyPath)
     ..addOption('sass', defaultsTo: pathResolver.defaultSassPath)
-    ..addOption('sass_with_compass', defaultsTo: pathResolver.defaultSassWithCompassPath)
+    ..addOption('sass_with_compass',
+        defaultsTo: pathResolver.defaultSassWithCompassPath)
     ..addOption('sassc', defaultsTo: pathResolver.defaultSassCPath)
     ..addOption('compass_stylesheets');
   return parser;
@@ -91,10 +92,14 @@ class SassArgs {
       if (!arg.startsWith('-')) break;
 
       argsOffset++;
-      if (arg == '-I' || arg == '--load-path' ||
-          arg == '-t' || arg == '--style' ||
-          arg == '-r' || arg == '--require' ||
-          arg == '-E' || arg == '--default-encoding' ||
+      if (arg == '-I' ||
+          arg == '--load-path' ||
+          arg == '-t' ||
+          arg == '--style' ||
+          arg == '-r' ||
+          arg == '--require' ||
+          arg == '-E' ||
+          arg == '--default-encoding' ||
           arg == '--precision' ||
           arg == '--cache-location') {
         argsOffset++;
@@ -112,7 +117,8 @@ class SassArgs {
       case 0:
         break;
       default:
-        throw new ArgumentError('Expecting 0, 1 or 2 arguments ([input] [output]), got $remainingArgsCount: ${options}');
+        throw new ArgumentError(
+            'Expecting 0, 1 or 2 arguments ([input] [output]), got $remainingArgsCount: ${options}');
     }
     return new SassArgs(results, options,
         input: input,
@@ -157,8 +163,8 @@ class SassArgs {
 
   Future<List<String>> getRubySassCommand() async => concat([
         [
-            await pathResolver.resolveExecutable(ruby),
-            await pathResolver.resolveExecutable(sass)
+          await pathResolver.resolveExecutable(ruby),
+          await pathResolver.resolveExecutable(sass)
         ],
         scssSyntax ? ['--scss'] : [],
         useCompass ? ['--compass'] : [],
