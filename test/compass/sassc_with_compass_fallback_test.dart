@@ -31,14 +31,6 @@ _compile(List<String> args, String input) {
 }
 
 main() {
-  if (!hasExecutable('gem') || !hasExecutable('sassc')) {
-    // TODO(ochafik): Find a way to get sassc on travis (if possible,
-    // without having to compile it ourselves).
-    print(
-        "WARNING: Skipping Compass tests by lack of gem or sassc in the PATH.");
-    return;
-  }
-
   tearDown(() {
     deleteTempDir();
   });

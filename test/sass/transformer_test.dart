@@ -18,7 +18,6 @@ import 'package:barback/barback.dart'
 import 'package:scissors/src/sass/transformer.dart';
 import 'package:scissors/src/utils/lazy_transformer_utils.dart';
 import 'package:code_transformers/tests.dart' show testPhases;
-import 'package:scissors/src/utils/process_utils.dart';
 
 makePhases(Map config) => [
       [
@@ -28,12 +27,6 @@ makePhases(Map config) => [
     ];
 
 void main() {
-  if (!hasExecutable('sassc')) {
-    // TODO(ochafik): Find a way to get sassc on travis (if possible,
-    // without having to compile it ourselves).
-    print("WARNING: Skipping Sass tests by lack of sassc in the PATH.");
-    return;
-  }
   var phases = makePhases({});
 
   testPhases('runs sassc on .scss and .sass inputs', phases, {

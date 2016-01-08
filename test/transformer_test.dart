@@ -17,16 +17,11 @@ import 'package:barback/barback.dart' show BarbackMode, BarbackSettings;
 import 'package:scissors/eager_transformer.dart';
 
 import 'package:code_transformers/tests.dart' show testPhases;
-import 'package:scissors/src/utils/process_utils.dart';
 
 makePhases(Map config) => new EagerScissorsTransformerGroup.asPlugin(
     new BarbackSettings(config, BarbackMode.RELEASE)).phases;
 
 void main() {
-  if (!hasExecutable('sassc')) {
-    print("WARNING: Skipping integration test by lack of sassc in the PATH.");
-    return;
-  }
   var phases = makePhases({});
 
   var iconSvg = r'''
