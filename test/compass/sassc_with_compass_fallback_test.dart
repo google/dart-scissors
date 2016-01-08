@@ -44,10 +44,10 @@ main() {
   });
 
   var inlineImageInput = '.foo {\n'
-      '  background-image: inline-image("test/compass/foo.svg"); }\n';
+      '  background-image: inline-image("compass/foo.svg"); }\n';
 
   test('inlines images', () async {
-    var result = await _compile([], inlineImageInput);
+    var result = await _compile(['-I', 'test'], inlineImageInput);
     expect(result.compiler, Compiler.SassCWithInlineImage);
     expect(
         result.stdout,
