@@ -58,8 +58,8 @@ void main() {
         '\t"sources": [\n'
         '\t\t"foo.sass"\n'
         '\t],\n'
-        '\t"sourcesContent": [],\n'
-        '\t"mappings": "AAAA,IAAI,AAAC,CACH,MAAM,CAAE,IAAK,CADT",\n'
+        // '\t"sourcesContent": [],\n'
+        '\t"mappings": "AAAA,IAAI,AAAC,CACH,MAAM,CAAE,IAAK,CAAG",\n'
         '\t"names": []\n'
         '}'
   });
