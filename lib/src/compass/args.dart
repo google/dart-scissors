@@ -22,24 +22,40 @@ import 'package:quiver/iterables.dart';
 
 import '../utils/io_utils.dart';
 import '../utils/path_resolver.dart';
-import '../utils/process_utils.dart';
 import '../utils/ruby_gem_utils.dart';
 
 ArgParser _createArgsParser() {
-  // TODO(ochafik): Proper parsing of all SassC + Ruby Sass options.
-  var parser = new ArgParser(allowTrailingOptions: true)
-    ..addFlag('support_inline_image', defaultsTo: true)
-    ..addFlag('fallback_to_sass', defaultsTo: true)
-    ..addFlag('verbose', defaultsTo: false)
-    ..addFlag('silent_sassc_errors', defaultsTo: false)
-    ..addOption('gem', defaultsTo: 'gem')
-    ..addOption('ruby', defaultsTo: pathResolver.defaultRubyPath)
-    ..addOption('sass', defaultsTo: pathResolver.defaultSassPath)
-    ..addOption('sass_with_compass',
-        defaultsTo: pathResolver.defaultSassWithCompassPath)
-    ..addOption('sassc', defaultsTo: pathResolver.defaultSassCPath)
-    ..addOption('compass_stylesheets');
-  return parser;
+  return new ArgParser(allowTrailingOptions: true)
+    ..addFlag('compass')
+    ..addFlag('poll')
+    ..addFlag('scss')
+    ..addFlag('stop-on-error')
+    ..addFlag('trace')
+    ..addFlag('unix-newlines')
+    ..addFlag('line-comments')
+    ..addFlag('help2', abbr: '?')
+    ..addFlag('help', abbr: 'h')
+    ..addFlag('check', abbr: 'c')
+    ..addFlag('no-cache', abbr: 'C')
+    ..addFlag('force', abbr: 'f')
+    ..addFlag('debug-info', abbr: 'g')
+    ..addFlag('interactive', abbr: 'i')
+    ..addFlag('line-numbers', abbr: 'l')
+    ..addFlag('omit-map-comment', abbr: 'M')
+    ..addFlag('precision', abbr: 'p')
+    ..addFlag('quiet', abbr: 'q')
+    ..addFlag('stdin', abbr: 's')
+    ..addFlag('version', abbr: 'v')
+    ..addOption('default-encoding', abbr: 'E')
+    ..addOption('load-path', abbr: 'I', allowMultiple: true)
+    ..addOption('require', abbr: 'r')
+    ..addOption('style',
+        abbr: 't', allowed: ['nested', 'compact', 'compressed', 'expanded'])
+    ..addOption('cache-location')
+    ..addOption('sourcemap',
+        abbr: 'm', allowed: ['auto', 'file', 'inline', 'none'])
+    ..addOption('update', allowMultiple: true)
+    ..addOption('watch', allowMultiple: true);
 }
 
 class SassArgs {
@@ -47,118 +63,92 @@ class SassArgs {
 
   /// Options that are valid for both Ruby Sass and SassC.
   /// (don't include options such as --compass, for instance)
-  final List<String> options;
+  final List<String> args;
   File input;
   final File output;
-  final bool useCompass;
-  final bool scssSyntax;
-  final List<Directory> includeDirs;
-  SassArgs(this._results, this.options,
-      {this.input,
-      this.output,
-      this.useCompass: false,
-      this.includeDirs: const [],
-      this.scssSyntax: false});
+  SassArgs(this._results, this.args, {this.input, this.output});
 
   factory SassArgs.parse(List<String> args) {
-    if (!args.contains('--')) args = ['--']..addAll(args);
+    args = _cleanupOptionsForRubySass(args);
 
     var results = _createArgsParser().parse(args);
-    var options = <String>[];
     File input;
     File output;
-    bool useCompass = false;
-    bool scssSyntax = false;
-    var includeDirs = <Directory>[];
-    int iArg = 0;
-    for (var arg in results.rest) {
-      if (arg == '--compass') {
-        useCompass = true;
-      } else if (arg == '--scss') {
-        scssSyntax = true;
-      } else {
-        options.add(arg);
-        if (arg == '-I') {
-          includeDirs.add(new Directory(results.rest[iArg + 1]));
-        }
-      }
-      iArg++;
-    }
-
-    // Find the extra args (input, output) after the options
-    int argsOffset = 0;
-    while (argsOffset < options.length) {
-      var arg = options[argsOffset];
-      if (!arg.startsWith('-')) break;
-
-      argsOffset++;
-      if (arg == '-I' ||
-          arg == '--load-path' ||
-          arg == '-t' ||
-          arg == '--style' ||
-          arg == '-r' ||
-          arg == '--require' ||
-          arg == '-E' ||
-          arg == '--default-encoding' ||
-          arg == '--precision' ||
-          arg == '--cache-location') {
-        argsOffset++;
-      }
-    }
-    var remainingArgsCount = options.length - argsOffset;
-    switch (remainingArgsCount) {
+    switch (results.rest.length) {
       case 1:
-        input = new File(options[options.length - 1]);
+        input = new File(results.rest[0]);
         break;
       case 2:
-        input = new File(options[options.length - 2]);
-        output = new File(options[options.length - 1]);
+        input = new File(results.rest[0]);
+        output = new File(results.rest[1]);
         break;
       case 0:
         break;
       default:
         throw new ArgumentError(
-            'Expecting 0, 1 or 2 arguments ([input] [output]), got $remainingArgsCount: ${options}');
+            'Expecting 0, 1 or 2 arguments ([input] [output]), got ${results.arguments}');
     }
-    return new SassArgs(results, options,
-        input: input,
-        output: output,
-        useCompass: useCompass,
-        scssSyntax: scssSyntax,
-        includeDirs: includeDirs);
+    return new SassArgs(results, args, input: input, output: output);
   }
 
   void addInput(String name, List<int> content) {
     checkState(input == null);
     var file = makeTempFile('input.scss', content);
     input = file;
-    options.add(file.path);
+    args.add(file.path);
   }
 
-  bool get supportInlineImage => _results['support_inline_image'];
-  String get gem => _results['gem'];
-  String get sass => _results['sass'] ?? which('sass');
-  String get sassc => _results['sassc'];
-  String get ruby => _results['ruby'];
+  String get gem => pathResolver.defaultGemPath;
+  String get sass => pathResolver.defaultRubySassPath;
+  String get sassc => pathResolver.defaultSassCPath;
+  String get ruby => pathResolver.defaultRubyPath;
   String get compassStylesheets {
-    var path = _results['compass_stylesheets'];
+    var path = pathResolver.defaultCompassStylesheetsPath;
     if (path == null) {
       path = _findCompassStylesheets(gem).path;
-      if (verbose) {
+      if (quiet) {
         stderr.writeln('INFO: Found Compass stylesheets at $path');
       }
     }
     return path;
   }
 
-  bool get fallbackToSass => _results['fallback_to_sass'];
-  bool get verbose => _results['verbose'];
-  bool get silentSasscErrors => _results['silent_sassc_errors'];
+  List<String> get includeDirs => _results['load-path'];
+
+  bool get quiet => _results['quiet'];
+  bool get useCompass => _results['compass'];
+
+  static List<String> _cleanupOptionsForRubySass(List<String> args) {
+    args = []..addAll(args);
+
+    replaceSourcemapOption() {
+      int i = args.indexOf('--sourcemap');
+      if (i < 0) i = args.indexOf('-M');
+      if (i >= 0) args[i] = '--sourcemap=auto';
+    }
+
+    replaceSourcemapOption();
+
+    return args;
+  }
+
+  /// SassC recognizes a subset of Ruby Sass's options, and some options have
+  /// different syntax.
+  static List<String> _cleanupRubySassOptionsForSassC(List<String> args) =>
+      args.where((o) => o != '--compass' && o != '--scss').map((o) {
+        if (o.startsWith('--sourcemap')) {
+          return o.substring(0, '--sourcemap'.length);
+        }
+        return o;
+      }).toList();
 
   Future<List<String>> getSasscCommand() async => concat([
         [await pathResolver.resolveExecutable(sassc)],
-        useCompass ? ['-I', compassStylesheets] : [],
-        options
+        useCompass
+            ? ['-I', await pathResolver.resolvePath(compassStylesheets)]
+            : [],
+        // Removing unavailable options and fixing options with different syntaxes.
+        _cleanupRubySassOptionsForSassC(args)
       ]).toList();
 
   Future<List<String>> getRubySassCommand() async => concat([
@@ -166,9 +156,7 @@ class SassArgs {
           await pathResolver.resolveExecutable(ruby),
           await pathResolver.resolveExecutable(sass)
         ],
-        scssSyntax ? ['--scss'] : [],
-        useCompass ? ['--compass'] : [],
-        options
+        args
       ]).toList();
 }
 

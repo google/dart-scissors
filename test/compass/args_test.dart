@@ -16,40 +16,91 @@ library scissors.test.compass.args_test;
 import 'package:scissors/src/compass/args.dart';
 
 import 'package:test/test.dart';
+import 'package:scissors/src/utils/path_resolver.dart';
+import 'dart:async';
+
+class FakePathResolver implements PathResolver {
+  noSuchMethod(Invocation i) => super.noSuchMethod(i);
+
+  @override String get defaultCompassStylesheetsPath =>
+      'test_compass_stylesheets';
+
+  @override String get defaultRubyPath => 'test_ruby';
+
+  @override String get defaultRubySassPath => 'test_ruby_sass';
+
+  @override String get defaultSassCPath => 'test_sassc';
+
+  @override String get defaultSassWithCompassPath =>
+      'test_ruby_sass_with_compass';
+
+  @override
+  Future<String> resolveExecutable(String path) async => 'resolved_exec_$path';
+
+  @override
+  Future<String> resolvePath(String path) async => 'resolved_$path';
+}
 
 main() {
   group('SassArgs', () {
     parse(List<String> args) => new SassArgs.parse(args);
     check(List<String> args,
-        {List<String> options,
+        {List<String> sasscCmd,
+        List<String> sassCmd,
         String input,
         String output,
         bool useCompass: false,
         bool scssSyntax: false,
-        List<String> includeDirs: const []}) {
+        List<String> includeDirs: const []}) async {
       var p = parse(args);
-      if (options != null) expect(p.options, options);
+      if (sassCmd != null) expect(await p.getRubySassCommand(), sassCmd);
+      if (sasscCmd != null) expect(await p.getSasscCommand(), sasscCmd);
       expect(p.input?.path, input);
       expect(p.output?.path, output);
       expect(p.useCompass, useCompass);
-      expect(p.scssSyntax, scssSyntax);
-      expect(p.includeDirs.map((d) => d.path), includeDirs);
+      expect(p.includeDirs, includeDirs);
     }
-    test('parses options input output', () {
-      check(['--', 'a', 'b'], options: ['a', 'b'], input: 'a', output: 'b');
-      check(['--foo', 'a', 'b'],
-          options: ['--foo', 'a', 'b'], input: 'a', output: 'b');
-      check(['--foo', 'a'], options: ['--foo', 'a'], input: 'a', output: null);
-      check(['--foo'], options: ['--foo'], input: null, output: null);
+
+    var originalPathResolver = pathResolver;
+    setUp(() {
+      pathResolver = new FakePathResolver();
     });
-    test('parses compass options', () {
-      check(['--compass'], options: [], useCompass: true);
-      check(['--', '--compass'], options: [], useCompass: true);
-      check([], options: [], useCompass: false);
+    tearDown(() {
+      pathResolver = originalPathResolver;
     });
-    test('parses includes', () {
-      check(['-I', 'a'], includeDirs: ['a']);
-      check(['--', '-I', 'a', '-I', 'b'], includeDirs: ['a', 'b']);
+
+    test('parses options and resolves commands', () async {
+      await check([],
+          sassCmd: ['resolved_exec_test_ruby', 'resolved_exec_test_ruby_sass'],
+          sasscCmd: ['resolved_exec_test_sassc'],
+          useCompass: false);
+      await check(['a'],
+          sassCmd:
+              ['resolved_exec_test_ruby', 'resolved_exec_test_ruby_sass', 'a'],
+          sasscCmd: ['resolved_exec_test_sassc', 'a'],
+          input: 'a',
+          output: null,
+          useCompass: false);
+      await check([
+        '--compass',
+        'a',
+        'b'
+      ], sassCmd: [
+        'resolved_exec_test_ruby',
+        'resolved_exec_test_ruby_sass',
+        '--compass',
+        'a',
+        'b'
+      ], sasscCmd: [
+        'resolved_exec_test_sassc',
+        '-I',
+        'resolved_test_compass_stylesheets',
+        'a',
+        'b',
+      ], input: 'a', output: 'b', useCompass: true);
+    });
+    test('parses includes', () async {
+      await check(['-I', 'a', '-I', 'b'], includeDirs: ['a', 'b']);
     });
   });
 }

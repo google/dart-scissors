@@ -23,13 +23,10 @@ import 'package:scissors/src/utils/io_utils.dart' show deleteTempDir;
 import 'package:test/test.dart';
 
 _compile(List<String> args, String input) {
-  if (!args.contains('--noverbose')) {
-    if (!args.contains('--')) args = ['--']..addAll(args);
-    args = ['--verbose']..addAll(args);
-  }
   var opts = new SassArgs.parse(args);
-  if (opts.input == null) opts.addInput(
-      'test_input.scss', new Utf8Encoder().convert(input));
+  if (opts.input == null) {
+    opts.addInput('test_input.scss', new Utf8Encoder().convert(input));
+  }
   return compile(opts);
 }
 
@@ -67,13 +64,6 @@ main() {
         '  background-image: url(\'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KICA8cmVjdCB4PSIwIiB5PSIwIiBoZWlnaHQ9IjEwIiB3aWR0aD0iMTAiIHN0eWxlPSJzdHJva2U6IzAwMDBmZjsgZmlsbDogIzAwZmYwMCIvPgo8L3N2Zz4K\'); }\n');
   });
 
-  test('does not inline image when disabled', () async {
-    var result =
-        await _compile(['--no-support_inline_image', '--'], inlineImageInput);
-    expect(result.compiler, Compiler.SassC);
-    expect(result.stdout, inlineImageInput);
-  });
-
   test('succeeds with simple compass stylesheets', () async {
     var result = await _compile(
         ['--scss', '--compass'],
@@ -93,24 +83,6 @@ main() {
         '  bottom: 0;\n'
         '  left: 0;\n'
         '  right: 0; }\n');
-  });
-
-  test('fails on display-flex includes', () async {
-    var result = await _compile(
-        ['--no-fallback_to_sass', '--', '--compass'],
-        '''
-      @import 'compass/css3/flexbox';
-
-      :host,
-      .options-wrapper {
-        @include display-flex(inline-flex);
-      }
-    ''');
-    expect(result.compiler, Compiler.SassC);
-    // print(result.stdout);
-    // print(result.stderr);
-    // print(result.exitCode);
-    expect(result.exitCode, isNot(equals(0)));
   });
 
   test('falls back on sass when hitting problematic syntax', () async {

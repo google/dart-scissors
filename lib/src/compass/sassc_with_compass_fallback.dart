@@ -51,28 +51,22 @@ Future<CompilationResult> compile(SassArgs args) async {
   CompilationResult wrapResult(Compiler compiler) => new CompilationResult(
       compiler, result.stdout, result.stderr, result.exitCode);
 
-  result =
-      await _runCommand(await args.getSasscCommand(), verbose: args.verbose);
+  result = await _runCommand(await args.getSasscCommand(), quiet: args.quiet);
   result = _fixSassCExitCode(result);
   if (result.exitCode == 0) {
-    if (args.supportInlineImage) {
-      var input = args.output != null
-          ? makeFileAsset(args.output)
-          : makeStringAsset('<stdin>', result.stdout);
-      var output = await inlineImagesWithIncludeDirs(input, args.includeDirs);
-      // Fail fast if there was no change.
-      if (output == null) return wrapResult(Compiler.SassC);
+    var input = args.output != null
+        ? makeFileAsset(args.output)
+        : makeStringAsset('<stdin>', result.stdout);
+    var output = await inlineImagesWithIncludeDirs(
+        input, args.includeDirs.map((path) => new Directory(path)).toList());
+    // Fail fast if there was no change.
+    if (output == null) return wrapResult(Compiler.SassC);
 
-      result = await _pipeResult(output, args.output, result.stderr);
-      return wrapResult(Compiler.SassCWithInlineImage);
-    } else {
-      return wrapResult(Compiler.SassC);
-    }
+    result = await _pipeResult(output, args.output, result.stderr);
+    return wrapResult(Compiler.SassCWithInlineImage);
   }
 
-  if (!args.fallbackToSass) return wrapResult(Compiler.SassC);
-
-  if (!args.silentSasscErrors) {
+  if (!args.quiet) {
     var errors = result.stderr.trim();
     if (errors.isNotEmpty) {
       stderr.writeln(
@@ -83,7 +77,7 @@ Future<CompilationResult> compile(SassArgs args) async {
   }
 
   result =
-      await _runCommand(await args.getRubySassCommand(), verbose: args.verbose);
+      await _runCommand(await args.getRubySassCommand(), quiet: args.quiet);
   return wrapResult(Compiler.RubySass);
 }
 
@@ -108,17 +102,17 @@ Future<ProcessResult> _pipeResult(
 }
 
 Future<ProcessResult> _runCommand(List<String> command,
-    {bool verbose: false}) async {
+    {bool quiet: false}) async {
   Stopwatch stopwatch;
   var commandStr = command.map((s) => "'$s'").join(' ');
-  if (verbose) {
+  if (!quiet) {
     stderr.writeln('INFO: Starting command $commandStr');
     stopwatch = new Stopwatch()..start();
   }
   var result = await Process.run(command.first, command.skip(1).toList(),
       workingDirectory: Directory.current.path);
 
-  if (verbose) {
+  if (!quiet) {
     stopwatch.stop();
     stderr.writeln(
         'INFO: Command $commandStr took ${stopwatch.elapsedMilliseconds}ms');

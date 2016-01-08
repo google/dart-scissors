@@ -38,15 +38,16 @@ AssetId _parsePackageUrl(String url) {
 class PathResolver {
   final String defaultJavaPath = 'java';
   final String defaultSassCPath = 'sassc';
-  final String defaultSassPath = 'sass';
+  final String defaultRubySassPath = 'sass';
   final String defaultSassWithCompassPath = 'sass';
   final String defaultPngCrushPath = 'pngcrush';
   final String defaultCssJanusPath = 'cssjanus';
   final String defaultJRubyPath = 'jruby';
   String get defaultRubyPath => defaultJRubyPath;
-  final String defaultRubySassPath = 'sass';
   final String defaultCompassStylesheetsPath = null;
   final String defaultClosureCompilerJarPath = 'compiler.jar';
+
+  final String defaultGemPath = 'gem';
 
   Future<String> resolvePath(String path) async {
     if (path == null) return null;
