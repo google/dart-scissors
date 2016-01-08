@@ -18,7 +18,6 @@ import 'dart:convert';
 import 'package:scissors/src/compass/sassc_with_compass_fallback.dart'
     show CompilationResult, Compiler, compile, deleteTempDir;
 import 'package:scissors/src/compass/args.dart';
-import 'package:scissors/src/utils/process_utils.dart';
 import 'package:scissors/src/utils/io_utils.dart' show deleteTempDir;
 import 'package:test/test.dart';
 

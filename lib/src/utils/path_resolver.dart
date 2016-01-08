@@ -21,10 +21,9 @@ import 'package:barback/barback.dart'
     show Asset, AssetId, AssetNotFoundException, Transform;
 
 import 'path_utils.dart';
-import 'package:scissors/src/utils/process_utils.dart';
+import '../utils/process_utils.dart';
 
-/// Customization entry point for forks of this library.
-PathResolver pathResolver = new PathResolver();
+export 'global_path_resolver.dart' show pathResolver;
 
 final RegExp _packageUrlRx = new RegExp(r'^package:(\w+)/(.*)$');
 
@@ -45,9 +44,9 @@ class PathResolver {
       Platform.environment['CSSJANUS_BIN'] ?? 'cssjanus.py';
   final String defaultRubyPath = Platform.environment['RUBY_BIN'] ?? 'ruby';
   final String defaultCompassStylesheetsPath = null;
-  final String defaultClosureCompilerJarPath =
-      Platform.environment['CLOSURE_COMPILER_JAR']
-      ?? '.dependencies/compiler.jar';
+  final String defaultClosureCompilerJarPath = Platform.environment[
+          'CLOSURE_COMPILER_JAR'] ??
+      '.dependencies/compiler.jar';
   final String defaultGemPath = Platform.environment['RUBY_GEM_BIN'] ?? 'gem';
 
   Future<String> resolvePath(String path) async {
