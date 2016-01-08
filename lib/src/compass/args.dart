@@ -13,17 +13,20 @@
 // limitations under the License.
 library scissors.src.compass.args;
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:quiver/check.dart';
 import 'package:quiver/iterables.dart';
 
+import '../utils/io_utils.dart';
+import '../utils/path_resolver.dart';
+import '../utils/process_utils.dart';
 import '../utils/ruby_gem_utils.dart';
-import 'package:scissors/src/utils/process_utils.dart';
-import 'package:scissors/src/utils/path_resolver.dart';
-import 'dart:async';
 
 ArgParser _createArgsParser() {
+  // TODO(ochafik): Proper parsing of all SassC + Ruby Sass options.
   var parser = new ArgParser(allowTrailingOptions: true)
     ..addFlag('support_inline_image', defaultsTo: true)
     ..addFlag('fallback_to_sass', defaultsTo: true)
@@ -106,8 +109,10 @@ class SassArgs {
         input = new File(options[options.length - 2]);
         output = new File(options[options.length - 1]);
         break;
+      case 0:
+        break;
       default:
-        throw new ArgumentError('Expecting 1 or 2 arguments (input [output]), got $remainingArgsCount: ${options}');
+        throw new ArgumentError('Expecting 0, 1 or 2 arguments ([input] [output]), got $remainingArgsCount: ${options}');
     }
     return new SassArgs(results, options,
         input: input,
@@ -115,6 +120,13 @@ class SassArgs {
         useCompass: useCompass,
         scssSyntax: scssSyntax,
         includeDirs: includeDirs);
+  }
+
+  void addInput(String name, List<int> content) {
+    checkState(input == null);
+    var file = makeTempFile('input.scss', content);
+    input = file;
+    options.add(file.path);
   }
 
   bool get supportInlineImage => _results['support_inline_image'];

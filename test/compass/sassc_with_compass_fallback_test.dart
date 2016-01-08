@@ -13,20 +13,23 @@
 // limitations under the License.
 library scissors.test.compass.sassc_with_compass_fallback_test;
 
+import 'dart:convert';
+
 import 'package:scissors/src/compass/sassc_with_compass_fallback.dart'
     show CompilationResult, Compiler, compile, deleteTempDir;
 import 'package:scissors/src/compass/args.dart';
 import 'package:scissors/src/utils/process_utils.dart';
-
+import 'package:scissors/src/utils/io_utils.dart' show deleteTempDir;
 import 'package:test/test.dart';
-import 'dart:convert';
 
 _compile(List<String> args, String input) {
   if (!args.contains('--noverbose')) {
     if (!args.contains('--')) args = ['--']..addAll(args);
     args = ['--verbose']..addAll(args);
   }
-  return compile(new SassArgs.parse(args), new Utf8Encoder().convert(input));
+  var opts = new SassArgs.parse(args);
+  if (opts.input == null) opts.addInput('test_input.scss', new Utf8Encoder().convert(input));
+  return compile(opts);
 }
 
 main() {

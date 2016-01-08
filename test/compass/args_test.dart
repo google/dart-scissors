@@ -49,16 +49,19 @@ main() {
           options: ['--foo', 'a'],
           input: 'a',
           output: null);
-      expect(() => parse(['--foo']), throws);
+      check(['--foo'],
+          options: ['--foo'],
+          input: null,
+          output: null);
     });
     test('parses compass options', () {
-      check(['--compass', 'input'], options: ['input'], input: 'input', useCompass: true);
-      check(['--', '--compass', 'input'], options: ['input'], input: 'input', useCompass: true);
-      check(['input'], options: ['input'], input: 'input', useCompass: false);
+      check(['--compass'], options: [], useCompass: true);
+      check(['--', '--compass'], options: [], useCompass: true);
+      check([], options: [], useCompass: false);
     });
     test('parses includes', () {
-      check(['-I', 'a', 'input'], input: 'input', includeDirs: ['a']);
-      check(['--', '-I', 'a', '-I', 'b', 'input'], input: 'input', includeDirs: ['a', 'b']);
+      check(['-I', 'a'], includeDirs: ['a']);
+      check(['--', '-I', 'a', '-I', 'b'], includeDirs: ['a', 'b']);
     });
   });
 }

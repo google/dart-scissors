@@ -17,11 +17,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:barback/barback.dart' show Asset, AssetId;
-import 'package:quiver/check.dart';
-import 'package:path/path.dart';
 
 import 'args.dart';
 import '../image_inlining/main.dart';
+import '../utils/io_utils.dart';
 
 enum Compiler { SassC, SassCWithInlineImage, RubySass }
 
@@ -36,9 +35,9 @@ class CompilationResult {
 main(List<String> args) async {
   try {
     var opts = new SassArgs.parse(args);
-    checkState(opts.input != null, message: () => "Input file argument is mandatory");
-    var input = await opts.input?.readAsBytes();// ?? readStdinSync();
-    var result = await compile(opts, input);
+    if (opts.input == null) opts.addInput('stdin.scss', readStdinSync());
+
+    var result = await compile(opts);
     stdout.write(result.stdout);
     stderr.write(result.stderr);
     exit(result.exitCode);
@@ -47,27 +46,10 @@ main(List<String> args) async {
   }
 }
 
-Directory _tempDir;
-Directory get tempDir => _tempDir ??= Directory.systemTemp.createTempSync();
-
-void deleteTempDir() {
-  if (_tempDir == null) return;
-  var d = _tempDir;
-  _tempDir = null;
-  d.listSync().forEach((f) => f.deleteSync());
-  d.deleteSync();
-}
-
-Future<CompilationResult> compile(SassArgs args, List<int> input) async {
+Future<CompilationResult> compile(SassArgs args) async {
   ProcessResult result;
   CompilationResult wrapResult(Compiler compiler) => new CompilationResult(
       compiler, result.stdout, result.stderr, result.exitCode);
-
-  if (args.input == null) {
-    var file = join(tempDir.path, 'input.scss');
-    args.input = new File(file)..writeAsBytesSync(input);
-    args.options.add(file);
-  }
 
   result = await _runCommand(await args.getSasscCommand(), verbose: args.verbose);
   result = _fixSassCExitCode(result);
@@ -95,7 +77,7 @@ Future<CompilationResult> compile(SassArgs args, List<int> input) async {
       stderr.writeln(
           errors.split('\n').map((s) => 'WARNING: [SassC] $s').join('\n'));
     }
-    stderr.writeln('WARNING: SassC failed (result.exitCode = ${result.exitCode}, stderr = ${result.stderr}, stdout = ${result.stdout})... running Sass');
+    stderr.writeln('WARNING: SassC failed... falling back to Sass (use --no-fallback_to_sass to prevent)');
   }
 
   result = await _runCommand(await args.getRubySassCommand(), verbose: args.verbose);

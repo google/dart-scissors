@@ -15,6 +15,7 @@ library scissors.src.utils.io_utils;
 
 import 'dart:async';
 import 'dart:io';
+import 'package:path/path.dart';
 
 Future<List<int>> readAll(Stream<List<int>> data) async =>
     (await data.fold(new BytesBuilder(), (builder, data) => builder..add(data)))
@@ -31,4 +32,18 @@ List<int> readStdinSync() {
     input.add(byte);
   }
   return input;
+}
+
+Directory _tempDir;
+Directory get tempDir => _tempDir ??= Directory.systemTemp.createTempSync();
+
+File makeTempFile(String name, List<int> content) =>
+    new File(join(tempDir.path, name))..writeAsBytesSync(content);
+
+void deleteTempDir() {
+  if (_tempDir == null) return;
+  var d = _tempDir;
+  _tempDir = null;
+  d.listSync().forEach((f) => f.deleteSync());
+  d.deleteSync();
 }
