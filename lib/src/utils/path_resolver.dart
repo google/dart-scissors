@@ -21,6 +21,7 @@ import 'package:barback/barback.dart'
     show Asset, AssetId, AssetNotFoundException, Transform;
 
 import 'path_utils.dart';
+import 'package:scissors/src/utils/process_utils.dart';
 
 /// Customization entry point for forks of this library.
 PathResolver pathResolver = new PathResolver();
@@ -37,9 +38,12 @@ AssetId _parsePackageUrl(String url) {
 class PathResolver {
   final String defaultJavaPath = 'java';
   final String defaultSassCPath = 'sassc';
+  final String defaultSassPath = 'sass';
+  final String defaultSassWithCompassPath = 'sass';
   final String defaultPngCrushPath = 'pngcrush';
   final String defaultCssJanusPath = 'cssjanus';
   final String defaultJRubyPath = 'jruby';
+  String get defaultRubyPath => defaultJRubyPath;
   final String defaultRubySassPath = 'sass';
   final String defaultCompassStylesheetsPath = null;
   final String defaultClosureCompilerJarPath = 'compiler.jar';
@@ -170,6 +174,14 @@ class PathResolver {
     var path = id.path;
     if (path.startsWith('lib/')) path = path.substring('lib/'.length);
     return 'package:${id.package}/$path';
+  }
+
+  Future<String> resolveExecutable(String path) async {
+    path = await resolvePath(path);
+    if (!await new File(path).exists()) {
+      path = which(path).trim();
+    }
+    return path;
   }
 }
 

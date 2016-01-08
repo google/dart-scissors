@@ -53,8 +53,8 @@ makeFileAsset(File file) {
   return new Asset.fromFile(new AssetId(_package, path), new File(path));
 }
 
-makeStdinAsset(String input) {
-  return new Asset.fromString(new AssetId(_package, "<stdin>"), input);
+makeStringAsset(String path, String input) {
+  return new Asset.fromString(new AssetId(_package, path), input);
 }
 
 /// Returns null if the input didn't have any inline-image() call.

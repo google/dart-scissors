@@ -20,6 +20,8 @@ import 'package:quiver/iterables.dart';
 
 import '../utils/ruby_gem_utils.dart';
 import 'package:scissors/src/utils/process_utils.dart';
+import 'package:scissors/src/utils/path_resolver.dart';
+import 'dart:async';
 
 ArgParser _createArgsParser() {
   var parser = new ArgParser(allowTrailingOptions: true)
@@ -28,9 +30,10 @@ ArgParser _createArgsParser() {
     ..addFlag('verbose', defaultsTo: false)
     ..addFlag('silent_sassc_errors', defaultsTo: false)
     ..addOption('gem', defaultsTo: 'gem')
-    ..addOption('ruby', defaultsTo: 'ruby')
-    ..addOption('sass')
-    ..addOption('sassc', defaultsTo: 'sassc')
+    ..addOption('ruby', defaultsTo: pathResolver.defaultRubyPath)
+    ..addOption('sass', defaultsTo: pathResolver.defaultSassPath)
+    ..addOption('sass_with_compass', defaultsTo: pathResolver.defaultSassWithCompassPath)
+    ..addOption('sassc', defaultsTo: pathResolver.defaultSassCPath)
     ..addOption('compass_stylesheets');
   return parser;
 }
@@ -41,7 +44,7 @@ class SassArgs {
   /// Options that are valid for both Ruby Sass and SassC.
   /// (don't include options such as --compass, for instance)
   final List<String> options;
-  final File input;
+  File input;
   final File output;
   final bool useCompass;
   final bool scssSyntax;
@@ -54,7 +57,7 @@ class SassArgs {
       this.scssSyntax: false});
 
   factory SassArgs.parse(List<String> args) {
-    if (!args.contains('--')) args.insert(0, '--');
+    if (!args.contains('--')) args = ['--']..addAll(args);
 
     var results = _createArgsParser().parse(args);
     var options = <String>[];
@@ -65,24 +68,46 @@ class SassArgs {
     var includeDirs = <Directory>[];
     int iArg = 0;
     for (var arg in results.rest) {
-      if (arg.startsWith('-')) {
-        if (arg == '--compass') {
-          useCompass = true;
-        } else if (arg == '--scss') {
-          scssSyntax = true;
-        } else {
-          options.add(arg);
-          if (arg == '-I') {
-            includeDirs.add(new Directory(results.rest[iArg + 1]));
-          }
-        }
+      if (arg == '--compass') {
+        useCompass = true;
+      } else if (arg == '--scss') {
+        scssSyntax = true;
       } else {
-        if (input == null) input = new File(arg);
-        else if (output == null) output = new File(arg);
-        else throw new ArgumentError('Bad command line arguments: '
-            'expected `options input [output]`, got $args');
+        options.add(arg);
+        if (arg == '-I') {
+          includeDirs.add(new Directory(results.rest[iArg + 1]));
+        }
       }
       iArg++;
+    }
+
+    // Find the extra args (input, output) after the options
+    int argsOffset = 0;
+    while (argsOffset < options.length) {
+      var arg = options[argsOffset];
+      if (!arg.startsWith('-')) break;
+
+      argsOffset++;
+      if (arg == '-I' || arg == '--load-path' ||
+          arg == '-t' || arg == '--style' ||
+          arg == '-r' || arg == '--require' ||
+          arg == '-E' || arg == '--default-encoding' ||
+          arg == '--precision' ||
+          arg == '--cache-location') {
+        argsOffset++;
+      }
+    }
+    var remainingArgsCount = options.length - argsOffset;
+    switch (remainingArgsCount) {
+      case 1:
+        input = new File(options[options.length - 1]);
+        break;
+      case 2:
+        input = new File(options[options.length - 2]);
+        output = new File(options[options.length - 1]);
+        break;
+      default:
+        throw new ArgumentError('Expecting 1 or 2 arguments (input [output]), got $remainingArgsCount: ${options}');
     }
     return new SassArgs(results, options,
         input: input,
@@ -112,14 +137,17 @@ class SassArgs {
   bool get verbose => _results['verbose'];
   bool get silentSasscErrors => _results['silent_sassc_errors'];
 
-  List<String> get sasscCommand => concat([
-        [sassc],
+  Future<List<String>> getSasscCommand() async => concat([
+        [await pathResolver.resolveExecutable(sassc)],
         useCompass ? ['-I', compassStylesheets] : [],
         options
       ]).toList();
 
-  List<String> get rubySassCommand => concat([
-        [ruby, sass],
+  Future<List<String>> getRubySassCommand() async => concat([
+        [
+            await pathResolver.resolveExecutable(ruby),
+            await pathResolver.resolveExecutable(sass)
+        ],
         scssSyntax ? ['--scss'] : [],
         useCompass ? ['--compass'] : [],
         options

@@ -14,18 +14,19 @@
 library scissors.test.compass.sassc_with_compass_fallback_test;
 
 import 'package:scissors/src/compass/sassc_with_compass_fallback.dart'
-    show compile, CompilationResult, Compiler;
+    show CompilationResult, Compiler, compile, deleteTempDir;
 import 'package:scissors/src/compass/args.dart';
 import 'package:scissors/src/utils/process_utils.dart';
 
 import 'package:test/test.dart';
+import 'dart:convert';
 
 _compile(List<String> args, String input) {
   if (!args.contains('--noverbose')) {
     if (!args.contains('--')) args = ['--']..addAll(args);
     args = ['--verbose']..addAll(args);
   }
-  return compile(new SassArgs.parse(args), input);
+  return compile(new SassArgs.parse(args), new Utf8Encoder().convert(input));
 }
 
 main() {
@@ -35,6 +36,10 @@ main() {
     print("WARNING: Skipping Compass tests by lack of gem or sassc in the PATH.");
     return;
   }
+
+  tearDown(() {
+    deleteTempDir();
+  });
 
   test('succeeds on simple scss', () async {
     var result = await _compile([], '.foo { .bar { float: left; } }');
@@ -46,7 +51,7 @@ main() {
   });
 
   var inlineImageInput = '.foo {\n'
-      '  image-background: inline-image("test/compass/foo.svg"); }\n';
+      '  background-image: inline-image("test/compass/foo.svg"); }\n';
 
   test('inlines images', () async {
     var result = await _compile([], inlineImageInput);
@@ -54,7 +59,7 @@ main() {
     expect(
         result.stdout,
         '.foo {\n'
-        '  image-background: url(\'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KICA8cmVjdCB4PSIwIiB5PSIwIiBoZWlnaHQ9IjEwIiB3aWR0aD0iMTAiIHN0eWxlPSJzdHJva2U6IzAwMDBmZjsgZmlsbDogIzAwZmYwMCIvPgo8L3N2Zz4K\'); }\n');
+        '  background-image: url(\'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KICA8cmVjdCB4PSIwIiB5PSIwIiBoZWlnaHQ9IjEwIiB3aWR0aD0iMTAiIHN0eWxlPSJzdHJva2U6IzAwMDBmZjsgZmlsbDogIzAwZmYwMCIvPgo8L3N2Zz4K\'); }\n');
   });
 
   test('does not inline image when disabled', () async {
@@ -97,6 +102,9 @@ main() {
       }
     ''');
     expect(result.compiler, Compiler.SassC);
+    // print(result.stdout);
+    // print(result.stderr);
+    // print(result.exitCode);
     expect(result.exitCode, isNot(equals(0)));
   });
 

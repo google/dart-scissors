@@ -13,17 +13,45 @@
 // limitations under the License.
 library scissors.src.utils.process_utils;
 
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
-String successString(ProcessResult result) {
-  if (result.exitCode != 0) {
-    throw new StateError('Exit code: ${result.exitCode}\n${result.stderr}');
+import 'io_utils.dart';
+
+String getOutputString(stdio) => stdio is String
+    ? stdio
+    : new Utf8Decoder().convert(stdio);
+
+String successString(String command, ProcessResult result) {
+  var err = getOutputString(result.stderr).trim();
+  var exitCode = result.exitCode ?? (err.isNotEmpty ? -1 : 0);
+  if (exitCode != 0) {
+      throw new ArgumentError(
+          'Failed to run $command (exit code = ${result.exitCode}):\n$err');
   }
-  return result.stdout;
+  return getOutputString(result.stdout);
 }
+
 
 ProcessResult _which(String path) => Process.runSync('which', [path]);
 
-String which(String path) => successString(_which(path)).trim();
+String which(String path) => successString('which $path', _which(path)).trim();
 
 bool hasExecutable(String name) => _which(name).exitCode == 0;
+
+Future<ProcessResult> pipeInAndOutOfNewProcess(Process p, input) async {
+  if (input is String) {
+    p.stdin.write(input);
+  } else if (input is List) {
+    p.stdin.add(input);
+  } else {
+    throw new ArgumentError('Unexpected input: ${input.runtimeType}');
+  }
+  p.stdin.close();
+
+  var out = readAll(p.stdout);
+  var err = readAll(p.stderr);
+
+  return new ProcessResult(p.pid, await p.exitCode, await out, await err);
+}

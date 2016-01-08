@@ -14,14 +14,14 @@
 library scissors.src.compass.compass_runner;
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:barback/barback.dart' show Asset, AssetId;
-import 'package:scissors/src/image_inlining/main.dart';
+import 'package:quiver/check.dart';
+import 'package:path/path.dart';
 
 import 'args.dart';
-import '../utils/io_utils.dart';
+import '../image_inlining/main.dart';
 
 enum Compiler { SassC, SassCWithInlineImage, RubySass }
 
@@ -34,26 +34,48 @@ class CompilationResult {
 }
 
 main(List<String> args) async {
-  var result = await compile(new SassArgs.parse(args), readStdinSync());
-  stdout.write(result.stdout);
-  stderr.write(result.stderr);
-  exit(result.exitCode);
+  try {
+    var opts = new SassArgs.parse(args);
+    checkState(opts.input != null, message: () => "Input file argument is mandatory");
+    var input = await opts.input?.readAsBytes();// ?? readStdinSync();
+    var result = await compile(opts, input);
+    stdout.write(result.stdout);
+    stderr.write(result.stderr);
+    exit(result.exitCode);
+  } finally {
+    deleteTempDir();
+  }
 }
 
-Future<CompilationResult> compile(SassArgs args, input) async {
-  if (input is String) input = new Utf8Encoder().convert(input);
+Directory _tempDir;
+Directory get tempDir => _tempDir ??= Directory.systemTemp.createTempSync();
 
+void deleteTempDir() {
+  if (_tempDir == null) return;
+  var d = _tempDir;
+  _tempDir = null;
+  d.listSync().forEach((f) => f.deleteSync());
+  d.deleteSync();
+}
+
+Future<CompilationResult> compile(SassArgs args, List<int> input) async {
   ProcessResult result;
   CompilationResult wrapResult(Compiler compiler) => new CompilationResult(
       compiler, result.stdout, result.stderr, result.exitCode);
 
-  result =
-      await _runCommand(args.sasscCommand, input: input, verbose: args.verbose);
+  if (args.input == null) {
+    var file = join(tempDir.path, 'input.scss');
+    args.input = new File(file)..writeAsBytesSync(input);
+    args.options.add(file);
+  }
+
+  result = await _runCommand(await args.getSasscCommand(), verbose: args.verbose);
+  result = _fixSassCExitCode(result);
   if (result.exitCode == 0) {
     if (args.supportInlineImage) {
       var input = args.output != null
           ? makeFileAsset(args.output)
-          : makeStdinAsset(result.stdout);
+          : makeStringAsset('<stdin>', result.stdout);
       var output = await inlineImagesWithIncludeDirs(input, args.includeDirs);
       // Fail fast if there was no change.
       if (output == null) return wrapResult(Compiler.SassC);
@@ -73,12 +95,19 @@ Future<CompilationResult> compile(SassArgs args, input) async {
       stderr.writeln(
           errors.split('\n').map((s) => 'WARNING: [SassC] $s').join('\n'));
     }
-    stderr.writeln('WARNING: SassC failed... running Sass');
+    stderr.writeln('WARNING: SassC failed (result.exitCode = ${result.exitCode}, stderr = ${result.stderr}, stdout = ${result.stdout})... running Sass');
   }
 
-  result = await _runCommand(args.rubySassCommand,
-      input: input, verbose: args.verbose);
+  result = await _runCommand(await args.getRubySassCommand(), verbose: args.verbose);
   return wrapResult(Compiler.RubySass);
+}
+
+ProcessResult _fixSassCExitCode(ProcessResult result) {
+  var err = result.stderr;
+  var exitCode = result.exitCode ??
+      ((err.startsWith('Error: ') || err.contains('\nError: ')) ? -1 : 0);
+  // print('EXIT CODE($exitCode, fixed from ${result.exitCode}): error.length = ${err.length}\n\t${err.replaceAll('\n', '\n\t')}');
+  return new ProcessResult(result.pid, exitCode, result.stdout, result.stderr);
 }
 
 Future<ProcessResult> _pipeResult(
@@ -94,30 +123,20 @@ Future<ProcessResult> _pipeResult(
 }
 
 Future<ProcessResult> _runCommand(List<String> command,
-    {List<int> input, bool verbose: false}) async {
-  // print('RUNNING: ${command.map((s) => "'$s'").join(' ')}');
+    {bool verbose: false}) async {
   Stopwatch stopwatch;
-  if (verbose) stopwatch = new Stopwatch()..start();
-  var p = await Process.start(command.first, command.skip(1).toList(),
-      workingDirectory: Directory.current.path,
-      mode: ProcessStartMode.DETACHED_WITH_STDIO);
+  var commandStr = command.map((s) => "'$s'").join(' ');
+  if (verbose) {
+    stderr.writeln('INFO: Starting command $commandStr');
+    stopwatch = new Stopwatch()..start();
+  }
+  var result = await Process.run(command.first, command.skip(1).toList(),
+      workingDirectory: Directory.current.path);
 
-  var out = readAll(p.stdout);
-  var err = readAll(p.stderr);
-  p.stdin
-    ..add(input)
-    ..close();
-
-  var outStr = new Utf8Decoder().convert(await out);
-  var errStr = new Utf8Decoder().convert(await err);
-
-  var exitCode = await p.exitCode ?? (errStr.trim().isEmpty ? 0 : -1);
   if (verbose) {
     stopwatch.stop();
     stderr.writeln(
-        'INFO: Command ${command.map((s) => "'$s'").join(' ')} took ${stopwatch.elapsedMilliseconds}ms');
+        'INFO: Command $commandStr took ${stopwatch.elapsedMilliseconds}ms');
   }
-  // print("out: $outStr");
-  // print("err: $errStr");
-  return new ProcessResult(p.pid, exitCode, outStr, errStr);
+  return result;
 }

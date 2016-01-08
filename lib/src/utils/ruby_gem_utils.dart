@@ -21,8 +21,8 @@ import 'process_utils.dart';
 final RegExp _gemVersionRx = new RegExp(r'^([\w-]+)\s*\(([^)]+)\)$');
 
 List<String> getGemVersions(String gemPath, String gemName) {
-  var result =
-      successString(Process.runSync(gemPath, ['list', '-l', '^$gemName\$']));
+  var result = successString('gem list $gemName',
+      Process.runSync(gemPath, ['list', '-l', '^$gemName\$']));
   // print('gem list ($gemName): $result');
   var versions = <String>[];
   for (var line in result.split('\n')) {
@@ -52,7 +52,7 @@ String getGemPath(String gemPath,
   }
   // TODO(ochafik): Take the latest version (using semver package).
   gemVersion ??= versions.first;
-  var gemDir =
-      successString(Process.runSync(gemPath, ['environment', 'gemdir'])).trim();
+  var gemDir = successString('gem environment gemdir',
+      Process.runSync(gemPath, ['environment', 'gemdir'])).trim();
   return join(gemDir, 'gems', '$gemName-$gemVersion', path);
 }
