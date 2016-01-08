@@ -47,8 +47,8 @@ void main() {
         '\t"sources": [\n'
         '\t\t"foo.scss"\n'
         '\t],\n'
-        '\t"sourcesContent": [],\n'
-        '\t"mappings": "AAAM,IAAI,AAAC,CACH,KAAK,CAAE,IAAK,CADR",\n'
+        //'\t"sourcesContent": [],\n'
+        '\t"mappings": "AAAM,IAAI,AAAC,CACH,KAAK,CAAE,IAAK,CACb",\n'
         '\t"names": []\n'
         '}',
     'a|foo.sass.css': '.foo{height:100%}\n',
@@ -82,6 +82,6 @@ void main() {
       }
     '''
   }, {}, [
-    'error: invalid property name (a%7Cfoo.scss 1 12)'
+    'error: Invalid CSS after "      .foo {": expected "}", was "{" (a%7Cfoo.scss 1 12)'
   ]);
 }

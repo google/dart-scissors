@@ -34,10 +34,10 @@ cd $(dirname ${BASH_SOURCE[0]})/..
 pub get
 . scripts/install_dependencies.sh
 
-run_travis_lint
-run_analyzer
 run_tests
+run_analyzer
 run_formatter
+run_travis_lint
 pub publish --dry-run
 
 if (( "${TEST_EXAMPLES:-1}" )); then

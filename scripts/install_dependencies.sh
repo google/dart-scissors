@@ -57,10 +57,12 @@ fi
 
 set +u
 if [[ ! -f "${CLOSURE_COMPILER_JAR:-.dependencies/compiler.jar}" ]]; then
-  print_title "Installing Closure Compiler to $CLOSURE_COMPILER_JAR..."
-  curl https://dl.google.com/closure-compiler/compiler-latest.zip > compiler-latest.zip
-  unzip -o compiler-latest.zip
   export CLOSURE_COMPILER_JAR=$PWD/compiler.jar
+  if [[ ! -f "$CLOSURE_COMPILER_JAR" ]]; then
+    print_title "Installing Closure Compiler to $CLOSURE_COMPILER_JAR..."
+    curl https://dl.google.com/closure-compiler/compiler-latest.zip > compiler-latest.zip
+    unzip -o compiler-latest.zip
+  fi
 fi
 set -u
 
