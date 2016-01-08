@@ -36,18 +36,18 @@ AssetId _parsePackageUrl(String url) {
 }
 
 class PathResolver {
-  final String defaultJavaPath = 'java';
-  final String defaultSassCPath = 'sassc';
-  final String defaultRubySassPath = 'sass';
-  final String defaultSassWithCompassPath = 'sass';
-  final String defaultPngCrushPath = 'pngcrush';
-  final String defaultCssJanusPath = 'cssjanus';
-  final String defaultJRubyPath = 'jruby';
-  String get defaultRubyPath => defaultJRubyPath;
+  final String defaultJavaPath = Platform.environment['JAVA_BIN'] ?? 'java';
+  final String defaultSassCPath = Platform.environment['SASSC_BIN'] ?? 'sassc';
+  final String defaultRubySassPath = Platform.environment['SASS_BIN'] ?? 'sass';
+  final String defaultPngCrushPath =
+      Platform.environment['PNGCRUSH_BIN'] ?? 'pngcrush';
+  final String defaultCssJanusPath =
+      Platform.environment['CSSJANUS_BIN'] ?? 'cssjanus.py';
+  final String defaultRubyPath = Platform.environment['RUBY_BIN'] ?? 'ruby';
   final String defaultCompassStylesheetsPath = null;
-  final String defaultClosureCompilerJarPath = 'compiler.jar';
-
-  final String defaultGemPath = 'gem';
+  final String defaultClosureCompilerJarPath =
+      Platform.environment['CLOSURE_COMPILER_BIN'] ?? 'compiler.jar';
+  final String defaultGemPath = Platform.environment['RUBY_GEM_BIN'] ?? 'gem';
 
   Future<String> resolvePath(String path) async {
     if (path == null) return null;

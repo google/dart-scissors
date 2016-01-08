@@ -13,7 +13,7 @@ function run_tests() {
   # TODO(ochafik): `pub run test` again? (sometimes not reliable)
   for test in `find test -name '*.dart'` ; do
     echo "TESTING $test"
-    TRAVIS=true pub run $test
+    SKIP_PATH_RESOLVER_TESTS=true pub run $test
   done
 }
 

@@ -21,7 +21,7 @@ import 'package:scissors/src/utils/path_resolver.dart' show pathResolver;
 import 'package:scissors/src/utils/process_utils.dart';
 
 main() {
-  if (Platform.environment['TRAVIS'] == 'true') {
+  if (Platform.environment['SKIP_PATH_RESOLVER_TESTS'] == 'true') {
     print("WARNING: Skipping path resolver tests on Travis.");
     return;
   }
@@ -34,7 +34,7 @@ main() {
       'java': pathResolver.defaultJavaPath,
     };
     var files = {
-      'jruby': pathResolver.defaultJRubyPath,
+      'ruby': pathResolver.defaultRubyPath,
       'ruby sass': pathResolver.defaultRubySassPath,
       'closure': pathResolver.defaultClosureCompilerJarPath
     };

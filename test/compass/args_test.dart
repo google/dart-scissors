@@ -31,9 +31,6 @@ class FakePathResolver implements PathResolver {
 
   @override String get defaultSassCPath => 'test_sassc';
 
-  @override String get defaultSassWithCompassPath =>
-      'test_ruby_sass_with_compass';
-
   @override
   Future<String> resolveExecutable(String path) async => 'resolved_exec_$path';
 
