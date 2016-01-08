@@ -55,11 +55,13 @@ if ! has_exec pngcrush ; then
   fi
 fi
 
+set +u
 if [[ ! -f "${CLOSURE_COMPILER_JAR:-.dependencies/compiler.jar}" ]]; then
   print_title "Installing Closure Compiler to $CLOSURE_COMPILER_JAR..."
   curl https://dl.google.com/closure-compiler/compiler-latest.zip > compiler-latest.zip
   unzip -o compiler-latest.zip
   export CLOSURE_COMPILER_JAR=$PWD/compiler.jar
 fi
+set -u
 
 cd ..

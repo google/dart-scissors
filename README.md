@@ -205,7 +205,5 @@ This will download some executables used by Scissors and will export the followi
 
 To test your changes:
 ```
-TEST_EXAMPLES=0 scripts/presubmit.sh
+./scripts/presubmit.sh
 ```
-
-(run with `TEST_EXAMPLES=1` to see how the example logs change)
