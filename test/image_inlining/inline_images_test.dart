@@ -20,12 +20,10 @@ import 'package:scissors/src/image_inlining/main.dart' as inline_images;
 
 main() {
   group('inline_images', () {
+    var expectedFile = new File('test/image_inlining/data/output.css');
+    var skipImageInliningTest = expectedFile.existsSync()
+        ? 'file $expectedFile not found' : null;
     test('inlines images it can find', () async {
-      var expectedFile = new File('test/image_inlining/data/output.css');
-      if (!expectedFile.existsSync()) {
-        print("SKIPPING test, as ${expectedFile.path} not found.");
-        return;
-      }
       var tmpOut =
           new File(join((await Directory.systemTemp.create()).path, 'out.css'));
       var expected = expectedFile.readAsString();
@@ -36,6 +34,6 @@ main() {
         tmpOut.path,
       ]);
       expect(await tmpOut.readAsString(), await expected);
-    });
+    }, skip: skipImageInliningTest);
   });
 }

@@ -14,6 +14,7 @@
 library scissors.test.compass.sassc_with_compass_fallback_test;
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:scissors/src/compass/sassc_with_compass_fallback.dart'
     show CompilationResult, Compiler, compile, deleteTempDir;
@@ -46,6 +47,8 @@ main() {
   var inlineImageInput = '.foo {\n'
       '  background-image: inline-image("compass/foo.svg"); }\n';
 
+  var skipImageInliningTest = new File('test/compass/foo.svg').existsSync()
+      ? 'image not found' : null;
   test('inlines images', () async {
     var result = await _compile(['-I', 'test'], inlineImageInput);
     expect(result.compiler, Compiler.SassCWithInlineImage);
@@ -53,7 +56,7 @@ main() {
         result.stdout,
         '.foo {\n'
         '  background-image: url(\'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KICA8cmVjdCB4PSIwIiB5PSIwIiBoZWlnaHQ9IjEwIiB3aWR0aD0iMTAiIHN0eWxlPSJzdHJva2U6IzAwMDBmZjsgZmlsbDogIzAwZmYwMCIvPgo8L3N2Zz4K\'); }\n');
-  });
+  }, skip: skipImageInliningTest);
 
   test('succeeds with simple compass stylesheets', () async {
     var result = await _compile(
