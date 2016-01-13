@@ -120,8 +120,9 @@ class PathResolver {
             var uri = line.substring(i + 1);
             var dir;
             if (!uri.contains(":")) {
-              dir = new Directory(
-                  isAbsolute(uri) ? uri : join(dirname(packagesFile.path), uri));
+              dir = new Directory(isAbsolute(uri)
+                  ? uri
+                  : join(dirname(packagesFile.path), uri));
             } else {
               dir = new Directory(Uri.parse(uri).path);
             }

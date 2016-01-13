@@ -57,12 +57,20 @@ void main() {
       'a|main.dart.js': 'content of main.dart.js',
       'a|main.dart.js_1.part.js': 'content of main.dart.js_1.part.js',
       'a|main.dart.js_2.part.js': 'content of main.dart.js_2.part.js',
+      'a|main.dart.js.map': 'map of main.dart.js',
+      'a|main.dart.js_1.part.js.map': 'map of main.dart.js_1.part.js',
+      'a|main.dart.js_2.part.js.map': 'map of main.dart.js_2.part.js',
     }, {
       'a|main_ar.js': 'content of main.dart.js\n'
           'content of main.dart.js_2.part.js',
       'a|main_bg.js': 'content of main.dart.js\n'
           'content of main.dart.js_1.part.js',
-      'a|main_en_US.js': 'content of main.dart.js'
+      'a|main_en_US.js': 'content of main.dart.js',
+      // TODO(ochafik): Compose maps of parts (just merge symbols + add offsets,
+      // using package:source_map).
+      'a|main_ar.js.map': 'map of main.dart.js',
+      'a|main_bg.js.map': 'map of main.dart.js',
+      'a|main_en_US.js.map': 'map of main.dart.js'
     });
 
     testPhases(

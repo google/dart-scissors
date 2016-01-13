@@ -19,11 +19,10 @@ import 'package:barback/barback.dart';
 import 'package:intl/number_symbols_data.dart';
 import 'package:path/path.dart';
 
-import '../utils/settings_base.dart';
-
 import 'intl_deferred_map.dart';
 import '../js_optimization/js_optimization.dart';
 import '../js_optimization/settings.dart';
+import '../utils/settings_base.dart';
 
 part 'settings.dart';
 
@@ -58,8 +57,13 @@ class PermutationsTransformer extends AggregateTransformer
   PermutationsTransformer.asPlugin(BarbackSettings settings)
       : this(new _PermutationsSettings(settings));
 
-  @override static final _allowedExtensions =
-      ".dart.js .part.js .deferred_map".split(' ').toList();
+  @override static final _allowedExtensions = [
+    '.dart.js',
+    '.dart.js.map',
+    '.part.js',
+    '.part.js.map',
+    '.deferred_map'
+  ];
 
   @override
   classifyPrimary(AssetId id) => _settings.generatePermutations.value &&
@@ -71,8 +75,10 @@ class PermutationsTransformer extends AggregateTransformer
         .firstWhere((a) => a.path.endsWith('.dart.js'), orElse: () => null);
     if (dartJsId != null) {
       for (var locale in _settings.potentialLocales.value) {
-        transform.declareOutput(new AssetId(dartJsId.package,
-            dartJsId.path.replaceAll('.dart.js', '_${locale}.js')));
+        var permutationId = new AssetId(dartJsId.package,
+            dartJsId.path.replaceAll('.dart.js', '_${locale}.js'));
+        transform.declareOutput(permutationId);
+        transform.declareOutput(permutationId.addExtension('.map'));
       }
     }
   }
@@ -82,7 +88,6 @@ class PermutationsTransformer extends AggregateTransformer
     var inputs = await transform.primaryInputs.toList();
     if (inputs.isEmpty) return;
 
-    var inputIds = inputs.map((i) => i.id).toList();
     var deferredMapAsset = inputs.firstWhere(
         (a) => a.id.extension == '.deferred_map',
         orElse: () => throw new ArgumentError(
@@ -104,15 +109,22 @@ class PermutationsTransformer extends AggregateTransformer
           'and locales ${map.locales} with default locale $defaultLocale');
     }
 
-    Asset getMatchingAsset(String fileName) =>
-        inputs.firstWhere((a) => a.id.path.endsWith(fileName),
-            orElse: () => throw new ArgumentError('No $fileName in $inputIds'));
+    Asset getMatchingAsset(path, {throwIfNotFound: true}) =>
+        inputs.firstWhere((a) => a.id.path.endsWith(path), orElse: () {
+          if (!throwIfNotFound) return null;
+
+          var ids = inputs.map((a) => a.id);
+          throw new ArgumentError('$path not found in $ids');
+        });
 
     var futureAssetStrings = <Asset, Future<String>>{};
     var futures = <Future>[];
     for (var mainName in map.mainNames) {
       // TODO(ochafik): check rest of path matches!
-      Asset mainAsset = getMatchingAsset('$mainName.dart.js');
+      var mainJsName = '$mainName.dart.js';
+      Asset mainAsset = getMatchingAsset(mainJsName);
+      Asset sourcemapAsset =
+          getMatchingAsset('$mainJsName.map', throwIfNotFound: false);
       transform.logger.info('Processing ${mainAsset.id}');
 
       for (var locale in allLocales) {
@@ -150,15 +162,19 @@ class PermutationsTransformer extends AggregateTransformer
               .info('Creating $permutationId with ${assets.length} assets');
         }
 
-        futures.add(_concatenateAssets(
-            transform, permutationId, assets, futureAssetStrings));
+        futures.add(_concatenateAssets(transform, permutationId, assets,
+            futureAssetStrings, sourcemapAsset));
       }
     }
     await Future.wait(futures);
   }
 
-  Future _concatenateAssets(AggregateTransform transform, AssetId permutationId,
-      List<Asset> assets, Map<Asset, Future<String>> futureAssetStrings) async {
+  Future _concatenateAssets(
+      AggregateTransform transform,
+      AssetId permutationId,
+      List<Asset> assets,
+      Map<Asset, Future<String>> futureAssetStrings,
+      Asset sourcemapAsset) async {
     var futureStrings = assets.map((a) => futureAssetStrings[a]);
     var content = (await Future.wait(futureStrings)).join('\n');
     var contentAsset = new Asset.fromString(permutationId, content);
@@ -175,5 +191,10 @@ class PermutationsTransformer extends AggregateTransformer
       }
     }
     transform.addOutput(contentAsset);
+    if (sourcemapAsset != null) {
+      var sourcemapId = permutationId.addExtension('.map');
+      transform
+          .addOutput(new Asset.fromStream(sourcemapId, sourcemapAsset.read()));
+    }
   }
 }
