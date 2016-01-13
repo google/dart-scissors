@@ -2,6 +2,21 @@
 
 ...
 
+## 0.3.0 (2016-01-13)
+
+### Features
+
+- Added `scissors-sassc-compass` binary that provides a best-effort replacement
+  for Compass using SassC: it processes any `inline-image` function detected,
+  and falls back to using plain Compass if SassC fails to compile the input
+  (or if it does not understand the command-line arguments).
+
+### Bugfixes
+
+- `scissors/permutations_transformer`: generate sourcemaps for permutations
+  (limited to source map of main fragment; shouldn't hurt much if deferred
+  parts only contain messages and template caches)
+
 ## 0.2.2 (2016-01-05)
 
 ### Bugfixes
