@@ -21,8 +21,8 @@ import 'package:scissors/src/image_inlining/main.dart' as inline_images;
 main() {
   group('inline_images', () {
     var expectedFile = new File('test/image_inlining/data/output.css');
-    var skipImageInliningTest = expectedFile.existsSync()
-        ? 'file $expectedFile not found' : null;
+    var skipImageInliningTest =
+        expectedFile.existsSync() ? null : 'file $expectedFile not found';
     test('inlines images it can find', () async {
       var tmpOut =
           new File(join((await Directory.systemTemp.create()).path, 'out.css'));

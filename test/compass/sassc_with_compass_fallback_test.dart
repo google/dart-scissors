@@ -47,8 +47,8 @@ main() {
   var inlineImageInput = '.foo {\n'
       '  background-image: inline-image("compass/foo.svg"); }\n';
 
-  var skipImageInliningTest = new File('test/compass/foo.svg').existsSync()
-      ? 'image not found' : null;
+  var skipImageInliningTest =
+      new File('test/compass/foo.svg').existsSync() ? null : 'image not found';
   test('inlines images', () async {
     var result = await _compile(['-I', 'test'], inlineImageInput);
     expect(result.compiler, Compiler.SassCWithInlineImage);
