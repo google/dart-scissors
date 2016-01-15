@@ -15,13 +15,14 @@ library scissors.scissors_transformer;
 
 import 'package:barback/barback.dart';
 
+import 'src/css_mirroring/transformer.dart';
+import 'src/css_pruning/transformer.dart';
 import 'src/image_inlining/transformer.dart';
 import 'src/png_optimization/transformer.dart';
-import 'src/svg_optimization/transformer.dart';
-import 'src/css_pruning/transformer.dart';
 import 'src/sass/transformer.dart';
-import 'src/utils/settings_base.dart';
+import 'src/svg_optimization/transformer.dart';
 import 'src/utils/phase_utils.dart';
+import 'src/utils/settings_base.dart';
 
 class _ScissorsSettings extends SettingsBase
     with
@@ -29,6 +30,7 @@ class _ScissorsSettings extends SettingsBase
         PngOptimizationSettings,
         SassSettings,
         CssPruningSettings,
+        CssMirroringSettings,
         ImageInliningSettings {
   _ScissorsSettings(BarbackSettings settings) : super(settings);
 }
@@ -49,7 +51,8 @@ List<List<Transformer>> _createPhases(_ScissorsSettings settings) {
       settings.imageInlining.value != ImageInliningMode.disablePass
           ? new ImageInliningTransformer(settings)
           : null
-    ]
+    ],
+    [settings.mirrorCss.value ? new CssMirroringTransformer(settings) : null],
   ];
   return trimPhases(phases);
 }

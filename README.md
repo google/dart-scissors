@@ -15,6 +15,11 @@ most of them are disabled or optimized for speed with `pub serve` in debug mode.
     (e.g. `class="some-{{fragmented}}-class and-some-normal-class"`,
     `ng-class="{'some-class': isSome}"`).
   - Disabled by default in debug mode.
+- CSS mirroring for Angular (see [example/mirroring](https://github.com/google/dart-scissors/tree/master/example/mirroring)):
+  - Performs RTL mirroring of CSS.
+  - Can be used as a standalone transformer and with scissors transformer.
+  - Uses CSSjanus, with extra logic to know which properties are flippable and to recombine the three portions: orientation-neutral, non-flipped orientation-specific, flipped orientation-specific.
+  - Enabled by default in debug mode.
 - [Sass](http://sass-lang.com) compilation:
   - Compiles `*.sass` and `*.scss` files with [`sassc`](https://github.com/sass/sassc),
     the lightning-fast C++ port of Ruby Sass.
@@ -124,6 +129,36 @@ assumption by which sCiSSors lives, so you're safe with it.
 The last "unscoped" strategy means there's no file- or
 component-local way of deciding if a style *could* be used elsewhere. You should
 not use sCiSSors on packages / projects with that strategy.
+
+## Using `scissors/css_mirroring_transformer`
+
+Required: [CssJanus](https://github.com/cegov/wiki/tree/master/maintenance/cssjanus)  
+Note: Two versions available - Google's original cssjanus.py and [https://github.com/cssjanus/cssjanus]. Here the transofrmer uses Google's original cssjanus.py
+          
+Run the following command in shell to setup CssJanus:   
+`mkdir -p $HOME/bin && svn checkout http://cssjanus.googlecode.com/svn/trunk/ $HOME/bin && export PATH=$HOME/bin/cssjanus:$PATH`
+
+Example: see [example/mirroring](https://github.com/google/dart-scissors/tree/master/example/mirroring).
+
+`pubspec.yaml`:
+
+  ```
+  dev_dependencies:
+    scissors
+  transformers:
+  - scissors/cssmirroring_transformer
+  ```
+
+Valid settings:
+- `mirrorCss`: `true` by default in release mode and `false` by default in debug mode.
+- `nativeDirection`: Defines the direction of input css. `ltr` by default in debug and release mode.
+- `cssJanusPath`: `cssjanus` by default.
+
+### Limitations
+ - Works only on css files when used as standalone css_mirroring_transformer. 
+ - Does not handle directives like `@keyframes` and `@page`.
+ 
+See [BidirectionalCss.md] for more details.
 
 ## Using `scissors/permutations_transformer`
 

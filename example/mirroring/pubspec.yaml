@@ -1,0 +1,23 @@
+name: scissors_mirroring_example
+version: 0.3.0
+dependencies:
+  angular2: 2.0.0-alpha.45
+  browser: 0.10.0
+dev_dependencies:
+  scissors: ^0.3.0
+  dart_to_js_script_rewriter: ^0.1.0
+transformers:
+# Use css_mirroring_transformer as standalone.
+- scissors/css_mirroring_transformer:
+    verbose: true
+    mirrorCss: true
+- angular2:
+    entry_points: web/main.dart
+    html_files: web/index.html
+- dart_to_js_script_rewriter
+
+# Do not use this line in your projects: this is just to use the enclosing
+# version of Scissors:
+dependency_overrides: {scissors: {path: ../..}}
+
+
