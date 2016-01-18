@@ -55,7 +55,6 @@ if ! has_exec pngcrush ; then
   fi
 fi
 
-set +u
 if [[ ! -f "${CLOSURE_COMPILER_JAR:-.dependencies/compiler.jar}" ]]; then
   export CLOSURE_COMPILER_JAR=$PWD/compiler.jar
   if [[ ! -f "$CLOSURE_COMPILER_JAR" ]]; then
@@ -64,6 +63,5 @@ if [[ ! -f "${CLOSURE_COMPILER_JAR:-.dependencies/compiler.jar}" ]]; then
     unzip -o compiler-latest.zip
   fi
 fi
-set -u
 
 cd ..
