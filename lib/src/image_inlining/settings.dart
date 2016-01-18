@@ -23,7 +23,8 @@ abstract class ImageInliningSettings {
   final packageRewrites = new Setting<String>('packageRewrites',
       defaultValue: "^package:,packages/");
 
-  final javaPath = makePathSetting('javaPath', pathResolver.defaultJavaPath);
+  final javaPath = makePathSetting('javaPath', pathResolver.defaultJavaPath,
+      isExecutable: true);
 
   final closureCompilerJarPath = makePathSetting(
       'closureCompilerJar', pathResolver.defaultClosureCompilerJarPath);

@@ -24,12 +24,20 @@ import 'path_resolver.dart';
 
 part 'setting.dart';
 
-Future<String> _resolve(String path) =>
-    pathResolver.resolvePath(resolveEnvVars(path));
+Future<String> _resolve(String path, {bool isExecutable: false}) async {
+  path = resolveEnvVars(path);
+  if (isExecutable) {
+    return await pathResolver.resolveExecutable(path);
+  } else {
+    return await pathResolver.resolvePath(path);
+  }
+}
 
-Setting<Future<String>> makePathSetting(String name, String defaultValue) =>
+Setting<Future<String>> makePathSetting(String name, String defaultValue,
+        {bool isExecutable: false}) =>
     new Setting<Future<String>>(name,
-        defaultValue: new Future.value(_resolve(defaultValue)),
+        defaultValue: new Future.value(
+            _resolve(defaultValue, isExecutable: isExecutable)),
         parser: _resolve);
 
 Setting<bool> makeBoolSetting(String name, [bool enabled = true]) =>

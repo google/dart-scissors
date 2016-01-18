@@ -34,7 +34,8 @@ abstract class SassSettings {
   final compassStylesheetsPath = makePathSetting(
       'compassStylesheetsPath', pathResolver.defaultCompassStylesheetsPath);
 
-  final sasscPath = makePathSetting('sasscPath', pathResolver.defaultSassCPath);
+  final sasscPath = makePathSetting('sasscPath', pathResolver.defaultSassCPath,
+      isExecutable: true);
 
   final sasscArgs = new Setting<List<String>>('sasscArgs', defaultValue: []);
 

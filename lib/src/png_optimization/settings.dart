@@ -16,8 +16,9 @@ part of scissors.src.png_optimization.transformer;
 class PngOptimizationSettings {
   final optimizePng = makeOptimSetting('optimizePng');
 
-  final pngCrushPath =
-      makePathSetting('pngCrushPath', pathResolver.defaultPngCrushPath);
+  final pngCrushPath = makePathSetting(
+      'pngCrushPath', pathResolver.defaultPngCrushPath,
+      isExecutable: true);
 }
 
 class _PngOptimizationSettings extends SettingsBase
