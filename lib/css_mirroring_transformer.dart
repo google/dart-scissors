@@ -13,28 +13,4 @@
 // limitations under the License.
 library scissors.mirroring_transformer;
 
-import 'package:barback/barback.dart';
-
-import 'src/css_mirroring/transformer.dart';
-import 'src/js_optimization/settings.dart';
-import 'src/parts_check/transformer.dart';
-import 'src/utils/settings_base.dart';
-
-/// This transformer perform rtl css mirroring.
-class CssMirroringTransformerGroup extends TransformerGroup {
-  final CssMirroringSettings _settings;
-
-  CssMirroringTransformerGroup(_CssMirroringGroupSettings settings)
-      : super([
-          [new CssMirroringTransformer(settings)]
-        ]),
-        _settings = settings;
-
-  CssMirroringTransformerGroup.asPlugin(BarbackSettings settings)
-      : this(new _CssMirroringGroupSettings(settings));
-}
-
-class _CssMirroringGroupSettings extends SettingsBase
-    with CssMirroringSettings, PartsCheckSettings, JsOptimizationSettings {
-  _CssMirroringGroupSettings(settings) : super(settings);
-}
+export 'src/css_mirroring/transformer.dart' show CssMirroringTransformer;
