@@ -7,7 +7,7 @@ homepage: http://github.com/google/dart-scissors
 environment:
   sdk: ">=1.8.0 <2.0.0"
 dependencies:
-  args: ^0.13.2
+  args: ">=0.12.0 <0.14.0"
   barback: ^0.15.0
   code_transformers: ^0.2.9
   crypto: ^0.9.0
