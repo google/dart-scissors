@@ -19,10 +19,14 @@ enum Direction { ltr, rtl }
 Direction flipDirection(Direction dir) =>
     dir == Direction.ltr ? Direction.rtl : Direction.ltr;
 
+_makeMirrorCssSetting({bool defaultValue}) =>
+    new Setting<bool>('mirrorCss', defaultValue: defaultValue);
+
 abstract class CssMirroringSettings {
   Setting<bool> get verbose;
 
-  final mirrorCss = new Setting<bool>('mirrorCss', defaultValue: false);
+  final mirrorCss = _makeMirrorCssSetting(defaultValue: false);
+
   final nativeDirection = new Setting<Direction>('orignalCssDirection',
       defaultValue: Direction.ltr,
       parser: new EnumParser<Direction>(Direction.values).parse);
@@ -32,4 +36,6 @@ abstract class CssMirroringSettings {
 
 class _CssMirroringSettings extends SettingsBase with CssMirroringSettings {
   _CssMirroringSettings(settings) : super(settings);
+
+  @override final mirrorCss = _makeMirrorCssSetting(defaultValue: true);
 }

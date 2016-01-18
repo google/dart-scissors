@@ -10,7 +10,6 @@ transformers:
 # Use css_mirroring_transformer as standalone.
 - scissors/css_mirroring_transformer:
     verbose: true
-    mirrorCss: true
 - angular2:
     entry_points: web/main.dart
     html_files: web/index.html
@@ -19,5 +18,3 @@ transformers:
 # Do not use this line in your projects: this is just to use the enclosing
 # version of Scissors:
 dependency_overrides: {scissors: {path: ../..}}
-
-
