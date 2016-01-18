@@ -19,7 +19,7 @@ function run_formatter() {
   echo "Running the formatter"
   pub run dart_style:format -w \
     `find lib -name '*.dart'` \
-    `find example -name '*.dart'` \
+    `ls example/{angular1,angular2,permutations,mirroring}/web/*.dart` \
     `find test -name '*.dart'` | ( grep -v "^Unchanged " || true )
 }
 
@@ -45,6 +45,7 @@ if (( "${TEST_EXAMPLES:-1}" )); then
   scripts/test_example.sh permutations || true
   scripts/test_example.sh angular1 || true
   scripts/test_example.sh angular2 || true
+  scripts/test_example.sh mirroring || true
 fi
 
 echo "# SUCCESS: good to go!"

@@ -1,0 +1,215 @@
+Loading source assets...
+Loading dart_to_js_script_rewriter, observe, scissors/css_mirroring_transformer and smoke/src/default_transformer transformers...
+Loading angular2 transformers...
+[Info from CssMirroring on scissors_mirroring_example|lib/foo.css]:
+present-element {
+    background-image: inline-image('icon.svg');
+    color: blue;
+    }
+
+a {
+    foo: bar;
+    }
+
+table-class {
+    color: blue;
+    }
+
+ul li {
+    color: gray;
+}
+
+/* Adjacent sibling selectors */
+li + li {
+    color: red;
+    }
+
+/* General sibling selectors */
+a ~ a {
+    color: purple;
+    }
+
+/* Child selectors */
+li > a {
+    color: orange;
+    width: 10px;
+}
+
+a[href="three.html"] {
+    color: green;
+    }
+
+.foo {
+    color: blue;
+    }
+
+@charset "UTF-8";
+@namespace  url(http://www.w3.org/1999/xhtml);
+@font-face {
+    font-family: 'MyWebFont';
+    src: url('myfont.woff2') format('woff2'),
+    url('myfont.woff') format('woff');
+}
+
+@host {
+    :scope {
+        color: red;
+    }
+}
+
+
+
+:host-context([dir="ltr"]) present-element {
+    margin-left: 10em;
+}
+
+:host-context([dir="ltr"]) a {
+    margin-left: 1em;
+    background-position: 25% 75%;
+}
+
+:host-context([dir="ltr"]) table-class {
+    margin-left: 2000em;
+}
+
+:host-context([dir="ltr"]) li + li {
+    margin-left: 3em;
+}
+
+/* General sibling selectors */
+:host-context([dir="ltr"]) a ~ a {
+    margin-left: 2em;
+}
+
+/* Child selectors */
+:host-context([dir="ltr"]) li > a {
+    margin-left: 4em;
+    }
+
+:host-context([dir="ltr"]) a[href="three.html"] {
+    margin-left: 5em;
+}
+
+:host-context([dir="ltr"]) .foo {
+    float: left /* because `foo: right;` will also work */; /* Test comment { } */
+}
+
+
+@media screen and (min-width: 401px) {
+    :host-context([dir="ltr"]) body {
+        margin-left: 13px
+    }
+}
+
+
+:host-context([dir="rtl"]) present-element {
+    margin-right: 10em;
+}
+
+:host-context([dir="rtl"]) a {
+    margin-right: 1em;
+    background-position: 75% 75%;
+}
+
+:host-context([dir="rtl"]) table-class {
+    margin-right: 2000em;
+}
+
+:host-context([dir="rtl"]) li + li {
+    margin-right: 3em;
+}
+
+/* General sibling selectors */
+:host-context([dir="rtl"]) a ~ a {
+    margin-right: 2em;
+}
+
+/* Child selectors */
+:host-context([dir="rtl"]) li > a {
+    margin-right: 4em;
+    }
+
+:host-context([dir="rtl"]) a[href="three.html"] {
+    margin-right: 5em;
+}
+
+:host-context([dir="rtl"]) .foo {
+    float: right /* because `foo: right;` will also work */; /* Test comment { } */
+}
+
+
+@media screen and (min-width: 401px) {
+    :host-context([dir="rtl"]) body {
+        margin-right: 13px
+    }
+}
+
+[Info from CssMirroring on scissors_mirroring_example|lib/global.css]:
+/* css to check import directive in foo.css */
+/* css to check import directive in foo.css */
+/* css to check import directive in foo.css */
+Building scissors_mirroring_example...
+[Info from Dart2JS]:
+Compiling scissors_mirroring_example|web/main.dart...
+[Warning from Dart2JS on scissors_mirroring_example|web/main.dart]:
+packages/angular2/src/core/facade.ng_deps.dart:8:32:
+Library 'package:angular2/src/core/facade/lang.dart' doesn't export a 'ConcreteType' declaration.
+Try removing 'ConcreteType' from the 'show' clause.
+export 'facade/lang.dart' show ConcreteType, Type;
+                               ^^^^^^^^^^^^
+[Warning from Dart2JS on scissors_mirroring_example|web/main.dart]:
+packages/angular2/src/core/facade.dart:4:32:
+Library 'package:angular2/src/core/facade/lang.dart' doesn't export a 'ConcreteType' declaration.
+Try removing 'ConcreteType' from the 'show' clause.
+export "facade/lang.dart" show ConcreteType, Type;
+                               ^^^^^^^^^^^^
+[Warning from Dart2JS on scissors_mirroring_example|web/main.dart]:
+packages/angular2/src/core/facade/collection.dart:3:45:
+Library 'dart:collection' doesn't export a 'Iterator' declaration.
+Try removing 'Iterator' from the 'show' clause.
+import 'dart:collection' show IterableBase, Iterator;
+                                            ^^^^^^^^
+[Warning from Dart2JS on scissors_mirroring_example|web/main.dart]:
+packages/angular2/src/core/facade/browser.dart:12:9:
+Library 'dart:html' doesn't export a 'location' declaration.
+Try removing 'location' from the 'show' clause.
+        location,
+        ^^^^^^^^
+[Warning from Dart2JS on scissors_mirroring_example|web/main.dart]:
+packages/angular2/src/core/util.ng_deps.dart:6:36:
+Library 'package:angular2/src/core/util/decorators.dart' doesn't export a 'Class' declaration.
+Try removing 'Class' from the 'show' clause.
+export 'util/decorators.dart' show Class, ClassDefinition, TypeDecorator;
+                                   ^^^^^
+[Warning from Dart2JS on scissors_mirroring_example|web/main.dart]:
+packages/angular2/src/core/util.ng_deps.dart:6:43:
+Library 'package:angular2/src/core/util/decorators.dart' doesn't export a 'ClassDefinition' declaration.
+Try removing 'ClassDefinition' from the 'show' clause.
+export 'util/decorators.dart' show Class, ClassDefinition, TypeDecorator;
+                                          ^^^^^^^^^^^^^^^
+[Warning from Dart2JS on scissors_mirroring_example|web/main.dart]:
+packages/angular2/src/core/util.ng_deps.dart:6:60:
+Library 'package:angular2/src/core/util/decorators.dart' doesn't export a 'TypeDecorator' declaration.
+Try removing 'TypeDecorator' from the 'show' clause.
+export 'util/decorators.dart' show Class, ClassDefinition, TypeDecorator;
+                                                           ^^^^^^^^^^^^^
+[Warning from Dart2JS on scissors_mirroring_example|web/main.dart]:
+packages/angular2/src/core/util.dart:4:36:
+Library 'package:angular2/src/core/util/decorators.dart' doesn't export a 'Class' declaration.
+Try removing 'Class' from the 'show' clause.
+export "util/decorators.dart" show Class, ClassDefinition, TypeDecorator;
+                                   ^^^^^
+[Warning from Dart2JS on scissors_mirroring_example|web/main.dart]:
+packages/angular2/src/core/util.dart:4:43:
+Library 'package:angular2/src/core/util/decorators.dart' doesn't export a 'ClassDefinition' declaration.
+Try removing 'ClassDefinition' from the 'show' clause.
+export "util/decorators.dart" show Class, ClassDefinition, TypeDecorator;
+                                          ^^^^^^^^^^^^^^^
+[Warning from Dart2JS on scissors_mirroring_example|web/main.dart]:
+packages/angular2/src/core/util.dart:4:60:
+Library 'package:angular2/src/core/util/decorators.dart' doesn't export a 'TypeDecorator' declaration.
+Try removing 'TypeDecorator' from the 'show' clause.
+export "util/decorators.dart" show Class, ClassDefinition, TypeDecorator;
+                                                           ^^^^^^^^^^^^^
+[Info from Dart2JS]:
+Built 881 files to "build".
