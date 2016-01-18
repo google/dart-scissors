@@ -184,14 +184,15 @@ void main() {
       url('myfont.woff') format('woff');
     }''',
     'namespace': '''@namespace url(http://www.w3.org/1999/xhtml);'''
-};
+  };
   directionIndependentDirectives.forEach((directive, css) {
     /// Keeps direction independent directives like
     /// @charset, @import, @font-face, @namespace same.
     testPhases('keeps $directive directive untouched', phases, {
       'a|foo2_unmatched_css_url.css': css
     }, {
-        'a|foo2_unmatched_css_url.css': css + r'''
+      'a|foo2_unmatched_css_url.css': css +
+          r'''
 
 
         '''

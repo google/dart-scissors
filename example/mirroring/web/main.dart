@@ -14,11 +14,8 @@ main() async {
   Intl.defaultLocale = languageRx.firstMatch(window.location.href)?.group(1) ??
       Intl.getCurrentLocale();
 
-  document
-      .querySelector('body')
-      .dir =
-  Bidi.isRtlLanguage(Intl.getCurrentLocale())
-      ? 'rtl' : 'ltr';
+  document.querySelector('body').dir =
+      Bidi.isRtlLanguage(Intl.getCurrentLocale()) ? 'rtl' : 'ltr';
 
   bootstrap(FooComponent);
 }

@@ -15,7 +15,6 @@ enum RetentionMode {
   keepFlippedBidiSpecific
 }
 
-
 /// Stores the start and end locations of the pending removals.
 class PendingRemovals {
   final String source;
@@ -39,7 +38,7 @@ class PendingRemovals {
     _removalStartEndLocations.clear();
   }
 
-   List<_Range> getRemovalStartEndLocations() {
+  List<_Range> getRemovalStartEndLocations() {
     return _removalStartEndLocations;
   }
 }
@@ -58,10 +57,9 @@ class FlippableEntity<T> {
 
   T get original => _entities.originals[index];
   T get flipped => _entities.flippeds[index];
-  FlippableEntity<T> get next =>
-      index < _entities.originals.length - 1
-          ? new FlippableEntity<T>(_entities, index + 1)
-          : null;
+  FlippableEntity<T> get next => index < _entities.originals.length - 1
+      ? new FlippableEntity<T>(_entities, index + 1)
+      : null;
 }
 
 class FlippableEntities<T> {
@@ -78,7 +76,6 @@ class FlippableEntities<T> {
     }
   }
 }
-
 
 class EditConfiguration {
   final RetentionMode mode;

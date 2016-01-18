@@ -12,7 +12,8 @@ bool _areDirIndependentDirectives(FlippableEntity<TreeNode> tnode) =>
             tnode.original is ImportDirective ||
             tnode.original is NamespaceDirective));
 
-bool _areRuleSets(FlippableEntity<TreeNode> tnode) => (tnode.original is RuleSet && tnode.flipped is RuleSet);
+bool _areRuleSets(FlippableEntity<TreeNode> tnode) =>
+    (tnode.original is RuleSet && tnode.flipped is RuleSet);
 
 bool _areDirDependentDirectives(FlippableEntity<TreeNode> tnode) =>
     (tnode.original.runtimeType == tnode.flipped.runtimeType &&
@@ -23,7 +24,6 @@ bool _areDeclarations(TreeNode a, TreeNode b) =>
 
 bool _areDeclarationsTextEqual(Declaration a, Declaration b) =>
     a.span.text == b.span.text;
-
 
 /// A rule can be removed if all the declarations in the rule can be removed.
 bool _isRuleRemovable(PendingRemovals removals, RuleSet rule) =>
@@ -37,7 +37,6 @@ bool _shouldRemoveDecl(
   return mode == RetentionMode.keepBidiNeutral ? !isEqual : isEqual;
 }
 
-
 int _getNodeStart(TreeNode node) {
   if (node is RuleSet) return node.span.start.offset;
 // In case of Directives since the node span start does not include '@'
@@ -49,7 +48,6 @@ int _getNodeStart(TreeNode node) {
 /// document end in case of a toplevel ruleset and is directive end if ruleset is
 /// part of a toplevel directive like @media directive.
 int _getRuleSetEnd(List<RuleSet> ruleSets, int ruleSetIndex, int parentEnd) {
-
   final int end = ruleSetIndex < ruleSets.length - 1
       ? _getNodeStart(ruleSets[ruleSetIndex + 1])
       : parentEnd;
@@ -85,16 +83,16 @@ int getDeclarationEnd(String source, List<Declaration> decls, int iDecl) {
 }
 
 List<TreeNode> _getProcessedTopLevels(
-    RetentionMode mode,FlippableEntities topLevelsPair) =>
+        RetentionMode mode, FlippableEntities topLevelsPair) =>
     (mode == RetentionMode.keepFlippedBidiSpecific)
         ? topLevelsPair.flippeds
         : topLevelsPair.originals;
 
 void _removeDirective(TextEditTransaction trans, TreeNode topLevel) =>
-  trans.edit(_getNodeStart(topLevel), topLevel.span.end.offset, '');
+    trans.edit(_getNodeStart(topLevel), topLevel.span.end.offset, '');
 
-void _prependDirectionToRuleSet(TextEditTransaction trans,
-    EditConfiguration editConfig, RuleSet ruleSet) {
+void _prependDirectionToRuleSet(
+    TextEditTransaction trans, EditConfiguration editConfig, RuleSet ruleSet) {
   trans.edit(ruleSet.span.start.offset, ruleSet.span.start.offset,
       ':host-context([dir="${enumName(editConfig.targetDirection)}"]) ');
 }

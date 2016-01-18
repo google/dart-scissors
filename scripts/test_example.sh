@@ -8,7 +8,7 @@ set -eu
 readonly EXAMPLE_NAME="$1"
 
 cd $(dirname ${BASH_SOURCE[0]})/..
-cd "$EXAMPLE_NAME"
+cd "example/$EXAMPLE_NAME"
 
 # TODO(ochafik): Update pubspec with current version of scissors
 # sed -i.bak -E 's!scissors: .+!scissors: '$version'!' pubspec.yaml

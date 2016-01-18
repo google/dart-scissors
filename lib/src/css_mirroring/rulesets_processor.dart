@@ -9,7 +9,7 @@ PendingRemovals removeDeclarationsAndPrependDirectionToRuleSet(
   final removableRuleSets = new PendingRemovals(trans);
   final removableDeclarations = new PendingRemovals(trans);
   final List<TreeNode> processedTopLevelsBasedOnMode =
-  _getProcessedTopLevels(editConfig.mode, topLevelsPair);
+      _getProcessedTopLevels(editConfig.mode, topLevelsPair);
 
   _removeDeclarations(
       editConfig, topLevelsPair, iTopLevel, removableDeclarations);
@@ -33,14 +33,15 @@ PendingRemovals removeDeclarationsAndPrependDirectionToRuleSet(
 
 /// Stores start and end locations of removable declarations in a ruleset
 /// based upon the retention mode.
-void _removeDeclarations(EditConfiguration editConfig,
+void _removeDeclarations(
+    EditConfiguration editConfig,
     FlippableEntities<TreeNode> topLevelsPair,
     int iTopLevel,
     PendingRemovals removals) {
   var originalDecls = getDecls(topLevelsPair.originals[iTopLevel]);
   var flippedDecls = getDecls(topLevelsPair.flippeds[iTopLevel]);
   FlippableEntities<Declaration> declsPair =
-  new FlippableEntities<Declaration>(originalDecls, flippedDecls);
+      new FlippableEntities<Declaration>(originalDecls, flippedDecls);
   var decls = (editConfig.mode == RetentionMode.keepFlippedBidiSpecific)
       ? flippedDecls
       : originalDecls;
@@ -63,7 +64,8 @@ void _removeDeclarations(EditConfiguration editConfig,
 
 /// Removes declarations from ruleset depending upon the rentention mode.
 /// Also removes empty rules.
-removeDeclarationsAndDeleteEmptyRuleSets(TextEditTransaction trans,
+removeDeclarationsAndDeleteEmptyRuleSets(
+    TextEditTransaction trans,
     EditConfiguration editConfig,
     FlippableEntities<TreeNode> topLevelsPair,
     int iTopLevel) {
