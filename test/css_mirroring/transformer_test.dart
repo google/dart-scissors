@@ -34,36 +34,34 @@ void main() {
       'splits the rule with language dependent declaration to common rule and language dependent rules',
       phases, {
     'a|foo2_unmatched_css_url.css': r'''
-          absent-element {
-            color: blue;
-            float: right;
-        }
-       '''
+      absent-element {
+        color: blue;
+        float: right;
+      }
+   '''
   }, {
     'a|foo2_unmatched_css_url.css': r'''
-          absent-element {
-            color: blue;
-            }
-
-          :host-context([dir="ltr"]) absent-element {
-            float: right;
+      absent-element {
+        color: blue;
         }
 
-          :host-context([dir="rtl"]) absent-element {
-            float: left;
-        }
-        '''
+      :host-context([dir="ltr"]) absent-element {
+        float: right;
+      }
+
+      :host-context([dir="rtl"]) absent-element {
+        float: left;
+      }
+    '''
   });
 
   testPhases('removes empty rules', phases, {
     'a|foo2_unmatched_css_url.css': r'''
-        .used-class {}
-        .unused-class {}
+      .used-class {}
+      .unused-class {}
     '''
   }, {
     'a|foo2_unmatched_css_url.css': r'''
-
-
     '''
   });
 
@@ -71,58 +69,55 @@ void main() {
   /// direction dependent rules without any rule for common values
   testPhases('drops orientation-neutral rules when they are empty', phases, {
     'a|foo2_unmatched_css_url.css': r'''
-          absent-element {
-            float: left;
-            margin-left: 100px;
-        }
-          .usedclass {
-            padding: right;
-            text-align: left;
-        }
-        '''
+      absent-element {
+        float: left;
+        margin-left: 100px;
+      }
+      .usedclass {
+        padding: right;
+        text-align: left;
+      }
+    '''
   }, {
     'a|foo2_unmatched_css_url.css': r'''
+      :host-context([dir="ltr"]) absent-element {
+        float: left;
+        margin-left: 100px;
+      }
+      :host-context([dir="ltr"]) .usedclass {
+        padding: right;
+        text-align: left;
+      }
 
-          :host-context([dir="ltr"]) absent-element {
-            float: left;
-            margin-left: 100px;
-        }
-          :host-context([dir="ltr"]) .usedclass {
-            padding: right;
-            text-align: left;
-        }
-
-          :host-context([dir="rtl"]) absent-element {
-            float: right;
-            margin-right: 100px;
-        }
-          :host-context([dir="rtl"]) .usedclass {
-            padding: left;
-            text-align: right;
-        }
-        '''
+      :host-context([dir="rtl"]) absent-element {
+        float: right;
+        margin-right: 100px;
+      }
+      :host-context([dir="rtl"]) .usedclass {
+        padding: left;
+        text-align: right;
+      }
+    '''
   });
 
   testPhases('leaves orientation-neutral rules unchanged', phases, {
     'a|foo2_unmatched_css_url.css': r'''
-          absent-element {
-            color: blue;
-        }
-          .usedclass {
-            background-size: 16px 16px;
-        }
-        '''
+      absent-element {
+        color: blue;
+      }
+      .usedclass {
+        background-size: 16px 16px;
+      }
+    '''
   }, {
     'a|foo2_unmatched_css_url.css': r'''
-          absent-element {
-            color: blue;
-        }
-          .usedclass {
-            background-size: 16px 16px;
-        }
-
-
-        '''
+      absent-element {
+        color: blue;
+      }
+      .usedclass {
+        background-size: 16px 16px;
+      }
+    '''
   });
 
   testPhases(
@@ -188,15 +183,11 @@ void main() {
   directionIndependentDirectives.forEach((directive, css) {
     /// Keeps direction independent directives like
     /// @charset, @import, @font-face, @namespace same.
-    testPhases('keeps $directive directive untouched', phases, {
-      'a|foo2_unmatched_css_url.css': css
-    }, {
-      'a|foo2_unmatched_css_url.css': css +
-          r'''
-
-
-        '''
-    });
+    testPhases(
+        'keeps $directive directive untouched',
+        phases,
+        {'a|foo2_unmatched_css_url.css': css},
+        {'a|foo2_unmatched_css_url.css': css});
   });
 
   /// Splits direction dependent directives @media to direction independent and
@@ -209,8 +200,6 @@ void main() {
     '''
   }, {
     'a|foo2_unmatched_css_url.css': r'''
-
-
        @media screen and (min-width: 401px) {
                 :host-context([dir="ltr"]) body { margin-left: 13px }
        }
@@ -229,8 +218,6 @@ void main() {
     '''
   }, {
     'a|foo2_unmatched_css_url.css': r'''
-
-
        @host { :host-context([dir="ltr"]) :scope { padding: left; } }
 
        @host { :host-context([dir="rtl"]) :scope { padding: right; } }

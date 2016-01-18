@@ -17,5 +17,7 @@ main() async {
   document.querySelector('body').dir =
       Bidi.isRtlLanguage(Intl.getCurrentLocale()) ? 'rtl' : 'ltr';
 
+  await initializeMessages(Intl.getCurrentLocale());
+
   bootstrap(FooComponent);
 }

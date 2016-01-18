@@ -11,19 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.src.css_mirroring.cssjanus_runner;
+library scissors.src.css_mirroring.util_functions;
 
-import 'dart:async';
-import 'dart:io';
+import 'package:csslib/visitor.dart';
 
-import '../utils/process_utils.dart';
+bool isDirectionInsensitive(TreeNode node) => node is CharsetDirective ||
+    node is FontFaceDirective ||
+    node is ImportDirective ||
+    node is NamespaceDirective;
 
-/// Runs cssjanus (https://github.com/cegov/wiki/tree/master/maintenance/cssjanus)
-/// on [css], and returns the flipped CSS.
-///
-/// [cssJanusPath] points to an executable.
-Future<String> runCssJanus(String css, String cssJanusPath) async =>
-    successString(
-        'cssjanus',
-        await pipeInAndOutOfNewProcess(
-            await Process.start(cssJanusPath, []), css));
+bool hasNestedRuleSets(TreeNode node) =>
+    node is MediaDirective || node is HostDirective;

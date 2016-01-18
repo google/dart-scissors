@@ -1,46 +1,44 @@
-part of scissors.src.css_mirroring.bidi_css_generator;
+// Copyright 2015 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+library scissors.src.css_mirroring.directive_processors;
 
-keepDirectionIndependentDirectivesInBidiNeutralTransaction(
-    TextEditTransaction trans,
-    EditConfiguration editConfig,
-    FlippableEntities<TreeNode> topLevelsPair,
-    int iTopLevel) {
-  if (editConfig.mode != RetentionMode.keepBidiNeutral) {
-    _removeRuleSet(trans,
-        _getProcessedTopLevels(editConfig.mode, topLevelsPair), iTopLevel);
-  }
-}
+import 'package:csslib/visitor.dart' show Directive, RuleSet;
+
+import 'buffered_transaction.dart';
+import 'edit_configuration.dart';
+import 'mirrored_entities.dart';
+import 'rulesets_processor.dart' show editRuleSet, RemovalResult;
 
 /// All removable declarations of ruleset are removed and if all declarations
 /// in rulesets have to be removed, it removes ruleset itself.
 /// Also if all rulesets have to be removed, it removes the directive.
-editRuleSetsInDirectionDependentDirectiveandRemoveEmptyDirective(
-    TextEditTransaction trans,
-    EditConfiguration editConfig,
-    FlippableEntities topLevelsPair,
-    int iTopLevel) {
-  final _originalRuleSets = topLevelsPair.originals[iTopLevel].rulesets;
-  final _flippedRuleSets = topLevelsPair.flippeds[iTopLevel].rulesets;
-  FlippableEntities<TreeNode> ruleSetsPair =
-      new FlippableEntities<TreeNode>(_originalRuleSets, _flippedRuleSets);
-  final _usedDirective =
-      _getProcessedTopLevels(editConfig.mode, topLevelsPair)[iTopLevel];
-  var _removableRuleSets;
-
-  ruleSetsPair.forEach((FlippableEntity<Declaration> declEntity) {
-    _removableRuleSets = removeDeclarationsAndPrependDirectionToRuleSet(
-        trans,
-        editConfig,
-        ruleSetsPair,
-        declEntity.index,
-        _usedDirective.span.end.offset);
+editDirectiveWithNestedRuleSets(
+    MirroredEntity<Directive> directive,
+    MirroredEntities<RuleSet> nestedRuleSets,
+    RetentionMode mode,
+    Direction targetDirection,
+    BufferedTransaction trans) {
+  var subTransaction = trans.createSubTransaction();
+  bool removedAll = true;
+  nestedRuleSets.forEach((MirroredEntity<RuleSet> ruleSet) {
+    var result = editRuleSet(ruleSet, mode, targetDirection, subTransaction);
+    if (result != RemovalResult.removedAll) removedAll = false;
   });
 
-  if (_removableRuleSets.getRemovalStartEndLocations().length ==
-      _originalRuleSets.length) {
-    // All rules are to be removed.
-    _removeDirective(trans, _usedDirective);
+  if (removedAll) {
+    directive.remove(mode, trans);
   } else {
-    _removableRuleSets.commit();
+    subTransaction.commit();
   }
 }

@@ -11,19 +11,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-library scissors.src.css_mirroring.cssjanus_runner;
+library scissors.src.css_mirroring.edit_configuration;
 
-import 'dart:async';
-import 'dart:io';
+enum Direction { ltr, rtl }
 
-import '../utils/process_utils.dart';
+Direction flipDirection(Direction dir) =>
+    dir == Direction.ltr ? Direction.rtl : Direction.ltr;
 
-/// Runs cssjanus (https://github.com/cegov/wiki/tree/master/maintenance/cssjanus)
-/// on [css], and returns the flipped CSS.
-///
-/// [cssJanusPath] points to an executable.
-Future<String> runCssJanus(String css, String cssJanusPath) async =>
-    successString(
-        'cssjanus',
-        await pipeInAndOutOfNewProcess(
-            await Process.start(cssJanusPath, []), css));
+/// Indicates which parts of a CSS must be retained.
+enum RetentionMode {
+  /// Keep parts of CSS which are direction-independent eg: color and width.
+  keepBidiNeutral,
+
+  /// Keep direction dependent parts of original CSS eg: margin.
+  keepOriginalBidiSpecific,
+
+  /// to keep direction dependent parts of flipped CSS.
+  keepFlippedBidiSpecific
+}

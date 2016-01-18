@@ -57,8 +57,6 @@ a[href="three.html"] {
     }
 }
 
-
-
 :host-context([dir="ltr"]) present-element {
     margin-left: 10em;
 }
@@ -93,7 +91,6 @@ a[href="three.html"] {
 :host-context([dir="ltr"]) .foo {
     float: left /* because `foo: right;` will also work */; /* Test comment { } */
 }
-
 
 @media screen and (min-width: 401px) {
     :host-context([dir="ltr"]) body {
@@ -136,7 +133,6 @@ a[href="three.html"] {
 :host-context([dir="rtl"]) .foo {
     float: right /* because `foo: right;` will also work */; /* Test comment { } */
 }
-
 
 @media screen and (min-width: 401px) {
     :host-context([dir="rtl"]) body {
@@ -212,4 +208,4 @@ Try removing 'TypeDecorator' from the 'show' clause.
 export "util/decorators.dart" show Class, ClassDefinition, TypeDecorator;
                                                            ^^^^^^^^^^^^^
 [Info from Dart2JS]:
-Built 881 files to "build".
+Built 885 files to "build".

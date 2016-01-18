@@ -1,5 +1,4 @@
 // Copyright 2015 Google Inc. All Rights Reserved.
-
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,18 +13,12 @@
 // limitations under the License.
 part of scissors.src.css_mirroring.transformer;
 
-enum Direction { ltr, rtl }
-
-Direction flipDirection(Direction dir) =>
-    dir == Direction.ltr ? Direction.rtl : Direction.ltr;
-
-_makeMirrorCssSetting({bool defaultValue}) =>
-    new Setting<bool>('mirrorCss', defaultValue: defaultValue);
+const _mirrorCssSetting = 'mirrorCss';
 
 abstract class CssMirroringSettings {
   Setting<bool> get verbose;
 
-  final mirrorCss = _makeMirrorCssSetting(defaultValue: false);
+  final mirrorCss = new Setting<bool>(_mirrorCssSetting, defaultValue: false);
 
   final nativeDirection = new Setting<Direction>('orignalCssDirection',
       defaultValue: Direction.ltr,
@@ -37,5 +30,6 @@ abstract class CssMirroringSettings {
 class _CssMirroringSettings extends SettingsBase with CssMirroringSettings {
   _CssMirroringSettings(settings) : super(settings);
 
-  @override final mirrorCss = _makeMirrorCssSetting(defaultValue: true);
+  @override final mirrorCss =
+      new Setting<bool>(_mirrorCssSetting, defaultValue: true);
 }

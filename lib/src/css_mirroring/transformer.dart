@@ -1,5 +1,4 @@
 // Copyright 2015 Google Inc. All Rights Reserved.
-
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,12 +17,13 @@ import 'dart:async';
 
 import 'package:barback/barback.dart';
 
+import 'bidi_css_generator.dart';
+import 'cssjanus_runner.dart';
+import 'edit_configuration.dart';
 import '../utils/enum_parser.dart';
 import '../utils/file_skipping.dart';
 import '../utils/path_resolver.dart';
 import '../utils/settings_base.dart';
-import 'bidi_css_generator.dart';
-import 'cssjanus_runner.dart';
 
 part 'settings.dart';
 

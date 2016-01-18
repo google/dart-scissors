@@ -4,8 +4,7 @@ import 'package:unittest/unittest.dart';
 import 'package:csslib/parser.dart' show parse;
 import 'package:csslib/visitor.dart'
     show TreeNode, DeclarationGroup, Declaration, RuleSet;
-
-import 'package:scissors/src/css_mirroring/bidi_css_generator.dart';
+import 'package:scissors/src/css_mirroring/entity.dart';
 
 main() {
   List<Declaration> _parseDeclarations(String decls) =>
