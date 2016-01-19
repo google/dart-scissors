@@ -2,17 +2,17 @@ Loading source assets...
 Loading dart_to_js_script_rewriter, di/module_transformer, observe, scissors, scissors/reloader/transformer and smoke/src/default_transformer transformers...
 Loading angular transformers...
 Building scissors_angular1_example...
-[Info from SvgOptimization on scissors_angular1_example|lib/icon2.svg]:
-Optimized SVG: 213 chars → 125 chars (-88 chars = -41.4%)
-[Info from SvgOptimization on scissors_angular1_example|lib/icon2.svg]:
-Optimized SVG content:
-<svg xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" height="10" width="10" style="stroke:#0000ff;fill:#00ff00"/>
-</svg>
 [Info from SvgOptimization on scissors_angular1_example|lib/icon.svg]:
 Optimized SVG: 671 chars → 255 chars (-416 chars = -62.0%)
 [Info from SvgOptimization on scissors_angular1_example|lib/icon.svg]:
 Optimized SVG content:
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="21px" height="21px" viewBox="0 0 21 21" overflow="visible" enable-background="new 0 0 21 21"><rect x="0" y="0" height="10" width="10" style="stroke:#00ff00;fill:#ff0000"/>
+</svg>
+[Info from SvgOptimization on scissors_angular1_example|lib/icon2.svg]:
+Optimized SVG: 213 chars → 125 chars (-88 chars = -41.4%)
+[Info from SvgOptimization on scissors_angular1_example|lib/icon2.svg]:
+Optimized SVG content:
+<svg xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" height="10" width="10" style="stroke:#0000ff;fill:#00ff00"/>
 </svg>
 [Info from ReloaderRemoval on scissors_angular1_example|web/main.dart]:
 Removing reference to reloader

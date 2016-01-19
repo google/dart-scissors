@@ -22,7 +22,8 @@ import 'package:source_maps/refactor.dart' show TextEditTransaction;
 import 'package:source_span/source_span.dart' show SourceFile;
 
 import 'buffered_transaction.dart';
-import 'css_utils.dart' show isDirectionInsensitive, hasNestedRuleSets, Direction, flipDirection;
+import 'css_utils.dart'
+    show isDirectionInsensitive, hasNestedRuleSets, Direction, flipDirection;
 import 'directive_processors.dart' show editFlippedDirectiveWithNestedRuleSets;
 import 'mirrored_entities.dart';
 import 'rulesets_processor.dart' show editFlippedRuleSet;

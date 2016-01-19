@@ -2,6 +2,12 @@
 
 ...
 
+## 0.4.1 (2016-01-19)
+
+### Bugfixes
+
+- Simplified bidirectional CSS output (issue #23): now produces smaller code.
+
 ## 0.4.0 (2016-01-19)
 
 ### Features

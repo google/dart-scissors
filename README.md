@@ -112,7 +112,7 @@ Examples: see [example/angular1](https://github.com/google/dart-scissors/tree/ma
 
   ```
   dev_dependencies:
-    scissors: ^0.4.0
+    scissors: ^0.4.1
   transformers:
   - scissors
   ```
@@ -186,7 +186,7 @@ Example: see [example/mirroring](https://github.com/google/dart-scissors/tree/ma
 
 Valid settings:
 - `mirrorCss` (boolean): `true` by default (Note: this is not the same default as in the `scissors` transformer)
-- `nativeDirection` (`ltr` or `rtl`): `ltr` by default, defines the direction of input css.
+- `orignalCssDirection` (`ltr` or `rtl`): `ltr` by default, defines the direction of input css.
 - `cssJanusPath`: `cssjanus.py` by default.
 
 ### Limitations
