@@ -74,6 +74,29 @@ transformers:
         optimizeSvg: true
 ```
 
+## Prequisites
+
+If you checked out `scissors`'s sources, you can run `. ./script/install_dependencies.sh` to get all the required dependencies, and skip the rest of this section :-)
+
+### Installing CSSJanus
+
+You'll need a local install of [CSSJanus](https://github.com/cegov/wiki/tree/master/maintenance/cssjanus) for CSS mirroring.
+
+Note that this transformer uses Google's original cssjanus.py, not its .js port ([github.com/cssjanus/cssjanus](https://github.com/cssjanus/cssjanus), which might work if packaged as a binary that consumes css from stdin and outputs mirrored css on stdout).
+
+To install CSSJanus, run the following command in a console (ensure you have something like `export PATH=~/bin:$PATH` in your `~/.profile` or `~/.bashrc`):
+
+  ```
+  mkdir -p ~/bin/cssjanus
+  curl http://cssjanus.googlecode.com/svn/trunk/cssjanus.py > ~/bin/cssjanus.py
+  ```
+
+### Other deps: SassC, pngcrush...
+
+These packages are quite standard, you can get them with `brew install` on MacOS X and with `sudo apt-get install` on Ubuntu:
+- `sassc`
+- `pngcrush`
+
 ## Using the `scissors` transformer
 
 The default transformer will build Sass files in a blink of an
@@ -144,13 +167,7 @@ not use sCiSSors on packages / projects with that strategy.
 
 ## Using `scissors/css_mirroring_transformer`
 
-See [BidirectionalCss.md] for more details.
-
-Required: [CssJanus](https://github.com/cegov/wiki/tree/master/maintenance/cssjanus)  
-Note: Two versions are available - Google's original cssjanus.py and [https://github.com/cssjanus/cssjanus]. Here the transformer uses Google's original cssjanus.py
-
-Run the following command in shell to setup CssJanus:   
-`mkdir -p $HOME/bin && svn checkout http://cssjanus.googlecode.com/svn/trunk/ $HOME/bin && export PATH=$HOME/bin/cssjanus:$PATH`
+See [BidirectionalCss](BidirectionalCss.md) for more details.
 
 Example: see [example/mirroring](https://github.com/google/dart-scissors/tree/master/example/mirroring).
 
