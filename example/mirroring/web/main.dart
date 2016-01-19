@@ -14,7 +14,8 @@ main() async {
   Intl.defaultLocale = languageRx.firstMatch(window.location.href)?.group(1) ??
       Intl.getCurrentLocale();
 
-  document.body.dir = Bidi.isRtlLanguage(Intl.getCurrentLocale()) ? 'rtl' : 'ltr';
+  document.body.dir =
+      Bidi.isRtlLanguage(Intl.getCurrentLocale()) ? 'rtl' : 'ltr';
 
   await initializeMessages(Intl.getCurrentLocale());
 

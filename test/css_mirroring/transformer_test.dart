@@ -56,8 +56,7 @@ void main() {
   });
 
   testPhases(
-      'honours and consumes cssjanus\'s /* @noflip */ comments',
-      phases, {
+      'honours and consumes cssjanus\'s /* @noflip */ comments', phases, {
     'a|foo_noflip.css': r'''
       /* @noflip */
       absent-element[dir="rtl"] {

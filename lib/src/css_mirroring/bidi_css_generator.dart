@@ -111,7 +111,8 @@ class BidiCssGenerator {
   }
 }
 
-final noFlipCommentRx = new RegExp(r'/\*\*?\s*@noflip\s*\*/\s*', multiLine: true);
+final noFlipCommentRx =
+    new RegExp(r'/\*\*?\s*@noflip\s*\*/\s*', multiLine: true);
 
 String _cleanupCss(String css) {
   return css.replaceAll(noFlipCommentRx, '');
