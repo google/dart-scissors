@@ -20,15 +20,14 @@ most of them are disabled or optimized for speed with `pub serve` in debug mode.
   - Given `foo { color: blue; float: left }`, it generates:
 
     ```css
-    foo { color: blue }
-    :host-context([dir="ltr"]) foo { float: left }
+    foo { color: blue; float: left }
     :host-context([dir="rtl"]) foo { float: right }
     ```
 
     So you just need the supporting code in your `main.dart` to support bidirectional layouts (see [example/mirroring](https://github.com/google/dart-scissors/tree/master/example/mirroring)):
 
     ```dart
-    document.body.dir = Bidi.isRtlLanguage(Intl.getCurrentLocale()) ? 'rtl' : 'ltr';
+    document.body.dir =  ? 'rtl' : 'ltr';
     ```
 
 - [Sass](http://sass-lang.com) compilation:
