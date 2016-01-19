@@ -71,7 +71,7 @@ transformers:
     release:
         optimizeSvg: false
     debug:
-        optimizeSvg: false
+        optimizeSvg: true
 ```
 
 ## Using the `scissors` transformer
