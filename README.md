@@ -15,11 +15,22 @@ most of them are disabled or optimized for speed with `pub serve` in debug mode.
     (e.g. `class="some-{{fragmented}}-class and-some-normal-class"`,
     `ng-class="{'some-class': isSome}"`).
   - Disabled by default in debug mode.
-- CSS mirroring for Angular (see [example/mirroring](https://github.com/google/dart-scissors/tree/master/example/mirroring)):
-  - Performs RTL mirroring of CSS.
-  - Can be used as a standalone transformer and with scissors transformer.
-  - Uses CSSjanus, with extra logic to know which properties are flippable and to recombine the three portions: orientation-neutral, non-flipped orientation-specific, flipped orientation-specific.
-  - Enabled by default in debug mode.
+- CSS mirroring / bidirectionalization that works with Angular2's transformer:
+  - Uses CSSJanus to produce a single CSS file that supports both RTL & LTR layouts!
+  - Given `foo { color: blue; float: left }`, it generates:
+
+    ```css
+    foo { color: blue }
+    :host-context([dir="ltr"]) foo { float: left }
+    :host-context([dir="rtl"]) foo { float: right }
+    ```
+
+    So you just need the supporting code in your `main.dart` to support bidirectional layouts (see [example/mirroring](https://github.com/google/dart-scissors/tree/master/example/mirroring)):
+
+    ```dart
+    document.body.dir = Bidi.isRtlLanguage(Intl.defaultLocale()) ? 'rtl' : 'ltr';
+    ```
+
 - [Sass](http://sass-lang.com) compilation:
   - Compiles `*.sass` and `*.scss` files with [`sassc`](https://github.com/sass/sassc),
     the lightning-fast C++ port of Ruby Sass.
@@ -94,6 +105,7 @@ Valid settings:
 - `optimizeSvg` (boolean): by default, `true` in `release` only
 - `sasscPath`: default is `sassc`
 - `pngCrushPath`: default is `pngcrush`
+- `mirrorCss` (boolean): default is `false`
 
 ### Limitations
 
@@ -132,9 +144,11 @@ not use sCiSSors on packages / projects with that strategy.
 
 ## Using `scissors/css_mirroring_transformer`
 
+See [BidirectionalCss.md] for more details.
+
 Required: [CssJanus](https://github.com/cegov/wiki/tree/master/maintenance/cssjanus)  
-Note: Two versions available - Google's original cssjanus.py and [https://github.com/cssjanus/cssjanus]. Here the transofrmer uses Google's original cssjanus.py
-          
+Note: Two versions are available - Google's original cssjanus.py and [https://github.com/cssjanus/cssjanus]. Here the transformer uses Google's original cssjanus.py
+
 Run the following command in shell to setup CssJanus:   
 `mkdir -p $HOME/bin && svn checkout http://cssjanus.googlecode.com/svn/trunk/ $HOME/bin && export PATH=$HOME/bin/cssjanus:$PATH`
 
@@ -146,19 +160,18 @@ Example: see [example/mirroring](https://github.com/google/dart-scissors/tree/ma
   dev_dependencies:
     scissors
   transformers:
-  - scissors/cssmirroring_transformer
+  - scissors/css_mirroring_transformer
   ```
 
 Valid settings:
-- `mirrorCss`: `true` by default in release mode and `false` by default in debug mode.
-- `nativeDirection`: Defines the direction of input css. `ltr` by default in debug and release mode.
-- `cssJanusPath`: `cssjanus` by default.
+- `mirrorCss` (boolean): `true` by default (Note: this is not the same default as in the `scissors` transformer)
+- `nativeDirection` (`ltr` or `rtl`): `ltr` by default, defines the direction of input css.
+- `cssJanusPath`: `cssjanus.py` by default.
 
 ### Limitations
- - Works only on css files when used as standalone css_mirroring_transformer. 
- - Does not handle directives like `@keyframes` and `@page`.
- 
-See [BidirectionalCss.md] for more details.
+
+- The standalone `scissors/css_mirroring_transformer` transformer only consumes CSS files. If you need Sass support, please use the `scissors` transformer with `mirrorCss: true`.
+- Does not handle directives like `@keyframes` and `@page`.
 
 ## Using `scissors/permutations_transformer`
 
