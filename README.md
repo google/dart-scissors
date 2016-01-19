@@ -1,5 +1,5 @@
 # sCiSSors [![Build Status](https://travis-ci.org/google/dart-scissors.svg?branch=master)](https://travis-ci.org/google/dart-scissors) [![Pub Package](https://img.shields.io/pub/v/scissors.svg)](https://pub.dartlang.org/packages/scissors)
-**Build smaller resources for Angular apps, faster: CSS pruning, SVG+PNG optimization, Sass compilation, locale permutations, automatic reload.**
+**Smarter resources for Angular apps: CSS pruning, bidirectional layouts, SVG & PNG optimization, Sass compilation, locale permutations, automatic reload.**
 
 _Disclaimer_: This is not an official Google product.
 
