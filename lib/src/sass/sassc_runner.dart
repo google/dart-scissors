@@ -28,8 +28,9 @@ import '../utils/result.dart' show TransformMessage, TransformResult;
 class SasscSettings {
   final String sasscPath;
   final List<String> sasscArgs;
+  final List<Directory> sasscIncludes;
 
-  SasscSettings(this.sasscPath, this.sasscArgs);
+  SasscSettings(this.sasscPath, this.sasscArgs, this.sasscIncludes);
 }
 
 // Each isolate gets its temp dir.

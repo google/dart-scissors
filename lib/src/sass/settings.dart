@@ -37,24 +37,55 @@ abstract class SassSettings {
   final sasscPath = makePathSetting('sasscPath', pathResolver.defaultSassCPath,
       isExecutable: true);
 
-  final sasscArgs = new Setting<List<String>>('sasscArgs', defaultValue: []);
+  final _sasscArgs = new Setting<List<String>>('sasscArgs', defaultValue: []);
 
   Future<SasscSettings> _sasscSettings;
   Future<SasscSettings> get sasscSettings {
     if (_sasscSettings == null) {
       _sasscSettings = (() async {
-        var path = await sasscPath.value;
-        var args = [];
+        var sasscIncludes = <Directory>[];
+        var args = <String>[]..addAll(
+            await _resolveSassIncludePaths(
+                _sasscArgs.value.map(resolveEnvVars).toList(),
+                (String includePath) async {
+                  includePath = await pathResolver.resolvePath(includePath);
+                  sasscIncludes.add(new Directory(includePath));
+                  return includePath;
+                }));
+
         for (var dir in await pathResolver.getSassIncludeDirectories()) {
           args..add("--load-path")..add(dir.path);
+          sasscIncludes.add(dir);
         }
-        args.addAll(sasscArgs.value.map(resolveEnvVars) ?? []);
-
-        return new SasscSettings(path, args);
+        return new SasscSettings(await sasscPath.value, args, sasscIncludes);
       })();
     }
     return _sasscSettings;
   }
+}
+
+const _loadPathPrefixes = const <String>['-I', '--load-path='];
+
+Future<List<String>> _resolveSassIncludePaths(
+    List<String> args,
+    Future<String> transform(String path)) async {
+  args = new List<String>.from(args);
+
+  for (int i = 0, n = args.length; i < n; i++) {
+    var arg = args[i];
+    if (arg == '-I' || arg == '--load-path') {
+      i++;
+      args[i] = await transform(args[i]);
+    } else {
+      for (var prefix in _loadPathPrefixes) {
+        if (arg.startsWith(prefix)) {
+          args[i] = prefix + await transform(arg.substring(prefix.length));
+          break;
+        }
+      }
+    }
+  }
+  return args;
 }
 
 class _SassSettings extends SettingsBase with SassSettings {

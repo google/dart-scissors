@@ -14,15 +14,16 @@
 library scissors.src.sass.transformer;
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:barback/barback.dart';
+import 'package:quiver/check.dart';
 
+import 'sassc_runner.dart' show SasscSettings, runSassC;
 import '../utils/deps_consumer.dart';
 import '../utils/file_skipping.dart';
 import '../utils/path_resolver.dart';
 import '../utils/settings_base.dart';
-import 'sassc_runner.dart' show SasscSettings, runSassC;
-import 'package:quiver/check.dart';
 
 part 'settings.dart';
 
@@ -86,9 +87,13 @@ class SassTransformer extends AggregateTransformer
 
     checkState(scss != null, message: () => "Didn't find scss in ${inputs}");
 
+    var sasscSettings = await _settings.sasscSettings;
+
     // Mark transitive SASS @imports as barback dependencies.
     Future<Set<AssetId>> depsFuture =
-        consumeTransitiveSassDeps(transform.getInput, transform.logger, scss);
+        consumeTransitiveSassDeps(
+            transform.getInput, transform.logger, scss,
+            sasscSettings.sasscIncludes);
 
     if (css != null && _settings.onlyCompileOutOfDateSass.value) {
       Future<DateTime> cssTimeFuture = _getLastModified(css.id);
@@ -111,7 +116,7 @@ class SassTransformer extends AggregateTransformer
     }
 
     var result = await runSassC(scss,
-        isDebug: _settings.isDebug, settings: await _settings.sasscSettings);
+        isDebug: _settings.isDebug, settings: sasscSettings);
     result.logMessages(transform.logger);
 
     await depsFuture;

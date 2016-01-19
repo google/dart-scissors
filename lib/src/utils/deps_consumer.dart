@@ -14,8 +14,10 @@
 library scissors.src.utils.deps_consumer;
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:barback/barback.dart' show TransformLogger, Asset, AssetId;
+import 'package:path/path.dart';
 
 import 'path_resolver.dart';
 
@@ -31,6 +33,7 @@ final RegExp _commentsRx =
 /// of the SASS file(s).
 Future<Set<AssetId>> consumeTransitiveSassDeps(
     Future<Asset> inputGetter(AssetId id), TransformLogger logger, Asset asset,
+    List<Directory> sassIncludes,
     [Set<AssetId> visitedIds]) async {
   visitedIds ??= new Set<AssetId>();
   if (visitedIds.add(asset.id)) {
@@ -49,12 +52,17 @@ Future<Set<AssetId>> consumeTransitiveSassDeps(
         urls.add(split.join('/'));
         urls.add(url + '.scss');
       }
+
       futures.add((() async {
         try {
+          var files = []..addAll(urls);
+          for (var sassInclude in sassIncludes) {
+            files.addAll(urls.map((u) => relative(join(sassInclude.path, u))));
+          }
           var importedAsset =
-              await pathResolver.resolveAsset(inputGetter, urls, asset.id);
+              await pathResolver.resolveAsset(inputGetter, files, asset.id);
           consumeTransitiveSassDeps(
-              inputGetter, logger, importedAsset, visitedIds);
+              inputGetter, logger, importedAsset, sassIncludes, visitedIds);
         } catch (e, s) {
           logger.warning(
               "Failed to resolve import of '$url' from ${asset.id}: $e\n$s");
