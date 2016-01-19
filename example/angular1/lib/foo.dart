@@ -22,5 +22,5 @@ import 'package:angular/angular.dart';
       <div class="used-class">World!</div>
       <div class="plus-image">...plus...</div>
     ''',
-    cssUrl: 'package:scissors_angular1_example/foo.scss.css')
+    cssUrl: 'package:scissors_angular1_example/foo.css')
 class FooComponent {}

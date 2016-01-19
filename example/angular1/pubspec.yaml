@@ -16,6 +16,7 @@ transformers:
     # pruneCss: false
     # optimizeSvg: false
     # optimizePng: false
+    compiledCssExtension: replace
     # sasscPath: path/to/sassc
     sasscArgs:
         - -I${PWD}/lib/some/sub

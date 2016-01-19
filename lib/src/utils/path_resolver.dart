@@ -22,8 +22,14 @@ import 'package:barback/barback.dart'
 
 import 'path_utils.dart';
 import '../utils/process_utils.dart';
+import 'package:scissors/src/utils/enum_parser.dart';
 
 export 'global_path_resolver.dart' show pathResolver;
+
+enum ExtensionMode { replace, append }
+
+final parseExtensionMode =
+    new EnumParser<ExtensionMode>(ExtensionMode.values).parse;
 
 final RegExp _packageUrlRx = new RegExp(r'^package:(\w+)/(.*)$');
 
@@ -35,6 +41,7 @@ AssetId _parsePackageUrl(String url) {
 }
 
 class PathResolver {
+  final ExtensionMode defaultCompiledCssExtensionMode = ExtensionMode.append;
   final String defaultJavaPath = Platform.environment['JAVA_BIN'] ?? 'java';
   final String defaultSassCPath = Platform.environment['SASSC_BIN'] ?? 'sassc';
   final String defaultRubySassPath = Platform.environment['SASS_BIN'] ?? 'sass';

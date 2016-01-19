@@ -128,6 +128,9 @@ Valid settings:
 - `optimizePng` (boolean): by default, `true` in `release` only
 - `optimizeSvg` (boolean): by default, `true` in `release` only
 - `sasscPath`: default is `sassc`
+- `compiledCssExtension`: default is `append`
+    - `append`: append the `.css` extension to the SASS / SCSS file name: `foo.scss` will be compiled to `foo.scss.css`.
+    - `replace`: replace the SASS / SCSS file extension by `.css`: `foo.scss` will be compiled to `foo.css`.
 - `pngCrushPath`: default is `pngcrush`
 - `mirrorCss` (boolean): default is `false`
 

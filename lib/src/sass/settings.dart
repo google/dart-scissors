@@ -38,6 +38,10 @@ abstract class SassSettings {
       isExecutable: true);
 
   final _sasscArgs = new Setting<List<String>>('sasscArgs', defaultValue: []);
+  final _compiledCssExtensionMode = new Setting<ExtensionMode>(
+      'compiledCssExtension',
+      defaultValue: pathResolver.defaultCompiledCssExtensionMode,
+      parser: parseExtensionMode);
 
   Future<SasscSettings> _sasscSettings;
   Future<SasscSettings> get sasscSettings {
@@ -57,7 +61,8 @@ abstract class SassSettings {
           args..add("--load-path")..add(dir.path);
           sasscIncludes.add(dir);
         }
-        return new SasscSettings(await sasscPath.value, args, sasscIncludes);
+        return new SasscSettings(await sasscPath.value, args, sasscIncludes,
+            _compiledCssExtensionMode.value);
       })();
     }
     return _sasscSettings;

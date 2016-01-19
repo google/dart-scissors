@@ -24,13 +24,30 @@ import 'package:source_span/source_span.dart';
 import '../utils/path_resolver.dart';
 import '../utils/path_utils.dart';
 import '../utils/result.dart' show TransformMessage, TransformResult;
+import 'package:quiver/check.dart';
 
 class SasscSettings {
   final String sasscPath;
   final List<String> sasscArgs;
   final List<Directory> sasscIncludes;
+  final ExtensionMode compiledCssExtensionMode;
 
-  SasscSettings(this.sasscPath, this.sasscArgs, this.sasscIncludes);
+  SasscSettings(this.sasscPath, this.sasscArgs, this.sasscIncludes,
+      this.compiledCssExtensionMode);
+
+  AssetId getCssOutputId(AssetId sassId) {
+    var ext = sassId.extension;
+    checkArgument(ext == '.sass' || ext == '.scss',
+        message: () => "Invalid Sass extension: $ext");
+    switch (compiledCssExtensionMode) {
+      case ExtensionMode.append:
+        return sassId.addExtension('.css');
+      case ExtensionMode.replace:
+        return sassId.changeExtension('.css');
+      default:
+        throw new StateError('Invalid extension mode: $compiledCssExtensionMode');
+    }
+  }
 }
 
 // Each isolate gets its temp dir.
@@ -136,11 +153,12 @@ Future<TransformResult> runSassC(Asset sassAsset,
       var map = await mapFile.readAsString();
       map = map.replaceAll(primaryFile, fileName);
 
+      var cssId = settings.getCssOutputId(sassId);
       return new TransformResult(
           true,
           messages,
-          new Asset.fromFile(sassId.addExtension('.css'), cssFile),
-          new Asset.fromString(sassId.addExtension('.css.map'), map));
+          new Asset.fromFile(cssId, cssFile),
+          new Asset.fromString(cssId.addExtension('.map'), map));
     } else {
       if (!messages.any((m) => m.level == LogLevel.ERROR)) {
         messages.add(new TransformMessage(

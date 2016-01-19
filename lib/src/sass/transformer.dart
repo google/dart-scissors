@@ -20,8 +20,9 @@ import 'package:barback/barback.dart';
 import 'package:path/path.dart';
 import 'package:quiver/check.dart';
 
-import 'sassc_runner.dart' show SasscSettings, runSassC;
+import 'sassc_runner.dart' show ExtensionMode, SasscSettings, runSassC;
 import '../utils/deps_consumer.dart';
+import '../utils/enum_parser.dart';
 import '../utils/file_skipping.dart';
 import '../utils/path_resolver.dart';
 import '../utils/settings_base.dart';
@@ -65,8 +66,9 @@ class SassTransformer extends AggregateTransformer
     if (scss != null) {
       // Don't consume the sass file in debug, for maps to work.
       if (!_settings.isDebug) transform.consumePrimary(scss);
-      transform.declareOutput(scss.addExtension('.css'));
-      transform.declareOutput(scss.addExtension('.css.map'));
+      var cssId = (await _settings.sasscSettings).getCssOutputId(scss);
+      transform.declareOutput(cssId);
+      transform.declareOutput(cssId.addExtension('.map'));
     }
   }
 
