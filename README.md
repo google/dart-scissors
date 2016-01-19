@@ -74,7 +74,7 @@ transformers:
         optimizeSvg: true
 ```
 
-## Prequisites
+## Prerequisites
 
 If you checked out `scissors`'s sources, you can run `. ./script/install_dependencies.sh` to get all the required dependencies, and skip the rest of this section :-)
 
@@ -113,7 +113,7 @@ Examples: see [example/angular1](https://github.com/google/dart-scissors/tree/ma
 
   ```
   dev_dependencies:
-    scissors: ^0.3.0
+    scissors: ^0.4.0
   transformers:
   - scissors
   ```
@@ -132,7 +132,8 @@ Valid settings:
     - `append`: append the `.css` extension to the SASS / SCSS file name: `foo.scss` will be compiled to `foo.scss.css`.
     - `replace`: replace the SASS / SCSS file extension by `.css`: `foo.scss` will be compiled to `foo.css`.
 - `pngCrushPath`: default is `pngcrush`
-- `mirrorCss` (boolean): default is `false`
+- `mirrorCss` (boolean): default is `false` (note that this is `true` by default in the `scissors/css_mirroring_transformer`, see below)
+- `cssJanusPath`: `cssjanus.py` by default, see [prerequisites](#prerequisites)
 
 ### Limitations
 
