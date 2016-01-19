@@ -87,8 +87,9 @@ Note that this transformer uses Google's original cssjanus.py, not its .js port 
 To install CSSJanus, run the following command in a console (ensure you have something like `export PATH=~/bin:$PATH` in your `~/.profile` or `~/.bashrc`):
 
   ```
-  mkdir -p ~/bin/cssjanus
+  mkdir ~/bin
   curl http://cssjanus.googlecode.com/svn/trunk/cssjanus.py > ~/bin/cssjanus.py
+  chmod +x ~/bin/cssjanus.py
   ```
 
 ### Other deps: SassC, pngcrush...
