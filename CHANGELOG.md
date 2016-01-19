@@ -2,6 +2,37 @@
 
 ...
 
+## 0.4.0 (2016-01-19)
+
+### Features
+
+- Added `scissors/css_mirroring_transformer` that makes CSS files to support
+  bidirectional layouts (uses [CSSJanus](https://github.com/cegov/wiki/tree/master/maintenance/cssjanus).
+  Given `foo { color: blue; float: left }`, it generates:
+
+    ```css
+    foo { color: blue }
+    :host-context([dir="ltr"]) foo { float: left }
+    :host-context([dir="rtl"]) foo { float: right }
+    ```
+
+    So you just need the supporting code in your `main.dart` to support bidirectional layouts (see [example/mirroring](https://github.com/google/dart-scissors/tree/master/example/mirroring)):
+
+    ```dart
+    document.body.dir = Bidi.isRtlLanguage(Intl.getCurrentLocale()) ? 'rtl' : 'ltr';
+    ```
+
+  This feature is also available in the regular `scissors` transformer, but it
+  must be enabled with `mirrorCss: true`.
+
+- Added `compiledCssExtension` option to control how `foo.scss` is compiled:
+  `append` yields `foo.scss.css` (default), while `replace` produces `foo.css`.
+
+
+### Bugfixes
+
+- Fixed support for `-I` / `--load-path` arguments in `sasscArgs` setting (issue #21)
+
 ## 0.3.0 (2016-01-13)
 
 ### Features

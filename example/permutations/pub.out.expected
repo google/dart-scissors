@@ -65,12 +65,1012 @@ Creating scissors_permutations_example|web/main_fr.js with:
 Creating scissors_permutations_example|web/main_en_US.js with:
 	scissors_permutations_example|web/main.dart.js
 	scissors_permutations_example|web/main.dart.js_5.part.js (used by: tc_ltr)
-[Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_en.js]:
-Ran Closure Compiler: 126945 chars → 113507 chars (-13438 chars = -10.6%)
-[Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_fr.js]:
-Ran Closure Compiler: 126951 chars → 113513 chars (-13438 chars = -10.6%)
-[Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_ar.js]:
-Ran Closure Compiler: 126988 chars → 113550 chars (-13438 chars = -10.6%)
-[Info from Permutations on scissors_permutations_example|<default> with input scissors_permutations_example|web/main_en_US.js]:
-Ran Closure Compiler: 125350 chars → 113019 chars (-12331 chars = -9.9%)
-Built 182 files to "build".
+[Permutations on scissors_permutations_example|<default>]:
+Unexpected error while running the Closure Compiler: permutations won't be fully optimized.
+Invalid argument(s): Failed to run Closure Compiler (exit code = null):
+The compiler is waiting for input via stdin.
+stdin:550: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:558: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:617: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:706: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:710: WARNING - If this if/for/while really shouldn't have a body, use {}
+else for(;this.bk(););},
+                     ^
+
+stdin:719: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+w.toString
+^
+
+stdin:793: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(init.globalState.x===!0){init.globalState.Q.toString
+                            ^
+
+stdin:1421: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+if(typeof window!="undefined"){window
+                               ^
+
+stdin:1500: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+try{$expr$.$method$($argumentsExpr$)}catch(z){return z.message}}(a)},cK:function(a){return function($expr$){try{$expr$.$method$}catch(z){return z.message}}(a)}}},
+                                                                                                                ^
+
+stdin:1666: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+for(z=x.length,w=0;w<x.length;x.length===z||(0,H.b5)(x),++w){v=x[w]
+                                             ^
+
+stdin:1668: WARNING - If this if/for/while really shouldn't have a body, use {}
+init.initializeLoadedHunk(y[v])}if($.$get$bG().H(0,this.a));}},
+                                                           ^
+
+stdin:1983: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+$.k.toString
+^
+
+stdin:1987: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(z){b.toString
+      ^
+
+stdin:1988: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+return a}else{b.toString
+              ^
+
+stdin:2025: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+return}z.toString
+       ^
+
+stdin:2034: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(z===C.a){z.toString
+            ^
+
+stdin:2134: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+$.k.toString
+^
+
+stdin:2161: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(z!==C.a){z.toString
+            ^
+
+stdin:2171: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+if(z!==C.a)z.toString
+^
+
+stdin:2171: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(z!==C.a)z.toString
+           ^
+
+stdin:2182: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:2205: WARNING - If this if/for/while really shouldn't have a body, use {}
+if(a==null);else if(!!J.l(a).$isa2){z=a.a
+           ^
+
+stdin:2208: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:2212: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:2217: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:2238: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:2248: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+u.toString
+^
+
+stdin:2250: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(!u)r.toString
+      ^
+
+stdin:2257: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:2524: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+for(y=a.length,x=0;x<a.length;a.length===y||(0,H.b5)(a),++x)z.H(0,a[x])
+                                             ^
+
+stdin:2999: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:3273: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:3283: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:3286: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+x.toString
+^
+
+stdin:3289: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:3290: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+w.toString
+^
+
+stdin:3300: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:3303: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:3304: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+x.toString
+^
+
+stdin:3393: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+for(z=this.gM(),y=z.length,x=this.a,w=0;w<z.length;z.length===y||(0,H.b5)(z),++w){v=z[w]
+                                                                  ^
+
+stdin:3552: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+window
+^
+
+stdin:3557: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+window
+^
+
+stdin:3561: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+window
+^
+
+stdin:3565: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+window
+^
+
+stdin:3572: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+if(!this.a.I(a,J.dv(w),z.getAttribute(w))){window
+                                           ^
+
+stdin:3708: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+x.toString
+^
+
+stdin:3910: WARNING - If this if/for/while really shouldn't have a body, use {}
+if(u==null);else{u=u.b
+           ^
+
+stdin:3913: WARNING - If this if/for/while really shouldn't have a body, use {}
+break}else ;u=u[1]}$.bg=u==null?T.bh():u
+           ^
+
+stdin:3922: WARNING - If this if/for/while really shouldn't have a body, use {}
+break}else ;J.dt(u,C.d.O(t+"<br/>",$.bT.h(0,"some/resource")))
+           ^
+
+stdin:4223: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+try{(void 0).$method$($argumentsExpr$)}catch(z){return z.message}}())},"cJ","$get$cJ",function(){return H.K(H.cK(null))},"cI","$get$cI",function(){return H.K(function(){try{null.$method$}catch(z){return z.message}}())},"cO","$get$cO",function(){return H.K(H.cK(void 0))},"cN","$get$cN",function(){return H.K(function(){try{(void 0).$method$}catch(z){return z.message}}())},"bH","$get$bH",function(){return P.el(P.q,[P.a2,P.bt])},"bG","$get$bG",function(){return P.E(null,null,null,P.q)},"by","$get$by",function(){return P.eO()},"ai","$get$ai",function(){return[]},"cU","$get$cU",function(){return P.cg(["A","ABBR","ACRONYM","ADDRESS","AREA","ARTICLE","ASIDE","AUDIO","B","BDI","BDO","BIG","BLOCKQUOTE","BR","BUTTON","CANVAS","CAPTION","CENTER","CITE","CODE","COL","COLGROUP","COMMAND","DATA","DATALIST","DD","DEL","DETAILS","DFN","DIR","DIV","DL","DT","EM","FIELDSET","FIGCAPTION","FIGURE","FONT","FOOTER","FORM","H1","H2","H3","H4","H5","H6","HEADER","HGROUP","HR","I","IFRAME","IMG","INPUT","INS","KBD","LABEL","LEGEND","LI","MAP","MARK","MENU","METER","NAV","NOBR","OL","OPTGROUP","OPTION","OUTPUT","P","PRE","PROGRESS","Q","S","SAMP","SECTION","SELECT","SMALL","SOURCE","SPAN","STRIKE","STRONG","SUB","SUMMARY","SUP","TABLE","TBODY","TD","TEXTAREA","TFOOT","TH","THEAD","TIME","TR","TRACK","TT","U","UL","VAR","VIDEO","WBR"],null)},"bA","$get$bA",function(){return P.cf()},"dg","$get$dg",function(){return P.T(["some/resource","this is a Left-to-Right resource"])},"df","$get$df",function(){return P.T(["some/resource","this is a Right-to-Left resource"])}])
+                                                                                                                                                                             ^
+
+stdin:4223: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+try{(void 0).$method$($argumentsExpr$)}catch(z){return z.message}}())},"cJ","$get$cJ",function(){return H.K(H.cK(null))},"cI","$get$cI",function(){return H.K(function(){try{null.$method$}catch(z){return z.message}}())},"cO","$get$cO",function(){return H.K(H.cK(void 0))},"cN","$get$cN",function(){return H.K(function(){try{(void 0).$method$}catch(z){return z.message}}())},"bH","$get$bH",function(){return P.el(P.q,[P.a2,P.bt])},"bG","$get$bG",function(){return P.E(null,null,null,P.q)},"by","$get$by",function(){return P.eO()},"ai","$get$ai",function(){return[]},"cU","$get$cU",function(){return P.cg(["A","ABBR","ACRONYM","ADDRESS","AREA","ARTICLE","ASIDE","AUDIO","B","BDI","BDO","BIG","BLOCKQUOTE","BR","BUTTON","CANVAS","CAPTION","CENTER","CITE","CODE","COL","COLGROUP","COMMAND","DATA","DATALIST","DD","DEL","DETAILS","DFN","DIR","DIV","DL","DT","EM","FIELDSET","FIGCAPTION","FIGURE","FONT","FOOTER","FORM","H1","H2","H3","H4","H5","H6","HEADER","HGROUP","HR","I","IFRAME","IMG","INPUT","INS","KBD","LABEL","LEGEND","LI","MAP","MARK","MENU","METER","NAV","NOBR","OL","OPTGROUP","OPTION","OUTPUT","P","PRE","PROGRESS","Q","S","SAMP","SECTION","SELECT","SMALL","SOURCE","SPAN","STRIKE","STRONG","SUB","SUMMARY","SUP","TABLE","TBODY","TD","TEXTAREA","TFOOT","TH","THEAD","TIME","TR","TRACK","TT","U","UL","VAR","VIDEO","WBR"],null)},"bA","$get$bA",function(){return P.cf()},"dg","$get$dg",function(){return P.T(["some/resource","this is a Left-to-Right resource"])},"df","$get$df",function(){return P.T(["some/resource","this is a Right-to-Left resource"])}])
+                                                                                                                                                                                                                                                                                                                                   ^
+
+stdin:4287: WARNING - Suspicious code. The result of the 'not' operator is not being used.
+return Isolate}}!function(){var z=function(a){var t={}
+                ^
+
+0 error(s), 52 warning(s)
+#0      successString (package:scissors/src/utils/process_utils.dart:29:5)
+#1      simpleClosureCompile.<simpleClosureCompile_async_body> (package:scissors/src/js_optimization/closure.dart:35:10)
+#2      _RootZone.runUnary (dart:async/zone.dart:1149)
+#3      _Future._propagateToListeners.handleValueCallback (dart:async/future_impl.dart:502)
+#4      _Future._propagateToListeners (dart:async/future_impl.dart:585)
+#5      _Future._complete (dart:async/future_impl.dart:366)
+#6      _SyncCompleter.complete (dart:async/future_impl.dart:52)
+#7      pipeInAndOutOfNewProcess.<pipeInAndOutOfNewProcess_async_body> (package:scissors/src/utils/process_utils.dart)
+#8      _RootZone.runUnary (dart:async/zone.dart:1149)
+#9      _Future._propagateToListeners.handleValueCallback (dart:async/future_impl.dart:502)
+#10     _Future._propagateToListeners (dart:async/future_impl.dart:585)
+#11     _Future._complete (dart:async/future_impl.dart:366)
+#12     _SyncCompleter.complete (dart:async/future_impl.dart:52)
+#13     readAll.<readAll_async_body> (package:scissors/src/utils/io_utils.dart)
+#14     _RootZone.runUnary (dart:async/zone.dart:1149)
+#15     _Future._propagateToListeners.handleValueCallback (dart:async/future_impl.dart:502)
+#16     _Future._propagateToListeners (dart:async/future_impl.dart:585)
+#17     _Future._complete (dart:async/future_impl.dart:366)
+#18     Stream.fold.<anonymous closure> (dart:async/stream.dart:573)
+#19     _RootZone.runGuarded (dart:async/zone.dart:1076)
+#20     _BufferingStreamSubscription._sendDone.sendDone (dart:async/stream_impl.dart:390)
+#21     _BufferingStreamSubscription._sendDone (dart:async/stream_impl.dart:399)
+#22     _BufferingStreamSubscription._close (dart:async/stream_impl.dart:290)
+#23     _StreamController&&_SyncStreamControllerDispatch._sendDone (dart:async/stream_controller.dart:752)
+#24     _StreamController._closeUnchecked (dart:async/stream_controller.dart:605)
+#25     _StreamController.close (dart:async/stream_controller.dart:598)
+#26     _Socket._onData (dart:io-patch/socket_patch.dart:1653)
+#27     _RootZone.runUnaryGuarded (dart:async/zone.dart:1087)
+#28     _BufferingStreamSubscription._sendData (dart:async/stream_impl.dart:341)
+#29     _BufferingStreamSubscription._add (dart:async/stream_impl.dart:270)
+#30     _StreamController&&_SyncStreamControllerDispatch._sendData (dart:async/stream_controller.dart:744)
+#31     _StreamController._add (dart:async/stream_controller.dart:616)
+#32     _StreamController.add (dart:async/stream_controller.dart:562)
+#33     _RawSocket._RawSocket.<anonymous closure> (dart:io-patch/socket_patch.dart:1222)
+#34     _NativeSocket.issueReadEvent.issue (dart:io-patch/socket_patch.dart:742)
+#35     _microtaskLoop (dart:async/schedule_microtask.dart:43)
+#36     _microtaskLoopEntry (dart:async/schedule_microtask.dart:52)
+#37     _runPendingImmediateCallback (dart:isolate-patch/isolate_patch.dart:96)
+#38     _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:149)
+[Permutations on scissors_permutations_example|<default>]:
+Unexpected error while running the Closure Compiler: permutations won't be fully optimized.
+Invalid argument(s): Failed to run Closure Compiler (exit code = null):
+The compiler is waiting for input via stdin.
+stdin:550: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:558: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:617: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:706: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:710: WARNING - If this if/for/while really shouldn't have a body, use {}
+else for(;this.bk(););},
+                     ^
+
+stdin:719: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+w.toString
+^
+
+stdin:793: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(init.globalState.x===!0){init.globalState.Q.toString
+                            ^
+
+stdin:1421: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+if(typeof window!="undefined"){window
+                               ^
+
+stdin:1500: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+try{$expr$.$method$($argumentsExpr$)}catch(z){return z.message}}(a)},cK:function(a){return function($expr$){try{$expr$.$method$}catch(z){return z.message}}(a)}}},
+                                                                                                                ^
+
+stdin:1666: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+for(z=x.length,w=0;w<x.length;x.length===z||(0,H.b5)(x),++w){v=x[w]
+                                             ^
+
+stdin:1668: WARNING - If this if/for/while really shouldn't have a body, use {}
+init.initializeLoadedHunk(y[v])}if($.$get$bG().H(0,this.a));}},
+                                                           ^
+
+stdin:1983: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+$.k.toString
+^
+
+stdin:1987: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(z){b.toString
+      ^
+
+stdin:1988: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+return a}else{b.toString
+              ^
+
+stdin:2025: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+return}z.toString
+       ^
+
+stdin:2034: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(z===C.a){z.toString
+            ^
+
+stdin:2134: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+$.k.toString
+^
+
+stdin:2161: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(z!==C.a){z.toString
+            ^
+
+stdin:2171: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+if(z!==C.a)z.toString
+^
+
+stdin:2171: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(z!==C.a)z.toString
+           ^
+
+stdin:2182: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:2205: WARNING - If this if/for/while really shouldn't have a body, use {}
+if(a==null);else if(!!J.l(a).$isa2){z=a.a
+           ^
+
+stdin:2208: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:2212: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:2217: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:2238: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:2248: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+u.toString
+^
+
+stdin:2250: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(!u)r.toString
+      ^
+
+stdin:2257: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:2524: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+for(y=a.length,x=0;x<a.length;a.length===y||(0,H.b5)(a),++x)z.H(0,a[x])
+                                             ^
+
+stdin:2999: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:3273: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:3283: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:3286: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+x.toString
+^
+
+stdin:3289: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:3290: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+w.toString
+^
+
+stdin:3300: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:3303: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:3304: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+x.toString
+^
+
+stdin:3393: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+for(z=this.gM(),y=z.length,x=this.a,w=0;w<z.length;z.length===y||(0,H.b5)(z),++w){v=z[w]
+                                                                  ^
+
+stdin:3552: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+window
+^
+
+stdin:3557: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+window
+^
+
+stdin:3561: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+window
+^
+
+stdin:3565: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+window
+^
+
+stdin:3572: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+if(!this.a.I(a,J.dv(w),z.getAttribute(w))){window
+                                           ^
+
+stdin:3708: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+x.toString
+^
+
+stdin:3910: WARNING - If this if/for/while really shouldn't have a body, use {}
+if(u==null);else{u=u.b
+           ^
+
+stdin:3913: WARNING - If this if/for/while really shouldn't have a body, use {}
+break}else ;u=u[1]}$.bg=u==null?T.bh():u
+           ^
+
+stdin:3922: WARNING - If this if/for/while really shouldn't have a body, use {}
+break}else ;J.dt(u,C.d.O(t+"<br/>",$.bT.h(0,"some/resource")))
+           ^
+
+stdin:4223: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+try{(void 0).$method$($argumentsExpr$)}catch(z){return z.message}}())},"cJ","$get$cJ",function(){return H.K(H.cK(null))},"cI","$get$cI",function(){return H.K(function(){try{null.$method$}catch(z){return z.message}}())},"cO","$get$cO",function(){return H.K(H.cK(void 0))},"cN","$get$cN",function(){return H.K(function(){try{(void 0).$method$}catch(z){return z.message}}())},"bH","$get$bH",function(){return P.el(P.q,[P.a2,P.bt])},"bG","$get$bG",function(){return P.E(null,null,null,P.q)},"by","$get$by",function(){return P.eO()},"ai","$get$ai",function(){return[]},"cU","$get$cU",function(){return P.cg(["A","ABBR","ACRONYM","ADDRESS","AREA","ARTICLE","ASIDE","AUDIO","B","BDI","BDO","BIG","BLOCKQUOTE","BR","BUTTON","CANVAS","CAPTION","CENTER","CITE","CODE","COL","COLGROUP","COMMAND","DATA","DATALIST","DD","DEL","DETAILS","DFN","DIR","DIV","DL","DT","EM","FIELDSET","FIGCAPTION","FIGURE","FONT","FOOTER","FORM","H1","H2","H3","H4","H5","H6","HEADER","HGROUP","HR","I","IFRAME","IMG","INPUT","INS","KBD","LABEL","LEGEND","LI","MAP","MARK","MENU","METER","NAV","NOBR","OL","OPTGROUP","OPTION","OUTPUT","P","PRE","PROGRESS","Q","S","SAMP","SECTION","SELECT","SMALL","SOURCE","SPAN","STRIKE","STRONG","SUB","SUMMARY","SUP","TABLE","TBODY","TD","TEXTAREA","TFOOT","TH","THEAD","TIME","TR","TRACK","TT","U","UL","VAR","VIDEO","WBR"],null)},"bA","$get$bA",function(){return P.cf()},"dg","$get$dg",function(){return P.T(["some/resource","this is a Left-to-Right resource"])},"df","$get$df",function(){return P.T(["some/resource","this is a Right-to-Left resource"])}])
+                                                                                                                                                                             ^
+
+stdin:4223: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+try{(void 0).$method$($argumentsExpr$)}catch(z){return z.message}}())},"cJ","$get$cJ",function(){return H.K(H.cK(null))},"cI","$get$cI",function(){return H.K(function(){try{null.$method$}catch(z){return z.message}}())},"cO","$get$cO",function(){return H.K(H.cK(void 0))},"cN","$get$cN",function(){return H.K(function(){try{(void 0).$method$}catch(z){return z.message}}())},"bH","$get$bH",function(){return P.el(P.q,[P.a2,P.bt])},"bG","$get$bG",function(){return P.E(null,null,null,P.q)},"by","$get$by",function(){return P.eO()},"ai","$get$ai",function(){return[]},"cU","$get$cU",function(){return P.cg(["A","ABBR","ACRONYM","ADDRESS","AREA","ARTICLE","ASIDE","AUDIO","B","BDI","BDO","BIG","BLOCKQUOTE","BR","BUTTON","CANVAS","CAPTION","CENTER","CITE","CODE","COL","COLGROUP","COMMAND","DATA","DATALIST","DD","DEL","DETAILS","DFN","DIR","DIV","DL","DT","EM","FIELDSET","FIGCAPTION","FIGURE","FONT","FOOTER","FORM","H1","H2","H3","H4","H5","H6","HEADER","HGROUP","HR","I","IFRAME","IMG","INPUT","INS","KBD","LABEL","LEGEND","LI","MAP","MARK","MENU","METER","NAV","NOBR","OL","OPTGROUP","OPTION","OUTPUT","P","PRE","PROGRESS","Q","S","SAMP","SECTION","SELECT","SMALL","SOURCE","SPAN","STRIKE","STRONG","SUB","SUMMARY","SUP","TABLE","TBODY","TD","TEXTAREA","TFOOT","TH","THEAD","TIME","TR","TRACK","TT","U","UL","VAR","VIDEO","WBR"],null)},"bA","$get$bA",function(){return P.cf()},"dg","$get$dg",function(){return P.T(["some/resource","this is a Left-to-Right resource"])},"df","$get$df",function(){return P.T(["some/resource","this is a Right-to-Left resource"])}])
+                                                                                                                                                                                                                                                                                                                                   ^
+
+stdin:4287: WARNING - Suspicious code. The result of the 'not' operator is not being used.
+return Isolate}}!function(){var z=function(a){var t={}
+                ^
+
+0 error(s), 52 warning(s)
+#0      successString (package:scissors/src/utils/process_utils.dart:29:5)
+#1      simpleClosureCompile.<simpleClosureCompile_async_body> (package:scissors/src/js_optimization/closure.dart:35:10)
+#2      _RootZone.runUnary (dart:async/zone.dart:1149)
+#3      _Future._propagateToListeners.handleValueCallback (dart:async/future_impl.dart:502)
+#4      _Future._propagateToListeners (dart:async/future_impl.dart:585)
+#5      _Future._complete (dart:async/future_impl.dart:366)
+#6      _SyncCompleter.complete (dart:async/future_impl.dart:52)
+#7      pipeInAndOutOfNewProcess.<pipeInAndOutOfNewProcess_async_body> (package:scissors/src/utils/process_utils.dart)
+#8      _RootZone.runUnary (dart:async/zone.dart:1149)
+#9      _Future._propagateToListeners.handleValueCallback (dart:async/future_impl.dart:502)
+#10     _Future._propagateToListeners (dart:async/future_impl.dart:585)
+#11     _Future._complete (dart:async/future_impl.dart:366)
+#12     _SyncCompleter.complete (dart:async/future_impl.dart:52)
+#13     readAll.<readAll_async_body> (package:scissors/src/utils/io_utils.dart)
+#14     _RootZone.runUnary (dart:async/zone.dart:1149)
+#15     _Future._propagateToListeners.handleValueCallback (dart:async/future_impl.dart:502)
+#16     _Future._propagateToListeners (dart:async/future_impl.dart:585)
+#17     _Future._complete (dart:async/future_impl.dart:366)
+#18     Stream.fold.<anonymous closure> (dart:async/stream.dart:573)
+#19     _RootZone.runGuarded (dart:async/zone.dart:1076)
+#20     _BufferingStreamSubscription._sendDone.sendDone (dart:async/stream_impl.dart:390)
+#21     _BufferingStreamSubscription._sendDone (dart:async/stream_impl.dart:399)
+#22     _BufferingStreamSubscription._close (dart:async/stream_impl.dart:290)
+#23     _StreamController&&_SyncStreamControllerDispatch._sendDone (dart:async/stream_controller.dart:752)
+#24     _StreamController._closeUnchecked (dart:async/stream_controller.dart:605)
+#25     _StreamController.close (dart:async/stream_controller.dart:598)
+#26     _Socket._onData (dart:io-patch/socket_patch.dart:1653)
+#27     _RootZone.runUnaryGuarded (dart:async/zone.dart:1087)
+#28     _BufferingStreamSubscription._sendData (dart:async/stream_impl.dart:341)
+#29     _BufferingStreamSubscription._add (dart:async/stream_impl.dart:270)
+#30     _StreamController&&_SyncStreamControllerDispatch._sendData (dart:async/stream_controller.dart:744)
+#31     _StreamController._add (dart:async/stream_controller.dart:616)
+#32     _StreamController.add (dart:async/stream_controller.dart:562)
+#33     _RawSocket._RawSocket.<anonymous closure> (dart:io-patch/socket_patch.dart:1222)
+#34     _NativeSocket.issueReadEvent.issue (dart:io-patch/socket_patch.dart:742)
+#35     _microtaskLoop (dart:async/schedule_microtask.dart:43)
+#36     _microtaskLoopEntry (dart:async/schedule_microtask.dart:52)
+#37     _runPendingImmediateCallback (dart:isolate-patch/isolate_patch.dart:96)
+#38     _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:149)
+[Permutations on scissors_permutations_example|<default>]:
+Unexpected error while running the Closure Compiler: permutations won't be fully optimized.
+Invalid argument(s): Failed to run Closure Compiler (exit code = null):
+The compiler is waiting for input via stdin.
+stdin:550: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:558: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:617: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:706: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:710: WARNING - If this if/for/while really shouldn't have a body, use {}
+else for(;this.bk(););},
+                     ^
+
+stdin:719: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+w.toString
+^
+
+stdin:793: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(init.globalState.x===!0){init.globalState.Q.toString
+                            ^
+
+stdin:1421: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+if(typeof window!="undefined"){window
+                               ^
+
+stdin:1500: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+try{$expr$.$method$($argumentsExpr$)}catch(z){return z.message}}(a)},cK:function(a){return function($expr$){try{$expr$.$method$}catch(z){return z.message}}(a)}}},
+                                                                                                                ^
+
+stdin:1666: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+for(z=x.length,w=0;w<x.length;x.length===z||(0,H.b5)(x),++w){v=x[w]
+                                             ^
+
+stdin:1668: WARNING - If this if/for/while really shouldn't have a body, use {}
+init.initializeLoadedHunk(y[v])}if($.$get$bG().H(0,this.a));}},
+                                                           ^
+
+stdin:1983: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+$.k.toString
+^
+
+stdin:1987: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(z){b.toString
+      ^
+
+stdin:1988: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+return a}else{b.toString
+              ^
+
+stdin:2025: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+return}z.toString
+       ^
+
+stdin:2034: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(z===C.a){z.toString
+            ^
+
+stdin:2134: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+$.k.toString
+^
+
+stdin:2161: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(z!==C.a){z.toString
+            ^
+
+stdin:2171: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+if(z!==C.a)z.toString
+^
+
+stdin:2171: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(z!==C.a)z.toString
+           ^
+
+stdin:2182: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:2205: WARNING - If this if/for/while really shouldn't have a body, use {}
+if(a==null);else if(!!J.l(a).$isa2){z=a.a
+           ^
+
+stdin:2208: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:2212: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:2217: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:2238: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:2248: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+u.toString
+^
+
+stdin:2250: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(!u)r.toString
+      ^
+
+stdin:2257: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:2524: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+for(y=a.length,x=0;x<a.length;a.length===y||(0,H.b5)(a),++x)z.H(0,a[x])
+                                             ^
+
+stdin:2999: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:3273: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:3283: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:3286: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+x.toString
+^
+
+stdin:3289: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:3290: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+w.toString
+^
+
+stdin:3300: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:3303: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:3304: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+x.toString
+^
+
+stdin:3393: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+for(z=this.gM(),y=z.length,x=this.a,w=0;w<z.length;z.length===y||(0,H.b5)(z),++w){v=z[w]
+                                                                  ^
+
+stdin:3552: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+window
+^
+
+stdin:3557: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+window
+^
+
+stdin:3561: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+window
+^
+
+stdin:3565: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+window
+^
+
+stdin:3572: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+if(!this.a.I(a,J.dv(w),z.getAttribute(w))){window
+                                           ^
+
+stdin:3708: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+x.toString
+^
+
+stdin:3910: WARNING - If this if/for/while really shouldn't have a body, use {}
+if(u==null);else{u=u.b
+           ^
+
+stdin:3913: WARNING - If this if/for/while really shouldn't have a body, use {}
+break}else ;u=u[1]}$.bg=u==null?T.bh():u
+           ^
+
+stdin:3922: WARNING - If this if/for/while really shouldn't have a body, use {}
+break}else ;J.dt(u,C.d.O(t+"<br/>",$.bT.h(0,"some/resource")))
+           ^
+
+stdin:4223: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+try{(void 0).$method$($argumentsExpr$)}catch(z){return z.message}}())},"cJ","$get$cJ",function(){return H.K(H.cK(null))},"cI","$get$cI",function(){return H.K(function(){try{null.$method$}catch(z){return z.message}}())},"cO","$get$cO",function(){return H.K(H.cK(void 0))},"cN","$get$cN",function(){return H.K(function(){try{(void 0).$method$}catch(z){return z.message}}())},"bH","$get$bH",function(){return P.el(P.q,[P.a2,P.bt])},"bG","$get$bG",function(){return P.E(null,null,null,P.q)},"by","$get$by",function(){return P.eO()},"ai","$get$ai",function(){return[]},"cU","$get$cU",function(){return P.cg(["A","ABBR","ACRONYM","ADDRESS","AREA","ARTICLE","ASIDE","AUDIO","B","BDI","BDO","BIG","BLOCKQUOTE","BR","BUTTON","CANVAS","CAPTION","CENTER","CITE","CODE","COL","COLGROUP","COMMAND","DATA","DATALIST","DD","DEL","DETAILS","DFN","DIR","DIV","DL","DT","EM","FIELDSET","FIGCAPTION","FIGURE","FONT","FOOTER","FORM","H1","H2","H3","H4","H5","H6","HEADER","HGROUP","HR","I","IFRAME","IMG","INPUT","INS","KBD","LABEL","LEGEND","LI","MAP","MARK","MENU","METER","NAV","NOBR","OL","OPTGROUP","OPTION","OUTPUT","P","PRE","PROGRESS","Q","S","SAMP","SECTION","SELECT","SMALL","SOURCE","SPAN","STRIKE","STRONG","SUB","SUMMARY","SUP","TABLE","TBODY","TD","TEXTAREA","TFOOT","TH","THEAD","TIME","TR","TRACK","TT","U","UL","VAR","VIDEO","WBR"],null)},"bA","$get$bA",function(){return P.cf()},"dg","$get$dg",function(){return P.T(["some/resource","this is a Left-to-Right resource"])},"df","$get$df",function(){return P.T(["some/resource","this is a Right-to-Left resource"])}])
+                                                                                                                                                                             ^
+
+stdin:4223: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+try{(void 0).$method$($argumentsExpr$)}catch(z){return z.message}}())},"cJ","$get$cJ",function(){return H.K(H.cK(null))},"cI","$get$cI",function(){return H.K(function(){try{null.$method$}catch(z){return z.message}}())},"cO","$get$cO",function(){return H.K(H.cK(void 0))},"cN","$get$cN",function(){return H.K(function(){try{(void 0).$method$}catch(z){return z.message}}())},"bH","$get$bH",function(){return P.el(P.q,[P.a2,P.bt])},"bG","$get$bG",function(){return P.E(null,null,null,P.q)},"by","$get$by",function(){return P.eO()},"ai","$get$ai",function(){return[]},"cU","$get$cU",function(){return P.cg(["A","ABBR","ACRONYM","ADDRESS","AREA","ARTICLE","ASIDE","AUDIO","B","BDI","BDO","BIG","BLOCKQUOTE","BR","BUTTON","CANVAS","CAPTION","CENTER","CITE","CODE","COL","COLGROUP","COMMAND","DATA","DATALIST","DD","DEL","DETAILS","DFN","DIR","DIV","DL","DT","EM","FIELDSET","FIGCAPTION","FIGURE","FONT","FOOTER","FORM","H1","H2","H3","H4","H5","H6","HEADER","HGROUP","HR","I","IFRAME","IMG","INPUT","INS","KBD","LABEL","LEGEND","LI","MAP","MARK","MENU","METER","NAV","NOBR","OL","OPTGROUP","OPTION","OUTPUT","P","PRE","PROGRESS","Q","S","SAMP","SECTION","SELECT","SMALL","SOURCE","SPAN","STRIKE","STRONG","SUB","SUMMARY","SUP","TABLE","TBODY","TD","TEXTAREA","TFOOT","TH","THEAD","TIME","TR","TRACK","TT","U","UL","VAR","VIDEO","WBR"],null)},"bA","$get$bA",function(){return P.cf()},"dg","$get$dg",function(){return P.T(["some/resource","this is a Left-to-Right resource"])},"df","$get$df",function(){return P.T(["some/resource","this is a Right-to-Left resource"])}])
+                                                                                                                                                                                                                                                                                                                                   ^
+
+stdin:4287: WARNING - Suspicious code. The result of the 'not' operator is not being used.
+return Isolate}}!function(){var z=function(a){var t={}
+                ^
+
+0 error(s), 52 warning(s)
+#0      successString (package:scissors/src/utils/process_utils.dart:29:5)
+#1      simpleClosureCompile.<simpleClosureCompile_async_body> (package:scissors/src/js_optimization/closure.dart:35:10)
+#2      _RootZone.runUnary (dart:async/zone.dart:1149)
+#3      _Future._propagateToListeners.handleValueCallback (dart:async/future_impl.dart:502)
+#4      _Future._propagateToListeners (dart:async/future_impl.dart:585)
+#5      _Future._complete (dart:async/future_impl.dart:366)
+#6      _SyncCompleter.complete (dart:async/future_impl.dart:52)
+#7      pipeInAndOutOfNewProcess.<pipeInAndOutOfNewProcess_async_body> (package:scissors/src/utils/process_utils.dart)
+#8      _RootZone.runUnary (dart:async/zone.dart:1149)
+#9      _Future._propagateToListeners.handleValueCallback (dart:async/future_impl.dart:502)
+#10     _Future._propagateToListeners (dart:async/future_impl.dart:585)
+#11     _Future._complete (dart:async/future_impl.dart:366)
+#12     _SyncCompleter.complete (dart:async/future_impl.dart:52)
+#13     readAll.<readAll_async_body> (package:scissors/src/utils/io_utils.dart)
+#14     _RootZone.runUnary (dart:async/zone.dart:1149)
+#15     _Future._propagateToListeners.handleValueCallback (dart:async/future_impl.dart:502)
+#16     _Future._propagateToListeners (dart:async/future_impl.dart:585)
+#17     _Future._complete (dart:async/future_impl.dart:366)
+#18     Stream.fold.<anonymous closure> (dart:async/stream.dart:573)
+#19     _RootZone.runGuarded (dart:async/zone.dart:1076)
+#20     _BufferingStreamSubscription._sendDone.sendDone (dart:async/stream_impl.dart:390)
+#21     _BufferingStreamSubscription._sendDone (dart:async/stream_impl.dart:399)
+#22     _BufferingStreamSubscription._close (dart:async/stream_impl.dart:290)
+#23     _StreamController&&_SyncStreamControllerDispatch._sendDone (dart:async/stream_controller.dart:752)
+#24     _StreamController._closeUnchecked (dart:async/stream_controller.dart:605)
+#25     _StreamController.close (dart:async/stream_controller.dart:598)
+#26     _Socket._onData (dart:io-patch/socket_patch.dart:1653)
+#27     _RootZone.runUnaryGuarded (dart:async/zone.dart:1087)
+#28     _BufferingStreamSubscription._sendData (dart:async/stream_impl.dart:341)
+#29     _BufferingStreamSubscription._add (dart:async/stream_impl.dart:270)
+#30     _StreamController&&_SyncStreamControllerDispatch._sendData (dart:async/stream_controller.dart:744)
+#31     _StreamController._add (dart:async/stream_controller.dart:616)
+#32     _StreamController.add (dart:async/stream_controller.dart:562)
+#33     _RawSocket._RawSocket.<anonymous closure> (dart:io-patch/socket_patch.dart:1222)
+#34     _NativeSocket.issueReadEvent.issue (dart:io-patch/socket_patch.dart:742)
+#35     _microtaskLoop (dart:async/schedule_microtask.dart:43)
+#36     _microtaskLoopEntry (dart:async/schedule_microtask.dart:52)
+#37     _runPendingImmediateCallback (dart:isolate-patch/isolate_patch.dart:96)
+#38     _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:149)
+[Permutations on scissors_permutations_example|<default>]:
+Unexpected error while running the Closure Compiler: permutations won't be fully optimized.
+Invalid argument(s): Failed to run Closure Compiler (exit code = null):
+The compiler is waiting for input via stdin.
+stdin:550: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:558: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:617: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:706: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:710: WARNING - If this if/for/while really shouldn't have a body, use {}
+else for(;this.bk(););},
+                     ^
+
+stdin:719: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+w.toString
+^
+
+stdin:793: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(init.globalState.x===!0){init.globalState.Q.toString
+                            ^
+
+stdin:1421: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+if(typeof window!="undefined"){window
+                               ^
+
+stdin:1500: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+try{$expr$.$method$($argumentsExpr$)}catch(z){return z.message}}(a)},cK:function(a){return function($expr$){try{$expr$.$method$}catch(z){return z.message}}(a)}}},
+                                                                                                                ^
+
+stdin:1666: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+for(z=x.length,w=0;w<x.length;x.length===z||(0,H.b5)(x),++w){v=x[w]
+                                             ^
+
+stdin:1668: WARNING - If this if/for/while really shouldn't have a body, use {}
+init.initializeLoadedHunk(y[v])}if($.$get$bG().H(0,this.a));}},
+                                                           ^
+
+stdin:1983: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+$.k.toString
+^
+
+stdin:1987: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(z){b.toString
+      ^
+
+stdin:1988: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+return a}else{b.toString
+              ^
+
+stdin:2025: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+return}z.toString
+       ^
+
+stdin:2034: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(z===C.a){z.toString
+            ^
+
+stdin:2134: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+$.k.toString
+^
+
+stdin:2161: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(z!==C.a){z.toString
+            ^
+
+stdin:2171: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+if(z!==C.a)z.toString
+^
+
+stdin:2171: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(z!==C.a)z.toString
+           ^
+
+stdin:2182: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:2205: WARNING - If this if/for/while really shouldn't have a body, use {}
+if(a==null);else if(!!J.l(a).$isa2){z=a.a
+           ^
+
+stdin:2208: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:2212: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:2217: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:2238: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:2248: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+u.toString
+^
+
+stdin:2250: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+if(!u)r.toString
+      ^
+
+stdin:2257: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:2524: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+for(y=a.length,x=0;x<a.length;a.length===y||(0,H.b5)(a),++x)z.H(0,a[x])
+                                             ^
+
+stdin:2999: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:3273: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:3283: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:3286: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+x.toString
+^
+
+stdin:3289: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:3290: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+w.toString
+^
+
+stdin:3300: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+y.toString
+^
+
+stdin:3303: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+z.toString
+^
+
+stdin:3304: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+x.toString
+^
+
+stdin:3393: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+for(z=this.gM(),y=z.length,x=this.a,w=0;w<z.length;z.length===y||(0,H.b5)(z),++w){v=z[w]
+                                                                  ^
+
+stdin:3552: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+window
+^
+
+stdin:3557: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+window
+^
+
+stdin:3561: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+window
+^
+
+stdin:3565: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+window
+^
+
+stdin:3572: WARNING - Suspicious code. This code lacks side-effects. Is there a bug?
+if(!this.a.I(a,J.dv(w),z.getAttribute(w))){window
+                                           ^
+
+stdin:3708: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+x.toString
+^
+
+stdin:3910: WARNING - If this if/for/while really shouldn't have a body, use {}
+if(u==null);else{u=u.b
+           ^
+
+stdin:3913: WARNING - If this if/for/while really shouldn't have a body, use {}
+break}else ;u=u[1]}$.bg=u==null?T.bh():u
+           ^
+
+stdin:3922: WARNING - If this if/for/while really shouldn't have a body, use {}
+break}else ;J.dt(u,C.d.O(t+"<br/>",$.bT.h(0,"some/resource")))
+           ^
+
+stdin:4223: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+try{(void 0).$method$($argumentsExpr$)}catch(z){return z.message}}())},"cJ","$get$cJ",function(){return H.K(H.cK(null))},"cI","$get$cI",function(){return H.K(function(){try{null.$method$}catch(z){return z.message}}())},"cO","$get$cO",function(){return H.K(H.cK(void 0))},"cN","$get$cN",function(){return H.K(function(){try{(void 0).$method$}catch(z){return z.message}}())},"bH","$get$bH",function(){return P.el(P.q,[P.a2,P.bt])},"bG","$get$bG",function(){return P.E(null,null,null,P.q)},"by","$get$by",function(){return P.eO()},"ai","$get$ai",function(){return[]},"cU","$get$cU",function(){return P.cg(["A","ABBR","ACRONYM","ADDRESS","AREA","ARTICLE","ASIDE","AUDIO","B","BDI","BDO","BIG","BLOCKQUOTE","BR","BUTTON","CANVAS","CAPTION","CENTER","CITE","CODE","COL","COLGROUP","COMMAND","DATA","DATALIST","DD","DEL","DETAILS","DFN","DIR","DIV","DL","DT","EM","FIELDSET","FIGCAPTION","FIGURE","FONT","FOOTER","FORM","H1","H2","H3","H4","H5","H6","HEADER","HGROUP","HR","I","IFRAME","IMG","INPUT","INS","KBD","LABEL","LEGEND","LI","MAP","MARK","MENU","METER","NAV","NOBR","OL","OPTGROUP","OPTION","OUTPUT","P","PRE","PROGRESS","Q","S","SAMP","SECTION","SELECT","SMALL","SOURCE","SPAN","STRIKE","STRONG","SUB","SUMMARY","SUP","TABLE","TBODY","TD","TEXTAREA","TFOOT","TH","THEAD","TIME","TR","TRACK","TT","U","UL","VAR","VIDEO","WBR"],null)},"bA","$get$bA",function(){return P.cf()},"dg","$get$dg",function(){return P.T(["some/resource","this is a Left-to-Right resource"])},"df","$get$df",function(){return P.T(["some/resource","this is a Right-to-Left resource"])}])
+                                                                                                                                                                             ^
+
+stdin:4223: WARNING - Suspicious code. The result of the 'getprop' operator is not being used.
+try{(void 0).$method$($argumentsExpr$)}catch(z){return z.message}}())},"cJ","$get$cJ",function(){return H.K(H.cK(null))},"cI","$get$cI",function(){return H.K(function(){try{null.$method$}catch(z){return z.message}}())},"cO","$get$cO",function(){return H.K(H.cK(void 0))},"cN","$get$cN",function(){return H.K(function(){try{(void 0).$method$}catch(z){return z.message}}())},"bH","$get$bH",function(){return P.el(P.q,[P.a2,P.bt])},"bG","$get$bG",function(){return P.E(null,null,null,P.q)},"by","$get$by",function(){return P.eO()},"ai","$get$ai",function(){return[]},"cU","$get$cU",function(){return P.cg(["A","ABBR","ACRONYM","ADDRESS","AREA","ARTICLE","ASIDE","AUDIO","B","BDI","BDO","BIG","BLOCKQUOTE","BR","BUTTON","CANVAS","CAPTION","CENTER","CITE","CODE","COL","COLGROUP","COMMAND","DATA","DATALIST","DD","DEL","DETAILS","DFN","DIR","DIV","DL","DT","EM","FIELDSET","FIGCAPTION","FIGURE","FONT","FOOTER","FORM","H1","H2","H3","H4","H5","H6","HEADER","HGROUP","HR","I","IFRAME","IMG","INPUT","INS","KBD","LABEL","LEGEND","LI","MAP","MARK","MENU","METER","NAV","NOBR","OL","OPTGROUP","OPTION","OUTPUT","P","PRE","PROGRESS","Q","S","SAMP","SECTION","SELECT","SMALL","SOURCE","SPAN","STRIKE","STRONG","SUB","SUMMARY","SUP","TABLE","TBODY","TD","TEXTAREA","TFOOT","TH","THEAD","TIME","TR","TRACK","TT","U","UL","VAR","VIDEO","WBR"],null)},"bA","$get$bA",function(){return P.cf()},"dg","$get$dg",function(){return P.T(["some/resource","this is a Left-to-Right resource"])},"df","$get$df",function(){return P.T(["some/resource","this is a Right-to-Left resource"])}])
+                                                                                                                                                                                                                                                                                                                                   ^
+
+stdin:4287: WARNING - Suspicious code. The result of the 'not' operator is not being used.
+return Isolate}}!function(){var z=function(a){var t={}
+                ^
+
+0 error(s), 52 warning(s)
+#0      successString (package:scissors/src/utils/process_utils.dart:29:5)
+#1      simpleClosureCompile.<simpleClosureCompile_async_body> (package:scissors/src/js_optimization/closure.dart:35:10)
+#2      _RootZone.runUnary (dart:async/zone.dart:1149)
+#3      _Future._propagateToListeners.handleValueCallback (dart:async/future_impl.dart:502)
+#4      _Future._propagateToListeners (dart:async/future_impl.dart:585)
+#5      _Future._complete (dart:async/future_impl.dart:366)
+#6      _SyncCompleter.complete (dart:async/future_impl.dart:52)
+#7      pipeInAndOutOfNewProcess.<pipeInAndOutOfNewProcess_async_body> (package:scissors/src/utils/process_utils.dart)
+#8      _RootZone.runUnary (dart:async/zone.dart:1149)
+#9      _Future._propagateToListeners.handleValueCallback (dart:async/future_impl.dart:502)
+#10     _Future._propagateToListeners (dart:async/future_impl.dart:585)
+#11     _Future._complete (dart:async/future_impl.dart:366)
+#12     _SyncCompleter.complete (dart:async/future_impl.dart:52)
+#13     readAll.<readAll_async_body> (package:scissors/src/utils/io_utils.dart)
+#14     _RootZone.runUnary (dart:async/zone.dart:1149)
+#15     _Future._propagateToListeners.handleValueCallback (dart:async/future_impl.dart:502)
+#16     _Future._propagateToListeners (dart:async/future_impl.dart:585)
+#17     _Future._complete (dart:async/future_impl.dart:366)
+#18     Stream.fold.<anonymous closure> (dart:async/stream.dart:573)
+#19     _RootZone.runGuarded (dart:async/zone.dart:1076)
+#20     _BufferingStreamSubscription._sendDone.sendDone (dart:async/stream_impl.dart:390)
+#21     _BufferingStreamSubscription._sendDone (dart:async/stream_impl.dart:399)
+#22     _BufferingStreamSubscription._close (dart:async/stream_impl.dart:290)
+#23     _StreamController&&_SyncStreamControllerDispatch._sendDone (dart:async/stream_controller.dart:752)
+#24     _StreamController._closeUnchecked (dart:async/stream_controller.dart:605)
+#25     _StreamController.close (dart:async/stream_controller.dart:598)
+#26     _Socket._onData (dart:io-patch/socket_patch.dart:1653)
+#27     _RootZone.runUnaryGuarded (dart:async/zone.dart:1087)
+#28     _BufferingStreamSubscription._sendData (dart:async/stream_impl.dart:341)
+#29     _BufferingStreamSubscription._add (dart:async/stream_impl.dart:270)
+#30     _StreamController&&_SyncStreamControllerDispatch._sendData (dart:async/stream_controller.dart:744)
+#31     _StreamController._add (dart:async/stream_controller.dart:616)
+#32     _StreamController.add (dart:async/stream_controller.dart:562)
+#33     _RawSocket._RawSocket.<anonymous closure> (dart:io-patch/socket_patch.dart:1222)
+#34     _NativeSocket.issueReadEvent.issue (dart:io-patch/socket_patch.dart:742)
+#35     _microtaskLoop (dart:async/schedule_microtask.dart:43)
+#36     _microtaskLoopEntry (dart:async/schedule_microtask.dart:52)
+#37     _runPendingImmediateCallback (dart:isolate-patch/isolate_patch.dart:96)
+#38     _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:149)
+Built 178 files to "build".

@@ -22,7 +22,6 @@ import 'package:quiver/check.dart';
 
 import 'sassc_runner.dart' show ExtensionMode, SasscSettings, runSassC;
 import '../utils/deps_consumer.dart';
-import '../utils/enum_parser.dart';
 import '../utils/file_skipping.dart';
 import '../utils/path_resolver.dart';
 import '../utils/settings_base.dart';

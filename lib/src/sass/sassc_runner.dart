@@ -45,7 +45,8 @@ class SasscSettings {
       case ExtensionMode.replace:
         return sassId.changeExtension('.css');
       default:
-        throw new StateError('Invalid extension mode: $compiledCssExtensionMode');
+        throw new StateError(
+            'Invalid extension mode: $compiledCssExtensionMode');
     }
   }
 }
