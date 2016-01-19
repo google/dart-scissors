@@ -2,18 +2,31 @@ Loading source assets...
 Loading dart_to_js_script_rewriter, observe, scissors/css_mirroring_transformer and smoke/src/default_transformer transformers...
 Loading angular2 transformers...
 [Info from CssMirroring on scissors_mirroring_example|lib/foo.css]:
+.used-class {
+}
+
+.unused-class {
+}
+
+absent-element {
+}
+
 present-element {
     background-image: inline-image('icon.svg');
     color: blue;
-    }
+    margin-left: 10em;
+}
 
 a {
     foo: bar;
-    }
+    margin-left: 1em;
+    background-position: 25% 75%;
+}
 
 table-class {
     color: blue;
-    }
+    margin-left: 2000em;
+}
 
 ul li {
     color: gray;
@@ -22,26 +35,31 @@ ul li {
 /* Adjacent sibling selectors */
 li + li {
     color: red;
-    }
+    margin-left: 3em;
+}
 
 /* General sibling selectors */
 a ~ a {
     color: purple;
-    }
+    margin-left: 2em;
+}
 
 /* Child selectors */
 li > a {
     color: orange;
+    margin-left: 4em;
     width: 10px;
 }
 
 a[href="three.html"] {
     color: green;
-    }
+    margin-left: 5em;
+}
 
 .foo {
     color: blue;
-    }
+    float: left /* because `foo: right;` will also work */; /* Test comment { } */
+}
 
 @charset "UTF-8";
 @namespace  url(http://www.w3.org/1999/xhtml);
@@ -56,44 +74,8 @@ a[href="three.html"] {
         color: red;
     }
 }
-
-:host-context([dir="ltr"]) present-element {
-    margin-left: 10em;
-}
-
-:host-context([dir="ltr"]) a {
-    margin-left: 1em;
-    background-position: 25% 75%;
-}
-
-:host-context([dir="ltr"]) table-class {
-    margin-left: 2000em;
-}
-
-:host-context([dir="ltr"]) li + li {
-    margin-left: 3em;
-}
-
-/* General sibling selectors */
-:host-context([dir="ltr"]) a ~ a {
-    margin-left: 2em;
-}
-
-/* Child selectors */
-:host-context([dir="ltr"]) li > a {
-    margin-left: 4em;
-    }
-
-:host-context([dir="ltr"]) a[href="three.html"] {
-    margin-left: 5em;
-}
-
-:host-context([dir="ltr"]) .foo {
-    float: left /* because `foo: right;` will also work */; /* Test comment { } */
-}
-
 @media screen and (min-width: 401px) {
-    :host-context([dir="ltr"]) body {
+    body {
         margin-left: 13px
     }
 }
@@ -141,7 +123,6 @@ a[href="three.html"] {
 }
 
 [Info from CssMirroring on scissors_mirroring_example|lib/global.css]:
-/* css to check import directive in foo.css */
 /* css to check import directive in foo.css */
 /* css to check import directive in foo.css */
 Building scissors_mirroring_example...

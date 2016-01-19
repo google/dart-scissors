@@ -22,11 +22,10 @@ import 'package:source_maps/refactor.dart' show TextEditTransaction;
 import 'package:source_span/source_span.dart' show SourceFile;
 
 import 'buffered_transaction.dart';
-import 'css_utils.dart' show isDirectionInsensitive, hasNestedRuleSets;
-import 'directive_processors.dart' show editDirectiveWithNestedRuleSets;
-import 'edit_configuration.dart';
+import 'css_utils.dart' show isDirectionInsensitive, hasNestedRuleSets, Direction, flipDirection;
+import 'directive_processors.dart' show editFlippedDirectiveWithNestedRuleSets;
 import 'mirrored_entities.dart';
-import 'rulesets_processor.dart' show editRuleSet;
+import 'rulesets_processor.dart' show editFlippedRuleSet;
 
 /// Type of a function that does LTR/RTL mirroring of a css.
 typedef Future<String> CssFlipper(String inputCss);
@@ -61,11 +60,8 @@ class BidiCssGenerator {
   /// Main function which returns the bidirectional CSS.
   String getOutputCss() {
     var parts = [
-      _editCss(_originalCss, RetentionMode.keepBidiNeutral, _nativeDirection),
-      _editCss(_originalCss, RetentionMode.keepOriginalBidiSpecific,
-          _nativeDirection),
-      _editCss(_flippedCss, RetentionMode.keepFlippedBidiSpecific,
-          flipDirection(_nativeDirection))
+      _cleanupCss(_originalCss),
+      _cleanupCss(_editFlippedCss(flipDirection(_nativeDirection)))
     ];
     return parts.where((t) => t.trim().isNotEmpty).join('\n');
   }
@@ -78,36 +74,32 @@ class BidiCssGenerator {
   ///
   /// In case of Directives, it edits rulesets in them and if all the rulesets have
   /// to be removed, it removes Directive Itself
-  String _editCss(String css, RetentionMode mode, Direction targetDirection) {
-    var trans =
-        new TextEditTransaction(css, new SourceFile(css, url: _sourceId));
+  String _editFlippedCss(Direction flippedDirection) {
+    var trans = new TextEditTransaction(
+        _flippedCss, new SourceFile(_flippedCss, url: _sourceId));
     var bufferedTrans = new BufferedTransaction(trans);
 
     _topLevelEntities.forEach((MirroredEntity<TreeNode> entity) {
       // Note: MirroredEntity guarantees type uniformity between original and
       // flipped.
-      var original = entity.original.value;
-      if (original is RuleSet) {
-        editRuleSet(entity, mode, targetDirection, bufferedTrans);
-      } else if (hasNestedRuleSets(original)) {
-        editDirectiveWithNestedRuleSets(
+      var flipped = entity.flipped;
+      if (flipped.value is RuleSet) {
+        editFlippedRuleSet(entity, flippedDirection, bufferedTrans);
+      } else if (hasNestedRuleSets(flipped.value)) {
+        editFlippedDirectiveWithNestedRuleSets(
             entity,
             entity.getChildren((d) => d.rulesets),
-            mode,
-            targetDirection,
+            flippedDirection,
             bufferedTrans);
-      } else if (isDirectionInsensitive(original)) {
-        if (mode != RetentionMode.keepBidiNeutral) {
-          entity.remove(mode, bufferedTrans);
-        }
+      } else if (isDirectionInsensitive(flipped.value)) {
+        flipped.remove(bufferedTrans);
       } else {
-        throw new StateError('Node type not handled: ${original.runtimeType}');
+        throw new StateError('Node type not handled: ${flipped.runtimeType}');
       }
     });
     bufferedTrans.commit();
 
-    var retainedCss = (trans.commit()..build('')).text;
-    return _cleanupCss(retainedCss);
+    return (trans.commit()..build('')).text;
   }
 }
 

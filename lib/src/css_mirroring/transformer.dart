@@ -19,7 +19,7 @@ import 'package:barback/barback.dart';
 
 import 'bidi_css_generator.dart';
 import 'cssjanus_runner.dart';
-import 'edit_configuration.dart';
+import 'css_utils.dart' show Direction;
 import '../utils/enum_parser.dart';
 import '../utils/file_skipping.dart';
 import '../utils/path_resolver.dart';

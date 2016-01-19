@@ -1,63 +1,42 @@
-BidiCssGenerator generates a CSS which comprises of orientation neutral, orientation specific and flipped orientation
-specific parts.
+`BidiCssGenerator` augments the original CSS with some flipped/mirror rules, tagged with `[dir="rtl"]` (or `[dir="ltr"]`) selectors.
 
-Given the example CSS: 
-    
+Given the example CSS:
+
     foo {
        color: red;
        margin-left: 10px;
     }
-     
-it'd get converted to a CSS containing 3 sections:
+
+it'd get converted to a CSS containing 2 sections:
 
     foo {
-        color: red;                        orientation neutral (Independent of direction)
-    }
-
-    :host-context([dir="ltr"]) foo {
-        margin-left: 10px;                 orientation specific (orientation specific parts in original CSS)
+        color: red;
+        margin-left: 10px;
     }
 
     :host-context([dir="rtl"]) foo {
-        margin-right: 10px;               flipped orientation specific (orientation specific parts in flipped CSS)
+        margin-right: 10px; /* flipped orientation specific declarations *
     }
 
-The `BidiCssGenerator` takes a CSS contents as a string, the CSS's source filename, nativeDirection of input CSS and
-path to CSSJanus. It generates a flipped version of the input CSS by passing it to CSSJanus.
-E.g: passing 
-    
+It starts by runing CSSJanus on the input CSS:
+
     foo {
         color: red;
         margin-left: 10px;            will be used as Original CSS
     }
-     
-to CSSJanus returns
+
+is transformed by CSSJanus to:
 
     foo {
         color: red;
         margin-right: 10px;           will be used as flipped CSS.
     }
 
-Next it creates three transactions(CSS strings)
+It then parses both CSS sources matches rules and declarations 1:1 between the
+original and the flipped versions. It builds a "flipped" fragment by dropping
+elements that are identical in the two versions.
 
-1. **Orientation Neutral**: It is made from original CSS string. 
-                           Direction dependent parts will be removed from it to keep only neutral parts.
-                           e.g.: if it initially contains `foo { color: red; margin-left: 10px;}`, it will get modified 
-                           to `foo { color: red;}`.
- 
-2. **Orientation specific**: It is made from original CSS string.
-                            Direction independent parts will be removed from it to keep only direction dependent parts 
-                            of original CSS. For example, if it initially contains `foo { color: red; margin-left: 10px;}`, 
-                            it will get modified to `:host-context([dir="ltr"]) foo { margin-left: 10px;}`.
-
-3. **Flipped Orientation specific**: It is made from flipped CSS string.
-                                    Direction independent parts will be removed from it to keep only direction dependent parts of original CSS.
-                                    eg: if it initially contains `foo { color: red; margin-right: 10px;}`, 
-                                    it will get modified to `:host-context([dir="rtl"]) foo { margin-right: 10px;}`
-
-For each of these transactions it extracts toplevels of the originalCss and flippedCss and iterate on them.
-
-If a topLevel is of the type **Rule Set** 
+If a topLevel entity is of the type **Rule Set**
 for example:
 
     a {                                         
@@ -65,12 +44,12 @@ for example:
         margin-left: 1em;
         background-position:25% 75%;
     }
-  
-it iterates over declarations in them.
-Depending on the mode of retention which could be `keepBidiNeutral`, `keepOriginalBidiSpecific`, `keepFlippedBidiSpecific`,
-it checks if the declaration is to be removed and store their start and end location.
-Now if only some declarations have to be removed, it removes them using their start and end points already stored.
-And if all declarations in a ruleset are to be removed, it removes the ruleset (No need to keep empty rule)
+
+it recurses over declarations in them.
+
+If only some declarations have to be removed, it uses heuristics to get good
+start and end offsets for removal, and if all declarations in a ruleset need to
+be removed, it removes the ruleset (no need to keep an empty flipped rule).
 
 If topLevel is of type **Media Directive** or **Host Directive**
 for example:
@@ -79,20 +58,15 @@ for example:
         foo { margin-left: 13px }             
     }
 
-It picks a ruleset and stores removable declarations in it.
-If only some of the declaration have to be removed, it removes them from transaction.
-If all declarations in ruleset are removable, it stores start and end location of rule set(dont edit transaction because
-if all rulesets of directive have to be deleted then we will delete directive itself)
-
-If only some rulesets in Directive have to be removed it removes them using store start and end location.
-If all the rulesets have to be removed it removes the directive itself.
+It recurses into its rule sets, and removes the directive altogether if all
+rule sets are removed.
 
 If topLevel is a **Direction Independent Directive**
 for example:
 
     @charset "UTF-8";                                 Charset Directive
     @namespace url(http://www.w3.org/1999/xhtml);     Namespace Directive
- 
-We keep it in one of the transaction and remove it from other two (Here we are keeping it in orientation neutral transaction).
 
-We then combine these transactions to get the expected output CSS.
+We don't generate anything special.
+
+We then combine the original file with the flipped fragment to get the final CSS.

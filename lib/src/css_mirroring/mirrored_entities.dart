@@ -16,8 +16,6 @@ library scissors.src.css_mirroring.mirrored_entities;
 import 'package:quiver/check.dart';
 import 'package:csslib/visitor.dart' show TreeNode;
 
-import 'buffered_transaction.dart';
-import 'edit_configuration.dart';
 import 'entity.dart';
 
 class MirroredEntity<T extends TreeNode> {
@@ -25,28 +23,25 @@ class MirroredEntity<T extends TreeNode> {
   final int index;
   final MirroredEntity parent;
   MirroredEntity(this._entities, this.index, this.parent) {
-    checkState(original.runtimeType == flipped.runtimeType,
+    checkState(_original.runtimeType == flipped.runtimeType,
         message: () => 'Mismatching entity types: '
-            'original is ${original.runtimeType}, '
+            'original is ${_original.runtimeType}, '
             'flipped is ${flipped.runtimeType}');
   }
 
-  void remove(RetentionMode mode, BufferedTransaction trans) =>
-      choose(mode).remove(trans);
-
-  Entity<T> choose(RetentionMode mode) =>
-      mode == RetentionMode.keepFlippedBidiSpecific ? flipped : original;
-
-  Entity<T> get original => new Entity<T>(_entities._originalSource,
-      _entities._originalEntities, index, parent?.original);
+  Entity<T> get _original => new Entity<T>(_entities._originalSource,
+      _entities._originalEntities, index, parent?._original);
 
   Entity<T> get flipped => new Entity<T>(_entities._flippedSource,
       _entities._flippedEntities, index, parent?.flipped);
 
+  bool get hasSameTextInBothVersions =>
+      _original.value.span.text == flipped.value.span.text;
+
   MirroredEntities<dynamic> getChildren(List<dynamic> getEntityChildren(T _)) {
     return new MirroredEntities(
         _entities._originalSource,
-        getEntityChildren(original.value),
+        getEntityChildren(_original.value),
         _entities._flippedSource,
         getEntityChildren(flipped.value),
         parent: this);

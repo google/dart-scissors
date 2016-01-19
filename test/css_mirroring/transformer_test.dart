@@ -43,9 +43,6 @@ void main() {
     'a|foo2_unmatched_css_url.css': r'''
       absent-element {
         color: blue;
-        }
-
-      :host-context([dir="ltr"]) absent-element {
         float: right;
       }
 
@@ -71,13 +68,15 @@ void main() {
     '''
   });
 
-  testPhases('removes empty rules', phases, {
+  testPhases('keeps empty rules untouched', phases, {
     'a|foo2_unmatched_css_url.css': r'''
       .used-class {}
       .unused-class {}
     '''
   }, {
     'a|foo2_unmatched_css_url.css': r'''
+      .used-class {}
+      .unused-class {}
     '''
   });
 
@@ -96,11 +95,11 @@ void main() {
     '''
   }, {
     'a|foo2_unmatched_css_url.css': r'''
-      :host-context([dir="ltr"]) absent-element {
+      absent-element {
         float: left;
         margin-left: 100px;
       }
-      :host-context([dir="ltr"]) .usedclass {
+      .usedclass {
         padding: right;
         text-align: left;
       }
@@ -157,23 +156,16 @@ void main() {
     'a|foo2_unmatched_css_url.css': r'''
         li + li {
           color: blue;
-          }
-        a ~ a {
-          color: purple;
-          }
-        li > a {
-          color: orange;
-          width: 10px;
-        }
-
-        :host-context([dir="ltr"]) li + li {
           float: right;
         }
-        :host-context([dir="ltr"]) a ~ a {
+        a ~ a {
+          color: purple;
           margin-left: 3em;
         }
-        :host-context([dir="ltr"]) li > a {
-          margin-left: 4em; }
+        li > a {
+          color: orange;
+          margin-left: 4em; width: 10px;
+        }
 
         :host-context([dir="rtl"]) li + li {
           float: left;
@@ -217,7 +209,7 @@ void main() {
   }, {
     'a|foo2_unmatched_css_url.css': r'''
        @media screen and (min-width: 401px) {
-                :host-context([dir="ltr"]) body { margin-left: 13px }
+                body { margin-left: 13px }
        }
 
        @media screen and (min-width: 401px) {
@@ -234,7 +226,7 @@ void main() {
     '''
   }, {
     'a|foo2_unmatched_css_url.css': r'''
-       @host { :host-context([dir="ltr"]) :scope { padding: left; } }
+       @host { :scope { padding: left; } }
 
        @host { :host-context([dir="rtl"]) :scope { padding: right; } }
     '''

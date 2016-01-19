@@ -17,15 +17,15 @@ import 'package:csslib/visitor.dart' show Declaration, RuleSet;
 import 'package:quiver/check.dart';
 
 import 'buffered_transaction.dart';
-import 'edit_configuration.dart';
+import 'css_utils.dart' show Direction;
 import 'mirrored_entities.dart';
 import '../utils/enum_parser.dart';
 
 enum RemovalResult { removedSome, removedAll }
 
 /// Returns true if the [RuleSet] was completely removed, false otherwise.
-RemovalResult editRuleSet(MirroredEntity<RuleSet> mirroredRuleSet,
-    RetentionMode mode, Direction targetDirection, BufferedTransaction trans) {
+RemovalResult editFlippedRuleSet(MirroredEntity<RuleSet> mirroredRuleSet,
+    Direction flippedDirection, BufferedTransaction trans) {
   final subTransaction = trans.createSubTransaction();
 
   MirroredEntities<Declaration> mirroredDeclarations = mirroredRuleSet
@@ -35,31 +35,23 @@ RemovalResult editRuleSet(MirroredEntity<RuleSet> mirroredRuleSet,
   /// declarations to be removed.
   var removedCount = 0;
   mirroredDeclarations.forEach((MirroredEntity<Declaration> decl) {
-    checkState(decl.original.value is Declaration,
+    checkState(decl.flipped.value is Declaration,
         message: () => 'Expected a declaration, got $decl');
 
-    bool isEqual =
-        decl.original.value.span.text == decl.flipped.value.span.text;
-
-    var shouldRemoveDecl =
-        mode == RetentionMode.keepBidiNeutral ? !isEqual : isEqual;
-
-    if (shouldRemoveDecl) {
-      decl.remove(mode, subTransaction);
+    if (decl.hasSameTextInBothVersions) {
+      decl.flipped.remove(subTransaction);
       removedCount++;
     }
   });
 
-  var ruleSet = mirroredRuleSet.choose(mode);
   if (removedCount == mirroredDeclarations.length) {
-    ruleSet.remove(trans);
+    mirroredRuleSet.flipped.remove(trans);
     return RemovalResult.removedAll;
   } else {
     /// Add direction attribute to RuleId for direction-specific RuleSet.
-    if (mode != RetentionMode.keepBidiNeutral) {
-      var dir = enumName(targetDirection);
-      ruleSet.prepend(trans, ':host-context([dir="$dir"]) ');
-    }
+    var dir = enumName(flippedDirection);
+    mirroredRuleSet.flipped.prepend(trans, ':host-context([dir="$dir"]) ');
+
     subTransaction.commit();
     return RemovalResult.removedSome;
   }
