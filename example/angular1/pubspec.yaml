@@ -18,7 +18,9 @@ transformers:
     # optimizePng: false
     # sasscPath: path/to/sassc
     sasscArgs:
-        - -I${PWD}/lib/some/sub/directory
+        - -I${PWD}/lib/some/sub
+        - --load-path
+        - lib/some/sub/directory
 # This enables automatic reloader support in debug, and removal of
 # reloader.dart import + calls in release.
 - scissors/reloader/transformer

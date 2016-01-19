@@ -32,7 +32,9 @@ final RegExp _commentsRx =
 /// on any of the transitive dependencies will result in a re-compilation
 /// of the SASS file(s).
 Future<Set<AssetId>> consumeTransitiveSassDeps(
-    Future<Asset> inputGetter(AssetId id), TransformLogger logger, Asset asset,
+    Future<Asset> inputGetter(AssetId id),
+    TransformLogger logger,
+    Asset asset,
     List<Directory> sassIncludes,
     [Set<AssetId> visitedIds]) async {
   visitedIds ??= new Set<AssetId>();

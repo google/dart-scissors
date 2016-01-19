@@ -17,6 +17,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:barback/barback.dart';
+import 'package:path/path.dart';
 import 'package:quiver/check.dart';
 
 import 'sassc_runner.dart' show SasscSettings, runSassC;
@@ -90,10 +91,11 @@ class SassTransformer extends AggregateTransformer
     var sasscSettings = await _settings.sasscSettings;
 
     // Mark transitive SASS @imports as barback dependencies.
-    Future<Set<AssetId>> depsFuture =
-        consumeTransitiveSassDeps(
-            transform.getInput, transform.logger, scss,
-            sasscSettings.sasscIncludes);
+    Future<Set<AssetId>> depsFuture = consumeTransitiveSassDeps(
+        transform.getInput,
+        transform.logger,
+        scss,
+        sasscSettings.sasscIncludes);
 
     if (css != null && _settings.onlyCompileOutOfDateSass.value) {
       Future<DateTime> cssTimeFuture = _getLastModified(css.id);

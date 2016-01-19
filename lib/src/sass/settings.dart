@@ -44,14 +44,14 @@ abstract class SassSettings {
     if (_sasscSettings == null) {
       _sasscSettings = (() async {
         var sasscIncludes = <Directory>[];
-        var args = <String>[]..addAll(
-            await _resolveSassIncludePaths(
-                _sasscArgs.value.map(resolveEnvVars).toList(),
-                (String includePath) async {
-                  includePath = await pathResolver.resolvePath(includePath);
-                  sasscIncludes.add(new Directory(includePath));
-                  return includePath;
-                }));
+        var args = <String>[]
+          ..addAll(await _resolveSassIncludePaths(
+              _sasscArgs.value.map(resolveEnvVars).toList(),
+              (String includePath) async {
+            includePath = absolute(await pathResolver.resolvePath(includePath));
+            sasscIncludes.add(new Directory(includePath));
+            return includePath;
+          }));
 
         for (var dir in await pathResolver.getSassIncludeDirectories()) {
           args..add("--load-path")..add(dir.path);
@@ -67,8 +67,7 @@ abstract class SassSettings {
 const _loadPathPrefixes = const <String>['-I', '--load-path='];
 
 Future<List<String>> _resolveSassIncludePaths(
-    List<String> args,
-    Future<String> transform(String path)) async {
+    List<String> args, Future<String> transform(String path)) async {
   args = new List<String>.from(args);
 
   for (int i = 0, n = args.length; i < n; i++) {
