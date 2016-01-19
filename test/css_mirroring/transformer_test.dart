@@ -55,6 +55,23 @@ void main() {
     '''
   });
 
+  testPhases(
+      'honours and consumes cssjanus\'s /* @noflip */ comments',
+      phases, {
+    'a|foo_noflip.css': r'''
+      /* @noflip */
+      absent-element[dir="rtl"] {
+        float: right;
+      }
+    '''
+  }, {
+    'a|foo_noflip.css': r'''
+      absent-element[dir="rtl"] {
+        float: right;
+      }
+    '''
+  });
+
   testPhases('removes empty rules', phases, {
     'a|foo2_unmatched_css_url.css': r'''
       .used-class {}

@@ -106,6 +106,13 @@ class BidiCssGenerator {
     });
     bufferedTrans.commit();
 
-    return (trans.commit()..build('')).text;
+    var retainedCss = (trans.commit()..build('')).text;
+    return _cleanupCss(retainedCss);
   }
+}
+
+final noFlipCommentRx = new RegExp(r'/\*\*?\s*@noflip\s*\*/\s*', multiLine: true);
+
+String _cleanupCss(String css) {
+  return css.replaceAll(noFlipCommentRx, '');
 }
