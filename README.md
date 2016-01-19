@@ -28,7 +28,7 @@ most of them are disabled or optimized for speed with `pub serve` in debug mode.
     So you just need the supporting code in your `main.dart` to support bidirectional layouts (see [example/mirroring](https://github.com/google/dart-scissors/tree/master/example/mirroring)):
 
     ```dart
-    document.body.dir = Bidi.isRtlLanguage(Intl.defaultLocale()) ? 'rtl' : 'ltr';
+    document.body.dir = Bidi.isRtlLanguage(Intl.getCurrentLocale()) ? 'rtl' : 'ltr';
     ```
 
 - [Sass](http://sass-lang.com) compilation:
