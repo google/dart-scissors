@@ -14,7 +14,7 @@
 library scissors.src.css_mirroring.mirrored_entities;
 
 import 'package:quiver/check.dart';
-import 'package:csslib/visitor.dart' show TreeNode;
+import 'package:csslib/visitor.dart';
 
 import 'entity.dart';
 
@@ -22,21 +22,41 @@ class MirroredEntity<T extends TreeNode> {
   final MirroredEntities<T> _entities;
   final int index;
   final MirroredEntity parent;
+
+  Entity<T> _original;
+  Entity<T> flipped;
+
   MirroredEntity(this._entities, this.index, this.parent) {
+    _original = new Entity<T>(_entities._originalSource,
+        _entities._originalEntities, index, parent?._original);
+
+    flipped = new Entity<T>(_entities._flippedSource,
+        _entities._flippedEntities, index, parent?.flipped);
+
     checkState(_original.runtimeType == flipped.runtimeType,
         message: () => 'Mismatching entity types: '
             'original is ${_original.runtimeType}, '
             'flipped is ${flipped.runtimeType}');
   }
 
-  Entity<T> get _original => new Entity<T>(_entities._originalSource,
-      _entities._originalEntities, index, parent?._original);
-
-  Entity<T> get flipped => new Entity<T>(_entities._flippedSource,
-      _entities._flippedEntities, index, parent?.flipped);
-
   bool get hasSameTextInBothVersions =>
       _original.value.span.text == flipped.value.span.text;
+
+  bool get isDeclaration => _original.value is Declaration;
+  bool get isRuleSet => _original.value is RuleSet;
+
+  bool get isDirectionInsensitiveDirective {
+    var node = _original.value;
+    return node is CharsetDirective ||
+        node is FontFaceDirective ||
+        node is ImportDirective ||
+        node is NamespaceDirective;
+  }
+
+  bool get hasNestedRuleSets {
+    var node = _original.value;
+    return node is MediaDirective || node is HostDirective;
+  }
 
   MirroredEntities<dynamic> getChildren(List<dynamic> getEntityChildren(T _)) {
     return new MirroredEntities(

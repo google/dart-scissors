@@ -13,14 +13,14 @@
 // limitations under the License.
 part of scissors.src.css_mirroring.transformer;
 
-const _mirrorCssSetting = 'bidiCss';
+const _bidiCssSetting = 'bidiCss';
 
 abstract class CssMirroringSettings {
   Setting<bool> get verbose;
 
-  final bidiCss = new Setting<bool>(_mirrorCssSetting, defaultValue: false);
+  final bidiCss = new Setting<bool>(_bidiCssSetting, defaultValue: false);
 
-  final nativeDirection = new Setting<Direction>('originalCssDirection',
+  final originalCssDirection = new Setting<Direction>('originalCssDirection',
       defaultValue: Direction.ltr,
       parser: new EnumParser<Direction>(Direction.values).parse);
   final cssJanusPath =
@@ -31,5 +31,5 @@ class _CssMirroringSettings extends SettingsBase with CssMirroringSettings {
   _CssMirroringSettings(settings) : super(settings);
 
   @override final bidiCss =
-      new Setting<bool>(_mirrorCssSetting, defaultValue: true);
+      new Setting<bool>(_bidiCssSetting, defaultValue: true);
 }

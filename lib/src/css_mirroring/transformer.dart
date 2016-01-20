@@ -27,8 +27,7 @@ import '../utils/settings_base.dart';
 
 part 'settings.dart';
 
-class BidiCssTransformer extends Transformer
-    implements DeclaringTransformer {
+class BidiCssTransformer extends Transformer implements DeclaringTransformer {
   final CssMirroringSettings _settings;
 
   BidiCssTransformer(this._settings);
@@ -66,16 +65,16 @@ class BidiCssTransformer extends Transformer
       return;
     }
 
-    /// Read original source css.
-    var source = await cssAsset.readAsString();
-
-    var generator = await BidiCssGenerator.build(
-        source, cssAsset.id.toString(), _settings.nativeDirection.value,
-        (String css) async {
-      return await runCssJanus(css, await _settings.cssJanusPath.value);
-    });
-    var output = generator.getOutputCss();
-    if (_settings.verbose.value) transform.logger.info(output);
-    transform.addOutput(new Asset.fromString(cssAsset.id, output));
+    var bidiCss = await bidirectionalizeCss(
+        await cssAsset.readAsString(),
+        _flipCss,
+        _settings.originalCssDirection.value);
+    if (_settings.verbose.value) {
+      transform.logger.info('Bidirectionalized css:\n$bidiCss');
+    }
+    transform.addOutput(new Asset.fromString(cssAsset.id, bidiCss));
   }
+
+  Future<String> _flipCss(String css) async =>
+      runCssJanus(css, await _settings.cssJanusPath.value);
 }

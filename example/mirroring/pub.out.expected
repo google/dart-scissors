@@ -1,10 +1,8 @@
 Loading source assets...
 Loading dart_to_js_script_rewriter, observe, scissors/css_mirroring_transformer and smoke/src/default_transformer transformers...
 Loading angular2 transformers...
-[Info from CssMirroring on scissors_mirroring_example|lib/global.css]:
-/* css to check import directive in foo.css */
-/* css to check import directive in foo.css */
-[Info from CssMirroring on scissors_mirroring_example|lib/foo.css]:
+[Info from BidiCss on scissors_mirroring_example|lib/foo.css]:
+Bidirectionalized css:
 .used-class {
 }
 
@@ -125,6 +123,10 @@ a[href="three.html"] {
     }
 }
 
+[Info from BidiCss on scissors_mirroring_example|lib/global.css]:
+Bidirectionalized css:
+/* css to check import directive in foo.css */
+/* css to check import directive in foo.css */
 Building scissors_mirroring_example...
 [Info from Dart2JS]:
 Compiling scissors_mirroring_example|web/main.dart...
