@@ -20,7 +20,7 @@ abstract class CssMirroringSettings {
 
   final mirrorCss = new Setting<bool>(_mirrorCssSetting, defaultValue: false);
 
-  final nativeDirection = new Setting<Direction>('orignalCssDirection',
+  final nativeDirection = new Setting<Direction>('originalCssDirection',
       defaultValue: Direction.ltr,
       parser: new EnumParser<Direction>(Direction.values).parse);
   final cssJanusPath =

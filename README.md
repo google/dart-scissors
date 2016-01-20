@@ -186,7 +186,7 @@ Example: see [example/mirroring](https://github.com/google/dart-scissors/tree/ma
 
 Valid settings:
 - `mirrorCss` (boolean): `true` by default (Note: this is not the same default as in the `scissors` transformer)
-- `orignalCssDirection` (`ltr` or `rtl`): `ltr` by default, defines the direction of input css.
+- `originalCssDirection` (`ltr` or `rtl`): `ltr` by default, defines the direction of input css.
 - `cssJanusPath`: `cssjanus.py` by default.
 
 ### Limitations
