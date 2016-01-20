@@ -13,12 +13,12 @@
 // limitations under the License.
 part of scissors.src.css_mirroring.transformer;
 
-const _mirrorCssSetting = 'mirrorCss';
+const _mirrorCssSetting = 'bidiCss';
 
 abstract class CssMirroringSettings {
   Setting<bool> get verbose;
 
-  final mirrorCss = new Setting<bool>(_mirrorCssSetting, defaultValue: false);
+  final bidiCss = new Setting<bool>(_mirrorCssSetting, defaultValue: false);
 
   final nativeDirection = new Setting<Direction>('originalCssDirection',
       defaultValue: Direction.ltr,
@@ -30,6 +30,6 @@ abstract class CssMirroringSettings {
 class _CssMirroringSettings extends SettingsBase with CssMirroringSettings {
   _CssMirroringSettings(settings) : super(settings);
 
-  @override final mirrorCss =
+  @override final bidiCss =
       new Setting<bool>(_mirrorCssSetting, defaultValue: true);
 }

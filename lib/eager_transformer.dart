@@ -52,7 +52,7 @@ List<List<Transformer>> _createPhases(_ScissorsSettings settings) {
           ? new ImageInliningTransformer(settings)
           : null
     ],
-    [settings.mirrorCss.value ? new CssMirroringTransformer(settings) : null],
+    [settings.bidiCss.value ? new BidiCssTransformer(settings) : null],
   ];
   return trimPhases(phases);
 }

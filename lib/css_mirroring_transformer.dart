@@ -13,4 +13,4 @@
 // limitations under the License.
 library scissors.mirroring_transformer;
 
-export 'src/css_mirroring/transformer.dart' show CssMirroringTransformer;
+export 'src/css_mirroring/transformer.dart' show BidiCssTransformer;

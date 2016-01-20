@@ -90,7 +90,7 @@ String resolveEnvVars(String s) => s?.replaceAllMapped(
     new RegExp(r'\$\{([^}]+)\}'),
     (Match m) => (Platform.environment[m.group(1)] ?? ''));
 
-// final mirrorCss = new Setting<bool>('mirrorCss',
+// final bidiCss = new Setting<bool>('bidiCss',
 //     comment:
 //         "Whether to perform LTR -> RTL mirroring of .css files with cssjanus.",
 //     defaultValue: false);

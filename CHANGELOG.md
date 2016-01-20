@@ -29,7 +29,7 @@
     ```
 
   This feature is also available in the regular `scissors` transformer, but it
-  must be enabled with `mirrorCss: true`.
+  must be enabled with `bidiCss: true`.
 
 - Added `compiledCssExtension` option to control how `foo.scss` is compiled:
   `append` yields `foo.scss.css` (default), while `replace` produces `foo.css`.

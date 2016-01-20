@@ -22,13 +22,13 @@ import 'package:code_transformers/tests.dart' show testPhases;
 
 makePhases(Map config) => [
       [
-        new CssMirroringTransformer.asPlugin(
+        new BidiCssTransformer.asPlugin(
             new BarbackSettings(config, BarbackMode.RELEASE))
       ]
     ];
 
 void main() {
-  var phases = makePhases({'mirrorCss': true});
+  var phases = makePhases({'bidiCss': true});
 
   testPhases(
       'splits the rule with language dependent declaration to common rule and language dependent rules',

@@ -11,20 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-part of scissors.src.css_pruning.transformer;
+library scissors.bidi_css_transformer;
 
-abstract class CssPruningSettings {
-  Setting<bool> get verbose;
-
-  final pruneCss =
-      new Setting<bool>('pruneCss', debugDefault: false, releaseDefault: true);
-
-  // final bidiCss = new Setting<bool>('bidiCss',
-  //     comment:
-  //         "Whether to perform LTR -> RTL mirroring of .css files with cssjanus.",
-  //     defaultValue: false);
-}
-
-class _CssPruningSettings extends SettingsBase with CssPruningSettings {
-  _CssPruningSettings(settings) : super(settings);
-}
+export 'src/css_mirroring/transformer.dart' show BidiCssTransformer;

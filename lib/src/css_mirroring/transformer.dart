@@ -27,19 +27,19 @@ import '../utils/settings_base.dart';
 
 part 'settings.dart';
 
-class CssMirroringTransformer extends Transformer
+class BidiCssTransformer extends Transformer
     implements DeclaringTransformer {
   final CssMirroringSettings _settings;
 
-  CssMirroringTransformer(this._settings);
+  BidiCssTransformer(this._settings);
 
-  CssMirroringTransformer.asPlugin(BarbackSettings settings)
+  BidiCssTransformer.asPlugin(BarbackSettings settings)
       : this(new _CssMirroringSettings(settings));
 
   @override String get allowedExtensions => '.css .css.map';
 
   @override bool isPrimary(AssetId id) =>
-      _settings.mirrorCss.value && super.isPrimary(id);
+      _settings.bidiCss.value && super.isPrimary(id);
 
   @override
   declareOutputs(DeclaringTransform transform) {
