@@ -42,8 +42,8 @@ typedef Future<String> CssFlipper(String inputCss);
 ///    :host-context([dir="rtl"]) foo { float: right }
 ///
 /// See BidirectionalCss.md for more details.
-Future<String> bidirectionalizeCss(String originalCss,
-    CssFlipper cssFlipper, [Direction nativeDirection = Direction.ltr]) async {
+Future<String> bidirectionalizeCss(String originalCss, CssFlipper cssFlipper,
+    [Direction nativeDirection = Direction.ltr]) async {
   var flippedDirection = flipDirection(nativeDirection);
   var flippedCss = await cssFlipper(originalCss);
 

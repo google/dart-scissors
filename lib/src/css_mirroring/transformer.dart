@@ -65,10 +65,8 @@ class BidiCssTransformer extends Transformer implements DeclaringTransformer {
       return;
     }
 
-    var bidiCss = await bidirectionalizeCss(
-        await cssAsset.readAsString(),
-        _flipCss,
-        _settings.originalCssDirection.value);
+    var bidiCss = await bidirectionalizeCss(await cssAsset.readAsString(),
+        _flipCss, _settings.originalCssDirection.value);
     if (_settings.verbose.value) {
       transform.logger.info('Bidirectionalized css:\n$bidiCss');
     }
