@@ -76,11 +76,13 @@ abstract class SettingsBase {
   List<Setting> getAllSettings() {
     var settingList = <Setting>[];
     InstanceMirror m = reflect(this);
+    var settingType = reflectType(Setting);
     m.type.instanceMembers.forEach((Symbol name, MethodMirror mm) {
-      if (mm.isGetter) {
-        var value = m.getField(name).reflectee;
-        if (value is Setting) settingList.add(value);
-      }
+      if (!mm.isGetter) return;
+      if (!mm.returnType.isAssignableTo(settingType)) return;
+
+      var value = m.getField(name).reflectee;
+      if (value is Setting) settingList.add(value);
     });
     return settingList;
   }
