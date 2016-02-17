@@ -41,6 +41,11 @@ inline-image("plus.png")
 line 1, column 108 of scissors_angular1_example|lib/foo.css: Inlined 'package:scissors_angular1_example/icon2.svg' with scissors_angular1_example|lib/icon2.svg
 url("package:scissors_angular1_example/icon2.svg")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[Info from BidiCss on scissors_angular1_example|lib/foo.css]:
+Bidirectionalized css:
+present-element{color:blue}present-element{background-color:yellow}.used-class{float:left;background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHg9IjAiIHk9IjAiIGhlaWdodD0iMTAiIHdpZHRoPSIxMCIgc3R5bGU9InN0cm9rZTojMDAwMGZmO2ZpbGw6IzAwZmYwMCIvPgo8L3N2Zz4=')}present-element{float:left;background-image:url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIyMXB4IiBoZWlnaHQ9IjIxcHgiIHZpZXdCb3g9IjAgMCAyMSAyMSIgb3ZlcmZsb3c9InZpc2libGUiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIxIDIxIj48cmVjdCB4PSIwIiB5PSIwIiBoZWlnaHQ9IjEwIiB3aWR0aD0iMTAiIHN0eWxlPSJzdHJva2U6IzAwZmYwMDtmaWxsOiNmZjAwMDAiLz4KPC9zdmc+')}.plus-image{background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAADG0lEQVR42u1aS3YbMQxj3uuFkkumPo/v06T3IDBdSJRIafzSlb3AaOP/jAiCP8hm17rWta4lvN5ecdOvP18HCANopBtAA2EE7P3946l7+vUKAJrxHQDAQPbXePpeXgKAo3mbhDk7CB0QCQCGwd3z7MYDrgEAksdBN4JG0qjCgAwAU/yDYgCQKRECRhkAHK3skeZwIw9jL4UaABBG0DziHzDvfYAGAMDweDzGexoAOAzHNDrnAw0ACENJgLMaaADQPR7ejxIolgPyDMAeAjIAcMS8KAO8MoAwulgnuI7Bckkw035MgzqdIEsVyGyQAIDuvfXtbfBohA4NAKYKJMoA+DIDvFAT3BTY77/fB52Gg22jXbUlYY6ZtDwpuqWmc+3vc6vr/TNWYXQ8n69zYowy6allZrpXG6lZrkXC3PseyVFm7/d7sXljQPZOe9xLFctnVdVhyu7TUPbxF0P+8gFG+j7rb8d7y9BENikNsYeUT5CcUZz2YNjaAKjUrBc7i9nVAKbmZgPn4fMJFlcm0Q04CqNWQ3M59XFtFlBizz8C4IN+i9exS9hB1c3oYkASQIOqhMFT6HDZ6BBJphHhzYMT9DWEyLzfDh4TC0/6jBMGYMbqEs/0FJOsnjqlLZnOAGqMRi/QfuOFyms4TUM77WNPx7zHUbw/7/dTp7kzYFVrygUebDRudpIUV+8EGAxR5MxrI1EGtbmFYM5DK+hZYotrEW7+PyEA92JQqwjoQmYWMLzSFziNuS2RpcGnJsmaZwq1U/jl0JhnC9g/G3kg2HY+bb7kcPR2ux1zCkz5g7Tfn58Ch6MRrzn+pYYhYKsmwQIJANwxS2hpkEQAqC3yTGBCw9CMe5ZGSUYSO2m3qXQyxNkr+GhexKpA6yjzJNcOSzUA8NnK1j9IqDCgxD/6uEudP0jE9FZGZaX/B7B0gFVkkQBgm/fTeC0EwCx9eVSWAeCR2qMDQC5/EGyEsvyVO0IZAAoLkrosA8BQjIdELlYFpmhahVMZAEojRDRtUKUKlNMk1IMMCQC8HKDW8wAJAKrRLOFwrWtd61rXeuL6B4qTYwWQ5UcIAAAAAElFTkSuQmCC');background-size:16px 16px}
+
+:host-context([dir="rtl"]) .used-class{float:right;}:host-context([dir="rtl"]) present-element{float:right;}
 [Info from Dart2JS]:
 Compiling scissors_angular1_example|web/main.dart...
 [Warning from Dart2JS on scissors_angular1_example|web/main.dart]:
@@ -88,4 +93,4 @@ Try removing 'PendingAsync' from the 'show' clause.
 [Dart2JS on scissors_angular1_example|web/main.dart]:
 2 warning(s) suppressed in package:angular.
 [Info from Dart2JS]:
-Built 174 files to "build".
+Built 175 files to "build".
