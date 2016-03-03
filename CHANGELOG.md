@@ -2,6 +2,12 @@
 
 ...
 
+## 0.4.2 (2016-03-03)
+
+### Bugfixes
+
+- Fixed "Bad state: Setting sasscArgs wasn't read yet." (issue #27).
+
 ## 0.4.1 (2016-01-19)
 
 ### Bugfixes

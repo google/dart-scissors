@@ -112,7 +112,7 @@ Examples: see [example/angular1](https://github.com/google/dart-scissors/tree/ma
 
   ```
   dev_dependencies:
-    scissors: ^0.4.1
+    scissors: ^0.4.2
   transformers:
   - scissors
   ```
