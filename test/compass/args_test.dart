@@ -41,8 +41,7 @@ main() {
   group('SassArgs', () {
     parse(List<String> args) => new SassCArgs.parse(args);
     check(List<String> args,
-        {String input, String output,
-        List<String> includeDirs: const []}) {
+        {String input, String output, List<String> includeDirs: const []}) {
       var p = parse(args);
       expect(p.inputFile?.path, input);
       expect(p.outputFile?.path, output);
@@ -68,18 +67,31 @@ main() {
     test('validates flags', () async {
       check([
         '--line-comments',
-        '--help', '-h',
-        '--line-numbers', '-l',
-        '--omit-map-comment', '-M',
-        '--precision', '1', '-p', '2',
-        '--stdin', '-s',
-        '--version', '-v',
-        '--sourcemap', '-m',
-        '--plugin-path', '.', '-P', '.',
+        '--help',
+        '-h',
+        '--line-numbers',
+        '-l',
+        '--omit-map-comment',
+        '-M',
+        '--precision',
+        '1',
+        '-p',
+        '2',
+        '--stdin',
+        '-s',
+        '--version',
+        '-v',
+        '--sourcemap',
+        '-m',
+        '--plugin-path',
+        '.',
+        '-P',
+        '.',
         '--style=nested',
         '--style=compact',
         '--style=compressed',
-        '-t', 'expanded',
+        '-t',
+        'expanded',
       ]);
       expect(() => check(['-X']), throws);
     });

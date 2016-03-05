@@ -209,7 +209,7 @@ class _FileAsset {
   Future<bool> exists() async =>
       (await FileStat.stat(fullPath)).type != FileSystemEntityType.NOT_FOUND;
 
-  Asset toAsset() =>
-      new Asset.fromFile(new AssetId(_filePseudoPackage, path), new File(fullPath));
+  Asset toAsset() => new Asset.fromFile(
+      new AssetId(_filePseudoPackage, path), new File(fullPath));
   toString() => fullPath;
 }
