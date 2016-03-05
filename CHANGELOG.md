@@ -2,6 +2,13 @@
 
 ...
 
+## 0.4.3 (2016-03-04)
+
+### Bugfixes
+
+- Introduced `scissors-sassc` binary that wraps `sassc` and adds `inline-image`
+  support.
+
 ## 0.4.2 (2016-03-03)
 
 ### Bugfixes
