@@ -18,11 +18,17 @@ import 'dart:io';
 
 import 'package:barback/barback.dart' show AssetNotFoundException;
 
-Stream<Directory> findExistingDirectories(Iterable<Directory> dirs) async* {
-  List<Future<File>> futures =
-      dirs.map((dir) async => await dir.exists() ? dir : null).toList();
-  for (var future in futures) {
-    var dir = await future;
+Stream<Directory> findExistingDirectories(Iterable<Directory> dirs,
+    {bool followLinks: true}) async* {
+  Future<Directory> resolve(Directory dir) async {
+    if (await dir.exists()) return dir;
+    if (followLinks && (await dir.stat()).type == FileSystemEntityType.LINK) {
+      return resolve(new Directory(await (new Link(dir.path)).target()));
+    }
+    return null;
+  }
+
+  for (var dir in await Future.wait(dirs.map(resolve))) {
     if (dir != null) yield dir;
   }
 }
