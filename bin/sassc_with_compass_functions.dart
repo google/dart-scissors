@@ -13,4 +13,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export 'package:scissors/src/compass/sassc_with_compass_functions.dart' show main;
+export 'package:scissors/src/compass/sassc_with_compass_functions.dart'
+    show main;

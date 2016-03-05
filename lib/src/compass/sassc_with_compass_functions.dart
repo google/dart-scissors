@@ -23,33 +23,27 @@ import 'package:quiver/check.dart';
 import '../image_inlining/main.dart';
 import '../utils/io_utils.dart';
 import '../utils/path_resolver.dart';
-import '../utils/ruby_gem_utils.dart';
 
 main(List<String> args) async {
   try {
     var opts = new SassCArgs.parse(args);
-    if (opts.input == null) {
+    if (opts.inputFile == null) {
       var stdin = readStdinSync();
-      if (stdin != null) opts.addInput('stdin.scss', stdin);
+      if (stdin != null) opts.setInput('stdin.scss', stdin);
     }
 
     ProcessResult result = await Process.run(
         await pathResolver.resolveExecutable(pathResolver.defaultSassCPath),
-        [
-          '-I',
-          await pathResolver.resolvePath(
-              pathResolver.defaultCompassStylesheetsPath ??
-              _findCompassStylesheets(pathResolver.defaultGemPath).path)
-        ]..addAll(opts.args));
+        opts.args);
 
     if (result.exitCode == 0) {
-      var input = opts.output != null
-          ? makeFileAsset(opts.output)
+      var input = opts.outputFile != null
+          ? makeFileAsset(opts.outputFile)
           : makeStringAsset('<stdin>', result.stdout);
       var output = await inlineImagesWithIncludeDirs(
           input, opts.includeDirs.map((path) => new Directory(path)).toList());
       if (output != null) {
-        result = await _pipeResult(output, opts.output, result.stderr);
+        result = await _pipeResult(output, opts.outputFile, result.stderr);
       }
     }
 
@@ -70,58 +64,52 @@ ArgParser _createSassCArgsParser() {
     ..addFlag('precision', abbr: 'p')
     ..addFlag('stdin', abbr: 's')
     ..addFlag('version', abbr: 'v')
+    ..addFlag('sourcemap', abbr: 'm')
     ..addOption('load-path', abbr: 'I', allowMultiple: true)
     ..addOption('style',
-        abbr: 't', allowed: ['nested', 'compact', 'compressed', 'expanded'])
-    ..addOption('sourcemap',
-        abbr: 'm', allowed: ['auto', 'file', 'inline', 'none']);
+        abbr: 't', allowed: ['nested', 'compact', 'compressed', 'expanded']);
 }
 
+/// Representation of SassC's args, with easy access to optional input / output
+/// files and include directories.
 class SassCArgs {
   final List<String> args;
   final List<String> includeDirs;
-  File input;
-  final File output;
-  SassCArgs(this.args, {this.includeDirs, this.input, this.output});
+  File inputFile;
+  final File outputFile;
+  SassCArgs(this.args, {this.includeDirs, this.inputFile, this.outputFile});
 
   factory SassCArgs.parse(List<String> args) {
     var results = _createSassCArgsParser().parse(args);
-    File input;
-    File output;
+    File inputFile;
+    File outputFile;
     switch (results.rest.length) {
       case 1:
-        input = new File(results.rest[0]);
+        inputFile = new File(results.rest[0]);
         break;
       case 2:
-        input = new File(results.rest[0]);
-        output = new File(results.rest[1]);
+        inputFile = new File(results.rest[0]);
+        outputFile = new File(results.rest[1]);
         break;
       case 0:
         break;
       default:
         throw new ArgumentError(
-            'Expecting 0, 1 or 2 arguments ([input] [output]), got ${results.arguments}');
+            'Expecting 0, 1 or 2 arguments ([input] [output]),'
+            'got ${results.arguments}');
     }
-    return new SassCArgs(
-        new List.from(args),
+    return new SassCArgs(new List.from(args),
         includeDirs: results['load-path'],
-        input: input,
-        output: output);
+        inputFile: inputFile,
+        outputFile: outputFile);
   }
 
-  void addInput(String name, List<int> content) {
-    checkState(input == null);
-    var file = makeTempFile(name, content);
-    input = file;
-    args.add(file.path);
+  void setInput(String name, List<int> content) {
+    checkState(inputFile == null);
+    var tempFile = makeTempFile(name, content);
+    inputFile = tempFile;
+    args.add(tempFile.path);
   }
-}
-
-Directory _findCompassStylesheets(String gemPath) {
-  var dir = new Directory(
-      getGemPath(gemPath, gemName: 'compass-core', path: 'stylesheets'));
-  if (!dir.existsSync()) throw new ArgumentError('Directory not found: $dir');
-  return dir;
 }
 
 Future<ProcessResult> _pipeResult(
