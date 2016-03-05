@@ -58,7 +58,7 @@ class PathResolver {
 
   Future<String> resolvePath(String path) async {
     if (path == null) return null;
-    return (await _resolveFileAsset([path]))?.file?.path ?? path;
+    return (await _resolveFileAsset([path]))?.fullPath ?? path;
   }
 
   Future<Asset> resolveAsset(Future<Asset> inputGetter(AssetId id),
@@ -178,7 +178,7 @@ class PathResolver {
         assets.add(new _FileAsset(dir, path));
       }
     }
-    return findFirstWhere(assets, (a) => a.file.exists());
+    return findFirstWhere(assets, (a) => a.exists());
   }
 
   String assetIdToUri(AssetId id) {
@@ -200,12 +200,16 @@ const _filePseudoPackage = '_';
 
 class _FileAsset {
   Directory rootDir;
-  File file;
+  String fullPath;
   String path;
   _FileAsset(this.rootDir, this.path) {
-    file = new File(join(rootDir.path, path));
+    fullPath = join(rootDir.path, path);
   }
+
+  Future<bool> exists() async =>
+      (await FileStat.stat(fullPath)).type != FileSystemEntityType.NOT_FOUND;
+
   Asset toAsset() =>
-      new Asset.fromFile(new AssetId(_filePseudoPackage, path), file);
-  toString() => file.path;
+      new Asset.fromFile(new AssetId(_filePseudoPackage, path), new File(fullPath));
+  toString() => fullPath;
 }
