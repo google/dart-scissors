@@ -13,11 +13,10 @@
 // limitations under the License.
 library scissors.test.compass.args_test;
 
-import 'package:scissors/src/compass/args.dart';
-
 import 'package:test/test.dart';
 import 'package:scissors/src/utils/path_resolver.dart';
 import 'dart:async';
+import 'package:scissors/src/compass/sassc_with_compass_functions.dart';
 
 class FakePathResolver implements PathResolver {
   noSuchMethod(Invocation i) => super.noSuchMethod(i);
@@ -40,21 +39,13 @@ class FakePathResolver implements PathResolver {
 
 main() {
   group('SassArgs', () {
-    parse(List<String> args) => new SassArgs.parse(args);
+    parse(List<String> args) => new SassCArgs.parse(args);
     check(List<String> args,
-        {List<String> sasscCmd,
-        List<String> sassCmd,
-        String input,
-        String output,
-        bool useCompass: false,
-        bool scssSyntax: false,
-        List<String> includeDirs: const []}) async {
+        {String input, String output,
+        List<String> includeDirs: const []}) {
       var p = parse(args);
-      if (sassCmd != null) expect(await p.getRubySassCommand(), sassCmd);
-      if (sasscCmd != null) expect(await p.getSasscCommand(), sasscCmd);
-      expect(p.input?.path, input);
-      expect(p.output?.path, output);
-      expect(p.useCompass, useCompass);
+      expect(p.inputFile?.path, input);
+      expect(p.outputFile?.path, output);
       expect(p.includeDirs, includeDirs);
     }
 
@@ -66,38 +57,31 @@ main() {
       pathResolver = originalPathResolver;
     });
 
-    test('parses options and resolves commands', () async {
-      await check([],
-          sassCmd: ['resolved_exec_test_ruby', 'resolved_exec_test_ruby_sass'],
-          sasscCmd: ['resolved_exec_test_sassc'],
-          useCompass: false);
-      await check(['a'],
-          sassCmd:
-              ['resolved_exec_test_ruby', 'resolved_exec_test_ruby_sass', 'a'],
-          sasscCmd: ['resolved_exec_test_sassc', 'a'],
-          input: 'a',
-          output: null,
-          useCompass: false);
-      await check([
-        '--compass',
-        'a',
-        'b'
-      ], sassCmd: [
-        'resolved_exec_test_ruby',
-        'resolved_exec_test_ruby_sass',
-        '--compass',
-        'a',
-        'b'
-      ], sasscCmd: [
-        'resolved_exec_test_sassc',
-        '-I',
-        'resolved_test_compass_stylesheets',
-        'a',
-        'b',
-      ], input: 'a', output: 'b', useCompass: true);
+    test('parses input and output files', () async {
+      check([]);
+      check(['a'], input: 'a', output: null);
+      check(['a', 'b'], input: 'a', output: 'b');
     });
     test('parses includes', () async {
-      await check(['-I', 'a', '-I', 'b'], includeDirs: ['a', 'b']);
+      check(['-I', 'a', '--load-path', 'b'], includeDirs: ['a', 'b']);
+    });
+    test('validates flags', () async {
+      check([
+        '--line-comments',
+        '--help', '-h',
+        '--line-numbers', '-l',
+        '--omit-map-comment', '-M',
+        '--precision', '1', '-p', '2',
+        '--stdin', '-s',
+        '--version', '-v',
+        '--sourcemap', '-m',
+        '--plugin-path', '.', '-P', '.',
+        '--style=nested',
+        '--style=compact',
+        '--style=compressed',
+        '-t', 'expanded',
+      ]);
+      expect(() => check(['-X']), throws);
     });
   });
 }

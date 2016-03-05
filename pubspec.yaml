@@ -23,4 +23,3 @@ dev_dependencies:
 executables:
   scissors-inline-images: inline_images
   scissors-sassc: sassc_with_compass_functions
-  scissors-sassc-compass: sassc_with_compass_fallback

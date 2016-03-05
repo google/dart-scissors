@@ -57,15 +57,16 @@ main(List<String> args) async {
 
 ArgParser _createSassCArgsParser() {
   return new ArgParser(allowTrailingOptions: true)
-    ..addFlag('line-comments')
     ..addFlag('help', abbr: 'h')
+    ..addFlag('line-comments')
     ..addFlag('line-numbers', abbr: 'l')
     ..addFlag('omit-map-comment', abbr: 'M')
-    ..addFlag('precision', abbr: 'p')
     ..addFlag('stdin', abbr: 's')
     ..addFlag('version', abbr: 'v')
     ..addFlag('sourcemap', abbr: 'm')
     ..addOption('load-path', abbr: 'I', allowMultiple: true)
+    ..addOption('plugin-path', abbr: 'P')
+    ..addOption('precision', abbr: 'p')
     ..addOption('style',
         abbr: 't', allowed: ['nested', 'compact', 'compressed', 'expanded']);
 }
