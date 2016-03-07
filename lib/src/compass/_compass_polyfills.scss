@@ -1,0 +1,95 @@
+// Polyfills of Compass builtin functions for SassC compatibility.
+//
+// (SassC is a C++ port of Ruby Sass, roughly 20x faster)
+//
+// Note: unfortunately, we cannot define a function inside a
+// `@if not function-exists(prefix-usage)` branch, which means we can't have
+// transparently-defined polyfills included in both Compass & SassC contexts.
+
+@import 'collection_utils';
+
+// Whether a given capability should be prefixed for evergreen browsers.
+$capability-needs-prefixing: (
+  // http://shouldiprefix.com/#animations
+  css-animation: (
+    -moz: true,
+    -webkit: true,
+  ),
+  // http://shouldiprefix.com/#transitions
+  css-transitions: (
+    -moz: true,
+    -o: true,
+    -webkit: true,
+  ),
+  // http://shouldiprefix.com/#box-sizing
+  css3-boxsizing: (
+    -moz: true,
+    -webkit: true,
+  ),
+  // http://shouldiprefix.com/#flexbox
+  flexbox: (
+    -webkit: true,
+  ),
+  // http://shouldiprefix.com/#transforms
+  transforms2d: (
+    -moz: true,
+    -ms: true,
+    -webkit: true,
+  ),
+  transforms3d: (
+    -moz: true,
+    -webkit: true,
+  ),
+  // http://caniuse.com/#feat=user-select-none
+  user-select-none: (
+    -moz: true,
+    -ms: true,
+    -webkit: true,
+  ),
+);
+
+// The percent of users relying on a particular prefix (between 0 and 1).
+//
+// This is used by Compass' vendor-specific prefix heuristics.
+@function prefix-usage($prefix, $capability, $capability-options) {
+  $needs: map-get-or-fail($capability-needs-prefixing, $capability,
+      'TODO: please hard-code prefix-usage for #{$capability}.');
+  @return if(map-get($needs, $prefix), 1, 0);
+}
+
+$prefixes-by-browser: (
+  android: -webkit,
+  android-chrome: -webkit,
+  android-firefox: -moz,
+  blackberry: -webkit,
+  chrome: -webkit,
+  firefox: -moz,
+  ie: -ms,
+  ie-mobile: -ms,
+  ios-safari: -webkit,
+  opera: (-o, -webkit),
+  opera-mini: -o,
+  opera-mobile: (-o, -webkit),
+  safari: -webkit,
+);
+
+$browsers-by-prefix: multimap-inverse($prefixes-by-browser);
+
+@function browsers($prefix: '') {
+  @if $prefix == '' {
+    @return map-keys($prefixes-by-browser);
+  } @else {
+    @return map-get-or-fail($browsers-by-prefix, $prefix,
+        'Unknown prefix: #{$prefix}');
+  }
+}
+
+@function browser-prefixes($browsers) {
+  $values: ();
+  @each $browser in $browsers {
+    $values: join($values,
+        map-get-or-fail($prefixes-by-browser, $browser,
+            'Unknown browser: #{$browser}'));
+  }
+  @return unique-values($values);
+}

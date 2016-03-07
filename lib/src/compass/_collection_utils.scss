@@ -1,0 +1,30 @@
+@function multimap-add($map, $key, $value) {
+  $values: if(map-has-key($map, $key), map-get($map, $key), ());
+  @return map-merge($map, ($key: unique-values(append($values, $value))));
+}
+
+@function multimap-inverse($map) {
+  $inverse: ();
+  @each $key in map-keys($map) {
+    @each $value in map-get($map, $key) {
+      $inverse: multimap-add($inverse, $value, $key);
+    }
+  }
+  @return $inverse;
+}
+
+@function map-get-or-fail($map, $key, $failure-message) {
+  @if map-has-key($map, $key) {
+    @return map-get($map, $key);
+  } @else {
+    @error '#{$failure-message} (#{$key} not in #{map-keys($map)})';
+  }
+}
+
+@function unique-values($list) {
+  $set: ();
+  @each $value in $list {
+    $set: map-merge($set, ($value: true));
+  }
+  @return map-keys($set);
+}
