@@ -21,10 +21,17 @@
   }
 }
 
-@function unique-values($list) {
+@function unique-values($list, $sorting-order: ()) {
   $set: ();
   @each $value in $list {
     $set: map-merge($set, ($value: true));
   }
-  @return map-keys($set);
+  $result: ();
+  @each $value in $sorting-order {
+    @if map-has-key($set, $value) {
+      $result: append($result, $value, comma);
+      $set: map-remove($set, $value);
+    }
+  }
+  @return join($result, map-keys($set), comma);
 }
