@@ -7,34 +7,37 @@ import 'package:test/test.dart';
 import 'dart:async';
 
 _checkSassCOutputAgainstCompass(String input) async {
-  var sassc = await pathResolver.resolveExecutable(pathResolver.defaultSassCPath);
-  var sass = await pathResolver.resolveExecutable(pathResolver.defaultRubySassPath);
+  var sassc =
+      await pathResolver.resolveExecutable(pathResolver.defaultSassCPath);
+  var sass =
+      await pathResolver.resolveExecutable(pathResolver.defaultRubySassPath);
   var args = [
-    '-I', await pathResolver.resolvePath('lib/src/compass'),
-    '-I', compassStylesheetsPath,
+    '-I',
+    await pathResolver.resolvePath('lib/src/compass'),
+    '-I',
+    compassStylesheetsPath,
   ];
 
   Future<String> run(
       String name, String exec, List<String> args, String input) async {
     var stopwatch = new Stopwatch()..start();
-    var result = successString(name, await pipeInAndOutOfNewProcess(
-        await Process.start(exec, args), input));
+    var result = successString(name,
+        await pipeInAndOutOfNewProcess(await Process.start(exec, args), input));
     stopwatch.stop();
     print('Executed $name in ${stopwatch.elapsedMilliseconds} millis');
     return result;
   }
 
-  var sasscResult = await run(
-      'SassC', sassc, args, "@import 'polyfills';\n" + input);
-  var sassResult = await run(
-      'Compass', sass, ['--compass', '--scss']..addAll(args), input);
+  var sasscResult =
+      await run('SassC', sassc, args, "@import 'polyfills';\n" + input);
+  var sassResult =
+      await run('Compass', sass, ['--compass', '--scss']..addAll(args), input);
   expect(sasscResult, sassResult);
   // print(sasscResult); // For debug purposes.
 }
 
 main() async {
   group('compass polyfills', () {
-
     test('support box-sizing & flexbox', () async {
       await _checkSassCOutputAgainstCompass(r'''
         @import 'compass/css3';

@@ -177,7 +177,8 @@ class ElementDescription {
             return false;
           }
         } else {
-          print('TODO: handle operator ${simpleSelector.operatorKind}: $simpleSelector');
+          print(
+              'TODO: handle operator ${simpleSelector.operatorKind}: $simpleSelector');
           return true;
         }
       } else {

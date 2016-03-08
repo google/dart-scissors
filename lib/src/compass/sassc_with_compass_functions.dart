@@ -34,7 +34,7 @@ Directory _findCompassStylesheets(String gemPath) {
 
 final String compassStylesheetsPath =
     pathResolver.defaultCompassStylesheetsPath ??
-    _findCompassStylesheets('gem')?.path;
+        _findCompassStylesheets('gem')?.path;
 
 main(List<String> args) async {
   try {
