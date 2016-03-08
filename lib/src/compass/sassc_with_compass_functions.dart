@@ -23,9 +23,23 @@ import 'package:quiver/check.dart';
 import '../image_inlining/main.dart';
 import '../utils/io_utils.dart';
 import '../utils/path_resolver.dart';
+import '../utils/ruby_gem_utils.dart';
+
+Directory _findCompassStylesheets(String gemPath) {
+  var dir = new Directory(
+      getGemPath(gemPath, gemName: 'compass-core', path: 'stylesheets'));
+  if (!dir.existsSync()) throw new ArgumentError('Directory not found: $dir');
+  return dir;
+}
+
+final String compassStylesheetsPath =
+    pathResolver.defaultCompassStylesheetsPath ??
+    _findCompassStylesheets('gem')?.path;
 
 main(List<String> args) async {
   try {
+    args = ['-I', compassStylesheetsPath]..addAll(args);
+
     var opts = new SassCArgs.parse(args);
     if (opts.inputFile == null) {
       var stdin = readStdinSync();
