@@ -6,8 +6,6 @@
 // `@if not function-exists(prefix-usage)` branch, which means we can't have
 // transparently-defined polyfills included in both Compass & SassC contexts.
 
-@import 'collection_utils';
-
 /// Whether a given capability should be prefixed for evergreen browsers.
 $_capability-needs-prefixing: (
   // http://shouldiprefix.com/#animations
