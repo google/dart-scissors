@@ -110,6 +110,9 @@ class ElementDescription {
   /// Classes of the element.
   final Set<String> classes = new Set();
 
+  /// Angular2 computed attributes of the element (syntax `[attr.foo]="bar"`).
+  final Set<String> computedAttributes = new Set();
+
   /// List of fragments of class names, when the class attribute contains
   /// mustache expressions. For instance, given `class="foo-{{...}}-bar", this
   /// will contain something like: `new RegExp(r'^foo-.*?-bar$')`.
@@ -161,7 +164,8 @@ class ElementDescription {
       } else if (simpleSelector is AttributeSelector) {
         // TODO(ochafik): Handle other operators.
         if (simpleSelector.operatorKind == TokenKind.EQUALS) {
-          if (attributes[name] != simpleSelector.value) {
+          if (!computedAttributes.contains(name) &&
+              attributes[name] != simpleSelector.value) {
             return false;
           }
         } else {

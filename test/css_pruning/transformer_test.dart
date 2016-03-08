@@ -248,4 +248,22 @@ void main() {
       div{font-family:sans-serif}
     '''
   });
+
+  testPhases('understands [attr.name] and [class.name]', phases, {
+    'a|foo_attr_class.css': r'''
+      *[foo = some] {}
+      *[bar = some] {}
+      .foo {}
+      .bar {}
+    ''',
+    'a|foo_attr_class.html': r'''
+      <div [attr.foo]="whatever"></div>
+      <div [class.bar]="maybe"></div>
+    ''',
+  }, {
+    'a|foo_attr_class.css': r'''
+      *[foo = some] {}
+      .bar {}
+    ''',
+  });
 }

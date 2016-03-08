@@ -22,6 +22,12 @@ import 'name_fragment.dart';
 import 'ng_class_parser.dart';
 import 'rule_set_index.dart';
 
+final _ng2ClassNameAttrRx =
+    new RegExp(r'^\[\s*class\s*\.\s*([^\]]+)\s*]$', multiLine: true);
+
+final _ng2AttrNameAttrRx =
+    new RegExp(r'^\[\s*attr\s*\.\s*([^\]]+)\s*]$', multiLine: true);
+
 /// Traverses DOM trees and collects [RuleSet]s that are matched.
 /// This class errs on the side of caution, so it will collect any rules
 /// where there is doubt about whether it is used.
@@ -47,6 +53,17 @@ class UsageCollector extends dom_parsing.TreeVisitor {
         desc.classes.add(pattern);
       } else {
         desc.classFragments.add(pattern);
+      }
+    }
+    for (var name in node.attributes.keys) {
+      if (name is! String) continue;
+
+      var m = _ng2ClassNameAttrRx.matchAsPrefix(name);
+      if (m != null) {
+        desc.classes.add(m[1]);
+      } else {
+        m = _ng2AttrNameAttrRx.matchAsPrefix(name);
+        if (m != null) desc.computedAttributes.add(m[1]);
       }
     }
     _parseNgClassClassesAndClassFragments(node.attributes["ng-class"], desc);
