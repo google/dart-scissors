@@ -266,4 +266,20 @@ void main() {
       .bar {}
     ''',
   });
+
+  testPhases('leaves :host selectors alone', phases, {
+    'a|foo_host.css': r'''
+      :host.foo {}
+      :host(what) {}
+      .dropThis {}
+    ''',
+    'a|foo_host.html': r'''
+      <div></div>
+    ''',
+  }, {
+    'a|foo_host.css': r'''
+      :host.foo {}
+      :host(what) {}
+    ''',
+  });
 }

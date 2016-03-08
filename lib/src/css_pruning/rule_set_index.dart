@@ -43,6 +43,8 @@ class RuleSetIndex {
         } else if (simpleSel is IdSelector) {
           _indexById(simpleSel.name, ruleSet);
           addedToSomeIndex = true;
+        } else if (simpleSel is PseudoClassSelector) {
+          starRules.add(ruleSet);
         } else if (simpleSel is ElementSelector) {
           if (simpleSel.isWildcard) {
             starRules.add(ruleSet);
@@ -71,7 +73,7 @@ class RuleSetIndex {
   /// Get the rules that potentially match [node], either because they have a
   /// matching class name / matching class fragments, or a matching id, or a
   /// matching localName).
-  List<RuleSet> _potentialMatches(ElementDescription node) {
+  Set<RuleSet> _potentialMatches(ElementDescription node) {
     final result = <RuleSet>[];
 
     addValues(String key, Map<String, Set<RuleSet>> map) {
@@ -91,7 +93,7 @@ class RuleSetIndex {
     addValues(node.localName, rulesByElement);
     result.addAll(starRules);
 
-    return result;
+    return result.toSet();
   }
 }
 
@@ -147,7 +149,13 @@ class ElementDescription {
       final SimpleSelector simpleSelector = selector.simpleSelector;
       final String name = simpleSelector.name;
 
-      if (simpleSelector is ClassSelector) {
+      if (simpleSelector is PseudoClassSelector) {
+        if (simpleSelector.name != 'host') {
+          print('TODO: handle pseudo-selector ${simpleSelector.name}');
+        }
+        // Conservative pruning: preserve any ruleset with pseudo selectors.
+        return true;
+      } else if (simpleSelector is ClassSelector) {
         if (classes.contains(name) ||
             classFragments.any(_matchesString(name))) {
           continue;
@@ -169,8 +177,12 @@ class ElementDescription {
             return false;
           }
         } else {
-          // print('TODO: handle operator kind ${simpleSelector.operatorKind}: $simpleSelector');
+          print('TODO: handle operator ${simpleSelector.operatorKind}: $simpleSelector');
+          return true;
         }
+      } else {
+        print('TODO: handle selector ${simpleSelector.runtimeType}');
+        return true;
       }
     }
     return true;
