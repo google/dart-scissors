@@ -231,4 +231,25 @@ void main() {
        @host { :host-context([dir="rtl"]) :scope { padding: right; } }
     '''
   });
+
+  /// Adds direction to each identifier in case of ruleset with multiple identifiers.
+  testPhases('splits direction dependent directives', phases, {
+    'a|foo2_unmatched_css_url.css': r'''
+        .child1,.child2 {
+          position: relative;
+          margin-right: 10px;
+        }
+    '''
+  }, {
+    'a|foo2_unmatched_css_url.css': r'''
+        .child1,.child2 {
+          position: relative;
+          margin-right: 10px;
+        }
+
+        :host-context([dir="rtl"]) .child1,:host-context([dir="rtl"]) .child2 {
+          margin-left: 10px;
+        }
+    '''
+  });
 }

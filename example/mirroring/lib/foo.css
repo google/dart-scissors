@@ -76,3 +76,15 @@ a[href="three.html"] {
     }
 }
 
+.child1,.child2 {
+    position: relative;
+    margin-right: 10px;
+ }
+
+.child1 {
+    background-color: red;
+}
+
+.child2 {
+    background-color: green;
+}

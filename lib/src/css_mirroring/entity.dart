@@ -32,7 +32,12 @@ class Entity<T extends TreeNode> {
 
   void prepend(BufferedTransaction trans, String s) {
     var start = _getNodeStart(value);
-    trans.edit(start, start, s);
+    var end = value.span.end.offset;
+    String ruleNames = value.span.text;
+    ruleNames = ruleNames.splitMapJoin((new RegExp(r',')),
+        onNonMatch: (n) => '$s$n');
+    trans.edit(start, end, ruleNames);
+
   }
 
   int get _endOffset {
