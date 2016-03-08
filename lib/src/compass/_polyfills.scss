@@ -8,8 +8,8 @@
 
 @import 'collection_utils';
 
-// Whether a given capability should be prefixed for evergreen browsers.
-$capability-needs-prefixing: (
+/// Whether a given capability should be prefixed for evergreen browsers.
+$_capability-needs-prefixing: (
   // http://shouldiprefix.com/#animations
   css-animation: (
     -moz: true,
@@ -48,18 +48,20 @@ $capability-needs-prefixing: (
   ),
 );
 
-// The percent of users relying on a particular prefix (between 0 and 1).
-//
-// This is used by Compass' vendor-specific prefix heuristics.
+/// The percent of users relying on a particular prefix (between 0 and 1).
 ///
-/// (see compass/core/lib/compass/core/sass_extensions/functions/cross_browser_support.rb)
+/// This is used by Compass' vendor-specific prefix heuristics.
+///
+/// (see compass/core/sass_extensions/functions/cross_browser_support.rb)
 @function prefix-usage($prefix, $capability, $capability-options) {
-  $needs: map-get-or-fail($capability-needs-prefixing, $capability,
-      'TODO: please hard-code prefix-usage for #{$capability}.');
+  $needs: map-get($_capability-needs-prefixing, $capability);
+  @if not $needs {
+    @error 'TODO: please hard-code prefix-usage for #{$capability}.';
+  }
   @return if(map-get($needs, $prefix), 1, 0);
 }
 
-$prefixes-by-browser: (
+$_prefixes-by-browser: (
   android: -webkit,
   android-chrome: -webkit,
   android-firefox: -moz,
@@ -75,40 +77,61 @@ $prefixes-by-browser: (
   safari: -webkit,
 );
 
-$browsers-by-prefix: multimap-inverse($prefixes-by-browser);
+/// Note: this is trivial to get from $_prefixes-by-browser, but we try and keep
+/// the computational cost of these polyfills to a minimum.
+$browsers-by-prefix: (
+  -moz: (android-firefox, firefox),
+  -ms: (ie, ie-mobile),
+  -o: (opera, opera-mini, opera-mobile),
+  -webkit: (android, android-chrome, blackberry, chrome, ios-safari, opera, opera-mobile, safari),
+);
 
 /// The known browsers.
 ///
 /// If prefix is given, limits the returned browsers to those using the specified prefix.
 ///
-/// (see compass/core/lib/compass/core/sass_extensions/functions/cross_browser_support.rb)
+/// (see compass/core/sass_extensions/functions/cross_browser_support.rb)
 @function browsers($prefix: '') {
   @if $prefix == '' {
-    @return map-keys($prefixes-by-browser);
+    @return map-keys($_prefixes-by-browser);
   } @else {
-    @return map-get-or-fail($browsers-by-prefix, $prefix,
-        'Unknown prefix: #{$prefix}');
+    @return map-get($browsers-by-prefix, $prefix);
   }
 }
 
-$sorted-prefixes: -moz, -ms, -o, -webkit;
+$_sorted-prefixes: -moz, -ms, -o, -webkit;
+
+@function _unique-values($list, $sorting-order: ()) {
+  $set: ();
+  @each $value in $list {
+    $set: map-merge($set, ($value: true));
+  }
+  $result: ();
+  @each $value in $sorting-order {
+    @if map-has-key($set, $value) {
+      $result: append($result, $value, comma);
+      $set: map-remove($set, $value);
+    }
+  }
+  @return join($result, map-keys($set), comma);
+}
 
 /// The prefixes used by the given browsers.
 ///
-/// (see compass/core/lib/compass/core/sass_extensions/functions/cross_browser_support.rb)
+/// We sort the resulting prefixes to make testing easier
+///
+/// (see compass/core/sass_extensions/functions/cross_browser_support.rb)
 @function browser-prefixes($browsers) {
   $values: ();
   @each $browser in $browsers {
-    $values: join($values,
-        map-get-or-fail($prefixes-by-browser, $browser,
-            'Unknown browser: #{$browser}'), comma);
+    $values: join($values, map-get($_prefixes-by-browser, $browser), comma);
   }
-  @return unique-values($values, $sorted-prefixes);
+  @return _unique-values($values, $_sorted-prefixes);
 }
 
 /// Returns a new list after removing any non-true values.
 ///
-/// (see compass/core/lib/compass/core/sass_extensions/functions/lists.rb)
+/// (see compass/core/sass_extensions/functions/lists.rb)
 @function compact($args...) {
   $result: ();
   @each $arg in $args {

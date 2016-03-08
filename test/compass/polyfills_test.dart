@@ -4,6 +4,7 @@ import 'package:scissors/src/utils/path_resolver.dart';
 import 'package:scissors/src/utils/process_utils.dart';
 import 'package:scissors/src/compass/sassc_with_compass_functions.dart';
 import 'package:test/test.dart';
+import 'dart:async';
 
 _checkSassCOutputAgainstCompass(String input) async {
   var sassc = await pathResolver.resolveExecutable(pathResolver.defaultSassCPath);
@@ -13,20 +14,28 @@ _checkSassCOutputAgainstCompass(String input) async {
     '-I', compassStylesheetsPath,
   ];
 
-  var sasscResult = successString('SassC', await pipeInAndOutOfNewProcess(
-      await Process.start(sassc, args),
-      "@import 'compass_polyfills';\n" + input));
-  var sassResult = successString('Compass', await pipeInAndOutOfNewProcess(
-      await Process.start(sass, ['--compass', '--scss']..addAll(args)),
-      input));
+  Future<String> run(
+      String name, String exec, List<String> args, String input) async {
+    var stopwatch = new Stopwatch()..start();
+    var result = successString(name, await pipeInAndOutOfNewProcess(
+        await Process.start(exec, args), input));
+    stopwatch.stop();
+    print('Executed $name in ${stopwatch.elapsedMilliseconds} millis');
+    return result;
+  }
+
+  var sasscResult = await run(
+      'SassC', sassc, args, "@import 'polyfills';\n" + input);
+  var sassResult = await run(
+      'Compass', sass, ['--compass', '--scss']..addAll(args), input);
   expect(sasscResult, sassResult);
-  print(sasscResult); // For debug purposes.
+  // print(sasscResult); // For debug purposes.
 }
 
 main() async {
   group('compass polyfills', () {
 
-    test('work with box-sizing & flexbox', () async {
+    test('support box-sizing & flexbox', () async {
       await _checkSassCOutputAgainstCompass(r'''
         @import 'compass/css3';
 
@@ -41,7 +50,7 @@ main() async {
       ''');
     });
 
-    test('work with animations & transitions', () async {
+    test('support animations & transitions', () async {
       await _checkSassCOutputAgainstCompass(r'''
         @import 'compass/css3';
 
@@ -55,7 +64,7 @@ main() async {
       ''');
     });
 
-    test('work with user-select', () async {
+    test('support user-select', () async {
       await _checkSassCOutputAgainstCompass(r'''
         @import 'compass/css3';
 
@@ -65,7 +74,7 @@ main() async {
       ''');
     });
 
-    test('work with transforms', () async {
+    test('support transforms', () async {
       await _checkSassCOutputAgainstCompass(r'''
         @import 'compass/css3';
 
@@ -79,7 +88,7 @@ main() async {
       ''');
     });
 
-    test('replicate browsers & browser-prefixes', () async {
+    test('replicate browsers & browser-prefixes functions', () async {
       await _checkSassCOutputAgainstCompass(r'''
         @import 'compass/css3';
 
@@ -98,8 +107,3 @@ main() async {
     });
   });
 }
-// bin/sassc_with_compass_functions.dart \
-//   -I . -I `gem environment gemdir`/gems/compass-core-1.0.3/stylesheets \
-//   test/compass/prefix_usage_polyfills.scss
-//
-// sass --compass test/compass/prefix_usage.scss
