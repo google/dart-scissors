@@ -33,7 +33,7 @@ class Entity<T extends TreeNode> {
   void prepend(BufferedTransaction trans, String s) {
     for (final Selector sel in value.selectorGroup.selectors) {
       var start = _getNodeStart(sel);
-      trans.edit(sel.span.start.offset, sel.span.start.offset, s);
+      trans.edit(start, start, s);
     }
   }
 
