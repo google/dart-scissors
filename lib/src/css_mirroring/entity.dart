@@ -31,13 +31,10 @@ class Entity<T extends TreeNode> {
   }
 
   void prepend(BufferedTransaction trans, String s) {
-    var start = _getNodeStart(value);
-    var end = value.span.end.offset;
-    String ruleNames = value.span.text;
-    ruleNames = ruleNames.splitMapJoin((new RegExp(r',')),
-        onNonMatch: (n) => '$s$n');
-    trans.edit(start, end, ruleNames);
-
+    for (final Selector sel in value.selectorGroup.selectors) {
+      var start = _getNodeStart(sel);
+      trans.edit(sel.span.start.offset, sel.span.start.offset, s);
+    }
   }
 
   int get _endOffset {

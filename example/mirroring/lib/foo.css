@@ -26,6 +26,7 @@ table-class {
 
 ul li {
     color: gray;
+    margin-left: 10em;
 }
 
 /* Adjacent sibling selectors */
@@ -76,7 +77,8 @@ a[href="three.html"] {
     }
 }
 
-.child1,.child2 {
+.child1, .child2 + .child3, .child4, img[src^="alert"], a:visited, li:nth-child(2n+1)
+{
     position: relative;
     margin-right: 10px;
  }
