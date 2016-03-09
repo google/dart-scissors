@@ -13,7 +13,7 @@
 // limitations under the License.
 library scissors.src.css_mirroring.entity;
 
-import 'package:csslib/visitor.dart' show Declaration, Directive, TreeNode;
+import 'package:csslib/visitor.dart' show Declaration, Directive, TreeNode, Selector, RuleSet;
 
 import 'buffered_transaction.dart';
 
@@ -31,11 +31,13 @@ class Entity<T extends TreeNode> {
   }
 
   void prepend(BufferedTransaction trans, String s) {
-    for (final Selector sel in value.selectorGroup.selectors) {
+    for (final Selector sel in _getSelectors(value)) {
       var start = _getNodeStart(sel);
       trans.edit(start, start, s);
     }
   }
+
+  List<Selector> _getSelectors(RuleSet r) => r.selectorGroup.selectors;
 
   int get _endOffset {
     var value = this.value;
