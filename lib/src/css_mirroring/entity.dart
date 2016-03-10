@@ -13,7 +13,7 @@
 // limitations under the License.
 library scissors.src.css_mirroring.entity;
 
-import 'package:csslib/visitor.dart' show Declaration, Directive, TreeNode, Selector, RuleSet;
+import 'package:csslib/visitor.dart' show Declaration, Directive, TreeNode;
 
 import 'buffered_transaction.dart';
 
@@ -27,17 +27,8 @@ class Entity<T extends TreeNode> {
   T get value => _list[_index];
 
   void remove(BufferedTransaction trans) {
-    trans.edit(_getNodeStart(value), _endOffset, '');
+    trans.edit(getNodeStart(value), _endOffset, '');
   }
-
-  void prepend(BufferedTransaction trans, String s) {
-    for (final Selector sel in _getSelectors(value)) {
-      var start = _getNodeStart(sel);
-      trans.edit(start, start, s);
-    }
-  }
-
-  List<Selector> _getSelectors(RuleSet r) => r.selectorGroup.selectors;
 
   int get _endOffset {
     var value = this.value;
@@ -48,13 +39,13 @@ class Entity<T extends TreeNode> {
       /// document end in case of a toplevel ruleset and is directive end if ruleset is
       /// part of a toplevel directive like @media directive.
       return _index < _list.length - 1
-          ? _getNodeStart(_list[_index + 1])
+          ? getNodeStart(_list[_index + 1])
           : _parent?._endOffset ?? _source.length;
     }
   }
 }
 
-int _getNodeStart(TreeNode node) {
+int getNodeStart(TreeNode node) {
   if (node is Directive) {
     // The node span start does not include '@' so additional -1 is required.
     return node.span.start.offset - 1;
