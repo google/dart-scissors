@@ -13,11 +13,12 @@
 // limitations under the License.
 library scissors.src.css_mirroring.bidi_css_generator.ruleset_processors;
 
-import 'package:csslib/visitor.dart' show Declaration, RuleSet;
+import 'package:csslib/visitor.dart' show Declaration, RuleSet, Selector;
 import 'package:quiver/check.dart';
 
 import 'buffered_transaction.dart';
 import 'css_utils.dart' show Direction;
+import 'entity.dart';
 import 'mirrored_entities.dart';
 import '../utils/enum_parser.dart';
 
@@ -50,9 +51,18 @@ RemovalResult editFlippedRuleSet(MirroredEntity<RuleSet> mirroredRuleSet,
   } else {
     /// Add direction attribute to RuleId for direction-specific RuleSet.
     var dir = enumName(flippedDirection);
-    mirroredRuleSet.flipped.prepend(trans, ':host-context([dir="$dir"]) ');
+    prependToEachSelector(mirroredRuleSet.flipped, trans, ':host-context([dir="$dir"]) ');
 
     subTransaction.commit();
     return RemovalResult.removedSome;
   }
 }
+
+void prependToEachSelector(Entity<RuleSet> e, BufferedTransaction trans, String s) {
+  for (final Selector sel in _getSelectors(e.value)) {
+    var start = sel.span.start.offset;
+    trans.edit(start, start, s);
+  }
+}
+
+List<Selector> _getSelectors(RuleSet r) => r.selectorGroup.selectors;
