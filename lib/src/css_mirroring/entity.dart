@@ -30,11 +30,6 @@ class Entity<T extends TreeNode> {
     trans.edit(_getNodeStart(value), _endOffset, '');
   }
 
-  void prepend(BufferedTransaction trans, String s) {
-    var start = _getNodeStart(value);
-    trans.edit(start, start, s);
-  }
-
   int get _endOffset {
     var value = this.value;
     if (value is Declaration) {

@@ -231,4 +231,24 @@ void main() {
        @host { :host-context([dir="rtl"]) :scope { padding: right; } }
     '''
   });
+
+  testPhases('adds direction to each selector in ruleset', phases, {
+    'a|foo2_multiple_selectors_css_url.css': r'''
+        .child1, .child2 {
+          position: relative;
+          margin-right: 10px;
+        }
+    '''
+  }, {
+    'a|foo2_multiple_selectors_css_url.css': r'''
+        .child1, .child2 {
+          position: relative;
+          margin-right: 10px;
+        }
+
+        :host-context([dir="rtl"]) .child1, :host-context([dir="rtl"]) .child2 {
+          margin-left: 10px;
+        }
+    '''
+  });
 }
