@@ -19,6 +19,7 @@ import 'src/js_optimization/settings.dart';
 import 'src/parts_check/transformer.dart';
 import 'src/permutations/transformer.dart';
 import 'src/utils/settings_base.dart';
+import 'package:scissors/src/sourcemap_stripping/transformer.dart';
 
 /// This transformer stitches deferred message parts together in pre-assembled
 /// .js artefact permutations, to speed up initial loading of pages.
@@ -49,6 +50,11 @@ class PermutationsTransformerGroup extends TransformerGroup {
   PermutationsTransformerGroup(_PermutationsGroupSettings settings)
       : super([
           [
+            settings.stripSourcemaps.value
+                ? new SourcemapStrippingTransformer(settings)
+                : null,
+          ],
+          [
             new PermutationsTransformer(settings),
             new PartsCheckTransformer(settings)
           ]
@@ -60,6 +66,10 @@ class PermutationsTransformerGroup extends TransformerGroup {
 }
 
 class _PermutationsGroupSettings extends SettingsBase
-    with PermutationsSettings, PartsCheckSettings, JsOptimizationSettings {
+    with
+        PermutationsSettings,
+        PartsCheckSettings,
+        JsOptimizationSettings,
+        SourcemapStrippingSettings {
   _PermutationsGroupSettings(settings) : super(settings);
 }
