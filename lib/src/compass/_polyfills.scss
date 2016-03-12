@@ -97,8 +97,6 @@ $browsers-by-prefix: (
   }
 }
 
-$_sorted-prefixes: -moz, -ms, -o, -webkit;
-
 @function _unique-values($list, $sorting-order: ()) {
   $set: ();
   @each $value in $list {
@@ -124,7 +122,7 @@ $_sorted-prefixes: -moz, -ms, -o, -webkit;
   @each $browser in $browsers {
     $values: join($values, map-get($_prefixes-by-browser, $browser), comma);
   }
-  @return _unique-values($values, $_sorted-prefixes);
+  @return _unique-values($values, map-keys($browsers-by-prefix));
 }
 
 /// Returns a new list after removing any non-true values.
