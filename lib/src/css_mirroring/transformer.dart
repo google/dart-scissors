@@ -27,7 +27,10 @@ import '../utils/settings_base.dart';
 
 part 'settings.dart';
 
-class BidiCssTransformer extends Transformer implements DeclaringTransformer {
+final _primaryRx = new RegExp(r'^(.*?)\.css(?:\.map)?');
+
+class BidiCssTransformer extends AggregateTransformer
+    implements DeclaringAggregateTransformer {
   final CssMirroringSettings _settings;
 
   BidiCssTransformer(this._settings);
@@ -35,35 +38,39 @@ class BidiCssTransformer extends Transformer implements DeclaringTransformer {
   BidiCssTransformer.asPlugin(BarbackSettings settings)
       : this(new _CssMirroringSettings(settings));
 
-  @override String get allowedExtensions => '.css .css.map';
+  // @override String get allowedExtensions => '.css .css.map';
 
-  @override bool isPrimary(AssetId id) =>
-      _settings.bidiCss.value && super.isPrimary(id);
+  @override classifyPrimary(AssetId id) => _settings.bidiCss.value
+      ? _primaryRx.matchAsPrefix(id.toString())?.group(1)
+      : null;
 
   @override
-  declareOutputs(DeclaringTransform transform) {
-    var id = transform.primaryId;
-    if (shouldSkipAsset(id)) return;
+  declareOutputs(DeclaringAggregateTransform transform) async {
+    var ids = await transform.primaryIds.toList();
+    var cssId =
+        ids.firstWhere((id) => id.extension == '.css', orElse: () => null);
+    var mapId =
+        ids.firstWhere((id) => id.extension == '.map', orElse: () => null);
+    if (cssId == null) return;
+    if (shouldSkipAsset(cssId)) return;
 
-    if (id.extension == '.map') {
-      // The transformer converts input css to new bidi css so the input
-      // .css.map will no longer be valid.
-      transform.consumePrimary();
-    } else {
-      transform.declareOutput(id);
-    }
+    if (mapId != null) transform.consumePrimary(mapId);
+    if (cssId != null) transform.declareOutput(cssId);
   }
 
-  Future apply(Transform transform) async {
-    if (transform.primaryInput.id.extension == '.map') {
-      transform.consumePrimary();
-      return;
-    }
-    var cssAsset = transform.primaryInput;
+  Future apply(AggregateTransform transform) async {
+    var inputs = await transform.primaryInputs.toList();
+    var cssAsset = inputs.firstWhere((asset) => asset.id.extension == '.css',
+        orElse: () => null);
+    var mapAsset = inputs.firstWhere((asset) => asset.id.extension == '.map',
+        orElse: () => null);
+    if (cssAsset == null) return;
     if (shouldSkipAsset(cssAsset.id)) {
-      transform.logger.info('Skipping ${transform.primaryInput.id}');
+      transform.logger.info('Skipping ${cssAsset.id}');
       return;
     }
+
+    if (mapAsset != null) transform.consumePrimary(mapAsset.id);
 
     var bidiCss = await bidirectionalizeCss(await cssAsset.readAsString(),
         _flipCss, _settings.originalCssDirection.value);
