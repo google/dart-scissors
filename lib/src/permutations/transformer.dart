@@ -22,6 +22,7 @@ import 'package:path/path.dart';
 import 'intl_deferred_map.dart';
 import '../js_optimization/js_optimization.dart';
 import '../js_optimization/settings.dart';
+import '../sourcemap_stripping/sourcemap_stripping.dart';
 import '../utils/settings_base.dart';
 
 part 'settings.dart';
@@ -144,7 +145,8 @@ class PermutationsTransformer extends AggregateTransformer
         }
         List<Asset> assets = importAliasesByAssets.keys.toList();
         for (var asset in assets) {
-          futureAssetStrings.putIfAbsent(asset, () => asset.readAsString());
+          futureAssetStrings.putIfAbsent(asset,
+              () async => stripSourcemap(await asset.readAsString()));
         }
 
         if (_settings.verbose.value) {
@@ -177,8 +179,15 @@ class PermutationsTransformer extends AggregateTransformer
       Asset sourcemapAsset) async {
     var futureStrings = assets.map((a) => futureAssetStrings[a]);
     var content = (await Future.wait(futureStrings)).join('\n');
-    var contentAsset = new Asset.fromString(permutationId, content);
 
+    if (sourcemapAsset != null) {
+      var sourcemapId = permutationId.addExtension('.map');
+      transform
+          .addOutput(new Asset.fromStream(sourcemapId, sourcemapAsset.read()));
+      content += '\n//# sourceMappingURL=${basename(sourcemapId.path)}';
+    }
+
+    var contentAsset = new Asset.fromString(permutationId, content);
     if (_settings.reoptimizePermutations.value) {
       try {
         contentAsset =
@@ -191,10 +200,5 @@ class PermutationsTransformer extends AggregateTransformer
       }
     }
     transform.addOutput(contentAsset);
-    if (sourcemapAsset != null) {
-      var sourcemapId = permutationId.addExtension('.map');
-      transform
-          .addOutput(new Asset.fromStream(sourcemapId, sourcemapAsset.read()));
-    }
   }
 }

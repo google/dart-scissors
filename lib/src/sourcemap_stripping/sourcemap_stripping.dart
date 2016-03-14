@@ -13,7 +13,7 @@
 // limitations under the License.
 
 final _sourceMappingPattern =
-    new RegExp("//# sourceMappingURL=(.*)", multiLine: false);
+    new RegExp("\n?//# sourceMappingURL=(.*)", multiLine: true);
 
 String stripSourcemap(String jsContent, [urlCallback(String sourcemapUrl)]) {
   return jsContent.replaceAllMapped(_sourceMappingPattern, (m) {

@@ -30,16 +30,16 @@ class SourcemapStrippingTransformer extends Transformer
       : this(new _SourcemapStrippingSettings(settings));
 
   @override
-  String get allowedExtensions => ".dart.js .part.js";
+  String get allowedExtensions => ".js";
 
   @override
   declareOutputs(DeclaringTransform transform) {
-    if (!_settings.stripSourcemaps.value) return;
+    if (!_settings.stripSourceMaps.value) return;
     transform.declareOutput(transform.primaryId);
   }
 
   apply(Transform transform) async {
-    if (!_settings.stripSourcemaps.value) return;
+    if (!_settings.stripSourceMaps.value) return;
 
     final id = transform.primaryInput.id;
     final js = await transform.primaryInput.readAsString();

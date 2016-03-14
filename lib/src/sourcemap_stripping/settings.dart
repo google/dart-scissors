@@ -17,7 +17,7 @@ abstract class SourcemapStrippingSettings {
   Setting<bool> get verbose;
 
   /// Disabled in general transformer groups.
-  final stripSourcemaps = makeBoolSetting('stripSourcemaps', false);
+  final stripSourceMaps = makeBoolSetting('stripSourceMaps', false);
 }
 
 class _SourcemapStrippingSettings extends SettingsBase
@@ -26,5 +26,5 @@ class _SourcemapStrippingSettings extends SettingsBase
 
   /// Enabled by default in release in standalone transformer.
   @override
-  final stripSourcemaps = makeOptimSetting('stripSourcemaps');
+  final stripSourceMaps = makeOptimSetting('stripSourceMaps');
 }

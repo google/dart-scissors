@@ -33,7 +33,7 @@ void main() {
   ''';
   var strippedSrc = r'''
     blah
-    
+
   ''';
 
   testPhases('strips sourcemaps by default', makePhases({}),
@@ -41,7 +41,7 @@ void main() {
 
   testPhases(
       'does not strip sourcemaps when told not to',
-      makePhases({'stripSourcemaps': false}),
+      makePhases({'stripSourceMaps': false}),
       {'a|foo.dart.js': src},
       {'a|foo.dart.js': src});
 }
