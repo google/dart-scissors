@@ -112,7 +112,7 @@ Examples: see [example/angular1](https://github.com/google/dart-scissors/tree/ma
 
   ```
   dev_dependencies:
-    scissors: ^0.5.0
+    scissors: ^0.5.0+1
   transformers:
   - scissors
   ```
@@ -276,7 +276,9 @@ This will download some executables used by Scissors and will export the followi
 - `CLOSURE_COMPILER_JAR`
 - `PNGCRUSH_BIN`
 
-To test your changes:
+Please run the following command to test your changes + reformat + analyze sources:
 ```
 ./scripts/presubmit.sh
 ```
+
+Please *never* force-push to `master`: use `git revert` to revert changes.

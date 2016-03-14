@@ -12,6 +12,8 @@ _expectSassOutput(String input, String expectedOutput, {bool useSassC}) async {
     '-I',
     path.join(path.dirname(Platform.script.path), '../../lib/compass'),
     '-I',
+    'lib/compass',
+    '-I',
     compassStylesheetsPath,
   ];
 
