@@ -50,16 +50,16 @@ class PermutationsTransformerGroup extends TransformerGroup {
 
   PermutationsTransformerGroup(_PermutationsGroupSettings settings)
       : super(trimPhases([
-        [
-          new PermutationsTransformer(settings),
-          new PartsCheckTransformer(settings)
-        ],
-        [
-          settings.stripSourceMaps.value
-              ? new SourcemapStrippingTransformer(settings)
-              : null,
-        ]
-      ])),
+          [
+            new PermutationsTransformer(settings),
+            new PartsCheckTransformer(settings)
+          ],
+          [
+            settings.stripSourceMaps.value
+                ? new SourcemapStrippingTransformer(settings)
+                : null,
+          ]
+        ])),
         _settings = settings;
 
   PermutationsTransformerGroup.asPlugin(BarbackSettings settings)

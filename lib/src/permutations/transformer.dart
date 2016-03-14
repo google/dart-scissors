@@ -145,8 +145,8 @@ class PermutationsTransformer extends AggregateTransformer
         }
         List<Asset> assets = importAliasesByAssets.keys.toList();
         for (var asset in assets) {
-          futureAssetStrings.putIfAbsent(asset,
-              () async => stripSourcemap(await asset.readAsString()));
+          futureAssetStrings.putIfAbsent(
+              asset, () async => stripSourcemap(await asset.readAsString()));
         }
 
         if (_settings.verbose.value) {

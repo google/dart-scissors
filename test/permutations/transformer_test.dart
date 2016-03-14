@@ -55,29 +55,23 @@ void main() {
     testPhases('Concatenates deferred messages in pre-loaded permutations',
         makePhases({}), {
       'a|main.deferred_map': deferredMap,
-      'a|main.dart.js':
-          'content of main.dart.js\n'
+      'a|main.dart.js': 'content of main.dart.js\n'
           '//# sourceMappingURL=main.map',
-      'a|main.dart.js_1.part.js':
-          'content of main.dart.js_1.part.js\n'
+      'a|main.dart.js_1.part.js': 'content of main.dart.js_1.part.js\n'
           '//# sourceMappingURL=part1.map',
-      'a|main.dart.js_2.part.js':
-          'content of main.dart.js_2.part.js\n'
+      'a|main.dart.js_2.part.js': 'content of main.dart.js_2.part.js\n'
           '//# sourceMappingURL=part1.map',
       'a|main.dart.js.map': 'map of main.dart.js',
       'a|main.dart.js_1.part.js.map': 'map of main.dart.js_1.part.js',
       'a|main.dart.js_2.part.js.map': 'map of main.dart.js_2.part.js',
     }, {
-      'a|main_ar.js':
-          'content of main.dart.js\n'
+      'a|main_ar.js': 'content of main.dart.js\n'
           'content of main.dart.js_2.part.js\n'
           '//# sourceMappingURL=main_ar.js.map',
-      'a|main_bg.js':
-          'content of main.dart.js\n'
+      'a|main_bg.js': 'content of main.dart.js\n'
           'content of main.dart.js_1.part.js\n'
           '//# sourceMappingURL=main_bg.js.map',
-      'a|main_en_US.js':
-          'content of main.dart.js\n'
+      'a|main_en_US.js': 'content of main.dart.js\n'
           '//# sourceMappingURL=main_en_US.js.map',
       // TODO(ochafik): Compose maps of parts (just merge symbols + add offsets,
       // using package:source_map).

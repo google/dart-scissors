@@ -1,7 +1,11 @@
 Loading source assets...
 Loading dart_to_js_script_rewriter, observe, scissors/css_mirroring_transformer and smoke/src/default_transformer transformers...
 Loading angular2 transformers...
-[Info from BidiCss on scissors_mirroring_example|lib/foo.css]:
+[Info from BidiCss on scissors_mirroring_example|scissors_mirroring_example|lib/global]:
+Bidirectionalized css:
+/* css to check import directive in foo.css */
+/* css to check import directive in foo.css */
+[Info from BidiCss on scissors_mirroring_example|scissors_mirroring_example|lib/foo]:
 Bidirectionalized css:
 .used-class {
 }
@@ -81,6 +85,18 @@ a[href="three.html"] {
     }
 }
 
+.child1, .child2 {
+    position: relative;
+    margin-right: 10px;
+}
+
+.child1 {
+    background-color: red;
+}
+
+.child2 {
+    background-color: green;
+}
 
 :host-context([dir="rtl"]) present-element {
     margin-right: 10em;
@@ -123,12 +139,12 @@ a[href="three.html"] {
     }
 }
 
-[Info from BidiCss on scissors_mirroring_example|lib/global.css]:
-Bidirectionalized css:
-/* css to check import directive in foo.css */
-/* css to check import directive in foo.css */
+:host-context([dir="rtl"]) .child1, :host-context([dir="rtl"]) .child2 {
+    margin-left: 10px;
+}
+
 Building scissors_mirroring_example...
 [Info from Dart2JS]:
 Compiling scissors_mirroring_example|web/main.dart...
 [Info from Dart2JS]:
-Built 891 files to "build".
+Built 892 files to "build".
