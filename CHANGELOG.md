@@ -2,9 +2,35 @@
 
 ...
 
-## 0.4.3 (2016-03-04)
+## 0.5.0 (2016-03-14)
+
+### Features
+
+- Added a sourcemap-stripping transformer, usable standalone or in
+  `scissors/permutations_transformer` with `stripSourceMaps: true` (relevant
+  only when the `$dart2js` transformer has `sourceMaps: true`)
+- Added [Compass polyfills](https://github.com/google/dart-scissors/blob/91bb07ab7892fdd34b40438dec015a9049641ee5/lib/compass/_polyfills.scss)
+  for `prefix-usage`, `browsers`, `browser-prefixes`, `compact` (makes
+  [lots of Compass mixins to work well](https://github.com/google/dart-scissors/blob/91bb07ab7892fdd34b40438dec015a9049641ee5/test/compass/polyfills_test.dart))
 
 ### Bugfixes
+
+- CSS pruning:
+
+  - Handle Angular2 [attr.name] and [class.name] syntaxes in CSS pruning (issues #30 & #31)
+  - Skip :host rules (issue #29)
+
+- Bidirectional CSS:
+
+  - Fix Css mirroring to handle multiple selectors in RuleSet
+  - Transformer is now an aggregate (more solid interaction with other transformers)
+
+- Follow symlinks in path resolution logic.
+- `scissors-sassc` now automatically finds compass stylesheets
+
+## 0.4.3 (2016-03-04)
+
+### Features
 
 - Introduced `scissors-sassc` binary that wraps `sassc` and adds `inline-image`
   support.

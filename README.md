@@ -112,7 +112,7 @@ Examples: see [example/angular1](https://github.com/google/dart-scissors/tree/ma
 
   ```
   dev_dependencies:
-    scissors: ^0.4.3
+    scissors: ^0.5.0
   transformers:
   - scissors
   ```
@@ -214,6 +214,10 @@ Valid settings:
    should take the alias you're importing them under. See [example/permutations](https://github.com/google/dart-scissors/tree/master/example/permutations) for a concrete example.
 - `expectedPartCounts` (map of .dart.js artifact to number of expected parts): unset by default.
   For instance: `{ web/main.dart.js: 3 }`.
+- `stripSourceMaps`: `false` by default.
+  Removes the `sourceMappingURL` links from all generated `.js` files, to avoid
+  provoking 404s in production when sourcemaps aren't served (relevant only
+  when the `$dart2js` transformer has setting `sourceMaps: true`).
 - `reoptimizePermutations`: `false` by default.
   Whether to optimize permutations with the Closure Compiler.
 - `closureCompilerJarPath`: `compiler.jar` by default
