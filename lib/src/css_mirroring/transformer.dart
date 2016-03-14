@@ -40,9 +40,10 @@ class BidiCssTransformer extends AggregateTransformer
 
   // @override String get allowedExtensions => '.css .css.map';
 
-  @override classifyPrimary(AssetId id) => _settings.bidiCss.value
-      ? _primaryRx.matchAsPrefix(id.toString())?.group(1)
-      : null;
+  @override classifyPrimary(AssetId id) =>
+      !_settings.bidiCss.value || shouldSkipAsset(id)
+          ? null
+          : _primaryRx.matchAsPrefix(id.toString())?.group(1);
 
   @override
   declareOutputs(DeclaringAggregateTransform transform) async {

@@ -51,14 +51,16 @@ RemovalResult editFlippedRuleSet(MirroredEntity<RuleSet> mirroredRuleSet,
   } else {
     /// Add direction attribute to RuleId for direction-specific RuleSet.
     var dir = enumName(flippedDirection);
-    prependToEachSelector(mirroredRuleSet.flipped, trans, ':host-context([dir="$dir"]) ');
+    prependToEachSelector(
+        mirroredRuleSet.flipped, trans, ':host-context([dir="$dir"]) ');
 
     subTransaction.commit();
     return RemovalResult.removedSome;
   }
 }
 
-void prependToEachSelector(Entity<RuleSet> e, BufferedTransaction trans, String s) {
+void prependToEachSelector(
+    Entity<RuleSet> e, BufferedTransaction trans, String s) {
   for (final Selector sel in _getSelectors(e.value)) {
     var start = sel.span.start.offset;
     trans.edit(start, start, s);
