@@ -18,7 +18,9 @@ import 'package:barback/barback.dart';
 import 'src/js_optimization/settings.dart';
 import 'src/parts_check/transformer.dart';
 import 'src/permutations/transformer.dart';
+import 'src/sourcemap_stripping/transformer.dart';
 import 'src/utils/settings_base.dart';
+import 'package:scissors/src/utils/phase_utils.dart';
 
 /// This transformer stitches deferred message parts together in pre-assembled
 /// .js artefact permutations, to speed up initial loading of pages.
@@ -47,12 +49,17 @@ class PermutationsTransformerGroup extends TransformerGroup {
   final PermutationsSettings _settings;
 
   PermutationsTransformerGroup(_PermutationsGroupSettings settings)
-      : super([
-          [
-            new PermutationsTransformer(settings),
-            new PartsCheckTransformer(settings)
-          ]
-        ]),
+      : super(trimPhases([
+        [
+          new PermutationsTransformer(settings),
+          new PartsCheckTransformer(settings)
+        ],
+        [
+          settings.stripSourceMaps.value
+              ? new SourcemapStrippingTransformer(settings)
+              : null,
+        ]
+      ])),
         _settings = settings;
 
   PermutationsTransformerGroup.asPlugin(BarbackSettings settings)
@@ -60,6 +67,10 @@ class PermutationsTransformerGroup extends TransformerGroup {
 }
 
 class _PermutationsGroupSettings extends SettingsBase
-    with PermutationsSettings, PartsCheckSettings, JsOptimizationSettings {
+    with
+        PermutationsSettings,
+        PartsCheckSettings,
+        JsOptimizationSettings,
+        SourcemapStrippingSettings {
   _PermutationsGroupSettings(settings) : super(settings);
 }

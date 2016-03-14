@@ -14,7 +14,7 @@ cd "example/$EXAMPLE_NAME"
 # sed -i.bak -E 's!scissors: .+!scissors: '$version'!' pubspec.yaml
 
 echo "# Building $EXAMPLE_NAME"
-pub get
+pub upgrade
 pub build 2>&1 | \
   egrep -v "^Took .*? to compile " | \
   egrep -v ".*? took .*? msec." | \
