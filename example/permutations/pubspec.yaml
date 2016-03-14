@@ -7,6 +7,7 @@ dev_dependencies:
   scissors: ^0.4.3
 transformers:
 - $dart2js:
+    sourceMaps: true
     commandLineOptions:
     - --deferred-map=build
 - scissors/permutations_transformer:
@@ -14,10 +15,11 @@ transformers:
     ltrImport: tc_ltr
     rtlImport: tc_rtl
     verbose: true
+    stripSourceMaps: true
     expectedPartCounts:
         web/main.dart.js: 6
-    release:
-        reoptimizePermutations: true
+    # release:
+    #     reoptimizePermutations: true
 
 # Do not use this line in your projects: this is just to use the enclosing
 # version of Scissors:
