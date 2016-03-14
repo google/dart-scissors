@@ -29,13 +29,12 @@ _expectSassOutput(String input, String expectedOutput, {bool useSassC}) async {
   if (useSassC) {
     var sassc =
         await pathResolver.resolveExecutable(pathResolver.defaultSassCPath);
-    output = await run('SassC', sassc,
-        args, "@import 'polyfills';\n" + input);
+    output = await run('SassC', sassc, args, "@import 'polyfills';\n" + input);
   } else {
     var sass =
         await pathResolver.resolveExecutable(pathResolver.defaultRubySassPath);
-    output = await run('Compass', sass,
-        ['--compass', '--scss']..addAll(args), input);
+    output = await run(
+        'Compass', sass, ['--compass', '--scss']..addAll(args), input);
   }
   expect(output, expectedOutput);
 }
@@ -43,7 +42,8 @@ _expectSassOutput(String input, String expectedOutput, {bool useSassC}) async {
 main() async {
   runAllTests({bool useSassC}) {
     test('support box-sizing & flexbox', () async {
-      await _expectSassOutput(r'''
+      await _expectSassOutput(
+          r'''
         @import 'compass/css3';
 
         .box {
@@ -55,21 +55,22 @@ main() async {
           @include flex-direction(row);
         }
       ''',
-      '.box {\n'
-      '  -moz-box-sizing: border-box;\n'
-      '  -webkit-box-sizing: border-box;\n'
-      '  box-sizing: border-box; }\n'
-      '\n'
-      '.flex {\n'
-      '  display: -webkit-flex;\n'
-      '  display: flex;\n'
-      '  -webkit-flex-direction: row;\n'
-      '  flex-direction: row; }\n',
-      useSassC: useSassC);
+          '.box {\n'
+          '  -moz-box-sizing: border-box;\n'
+          '  -webkit-box-sizing: border-box;\n'
+          '  box-sizing: border-box; }\n'
+          '\n'
+          '.flex {\n'
+          '  display: -webkit-flex;\n'
+          '  display: flex;\n'
+          '  -webkit-flex-direction: row;\n'
+          '  flex-direction: row; }\n',
+          useSassC: useSassC);
     });
 
     test('support animations & transitions', () async {
-      await _expectSassOutput(r'''
+      await _expectSassOutput(
+          r'''
         @import 'compass/css3';
 
         .animation {
@@ -80,37 +81,39 @@ main() async {
           @include single-transition;
         }
       ''',
-      '.animation {\n'
-      '  -moz-animation: border;\n'
-      '  -webkit-animation: border;\n'
-      '  animation: border; }\n'
-      '\n'
-      '.transition {\n'
-      '  -moz-transition: all 1s;\n'
-      '  -o-transition: all 1s;\n'
-      '  -webkit-transition: all 1s;\n'
-      '  transition: all 1s; }\n',
-      useSassC: useSassC);
+          '.animation {\n'
+          '  -moz-animation: border;\n'
+          '  -webkit-animation: border;\n'
+          '  animation: border; }\n'
+          '\n'
+          '.transition {\n'
+          '  -moz-transition: all 1s;\n'
+          '  -o-transition: all 1s;\n'
+          '  -webkit-transition: all 1s;\n'
+          '  transition: all 1s; }\n',
+          useSassC: useSassC);
     });
 
     test('support user-select', () async {
-      await _expectSassOutput(r'''
+      await _expectSassOutput(
+          r'''
         @import 'compass/css3';
 
         .select {
           @include user-select(text);
         }
       ''',
-      '.select {\n'
-      '  -moz-user-select: text;\n'
-      '  -ms-user-select: text;\n'
-      '  -webkit-user-select: text;\n'
-      '  user-select: text; }\n',
-      useSassC: useSassC);
+          '.select {\n'
+          '  -moz-user-select: text;\n'
+          '  -ms-user-select: text;\n'
+          '  -webkit-user-select: text;\n'
+          '  user-select: text; }\n',
+          useSassC: useSassC);
     });
 
     test('support transforms', () async {
-      await _expectSassOutput(r'''
+      await _expectSassOutput(
+          r'''
         @import 'compass/css3';
 
         .transform2d {
@@ -121,21 +124,22 @@ main() async {
           @include transform-style;
         }
       ''',
-      '.transform2d {\n'
-      '  -moz-transform-origin: 50% 50%;\n'
-      '  -ms-transform-origin: 50% 50%;\n'
-      '  -webkit-transform-origin: 50% 50%;\n'
-      '  transform-origin: 50% 50%; }\n'
-      '\n'
-      '.transform3d {\n'
-      '  -moz-transform-style: preserve-3d;\n'
-      '  -webkit-transform-style: preserve-3d;\n'
-      '  transform-style: preserve-3d; }\n',
-      useSassC: useSassC);
+          '.transform2d {\n'
+          '  -moz-transform-origin: 50% 50%;\n'
+          '  -ms-transform-origin: 50% 50%;\n'
+          '  -webkit-transform-origin: 50% 50%;\n'
+          '  transform-origin: 50% 50%; }\n'
+          '\n'
+          '.transform3d {\n'
+          '  -moz-transform-style: preserve-3d;\n'
+          '  -webkit-transform-style: preserve-3d;\n'
+          '  transform-style: preserve-3d; }\n',
+          useSassC: useSassC);
     });
 
     test('replicate browsers & browser-prefixes functions', () async {
-      await _expectSassOutput(r'''
+      await _expectSassOutput(
+          r'''
         @import 'compass/css3';
 
         .browsers {
@@ -150,27 +154,27 @@ main() async {
           }
         }
       ''',
-      '.browsers {\n'
-      '  -moz: android-firefox, firefox;\n'
-      '  -ms: ie, ie-mobile;\n'
-      '  -o: opera, opera-mini, opera-mobile;\n'
-      '  -webkit: android, android-chrome, blackberry, chrome, ios-safari, opera, opera-mobile, safari; }\n'
-      '\n'
-      '.prefixes {\n'
-      '  android: -webkit;\n'
-      '  android-chrome: -webkit;\n'
-      '  android-firefox: -moz;\n'
-      '  blackberry: -webkit;\n'
-      '  chrome: -webkit;\n'
-      '  firefox: -moz;\n'
-      '  ie: -ms;\n'
-      '  ie-mobile: -ms;\n'
-      '  ios-safari: -webkit;\n'
-      '  opera: -o, -webkit;\n'
-      '  opera-mini: -o;\n'
-      '  opera-mobile: -o, -webkit;\n'
-      '  safari: -webkit; }\n',
-      useSassC: useSassC);
+          '.browsers {\n'
+          '  -moz: android-firefox, firefox;\n'
+          '  -ms: ie, ie-mobile;\n'
+          '  -o: opera, opera-mini, opera-mobile;\n'
+          '  -webkit: android, android-chrome, blackberry, chrome, ios-safari, opera, opera-mobile, safari; }\n'
+          '\n'
+          '.prefixes {\n'
+          '  android: -webkit;\n'
+          '  android-chrome: -webkit;\n'
+          '  android-firefox: -moz;\n'
+          '  blackberry: -webkit;\n'
+          '  chrome: -webkit;\n'
+          '  firefox: -moz;\n'
+          '  ie: -ms;\n'
+          '  ie-mobile: -ms;\n'
+          '  ios-safari: -webkit;\n'
+          '  opera: -o, -webkit;\n'
+          '  opera-mini: -o;\n'
+          '  opera-mobile: -o, -webkit;\n'
+          '  safari: -webkit; }\n',
+          useSassC: useSassC);
     });
   }
 
