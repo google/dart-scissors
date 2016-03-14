@@ -13,7 +13,7 @@ _checkSassCOutputAgainstCompass(String input) async {
       await pathResolver.resolveExecutable(pathResolver.defaultRubySassPath);
   var args = [
     '-I',
-    await pathResolver.resolvePath('lib/src/compass'),
+    await pathResolver.resolvePath('lib/compass'),
     '-I',
     compassStylesheetsPath,
   ];
