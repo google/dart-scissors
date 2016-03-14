@@ -7,6 +7,7 @@ function run_analyzer() {
 }
 
 function run_tests() {
+  export TEST_COMPASS_POLYFILLED_FUNCTIONS=true
   echo "Running tests"
   # TODO(ochafik): `pub run test` again? (sometimes not reliable)
   for test in `find test -name '*.dart'` ; do
