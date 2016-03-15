@@ -13,6 +13,11 @@ $_capability-needs-prefixing: (
     -moz: true,
     -webkit: true,
   ),
+  // http://shouldiprefix.com/#box-shadow
+  css-boxshadow: (
+    -moz: true,
+    -webkit: true,
+  ),
   // http://shouldiprefix.com/#transitions
   css-transitions: (
     -moz: true,

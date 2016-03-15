@@ -69,6 +69,21 @@ main() async {
           '  flex-direction: row; }\n',
           useSassC: useSassC);
     });
+    test('support box-shadow', () async {
+      await _expectSassOutput(
+          r'''
+        @import 'compass/css3';
+
+        .box-shadow {
+          @include single-box-shadow;
+        }
+      ''',
+          '.box-shadow {\n'
+          '  -moz-box-shadow: 0px 5px #333333;\n'
+          '  -webkit-box-shadow: 0px 5px #333333;\n'
+          '  box-shadow: 0px 5px #333333; }\n',
+          useSassC: useSassC);
+    });
 
     test('support animations & transitions', () async {
       await _expectSassOutput(
