@@ -34,7 +34,7 @@ void main() {
       }),
       {'a|web/main.dart.js_1.part.js': '', 'a|web/main.dart.js_2.part.js': ''},
       {},
-      []);
+      messages: []);
 
   testPhases(
       'fails when part count does not match',
@@ -42,12 +42,12 @@ void main() {
         'expectedPartCounts': {'web/main.dart.js': 1}
       }),
       {
-    'a|web/main.dart.js': '',
-    'a|web/main.dart.js_1.part.js': '',
-    'a|web/main.dart.js_2.part.js': ''
-  },
+        'a|web/main.dart.js': '',
+        'a|web/main.dart.js_1.part.js': '',
+        'a|web/main.dart.js_2.part.js': ''
+      },
       {},
-      [
-    'error: Found 2 part files, but expected 1 !!!'
-  ]);
+      messages: [
+        'error: Found 2 part files, but expected 1 !!!'
+      ]);
 }

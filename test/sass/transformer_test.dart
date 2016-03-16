@@ -81,7 +81,7 @@ void main() {
         float: left;
       }
     '''
-  }, {}, [
+  }, {}, messages: [
     'error: Invalid CSS after "      .foo {": expected "}", was "{" (a%7Cfoo.scss 1 12)'
   ]);
 }
