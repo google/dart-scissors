@@ -17,7 +17,7 @@ import 'package:barback/barback.dart'
     show BarbackMode, BarbackSettings, Transformer;
 import 'package:scissors/src/parts_check/transformer.dart';
 
-import 'package:code_transformers/tests.dart' show testPhases;
+import 'package:transformer_test/utils.dart' show testPhases;
 
 makePhases(Map config) => [
       [
@@ -34,7 +34,7 @@ void main() {
       }),
       {'a|web/main.dart.js_1.part.js': '', 'a|web/main.dart.js_2.part.js': ''},
       {},
-      []);
+      messages: []);
 
   testPhases(
       'fails when part count does not match',
@@ -47,7 +47,7 @@ void main() {
     'a|web/main.dart.js_2.part.js': ''
   },
       {},
-      [
+      messages: [
     'error: Found 2 part files, but expected 1 !!!'
   ]);
 }

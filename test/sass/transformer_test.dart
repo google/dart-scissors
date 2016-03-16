@@ -17,7 +17,7 @@ import 'package:barback/barback.dart'
     show BarbackMode, BarbackSettings, Transformer;
 import 'package:scissors/src/sass/transformer.dart';
 import 'package:scissors/src/utils/lazy_transformer_utils.dart';
-import 'package:code_transformers/tests.dart' show testPhases;
+import 'package:transformer_test/utils.dart' show testPhases;
 
 makePhases(Map config) => [
       [
@@ -81,7 +81,7 @@ void main() {
         float: left;
       }
     '''
-  }, {}, [
+  }, {}, messages: [
     'error: Invalid CSS after "      .foo {": expected "}", was "{" (a%7Cfoo.scss 1 12)'
   ]);
 }

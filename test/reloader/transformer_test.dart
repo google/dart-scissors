@@ -18,7 +18,7 @@ import 'package:barback/barback.dart'
 
 import 'package:scissors/reloader/transformer.dart';
 import 'package:scissors/src/utils/lazy_transformer_utils.dart';
-import 'package:code_transformers/tests.dart' show testPhases;
+import 'package:transformer_test/utils.dart' show testPhases;
 
 makePhases(BarbackMode mode) => new EagerTransformerGroupWrapper(
         new AutoReloadTransformerGroup.asPlugin(new BarbackSettings({}, mode)))

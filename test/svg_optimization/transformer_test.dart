@@ -17,7 +17,7 @@ import 'package:barback/barback.dart'
     show BarbackMode, BarbackSettings, Transformer;
 import 'package:scissors/src/svg_optimization/transformer.dart';
 
-import 'package:code_transformers/tests.dart' show testPhases;
+import 'package:transformer_test/utils.dart' show testPhases;
 
 makePhases(Map config) => [
       [
