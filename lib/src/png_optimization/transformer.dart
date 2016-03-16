@@ -32,9 +32,11 @@ class PngOptimizationTransformer extends Transformer
   PngOptimizationTransformer.asPlugin(BarbackSettings settings)
       : this(new _PngOptimizationSettings(settings));
 
-  @override final String allowedExtensions = ".png";
+  @override
+  final String allowedExtensions = ".png";
 
-  @override bool isPrimary(AssetId id) =>
+  @override
+  bool isPrimary(AssetId id) =>
       _settings.optimizePng.value && super.isPrimary(id);
 
   @override

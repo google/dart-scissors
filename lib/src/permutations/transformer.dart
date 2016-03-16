@@ -58,7 +58,8 @@ class PermutationsTransformer extends AggregateTransformer
   PermutationsTransformer.asPlugin(BarbackSettings settings)
       : this(new _PermutationsSettings(settings));
 
-  @override static final _allowedExtensions = [
+  @override
+  static final _allowedExtensions = [
     '.dart.js',
     '.dart.js.map',
     '.part.js',

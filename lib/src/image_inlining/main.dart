@@ -32,9 +32,12 @@ main(List<String> args) async {
     if (arg == '-I') {
       includeDirs.add(new Directory(args[++i]));
     } else {
-      if (input == null) input = new File(arg);
-      else if (output == null) output = new File(arg);
-      else throw new ArgumentError('Unexpected: $arg');
+      if (input == null)
+        input = new File(arg);
+      else if (output == null)
+        output = new File(arg);
+      else
+        throw new ArgumentError('Unexpected: $arg');
     }
   }
 
@@ -42,10 +45,13 @@ main(List<String> args) async {
     throw new ArgumentError('Expected (-I path)* input output');
   }
 
-  var stream = (await inlineImagesWithIncludeDirs(
-      makeFileAsset(input), includeDirs)).read();
-  if (output.path == '-') stream.pipe(stdout);
-  else stream.pipe(output.openWrite());
+  var stream =
+      (await inlineImagesWithIncludeDirs(makeFileAsset(input), includeDirs))
+          .read();
+  if (output.path == '-')
+    stream.pipe(stdout);
+  else
+    stream.pipe(output.openWrite());
 }
 
 makeFileAsset(File file) {

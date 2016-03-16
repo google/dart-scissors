@@ -19,7 +19,8 @@ import 'package:scissors/eager_transformer.dart';
 import 'package:transformer_test/utils.dart' show testPhases;
 
 makePhases(Map config) => new EagerScissorsTransformerGroup.asPlugin(
-    new BarbackSettings(config, BarbackMode.RELEASE)).phases;
+        new BarbackSettings(config, BarbackMode.RELEASE))
+    .phases;
 
 void main() {
   var phases = makePhases({});

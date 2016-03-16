@@ -24,7 +24,8 @@ class _ReloaderRemovalTransformer extends Transformer
       r'''\b(?:(\w+)\s*\.\s*)?setupReloader\s*\([^;]*?\)\s*;''',
       multiLine: true);
 
-  @override final String allowedExtensions = ".dart";
+  @override
+  final String allowedExtensions = ".dart";
 
   @override
   declareOutputs(DeclaringTransform transform) {
@@ -56,7 +57,8 @@ class _ReloaderRemovalTransformer extends Transformer
     }
   }
 
-  @override String toString() => 'ReloaderRemoval';
+  @override
+  String toString() => 'ReloaderRemoval';
 }
 
 String _spaces(int count) {

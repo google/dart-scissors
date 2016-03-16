@@ -29,7 +29,8 @@ class _MockNestedPrinter implements NestedPrinter {
   final String map;
   _MockNestedPrinter(this.text, this.map);
 
-  @override noSuchMethod(Invocation i) => super.noSuchMethod(i);
+  @override
+  noSuchMethod(Invocation i) => super.noSuchMethod(i);
 }
 
 class MappedTextEditTransaction implements TextEditTransaction {

@@ -38,9 +38,11 @@ class ImageInliningTransformer extends Transformer
   bool get _isEnabled =>
       _settings.imageInlining.value != ImageInliningMode.disablePass;
 
-  @override final String allowedExtensions = ".css .css.map";
+  @override
+  final String allowedExtensions = ".css .css.map";
 
-  @override bool isPrimary(AssetId id) => _isEnabled && super.isPrimary(id);
+  @override
+  bool isPrimary(AssetId id) => _isEnabled && super.isPrimary(id);
 
   @override
   declareOutputs(DeclaringTransform transform) {

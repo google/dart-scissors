@@ -17,7 +17,8 @@ const _extension = '.timestamp';
 
 class _TimestamperTransformer extends Transformer
     implements DeclaringTransformer {
-  @override bool isPrimary(AssetId id) => id.extension != _extension;
+  @override
+  bool isPrimary(AssetId id) => id.extension != _extension;
 
   @override
   apply(Transform transform) async {

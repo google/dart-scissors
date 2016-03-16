@@ -51,9 +51,9 @@ class PathResolver {
       Platform.environment['CSSJANUS_BIN'] ?? 'cssjanus.py';
   final String defaultRubyPath = Platform.environment['RUBY_BIN'] ?? 'ruby';
   final String defaultCompassStylesheetsPath = null;
-  final String defaultClosureCompilerJarPath = Platform.environment[
-          'CLOSURE_COMPILER_JAR'] ??
-      '.dependencies/compiler.jar';
+  final String defaultClosureCompilerJarPath =
+      Platform.environment['CLOSURE_COMPILER_JAR'] ??
+          '.dependencies/compiler.jar';
   final String defaultGemPath = Platform.environment['RUBY_GEM_BIN'] ?? 'gem';
 
   Future<String> resolvePath(String path) async {

@@ -21,14 +21,17 @@ import 'package:scissors/src/compass/sassc_with_compass_functions.dart';
 class FakePathResolver implements PathResolver {
   noSuchMethod(Invocation i) => super.noSuchMethod(i);
 
-  @override String get defaultCompassStylesheetsPath =>
-      'test_compass_stylesheets';
+  @override
+  String get defaultCompassStylesheetsPath => 'test_compass_stylesheets';
 
-  @override String get defaultRubyPath => 'test_ruby';
+  @override
+  String get defaultRubyPath => 'test_ruby';
 
-  @override String get defaultRubySassPath => 'test_ruby_sass';
+  @override
+  String get defaultRubySassPath => 'test_ruby_sass';
 
-  @override String get defaultSassCPath => 'test_sassc';
+  @override
+  String get defaultSassCPath => 'test_sassc';
 
   @override
   Future<String> resolveExecutable(String path) async => 'resolved_exec_$path';

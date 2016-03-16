@@ -30,6 +30,6 @@ abstract class CssMirroringSettings {
 class _CssMirroringSettings extends SettingsBase with CssMirroringSettings {
   _CssMirroringSettings(settings) : super(settings);
 
-  @override final bidiCss =
-      new Setting<bool>(_bidiCssSetting, defaultValue: true);
+  @override
+  final bidiCss = new Setting<bool>(_bidiCssSetting, defaultValue: true);
 }

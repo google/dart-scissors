@@ -27,10 +27,12 @@ class NgClassParsingResults {
   }
 
   /// For test purposes.
-  @override operator ==(NgClassParsingResults other) =>
+  @override
+  operator ==(NgClassParsingResults other) =>
       hasVariableClasses == other.hasVariableClasses &&
-          "$classes" == "${other.classes}";
-  @override get hashCode => hasVariableClasses.hashCode ^ "${classes}".hashCode;
+      "$classes" == "${other.classes}";
+  @override
+  get hashCode => hasVariableClasses.hashCode ^ "${classes}".hashCode;
 }
 
 /// Try to parse naive ng-class maps, or return `null` if the format is unknown.

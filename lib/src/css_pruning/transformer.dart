@@ -35,10 +35,11 @@ class CssPruningTransformer extends Transformer
   CssPruningTransformer.asPlugin(BarbackSettings settings)
       : this(new _CssPruningSettings(settings));
 
-  @override final String allowedExtensions = ".css .css.map";
+  @override
+  final String allowedExtensions = ".css .css.map";
 
-  @override bool isPrimary(AssetId id) =>
-      _settings.pruneCss.value && super.isPrimary(id);
+  @override
+  bool isPrimary(AssetId id) => _settings.pruneCss.value && super.isPrimary(id);
 
   @override
   declareOutputs(DeclaringTransform transform) {

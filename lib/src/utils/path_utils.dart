@@ -18,9 +18,9 @@ import 'dart:io';
 
 import 'package:barback/barback.dart' show AssetNotFoundException;
 
-Stream<Directory> findExistingDirectories(Iterable<Directory> dirs,
+Stream<Directory> findExistingDirectories(Iterable<FileSystemEntity> dirs,
     {bool followLinks: true}) async* {
-  Future<Directory> resolve(Directory dir) async {
+  Future<Directory> resolve(FileSystemEntity dir) async {
     if (await dir.exists()) return dir;
     if (followLinks && (await dir.stat()).type == FileSystemEntityType.LINK) {
       return resolve(new Directory(await (new Link(dir.path)).target()));
