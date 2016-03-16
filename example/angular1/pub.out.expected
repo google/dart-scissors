@@ -14,6 +14,11 @@ Optimized SVG: 213 chars → 125 chars (-88 chars = -41.4%)
 Optimized SVG content:
 <svg xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" height="10" width="10" style="stroke:#0000ff;fill:#00ff00"/>
 </svg>
+[Info from ReloaderRemoval on scissors_angular1_example|web/main.dart]:
+Removing reference to reloader
+
+[Info from PngOptimization on scissors_angular1_example|lib/plus.png]:
+Optimized PNG: 969 bytes → 852 bytes (-117 bytes = -12.1%)
 [Info from CssPruning on scissors_angular1_example|lib/foo.css]:
 Dropping unused CSS rule: .unused-class {
   float: left;
@@ -24,11 +29,6 @@ Dropping unused CSS rule: absent-element {
 }
 [Info from CssPruning on scissors_angular1_example|lib/foo.css]:
 Pruned CSS: 359 chars → 308 chars (-51 chars = -14.3%)
-[Info from ReloaderRemoval on scissors_angular1_example|web/main.dart]:
-Removing reference to reloader
-
-[Info from PngOptimization on scissors_angular1_example|lib/plus.png]:
-Optimized PNG: 969 bytes → 852 bytes (-117 bytes = -12.1%)
 [Info from ImageInlining on scissors_angular1_example|lib/foo.css]:
 line 1, column 203 of scissors_angular1_example|lib/foo.css: Inlined 'icon.svg' with scissors_angular1_example|lib/icon.svg
 inline-image("icon.svg")
@@ -91,6 +91,6 @@ Try removing 'PendingAsync' from the 'show' clause.
     PendingAsync,
     ^^^^^^^^^^^^
 [Dart2JS on scissors_angular1_example|web/main.dart]:
-2 warning(s) suppressed in package:angular.
+4 warning(s) suppressed in package:angular.
 [Info from Dart2JS]:
 Built 176 files to "build".

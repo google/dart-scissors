@@ -2,6 +2,12 @@
 
 ...
 
+## 0.6.0 (2016-03-16)
+
+### Bugfixes
+
+- Switched from a [code_transformers](pub.dartlang.org/packages/code_transformers) dependency to a [transformer_test](https://pub.dartlang.org/packages/transformer_test) dev dependency (issue #35)
+
 ## 0.5.0 (2016-03-14)
 
 ### Features
