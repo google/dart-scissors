@@ -9,7 +9,6 @@ environment:
 dependencies:
   args: ">=0.12.0 <0.14.0"
   barback: ^0.15.0
-  code_transformers: ^0.2.9
   crypto: ^0.9.0
   csslib: ^0.12.0
   html: ^0.12.0
@@ -18,8 +17,9 @@ dependencies:
   source_maps: ^0.10.0
   path: ^1.3.0
 dev_dependencies:
-  dart_style: 0.2.0
-  test: ^0.12.6
+  dart_style: ^0.2.4
+  transformer_test: ^0.2.0
+  test: ^0.12.12
 executables:
   scissors-inline-images: inline_images
   scissors-sassc: sassc_with_compass_functions
