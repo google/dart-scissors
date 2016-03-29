@@ -1,7 +1,7 @@
 library scissors_mirroring_example.main;
 
 import 'messages_all.dart';
-import 'package:angular2/bootstrap.dart';
+import 'package:angular2/platform/browser.dart';
 
 import 'package:scissors_mirroring_example/foo.dart';
 import 'package:intl/intl.dart';
