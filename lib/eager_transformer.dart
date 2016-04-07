@@ -44,7 +44,7 @@ List<List<Transformer>> _createPhases(_ScissorsSettings settings) {
       settings.optimizePng.value
           ? new PngOptimizationTransformer(settings)
           : null,
-      settings.compileSass.value ? new SassTransformer(settings) : null
+      settings.compileSass.value ? new SassCTransformer(settings) : null
     ],
     [settings.pruneCss.value ? new CssPruningTransformer(settings) : null],
     [

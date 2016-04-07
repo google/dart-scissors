@@ -28,12 +28,12 @@ import '../utils/settings_base.dart';
 
 part 'settings.dart';
 
-class SassTransformer extends AggregateTransformer
+class SassCTransformer extends AggregateTransformer
     implements LazyAggregateTransformer {
   final SassSettings _settings;
 
-  SassTransformer(this._settings);
-  SassTransformer.asPlugin(BarbackSettings settings)
+  SassCTransformer(this._settings);
+  SassCTransformer.asPlugin(BarbackSettings settings)
       : this(new _SassSettings(settings));
 
   final RegExp _classifierRx =

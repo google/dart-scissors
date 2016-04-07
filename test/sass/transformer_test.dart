@@ -21,7 +21,7 @@ import 'package:transformer_test/utils.dart' show testPhases;
 
 makePhases(Map config) => [
       [
-        new EagerTransformerWrapper(new SassTransformer.asPlugin(
+        new EagerTransformerWrapper(new SassCTransformer.asPlugin(
             new BarbackSettings(config, BarbackMode.RELEASE)))
       ]
     ];
