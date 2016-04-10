@@ -15,10 +15,10 @@ library scissors.src.utils.phase_utils;
 
 import 'package:barback/barback.dart' show Transformer;
 
-trimPhases(List<List<Transformer>> phases) => phases
+List<List<Transformer>> trimPhases(List<List<Transformer>> phases) => phases
     .map((phase) => phase.where(_isNotNull).toList())
     .where(_isNotEmpty)
     .toList();
 
-_isNotNull(x) => x != null;
-_isNotEmpty(List l) => l.isNotEmpty;
+bool _isNotNull(Transformer x) => x != null;
+bool _isNotEmpty(List<Transformer> l) => l.isNotEmpty;

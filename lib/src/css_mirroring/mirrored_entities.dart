@@ -58,7 +58,8 @@ class MirroredEntity<T extends TreeNode> {
     return node is MediaDirective || node is HostDirective;
   }
 
-  MirroredEntities<dynamic> getChildren(List<dynamic> getEntityChildren(T _)) {
+  MirroredEntities/*<C>*/ getChildren/*<C>*/(
+      List/*<C>*/ getEntityChildren(T _)) {
     return new MirroredEntities(
         _entities._originalSource,
         getEntityChildren(_original.value),

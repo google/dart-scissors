@@ -70,7 +70,7 @@ Future<List<String>> extractTemplates(
   return templates;
 }
 
-dynamic _eval(Literal expr) {
+dynamic _eval(Expression expr) {
   if (expr == null) return null;
   if (expr is SimpleStringLiteral) return expr.stringValue;
   if (expr is ListLiteral) return expr.elements.map(_eval).toList();
@@ -82,7 +82,7 @@ Expression _findNamedArgument(ArgumentList argumentList, String name) {
   for (var arg in argumentList.arguments) {
     if (arg is AssignmentExpression &&
         arg.leftHandSide is Identifier &&
-        arg.leftHandSide.name == name) {
+        (arg.leftHandSide as Identifier).name == name) {
       return arg.rightHandSide;
     } else if (arg is NamedExpression && arg.name.label.name == name) {
       return arg.expression;

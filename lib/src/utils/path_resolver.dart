@@ -85,7 +85,7 @@ class PathResolver {
             }));
     if (asset != null) return asset;
 
-    var paths = []..addAll(alternativePaths);
+    var paths = <String>[]..addAll(alternativePaths);
     if (from != null) {
       var parent = dirname(from.path);
       if (from.package != _filePseudoPackage) {

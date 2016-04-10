@@ -22,7 +22,7 @@ Future<List<int>> readAll(Stream<List<int>> data) async =>
         .takeBytes();
 
 List<int> readStdinSync() {
-  final List input = <int>[];
+  final List<int> input = <int>[];
   while (true) {
     int byte = stdin.readByteSync();
     if (byte < 0) {

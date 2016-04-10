@@ -41,7 +41,7 @@ bool hasExecutable(String name) => _which(name).exitCode == 0;
 Future<ProcessResult> pipeInAndOutOfNewProcess(Process p, input) async {
   if (input is String) {
     p.stdin.write(input);
-  } else if (input is List) {
+  } else if (input is List<int>) {
     p.stdin.add(input);
   } else {
     throw new ArgumentError('Unexpected input: ${input.runtimeType}');
