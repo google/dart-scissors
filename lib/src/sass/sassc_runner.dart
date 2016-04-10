@@ -16,8 +16,7 @@ library scissors.src.sass.sassc;
 import 'dart:async';
 import 'dart:io';
 
-import 'package:barback/barback.dart'
-    show Asset, AssetId, AssetNotFoundException, LogLevel, Transform;
+import 'package:barback/barback.dart' show Asset, AssetId, LogLevel;
 import 'package:path/path.dart';
 import 'package:source_span/source_span.dart';
 

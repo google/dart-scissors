@@ -20,7 +20,7 @@ import 'package:barback/barback.dart';
 import 'package:path/path.dart';
 import 'package:quiver/check.dart';
 
-import 'sassc_runner.dart' show ExtensionMode, SasscSettings, runSassC;
+import 'sassc_runner.dart' show SasscSettings, runSassC;
 import '../utils/deps_consumer.dart';
 import '../utils/file_skipping.dart';
 import '../utils/path_resolver.dart';
