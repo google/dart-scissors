@@ -18,7 +18,7 @@ import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:barback/barback.dart'
-    show Asset, AssetId, AssetNotFoundException, Transform;
+    show Asset, AssetId, AssetNotFoundException;
 
 import 'path_utils.dart';
 import '../utils/process_utils.dart';
