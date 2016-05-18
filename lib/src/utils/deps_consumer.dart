@@ -44,7 +44,7 @@ Future<Set<AssetId>> consumeTransitiveSassDeps(
     var futures = <Future>[];
     for (var match in _importRx.allMatches(sass.replaceAll(_commentsRx, ''))) {
       var url = match.group(1);
-      var urls = [];
+      var urls = <String>[];
       if (url.endsWith('.scss')) {
         urls.add(url);
       } else {
@@ -57,7 +57,7 @@ Future<Set<AssetId>> consumeTransitiveSassDeps(
 
       futures.add((() async {
         try {
-          var files = []..addAll(urls);
+          var files = <String>[]..addAll(urls);
           for (var sassInclude in sassIncludes) {
             files.addAll(urls.map((u) => relative(join(sassInclude.path, u))));
           }
