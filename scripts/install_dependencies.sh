@@ -43,7 +43,8 @@ if ! has_exec "${CSSJANUS_BIN:-cssjanus.py}" ; then
   export CSSJANUS_BIN=$PWD/cssjanus/cssjanus.py
   if [[ ! -x "$CSSJANUS_BIN" ]]; then
     print_title "Installing CSSJanus to $CSSJANUS_BIN..."
-    svn checkout http://cssjanus.googlecode.com/svn/trunk/ cssjanus
+    git clone https://github.com/Khan/cssjanus
+    ( cd cssjanus && git checkout 93b83228b8c4a46dd0b836d162983dda413b7eda )
   fi
 fi
 
