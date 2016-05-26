@@ -22,7 +22,7 @@ import 'package:source_maps/refactor.dart' show TextEditTransaction;
 import 'package:source_span/source_span.dart' show SourceFile;
 
 import 'buffered_transaction.dart';
-import 'css_utils.dart' show Direction, flipDirection;
+import 'css_utils.dart' show Direction;
 import 'directive_processors.dart' show editFlippedDirectiveWithNestedRuleSets;
 import 'mirrored_entities.dart';
 import 'rulesets_processor.dart' show editFlippedRuleSet;
@@ -43,35 +43,55 @@ typedef Future<String> CssFlipper(String inputCss);
 /// See BidirectionalCss.md for more details.
 Future<String> bidirectionalizeCss(String originalCss, CssFlipper cssFlipper,
     [Direction nativeDirection = Direction.ltr]) async {
-  var flippedDirection = flipDirection(nativeDirection);
   var flippedCss = await cssFlipper(originalCss);
 
   var topLevelEntities = new MirroredEntities(originalCss,
       parse(originalCss).topLevels, flippedCss, parse(flippedCss).topLevels);
 
-  var trans =
+  var flippedDirTrans =
       new TextEditTransaction(flippedCss, new SourceFile(flippedCss, url: ''));
-  var bufferedTrans = new BufferedTransaction(trans);
+  var bufferedFlippedDirTrans = new BufferedTransaction(flippedDirTrans);
+
+  var nativeDirTrans = new TextEditTransaction(
+      originalCss, new SourceFile(originalCss, url: ''));
+  var bufferedNativeDirTrans = new BufferedTransaction(nativeDirTrans);
+
+  var commonTrans = new TextEditTransaction(
+      originalCss, new SourceFile(originalCss, url: ''));
+  var bufferedCommonTrans = new BufferedTransaction(commonTrans);
+
   topLevelEntities.forEach((MirroredEntity<TreeNode> entity) {
     if (entity.isRuleSet) {
-      editFlippedRuleSet(entity, flippedDirection, bufferedTrans);
+      editFlippedRuleSet(entity, nativeDirection, bufferedCommonTrans,
+          bufferedNativeDirTrans, bufferedFlippedDirTrans);
     } else if (entity.hasNestedRuleSets) {
       editFlippedDirectiveWithNestedRuleSets(
           entity,
           entity.getChildren((d) => d.rulesets),
-          flippedDirection,
-          bufferedTrans);
+          nativeDirection,
+          bufferedCommonTrans,
+          bufferedNativeDirTrans,
+          bufferedFlippedDirTrans);
     } else if (entity.isDirectionInsensitiveDirective) {
-      entity.flipped.remove(bufferedTrans);
+      entity.original.remove(bufferedNativeDirTrans);
+      entity.flipped.remove(bufferedFlippedDirTrans);
     } else {
       throw new StateError('Node type not handled: $entity');
     }
   });
-  bufferedTrans.commit();
+  bufferedCommonTrans.commit();
+  bufferedNativeDirTrans.commit();
+  bufferedFlippedDirTrans.commit();
 
-  var resultCss = _cleanupCss(originalCss);
-  var taggedFlippedCss = _cleanupCss((trans.commit()..build('')).text);
-  if (taggedFlippedCss.trim().isNotEmpty) resultCss += "\n" + taggedFlippedCss;
+  var resultCss = _cleanupCss((commonTrans.commit()..build('')).text);
+  var taggedOriginalDirCss =
+      _cleanupCss((nativeDirTrans.commit()..build('')).text);
+  var taggedFlippedDirCss =
+      _cleanupCss((flippedDirTrans.commit()..build('')).text);
+  if (taggedOriginalDirCss.trim().isNotEmpty) resultCss +=
+      "\n" + taggedOriginalDirCss;
+  if (taggedFlippedDirCss.trim().isNotEmpty) resultCss +=
+      "\n" + taggedFlippedDirCss;
   return resultCss;
 }
 

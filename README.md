@@ -20,7 +20,8 @@ most of them are disabled or optimized for speed with `pub serve` in debug mode.
   - Given `foo { color: blue; float: left }`, it generates:
 
     ```css
-    foo { color: blue; float: left }
+    foo { color: blue; }
+    :host-context([dir="ltr"]) foo { float: left }
     :host-context([dir="rtl"]) foo { float: right }
     ```
 

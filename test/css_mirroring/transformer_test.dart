@@ -43,6 +43,9 @@ void main() {
     'a|foo2_unmatched_css_url.css': r'''
       absent-element {
         color: blue;
+        }
+
+      :host-context([dir="ltr"]) absent-element {
         float: right;
       }
 
@@ -95,11 +98,12 @@ void main() {
     '''
   }, {
     'a|foo2_unmatched_css_url.css': r'''
-      absent-element {
+
+      :host-context([dir="ltr"]) absent-element {
         float: left;
         margin-left: 100px;
       }
-      .usedclass {
+      :host-context([dir="ltr"]) .usedclass {
         padding: right;
         text-align: left;
       }
@@ -156,16 +160,23 @@ void main() {
     'a|foo2_unmatched_css_url.css': r'''
         li + li {
           color: blue;
-          float: right;
-        }
+          }
         a ~ a {
           color: purple;
-          margin-left: 3em;
-        }
+          }
         li > a {
           color: orange;
-          margin-left: 4em; width: 10px;
+          width: 10px;
         }
+
+        :host-context([dir="ltr"]) li + li {
+          float: right;
+        }
+        :host-context([dir="ltr"]) a ~ a {
+          margin-left: 3em;
+        }
+        :host-context([dir="ltr"]) li > a {
+          margin-left: 4em; }
 
         :host-context([dir="rtl"]) li + li {
           float: left;
@@ -208,8 +219,9 @@ void main() {
     '''
   }, {
     'a|foo2_unmatched_css_url.css': r'''
+
        @media screen and (min-width: 401px) {
-                body { margin-left: 13px }
+                :host-context([dir="ltr"]) body { margin-left: 13px }
        }
 
        @media screen and (min-width: 401px) {
@@ -226,7 +238,8 @@ void main() {
     '''
   }, {
     'a|foo2_unmatched_css_url.css': r'''
-       @host { :scope { padding: left; } }
+
+       @host { :host-context([dir="ltr"]) :scope { padding: left; } }
 
        @host { :host-context([dir="rtl"]) :scope { padding: right; } }
     '''
@@ -243,6 +256,9 @@ void main() {
     'a|foo2_multiple_selectors_css_url.css': r'''
         .child1, .child2 {
           position: relative;
+          }
+
+        :host-context([dir="ltr"]) .child1, :host-context([dir="ltr"]) .child2 {
           margin-right: 10px;
         }
 

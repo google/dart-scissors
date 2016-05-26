@@ -21,42 +21,69 @@ import 'css_utils.dart' show Direction;
 import 'entity.dart';
 import 'mirrored_entities.dart';
 import '../utils/enum_parser.dart';
-
-enum RemovalResult { removedSome, removedAll }
+import 'css_utils.dart'
+    show isDirectionInsensitive, hasNestedRuleSets, Direction, flipDirection;
 
 /// Returns true if the [RuleSet] was completely removed, false otherwise.
-RemovalResult editFlippedRuleSet(MirroredEntity<RuleSet> mirroredRuleSet,
-    Direction flippedDirection, BufferedTransaction trans) {
-  final subTransaction = trans.createSubTransaction();
+bool editFlippedRuleSet(
+    MirroredEntity<RuleSet> mirroredRuleSet,
+    Direction nativeDirection,
+    BufferedTransaction commonTrans,
+    BufferedTransaction nativeDirTrans,
+    BufferedTransaction flippedDirTrans) {
+  final commonSubTransaction = commonTrans.createSubTransaction();
+  final nativeDirSubTransaction = nativeDirTrans.createSubTransaction();
+  final flippedDirSubTransaction = flippedDirTrans.createSubTransaction();
 
   MirroredEntities<Declaration> mirroredDeclarations = mirroredRuleSet
       .getChildren((RuleSet r) => r.declarationGroup.declarations);
 
   /// Iterate over Declarations in RuleSet and store start and end points of
   /// declarations to be removed.
-  var removedCount = 0;
+  var commonCount = 0;
+  var flippedCount = 0;
   mirroredDeclarations.forEach((MirroredEntity<Declaration> decl) {
     checkState(decl.flipped.value is Declaration,
         message: () => 'Expected a declaration, got $decl');
 
     if (decl.hasSameTextInBothVersions) {
-      decl.flipped.remove(subTransaction);
-      removedCount++;
+      decl.original.remove(nativeDirSubTransaction);
+      decl.flipped.remove(flippedDirSubTransaction);
+      commonCount++;
+    } else {
+      decl.original.remove(commonSubTransaction);
+      flippedCount++;
     }
   });
 
-  if (removedCount == mirroredDeclarations.length) {
-    mirroredRuleSet.flipped.remove(trans);
-    return RemovalResult.removedAll;
-  } else {
-    /// Add direction attribute to RuleId for direction-specific RuleSet.
-    var dir = enumName(flippedDirection);
-    prependToEachSelector(
-        mirroredRuleSet.flipped, trans, ':host-context([dir="$dir"]) ');
+  assert(commonCount + flippedCount == mirroredDeclarations.length);
 
-    subTransaction.commit();
-    return RemovalResult.removedSome;
+  bool removalResult = false;
+  if (flippedCount > 0) {
+
+    if (commonCount == 0) {
+      mirroredRuleSet.original.remove(commonTrans);
+      removalResult = true;
+    } else {
+      commonSubTransaction.commit();
+    }
+
+    /// Add direction attribute to RuleId for direction-specific RuleSet.
+    var flippedDirection = flipDirection(nativeDirection);
+
+    prependToEachSelector(mirroredRuleSet.original, nativeDirTrans,
+        ':host-context([dir="${enumName(nativeDirection)}"]) ');
+    prependToEachSelector(mirroredRuleSet.flipped, flippedDirTrans,
+        ':host-context([dir="${enumName(flippedDirection)}"]) ');
+
+    flippedDirSubTransaction.commit();
+    nativeDirSubTransaction.commit();
+  } else {
+    mirroredRuleSet.flipped.remove(flippedDirTrans);
+    mirroredRuleSet.original.remove(nativeDirTrans);
   }
+
+  return removalResult;
 }
 
 void prependToEachSelector(

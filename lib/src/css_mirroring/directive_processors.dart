@@ -26,18 +26,36 @@ import 'rulesets_processor.dart' show editFlippedRuleSet, RemovalResult;
 editFlippedDirectiveWithNestedRuleSets(
     MirroredEntity<Directive> directive,
     MirroredEntities<RuleSet> nestedRuleSets,
-    Direction flippedDirection,
-    BufferedTransaction trans) {
-  var subTransaction = trans.createSubTransaction();
-  bool removedAll = true;
+    Direction nativeDirection,
+    BufferedTransaction commonTrans,
+    BufferedTransaction nativeDirTrans,
+    BufferedTransaction flippedDirTrans) {
+  final commonSubTransaction = commonTrans.createSubTransaction();
+  final nativeDirSubTransaction = nativeDirTrans.createSubTransaction();
+  final flippedDirSubTransaction = flippedDirTrans.createSubTransaction();
+  int removedRulesCount = 0;
   nestedRuleSets.forEach((MirroredEntity<RuleSet> ruleSet) {
-    var result = editFlippedRuleSet(ruleSet, flippedDirection, subTransaction);
-    if (result != RemovalResult.removedAll) removedAll = false;
+    var result = editFlippedRuleSet(
+        ruleSet,
+        nativeDirection,
+        commonSubTransaction,
+        nativeDirSubTransaction,
+        flippedDirSubTransaction);
+    if (result) {
+      removedRulesCount++;
+    }
   });
 
-  if (removedAll) {
-    directive.flipped.remove(trans);
+  if (removedRulesCount == 0) {
+    directive.original.remove(nativeDirTrans);
+    directive.flipped.remove(flippedDirTrans);
   } else {
-    subTransaction.commit();
+    if (removedRulesCount == nestedRuleSets.length) {
+      directive.original.remove(commonTrans);
+    } else {
+      commonSubTransaction.commit();
+    }
+    nativeDirSubTransaction.commit();
+    flippedDirSubTransaction.commit();
   }
 }

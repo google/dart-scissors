@@ -23,30 +23,30 @@ class MirroredEntity<T extends TreeNode> {
   final int index;
   final MirroredEntity parent;
 
-  Entity<T> _original;
+  Entity<T> original;
   Entity<T> flipped;
 
   MirroredEntity(this._entities, this.index, this.parent) {
-    _original = new Entity<T>(_entities._originalSource,
-        _entities._originalEntities, index, parent?._original);
+    original = new Entity<T>(_entities._originalSource,
+        _entities._originalEntities, index, parent?.original);
 
     flipped = new Entity<T>(_entities._flippedSource,
         _entities._flippedEntities, index, parent?.flipped);
 
-    checkState(_original.runtimeType == flipped.runtimeType,
+    checkState(original.runtimeType == flipped.runtimeType,
         message: () => 'Mismatching entity types: '
-            'original is ${_original.runtimeType}, '
+            'original is ${original.runtimeType}, '
             'flipped is ${flipped.runtimeType}');
   }
 
   bool get hasSameTextInBothVersions =>
-      _original.value.span.text == flipped.value.span.text;
+      original.value.span.text == flipped.value.span.text;
 
-  bool get isDeclaration => _original.value is Declaration;
-  bool get isRuleSet => _original.value is RuleSet;
+  bool get isDeclaration => original.value is Declaration;
+  bool get isRuleSet => original.value is RuleSet;
 
   bool get isDirectionInsensitiveDirective {
-    var node = _original.value;
+    var node = original.value;
     return node is CharsetDirective ||
         node is FontFaceDirective ||
         node is ImportDirective ||
@@ -54,7 +54,7 @@ class MirroredEntity<T extends TreeNode> {
   }
 
   bool get hasNestedRuleSets {
-    var node = _original.value;
+    var node = original.value;
     return node is MediaDirective || node is HostDirective;
   }
 
@@ -62,7 +62,7 @@ class MirroredEntity<T extends TreeNode> {
       List/*<C>*/ getEntityChildren(T _)) {
     return new MirroredEntities(
         _entities._originalSource,
-        getEntityChildren(_original.value),
+        getEntityChildren(original.value),
         _entities._flippedSource,
         getEntityChildren(flipped.value),
         parent: this);
