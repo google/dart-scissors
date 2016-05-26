@@ -60,7 +60,6 @@ bool editFlippedRuleSet(
 
   bool removalResult = false;
   if (flippedCount > 0) {
-
     if (commonCount == 0) {
       mirroredRuleSet.original.remove(commonTrans);
       removalResult = true;

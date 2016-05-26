@@ -88,10 +88,10 @@ Future<String> bidirectionalizeCss(String originalCss, CssFlipper cssFlipper,
       _cleanupCss((nativeDirTrans.commit()..build('')).text);
   var taggedFlippedDirCss =
       _cleanupCss((flippedDirTrans.commit()..build('')).text);
-  if (taggedOriginalDirCss.trim().isNotEmpty) resultCss +=
-      "\n" + taggedOriginalDirCss;
-  if (taggedFlippedDirCss.trim().isNotEmpty) resultCss +=
-      "\n" + taggedFlippedDirCss;
+  if (taggedOriginalDirCss.trim().isNotEmpty)
+    resultCss += "\n" + taggedOriginalDirCss;
+  if (taggedFlippedDirCss.trim().isNotEmpty)
+    resultCss += "\n" + taggedFlippedDirCss;
   return resultCss;
 }
 

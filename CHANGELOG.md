@@ -2,6 +2,12 @@
 
 ...
 
+## 0.6.1 (2016-05-26)
+
+### Bugfixes
+
+- Fixed Bidi Css which had been wrongly simplified (issue #43)
+
 ## 0.6.0 (2016-03-16)
 
 ### Bugfixes
