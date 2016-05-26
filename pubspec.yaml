@@ -9,7 +9,6 @@ environment:
 dependencies:
   args: ">=0.12.0 <0.14.0"
   barback: ^0.15.0
-  crypto: ^0.9.0
   csslib: ">=0.12.0 <0.14.0"
   html: ^0.12.0
   intl: ">=0.8.0 <0.13.0"
