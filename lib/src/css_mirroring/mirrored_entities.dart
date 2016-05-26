@@ -39,6 +39,9 @@ class MirroredEntity<T extends TreeNode> {
             'flipped is ${flipped.runtimeType}');
   }
 
+  factory MirroredEntity.cast(MirroredEntity other) => new MirroredEntity<T>(
+      new MirroredEntities<T>.cast(other._entities), other.index, other.parent);
+
   bool get hasSameTextInBothVersions =>
       original.value.span.text == flipped.value.span.text;
 
@@ -83,6 +86,14 @@ class MirroredEntities<T extends TreeNode> {
       {this.parent}) {
     assert(_originalEntities.length == _flippedEntities.length);
   }
+
+  factory MirroredEntities.cast(MirroredEntities other) =>
+      new MirroredEntities<T>(
+          other._originalSource,
+          other._originalEntities.map((e) => e as T).toList(),
+          other._flippedSource,
+          other._flippedEntities.map((e) => e as T).toList(),
+          parent: other.parent);
 
   get length => _originalEntities.length;
 

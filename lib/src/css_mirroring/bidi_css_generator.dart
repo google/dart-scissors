@@ -16,7 +16,7 @@ library scissors.src.css_mirroring.bidi_css_generator;
 import 'dart:async';
 
 import 'package:csslib/parser.dart' show parse;
-import 'package:csslib/visitor.dart' show TreeNode, RuleSet;
+import 'package:csslib/visitor.dart' show TreeNode, RuleSet, Directive;
 
 import 'package:source_maps/refactor.dart' show TextEditTransaction;
 import 'package:source_span/source_span.dart' show SourceFile;
@@ -62,11 +62,15 @@ Future<String> bidirectionalizeCss(String originalCss, CssFlipper cssFlipper,
 
   topLevelEntities.forEach((MirroredEntity<TreeNode> entity) {
     if (entity.isRuleSet) {
-      editFlippedRuleSet(entity, nativeDirection, bufferedCommonTrans,
-          bufferedNativeDirTrans, bufferedFlippedDirTrans);
+      editFlippedRuleSet(
+          new MirroredEntity<RuleSet>.cast(entity),
+          nativeDirection,
+          bufferedCommonTrans,
+          bufferedNativeDirTrans,
+          bufferedFlippedDirTrans);
     } else if (entity.hasNestedRuleSets) {
       editFlippedDirectiveWithNestedRuleSets(
-          entity,
+          new MirroredEntity<Directive>.cast(entity),
           entity.getChildren((d) => (d as dynamic).rulesets as List<RuleSet>),
           nativeDirection,
           bufferedCommonTrans,
