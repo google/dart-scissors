@@ -41,20 +41,20 @@ AssetId _parsePackageUrl(String url) {
 }
 
 class PathResolver {
-  final ExtensionMode defaultCompiledCssExtensionMode = ExtensionMode.append;
-  final String defaultJavaPath = Platform.environment['JAVA_BIN'] ?? 'java';
-  final String defaultSassCPath = Platform.environment['SASSC_BIN'] ?? 'sassc';
-  final String defaultRubySassPath = Platform.environment['SASS_BIN'] ?? 'sass';
-  final String defaultPngCrushPath =
+  ExtensionMode get defaultCompiledCssExtensionMode => ExtensionMode.append;
+  String get defaultJavaPath => Platform.environment['JAVA_BIN'] ?? 'java';
+  String get defaultSassCPath => Platform.environment['SASSC_BIN'] ?? 'sassc';
+  String get defaultRubySassPath => Platform.environment['SASS_BIN'] ?? 'sass';
+  String get defaultPngCrushPath =>
       Platform.environment['PNGCRUSH_BIN'] ?? 'pngcrush';
-  final String defaultCssJanusPath =
+  String get defaultCssJanusPath =>
       Platform.environment['CSSJANUS_BIN'] ?? 'cssjanus.py';
-  final String defaultRubyPath = Platform.environment['RUBY_BIN'] ?? 'ruby';
-  final String defaultCompassStylesheetsPath = null;
-  final String defaultClosureCompilerJarPath =
+  String get defaultRubyPath => Platform.environment['RUBY_BIN'] ?? 'ruby';
+  String get defaultCompassStylesheetsPath => null;
+  String get defaultClosureCompilerJarPath =>
       Platform.environment['CLOSURE_COMPILER_JAR'] ??
-          '.dependencies/compiler.jar';
-  final String defaultGemPath = Platform.environment['RUBY_GEM_BIN'] ?? 'gem';
+      '.dependencies/compiler.jar';
+  String get defaultGemPath => Platform.environment['RUBY_GEM_BIN'] ?? 'gem';
 
   Future<String> resolvePath(String path) async {
     if (path == null) return null;
