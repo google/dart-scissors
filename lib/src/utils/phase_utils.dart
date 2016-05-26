@@ -13,8 +13,6 @@
 // limitations under the License.
 library scissors.src.utils.phase_utils;
 
-import 'package:barback/barback.dart' show Transformer;
-
 List<List/*<T>*/> trimPhases/*<T>*/(List<List/*<T>*/> phases) => phases
     .map((phase) => phase.where(_isNotNull).toList())
     .where(_isNotEmpty)
