@@ -114,7 +114,7 @@ class SassCArgs {
             'got ${results.arguments}');
     }
     return new SassCArgs(new List.from(args),
-        includeDirs: results['load-path'],
+        includeDirs: results['load-path'] as List<String>,
         inputFile: inputFile,
         outputFile: outputFile);
   }

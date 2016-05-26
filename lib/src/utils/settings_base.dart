@@ -47,16 +47,17 @@ Setting<bool> makeOptimSetting(String name, [bool enabled = true]) =>
     new Setting<bool>(name, debugDefault: false, releaseDefault: enabled);
 
 abstract class SettingsBase {
-  final bool isDebug;
+  final BarbackSettings _settings;
+  bool get isDebug => _settings.mode == BarbackMode.DEBUG;
 
-  final verbose = new Setting<bool>('verbose', defaultValue: false);
+  final _verbose = new Setting<bool>('verbose', defaultValue: false);
+  Setting<bool> get verbose => _verbose;
 
   static const _debugConfigKey = 'debug';
   static const _releaseConfigKey = 'release';
 
-  SettingsBase(BarbackSettings settings)
-      : isDebug = settings.mode == BarbackMode.DEBUG {
-    var config = settings.configuration;
+  SettingsBase(this._settings) {
+    var config = _settings.configuration;
     config.addAll(config[isDebug ? _debugConfigKey : _releaseConfigKey] ?? {});
 
     var settingList = getAllSettings();
@@ -78,7 +79,7 @@ abstract class SettingsBase {
     InstanceMirror m = reflect(this);
     var settingType = reflectType(Setting);
     m.type.instanceMembers.forEach((Symbol name, MethodMirror mm) {
-      if (!mm.isGetter) return;
+      if (!mm.isGetter || mm.isPrivate) return;
       if (!mm.returnType.isAssignableTo(settingType)) return;
 
       var value = m.getField(name).reflectee;

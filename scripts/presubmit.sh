@@ -4,6 +4,7 @@ set -eu
 function run_analyzer() {
   echo "Running the analyzer"
   dartanalyzer \
+    --strong \
     --fatal-warnings \
     --fatal-hints \
     --fatal-lints \
@@ -40,8 +41,8 @@ pub get
 . scripts/install_dependencies.sh
 
 run_analyzer
-run_tests
 run_formatter
+run_tests
 run_travis_lint
 pub publish --dry-run
 

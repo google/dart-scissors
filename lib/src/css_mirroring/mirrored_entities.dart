@@ -60,7 +60,7 @@ class MirroredEntity<T extends TreeNode> {
 
   MirroredEntities/*<C>*/ getChildren/*<C extends TreeNode>*/(
       List/*<C>*/ getEntityChildren(T _)) {
-    return new MirroredEntities(
+    return new MirroredEntities/*<C>*/(
         _entities._originalSource,
         getEntityChildren(original.value),
         _entities._flippedSource,

@@ -14,6 +14,7 @@
 part of scissors.src.utils.settings_base;
 
 typedef T _Parser<T>(String _);
+
 class Setting<T> {
   final String key;
   final String comment;
@@ -37,7 +38,7 @@ class Setting<T> {
         this.releaseDefault = releaseDefault ?? defaultValue;
 
   read(Map config, bool isDebug) {
-    checkState(!_read);
+    checkState(!_read, message: 'Setting $key was already read');
     _read = true;
     var value = config[key];
     if (value == null) {

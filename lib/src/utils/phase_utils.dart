@@ -13,7 +13,7 @@
 // limitations under the License.
 library scissors.src.utils.phase_utils;
 
-List<List/*<T>*/> trimPhases/*<T>*/(List<List/*<T>*/> phases) => phases
+List<List/*<T>*/ > trimPhases/*<T>*/(List<List/*<T>*/ > phases) => phases
     .map((phase) => phase.where(_isNotNull).toList())
     .where(_isNotEmpty)
     .toList();

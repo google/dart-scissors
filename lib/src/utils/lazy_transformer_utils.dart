@@ -16,37 +16,34 @@ library scissors.src.utils.lazywrapped_utils;
 import 'package:barback/barback.dart';
 import 'package:quiver/check.dart';
 
-abstract class LazyTransformerWrapper {
-  final wrapped;
-  LazyTransformerWrapper._(this.wrapped);
-
-  factory LazyTransformerWrapper(wrapped) {
-    return wrapped is AggregateTransformer
-        ? new _LazyAggregateTransformerWrapper(wrapped)
-        : new _LazyTransformerWrapper(wrapped);
-  }
+abstract class BaseWrapper<T> {
+  final T wrapped;
+  BaseWrapper(this.wrapped);
 
   @override
   toString() => wrapped.toString();
 }
 
-abstract class EagerTransformerWrapper {
-  final wrapped;
-  EagerTransformerWrapper._(this.wrapped);
-
-  factory EagerTransformerWrapper(wrapped) {
-    return wrapped is AggregateTransformer
-        ? new _EagerAggregateTransformerWrapper(wrapped)
-        : new _EagerTransformerWrapper(wrapped);
+abstract class LazyTransformerWrapper<T> implements BaseWrapper<T> {
+  factory LazyTransformerWrapper(T wrapped) {
+    return (wrapped is AggregateTransformer
+        ? new _LazyAggregateTransformerWrapper(wrapped as AggregateTransformer)
+        : new _LazyTransformerWrapper(
+            wrapped as Transformer)) as LazyTransformerWrapper<T>;
   }
-
-  @override
-  toString() => wrapped.toString();
 }
 
-abstract class _TransformerWrapper implements Transformer {
-  Transformer get wrapped;
+abstract class EagerTransformerWrapper<T> implements BaseWrapper<T> {
+  factory EagerTransformerWrapper(T wrapped) {
+    return (wrapped is AggregateTransformer
+        ? new _EagerAggregateTransformerWrapper(wrapped as AggregateTransformer)
+        : new _EagerTransformerWrapper(
+            wrapped as Transformer)) as EagerTransformerWrapper<T>;
+  }
+}
 
+abstract class _TransformerWrapper
+    implements Transformer, BaseWrapper<Transformer> {
   String get allowedExtensions => wrapped.allowedExtensions;
 
   apply(Transform transform) => wrapped.apply(transform);
@@ -57,27 +54,24 @@ abstract class _TransformerWrapper implements Transformer {
   isPrimary(AssetId id) => wrapped.isPrimary(id);
 }
 
-class _EagerTransformerWrapper extends EagerTransformerWrapper
-    with _TransformerWrapper
+class _EagerTransformerWrapper extends BaseWrapper<Transformer>
+    with EagerTransformerWrapper, _TransformerWrapper
     implements Transformer {
-  Transformer get wrapped => super.wrapped;
-  _EagerTransformerWrapper(Transformer wrapped) : super._(wrapped) {
+  _EagerTransformerWrapper(Transformer wrapped) : super(wrapped) {
     checkState(wrapped is Transformer);
   }
 }
 
-class _LazyTransformerWrapper extends LazyTransformerWrapper
-    with _TransformerWrapper
+class _LazyTransformerWrapper extends BaseWrapper<Transformer>
+    with LazyTransformerWrapper<Transformer>, _TransformerWrapper
     implements Transformer, LazyTransformer {
-  Transformer get wrapped => super.wrapped;
-  _LazyTransformerWrapper(Transformer wrapped) : super._(wrapped) {
+  _LazyTransformerWrapper(Transformer wrapped) : super(wrapped) {
     checkState(wrapped is Transformer);
   }
 }
 
-abstract class _AggregateTransformerWrapper {
-  AggregateTransformer get wrapped;
-
+abstract class _AggregateTransformerWrapper
+    implements BaseWrapper<AggregateTransformer> {
   apply(AggregateTransform transform) => wrapped.apply(transform);
 
   declareOutputs(DeclaringAggregateTransform transform) =>
@@ -86,20 +80,25 @@ abstract class _AggregateTransformerWrapper {
   classifyPrimary(AssetId id) => wrapped.classifyPrimary(id);
 }
 
-class _EagerAggregateTransformerWrapper extends EagerTransformerWrapper
-    with _AggregateTransformerWrapper
+class _EagerAggregateTransformerWrapper
+    extends BaseWrapper<AggregateTransformer>
+    with
+        EagerTransformerWrapper<AggregateTransformer>,
+        _AggregateTransformerWrapper
     implements AggregateTransformer {
   _EagerAggregateTransformerWrapper(AggregateTransformer wrapped)
-      : super._(wrapped) {
+      : super(wrapped) {
     checkState(wrapped is AggregateTransformer);
   }
 }
 
-class _LazyAggregateTransformerWrapper extends LazyTransformerWrapper
-    with _AggregateTransformerWrapper
+class _LazyAggregateTransformerWrapper extends BaseWrapper<AggregateTransformer>
+    with
+        LazyTransformerWrapper<AggregateTransformer>,
+        _AggregateTransformerWrapper
     implements AggregateTransformer, LazyAggregateTransformer {
   _LazyAggregateTransformerWrapper(AggregateTransformer wrapped)
-      : super._(wrapped) {
+      : super(wrapped) {
     checkState(wrapped is AggregateTransformer);
   }
 }

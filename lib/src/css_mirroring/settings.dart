@@ -18,7 +18,8 @@ const _bidiCssSetting = 'bidiCss';
 abstract class CssMirroringSettings {
   Setting<bool> get verbose;
 
-  final bidiCss = new Setting<bool>(_bidiCssSetting, defaultValue: false);
+  final _bidiCss = new Setting<bool>(_bidiCssSetting, defaultValue: false);
+  Setting<bool> get bidiCss => _bidiCss;
 
   final originalCssDirection = new Setting<Direction>('originalCssDirection',
       defaultValue: Direction.ltr,

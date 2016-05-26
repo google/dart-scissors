@@ -37,8 +37,8 @@ abstract class SassSettings {
   final sasscPath = makePathSetting('sasscPath', pathResolver.defaultSassCPath,
       isExecutable: true);
 
-  final _sasscArgs = new Setting<List<String>>('sasscArgs', defaultValue: []);
-  final _compiledCssExtensionMode = new Setting<ExtensionMode>(
+  final sasscArgs = new Setting<List<String>>('sasscArgs', defaultValue: []);
+  final compiledCssExtensionMode = new Setting<ExtensionMode>(
       'compiledCssExtension',
       defaultValue: pathResolver.defaultCompiledCssExtensionMode,
       parser: parseExtensionMode);
@@ -50,7 +50,7 @@ abstract class SassSettings {
         var sasscIncludes = <Directory>[];
         var args = <String>[]
           ..addAll(await _resolveSassIncludePaths(
-              _sasscArgs.value.map(resolveEnvVars).toList(),
+              sasscArgs.value.map(resolveEnvVars).toList(),
               (String includePath) async {
             includePath = absolute(await pathResolver.resolvePath(includePath));
             sasscIncludes.add(new Directory(includePath));
@@ -62,7 +62,7 @@ abstract class SassSettings {
           sasscIncludes.add(dir);
         }
         return new SasscSettings(await sasscPath.value, args, sasscIncludes,
-            _compiledCssExtensionMode.value);
+            compiledCssExtensionMode.value);
       })();
     }
     return _sasscSettings;

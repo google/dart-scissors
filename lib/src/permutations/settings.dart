@@ -16,8 +16,9 @@ part of scissors.src.permutations.transformer;
 abstract class PermutationsSettings implements JsOptimizationSettings {
   Setting<bool> get verbose;
 
-  final expectedPartCounts =
+  final Setting<Map> _expectedPartCounts =
       new Setting<Map>('expectedPartCounts', defaultValue: {});
+  Setting<Map> get expectedPartCounts => _expectedPartCounts;
 
   final potentialLocales = new Setting<List<String>>('potentialLocales',
       defaultValue: (numberFormatSymbols.keys as Iterable<String>).toList());
