@@ -14,9 +14,9 @@
 library scissors.src.image_inlining.image_inliner;
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:barback/barback.dart';
-import 'package:crypto/crypto.dart';
 import 'package:csslib/visitor.dart';
 import 'package:csslib/parser.dart';
 import 'package:quiver/check.dart';
@@ -176,6 +176,6 @@ const _mediaTypeByExtension = const <String, String>{
 Future<String> encodeDataAsUri(Asset asset) async {
   var mediaType = _mediaTypeByExtension[asset.id.extension];
   var data = await readAll(await asset.read());
-  var encodedData = CryptoUtils.bytesToBase64(data, urlSafe: false);
+  var encodedData = BASE64.encode(data);
   return 'data:$mediaType;base64,$encodedData';
 }
