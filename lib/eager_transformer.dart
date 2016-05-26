@@ -36,7 +36,7 @@ class _ScissorsSettings extends SettingsBase
 }
 
 List<List<Transformer>> _createPhases(_ScissorsSettings settings) {
-  var phases = <List<Transformer>>[
+  var phases = <List>[
     [
       settings.optimizeSvg.value
           ? new SvgOptimizationTransformer(settings)

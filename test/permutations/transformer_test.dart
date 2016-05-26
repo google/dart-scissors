@@ -20,7 +20,7 @@ import 'package:scissors/src/permutations/transformer.dart';
 import 'package:transformer_test/utils.dart' show testPhases;
 import 'package:test/test.dart';
 
-makePhases(Map config) => [
+List<List> makePhases(Map config) => <List>[
       [
         new PermutationsTransformer.asPlugin(
             new BarbackSettings(config, BarbackMode.RELEASE))

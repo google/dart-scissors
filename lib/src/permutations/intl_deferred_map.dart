@@ -49,7 +49,7 @@ class IntlDeferredMap {
 
   static final RegExp _partRx = new RegExp(r'^(.*?)\.dart\.js_\d+\.part\.js$');
 
-  String _getMainName(part) {
+  String _getMainName(String part) {
     Match m = checkNotNull(_partRx.firstMatch(part),
         message: () => '$part does not look like a part path');
     return m[1];

@@ -9,7 +9,7 @@ main() {
   List<TreeNode> _parseDeclarations(String decls) =>
       (parse('.foo $decls ').topLevels.single as RuleSet)
           .declarationGroup
-          .declarations;
+          .declarations as List<TreeNode>;
 
   test('getDeclarationEnd finds a corresponding end', () {
     String inputCss =

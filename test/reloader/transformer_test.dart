@@ -20,7 +20,7 @@ import 'package:scissors/reloader/transformer.dart';
 import 'package:scissors/src/utils/lazy_transformer_utils.dart';
 import 'package:transformer_test/utils.dart' show testPhases;
 
-makePhases(BarbackMode mode) => new EagerTransformerGroupWrapper(
+List<List> makePhases(BarbackMode mode) => new EagerTransformerGroupWrapper(
         new AutoReloadTransformerGroup.asPlugin(new BarbackSettings({}, mode)))
     .phases;
 

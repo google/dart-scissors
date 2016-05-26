@@ -20,7 +20,7 @@ abstract class PermutationsSettings implements JsOptimizationSettings {
       new Setting<Map>('expectedPartCounts', defaultValue: {});
 
   final potentialLocales = new Setting<List<String>>('potentialLocales',
-      defaultValue: numberFormatSymbols.keys.toList());
+      defaultValue: (numberFormatSymbols.keys as Iterable<String>).toList());
 
   final ltrImport = new Setting<String>('ltrImport');
   final rtlImport = new Setting<String>('rtlImport');

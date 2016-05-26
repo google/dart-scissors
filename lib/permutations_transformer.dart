@@ -49,7 +49,8 @@ class PermutationsTransformerGroup extends TransformerGroup {
   final PermutationsSettings _settings;
 
   PermutationsTransformerGroup(_PermutationsGroupSettings settings)
-      : super(trimPhases([
+      : _settings = settings,
+        super(trimPhases([
           [
             new PermutationsTransformer(settings),
             new PartsCheckTransformer(settings)
@@ -59,8 +60,7 @@ class PermutationsTransformerGroup extends TransformerGroup {
                 ? new SourcemapStrippingTransformer(settings)
                 : null,
           ]
-        ])),
-        _settings = settings;
+        ]));
 
   PermutationsTransformerGroup.asPlugin(BarbackSettings settings)
       : this(new _PermutationsGroupSettings(settings));

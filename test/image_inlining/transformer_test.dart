@@ -20,7 +20,7 @@ import 'package:scissors/src/image_inlining/transformer.dart';
 
 import 'package:transformer_test/utils.dart' show testPhases;
 
-makePhases(Map config) => [
+List<List> makePhases(Map config) => <List>[
       [
         new ImageInliningTransformer.asPlugin(
             new BarbackSettings(config, BarbackMode.RELEASE))
@@ -28,7 +28,7 @@ makePhases(Map config) => [
     ];
 
 void main() {
-  phases(ImageInliningMode mode) =>
+  List<List> phases(ImageInliningMode mode) =>
       makePhases({'imageInlining': enumName(mode)});
 
   var iconSvg = r'''

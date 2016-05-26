@@ -19,7 +19,7 @@ import 'package:scissors/src/svg_optimization/transformer.dart';
 
 import 'package:transformer_test/utils.dart' show testPhases;
 
-makePhases(Map config) => [
+List<List> makePhases(Map config) => <List>[
       [
         new SvgOptimizationTransformer.asPlugin(
             new BarbackSettings(config, BarbackMode.RELEASE))

@@ -33,8 +33,8 @@ Stream<Directory> findExistingDirectories(Iterable<FileSystemEntity> dirs,
   }
 }
 
-Future findFirstWhere(List values, Future<bool> predicate(dynamic value),
-    {orElse}) async {
+Future/*<T>*/ findFirstWhere/*<T>*/(List/*<T>*/ values, Future<bool> predicate(/*=T*/ value),
+    {/*=T*/ orElse}) async {
   int i = 0;
   // Parallelize the predicates evaluation.
   for (var future in values.map(predicate).toList()) {

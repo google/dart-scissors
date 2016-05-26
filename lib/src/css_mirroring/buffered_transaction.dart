@@ -40,7 +40,7 @@ class BufferedTransaction {
   }
 
   void commit() {
-    var parent = _parentTransaction ?? _textEditTransaction;
+    dynamic parent = _parentTransaction ?? _textEditTransaction;
     for (var edit in _edits) {
       parent.edit(edit.start, edit.end, edit.text);
     }

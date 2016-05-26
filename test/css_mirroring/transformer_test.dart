@@ -20,7 +20,7 @@ import 'package:scissors/src/css_mirroring/transformer.dart';
 
 import 'package:transformer_test/utils.dart' show testPhases;
 
-makePhases(Map config) => [
+List<List> makePhases(Map config) => <List>[
       [
         new BidiCssTransformer.asPlugin(
             new BarbackSettings(config, BarbackMode.RELEASE))

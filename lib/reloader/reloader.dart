@@ -40,7 +40,7 @@ setupReloader(
 }
 
 Future<int> _getTimestamp(timestampBaseUrl) {
-  var completer = new Completer();
+  var completer = new Completer<int>();
   new HttpRequest()
     ..open('GET', timestampBaseUrl + 'timestamp')
     ..onLoad.listen((ProgressEvent event) {

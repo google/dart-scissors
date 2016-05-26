@@ -58,7 +58,7 @@ class MirroredEntity<T extends TreeNode> {
     return node is MediaDirective || node is HostDirective;
   }
 
-  MirroredEntities/*<C>*/ getChildren/*<C>*/(
+  MirroredEntities/*<C>*/ getChildren/*<C extends TreeNode>*/(
       List/*<C>*/ getEntityChildren(T _)) {
     return new MirroredEntities(
         _entities._originalSource,

@@ -113,7 +113,7 @@ class PathResolver {
         var rootDirs = await getRootDirectories();
         File packagesFile = await findFirstWhere(
             rootDirs.map((d) => new File(join(d.path, '.packages'))).toList(),
-            (f) => f.exists());
+            (File f) => f.exists());
         if (packagesFile != null) {
           var content = await packagesFile.readAsString();
           for (var line in content.split('\n')) {
@@ -178,7 +178,7 @@ class PathResolver {
         assets.add(new _FileAsset(dir, path));
       }
     }
-    return findFirstWhere(assets, (a) => a.exists());
+    return findFirstWhere(assets, (_FileAsset a) => a.exists());
   }
 
   String assetIdToUri(AssetId id) {

@@ -48,7 +48,7 @@ class DeferredMap {
     data.forEach((k, v) {
       if (v is Map) {
         String name = v['name'];
-        Map importsValue = v['imports'];
+        var importsValue = v['imports'] as Map<String, List<String>>;
         if (importsValue != null) {
           var imports = <DeferredMapImports>[];
           importsValue.forEach((alias, parts) {

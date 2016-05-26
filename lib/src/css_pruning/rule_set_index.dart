@@ -97,9 +97,13 @@ class RuleSetIndex {
   }
 }
 
-_matchesString(String s) => (RegExp rx) => rx.matchAsPrefix(s) != null;
+typedef bool _RegExpPredicate(RegExp _);
+_RegExpPredicate _matchesString(String s) =>
+    (RegExp rx) => rx.matchAsPrefix(s) != null;
 
-_matchedByRegExp(RegExp rx) => (String s) => rx.matchAsPrefix(s) != null;
+typedef bool _StringPredicate(String _);
+_StringPredicate _matchedByRegExp(RegExp rx) =>
+    (String s) => rx.matchAsPrefix(s) != null;
 
 /// Simple description of a DOM element.
 class ElementDescription {

@@ -20,7 +20,7 @@ import 'dart:io';
 import 'io_utils.dart';
 
 String getOutputString(stdio) =>
-    stdio is String ? stdio : new Utf8Decoder().convert(stdio);
+    stdio is String ? stdio : new Utf8Decoder().convert(stdio as List<int>);
 
 String successString(String command, ProcessResult result) {
   var err = getOutputString(result.stderr).trim();

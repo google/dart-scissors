@@ -13,12 +13,13 @@
 // limitations under the License.
 part of scissors.src.utils.settings_base;
 
+typedef T _Parser<T>(String _);
 class Setting<T> {
   final String key;
   final String comment;
   final T debugDefault;
   final T releaseDefault;
-  final Function parser;
+  final _Parser<T> parser;
   bool _read = false;
   T _value;
   T get value {
@@ -31,7 +32,7 @@ class Setting<T> {
       T defaultValue,
       T debugDefault,
       T releaseDefault,
-      T this.parser(String s)})
+      this.parser})
       : this.debugDefault = debugDefault ?? defaultValue,
         this.releaseDefault = releaseDefault ?? defaultValue;
 
@@ -42,7 +43,7 @@ class Setting<T> {
     if (value == null) {
       _value = isDebug ? debugDefault : releaseDefault;
     } else {
-      _value = parser != null ? parser(value) : value;
+      _value = parser != null ? parser(value) : value as T;
     }
   }
 }

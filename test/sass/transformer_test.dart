@@ -19,7 +19,7 @@ import 'package:scissors/src/sass/transformer.dart';
 import 'package:scissors/src/utils/lazy_transformer_utils.dart';
 import 'package:transformer_test/utils.dart' show testPhases;
 
-makePhases(Map config) => [
+List<List> makePhases(Map config) => <List>[
       [
         new EagerTransformerWrapper(new SassCTransformer.asPlugin(
             new BarbackSettings(config, BarbackMode.RELEASE)))
