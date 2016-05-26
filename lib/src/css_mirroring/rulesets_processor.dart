@@ -35,8 +35,8 @@ bool editFlippedRuleSet(
   final flippedDirSubTransaction = flippedDirTrans.createSubTransaction();
 
   MirroredEntities<Declaration> mirroredDeclarations =
-      mirroredRuleSet.getChildren((r) =>
-          (r as RuleSet).declarationGroup.declarations as List<Declaration>);
+      mirroredRuleSet.getChildren((r) => new List<Declaration>.from(
+          (r as RuleSet).declarationGroup.declarations));
 
   /// Iterate over Declarations in RuleSet and store start and end points of
   /// declarations to be removed.
