@@ -3,7 +3,11 @@ set -eu
 
 function run_analyzer() {
   echo "Running the analyzer"
-  dartanalyzer --fatal-warnings `find bin -name '*.dart'` `find lib -name '*.dart'`
+  dartanalyzer \
+    --fatal-warnings \
+    --fatal-hints \
+    --fatal-lints \
+    `find bin -name '*.dart'` `find lib -name '*.dart'`
 }
 
 function run_tests() {
@@ -35,8 +39,8 @@ cd $(dirname ${BASH_SOURCE[0]})/..
 pub get
 . scripts/install_dependencies.sh
 
-run_tests
 run_analyzer
+run_tests
 run_formatter
 run_travis_lint
 pub publish --dry-run

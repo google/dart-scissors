@@ -21,8 +21,7 @@ import 'css_utils.dart' show Direction;
 import 'entity.dart';
 import 'mirrored_entities.dart';
 import '../utils/enum_parser.dart';
-import 'css_utils.dart'
-    show isDirectionInsensitive, hasNestedRuleSets, Direction, flipDirection;
+import 'css_utils.dart' show Direction, flipDirection;
 
 /// Returns true if the [RuleSet] was completely removed, false otherwise.
 bool editFlippedRuleSet(

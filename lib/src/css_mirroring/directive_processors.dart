@@ -18,7 +18,7 @@ import 'package:csslib/visitor.dart' show Directive, RuleSet;
 import 'buffered_transaction.dart';
 import 'css_utils.dart' show Direction;
 import 'mirrored_entities.dart';
-import 'rulesets_processor.dart' show editFlippedRuleSet, RemovalResult;
+import 'rulesets_processor.dart' show editFlippedRuleSet;
 
 /// All removable declarations of ruleset are removed and if all declarations
 /// in rulesets have to be removed, it removes ruleset itself.

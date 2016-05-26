@@ -17,7 +17,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:barback/barback.dart' show Asset, AssetId;
+import 'package:barback/barback.dart' show Asset;
 import 'package:quiver/check.dart';
 
 import '../image_inlining/main.dart';
