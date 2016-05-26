@@ -25,7 +25,7 @@ import 'css_utils.dart' show Direction, flipDirection;
 
 /// Returns true if the [RuleSet] was completely removed, false otherwise.
 bool editFlippedRuleSet(
-    MirroredEntity<RuleSet> mirroredRuleSet,
+    MirroredEntity mirroredRuleSet,
     Direction nativeDirection,
     BufferedTransaction commonTrans,
     BufferedTransaction nativeDirTrans,
@@ -35,8 +35,8 @@ bool editFlippedRuleSet(
   final flippedDirSubTransaction = flippedDirTrans.createSubTransaction();
 
   MirroredEntities<Declaration> mirroredDeclarations =
-      mirroredRuleSet.getChildren(
-          (RuleSet r) => r.declarationGroup.declarations as List<Declaration>);
+      mirroredRuleSet.getChildren((r) =>
+          (r as RuleSet).declarationGroup.declarations as List<Declaration>);
 
   /// Iterate over Declarations in RuleSet and store start and end points of
   /// declarations to be removed.
@@ -85,9 +85,8 @@ bool editFlippedRuleSet(
   return removalResult;
 }
 
-void prependToEachSelector(
-    Entity<RuleSet> e, BufferedTransaction trans, String s) {
-  for (final Selector sel in _getSelectors(e.value)) {
+void prependToEachSelector(Entity e, BufferedTransaction trans, String s) {
+  for (final Selector sel in _getSelectors(e.value as RuleSet)) {
     var start = sel.span.start.offset;
     trans.edit(start, start, s);
   }
