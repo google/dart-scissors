@@ -35,15 +35,21 @@ function run_travis_lint() {
   travis lint -x --skip-completion-check
 }
 
+function run_pub_build() {
+  echo "Pub-building to self-check"
+  pub build
+}
+
 cd $(dirname ${BASH_SOURCE[0]})/..
 
 pub get
 . scripts/install_dependencies.sh
 
-run_analyzer
 run_formatter
+run_analyzer
 run_tests
 run_travis_lint
+run_pub_build
 pub publish --dry-run
 
 if (( "${TEST_EXAMPLES:-1}" )); then

@@ -9,6 +9,7 @@ environment:
 dependencies:
   args: ">=0.12.0 <0.14.0"
   barback: ^0.15.0
+  code_transformers: any
   csslib: ">=0.12.0 <0.14.0"
   html: ">=0.12.0 <0.14.0"
   intl: ">=0.8.0 <0.14.0"
@@ -22,3 +23,7 @@ dev_dependencies:
 executables:
   scissors-inline-images: inline_images
   scissors-sassc: sassc_with_compass_functions
+transformers:
+  - scissors/src/checker/transformer
+  - $dart2js:
+      $exclude: '**'
