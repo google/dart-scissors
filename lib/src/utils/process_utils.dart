@@ -46,7 +46,7 @@ Future<ProcessResult> pipeInAndOutOfNewProcess(Process p, input) async {
   } else {
     throw new ArgumentError('Unexpected input: ${input.runtimeType}');
   }
-  p.stdin.close();
+  await p.stdin.close();
 
   var out = readAll(p.stdout);
   var err = readAll(p.stderr);

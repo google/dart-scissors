@@ -24,7 +24,7 @@ import 'dart:async';
 setupReloader(
     {timestampBaseUrl: '/', delay: const Duration(seconds: 1)}) async {
   var initialTimestamp = await _getTimestamp(timestampBaseUrl);
-  Future.doWhile(() async {
+  await Future.doWhile(() async {
     await new Future.delayed(const Duration(seconds: 1));
     try {
       var timestamp = await _getTimestamp(timestampBaseUrl);

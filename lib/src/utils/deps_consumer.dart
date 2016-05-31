@@ -63,7 +63,7 @@ Future<Set<AssetId>> consumeTransitiveSassDeps(
           }
           var importedAsset =
               await pathResolver.resolveAsset(inputGetter, files, asset.id);
-          consumeTransitiveSassDeps(
+          await consumeTransitiveSassDeps(
               inputGetter, logger, importedAsset, sassIncludes, visitedIds);
         } catch (e, s) {
           logger.warning(
