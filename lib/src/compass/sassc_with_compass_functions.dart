@@ -131,7 +131,7 @@ Future<ProcessResult> _pipeResult(
     Asset outputAsset, File outputFile, String stderr) async {
   String stdout;
   if (outputFile != null) {
-    outputAsset.read().pipe(outputFile.openWrite());
+    await outputAsset.read().pipe(outputFile.openWrite());
     stdout = '';
   } else {
     stdout = await outputAsset.readAsString();
