@@ -13,13 +13,15 @@
 // limitations under the License.
 part of scissors.src.css_mirroring.transformer;
 
-const _bidiCssSetting = 'bidiCss';
+const _flippingSetting = 'flippingScheme';
 
 abstract class CssMirroringSettings {
   Setting<bool> get verbose;
 
-  final _bidiCss = new Setting<bool>(_bidiCssSetting, defaultValue: false);
-  Setting<bool> get bidiCss => _bidiCss;
+  final _flippingScheme = new Setting<FlippingScheme>(_flippingSetting,
+      defaultValue: FlippingScheme.skip,
+      parser: new EnumParser<FlippingScheme>(FlippingScheme.values).parse);
+  Setting<FlippingScheme> get flippingScheme => _flippingScheme;
 
   final originalCssDirection = new Setting<Direction>('originalCssDirection',
       defaultValue: Direction.ltr,
@@ -32,5 +34,6 @@ class _CssMirroringSettings extends SettingsBase with CssMirroringSettings {
   _CssMirroringSettings(settings) : super(settings);
 
   @override
-  final bidiCss = new Setting<bool>(_bidiCssSetting, defaultValue: true);
+  final flippingScheme = new Setting<FlippingScheme>(_flippingSetting,
+      defaultValue: FlippingScheme.biDirectionalize);
 }

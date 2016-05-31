@@ -13,6 +13,8 @@
 // limitations under the License.
 library scissors.src.css_mirroring.util_functions;
 
+enum FlippingScheme { skip, flip, biDirectionalize }
+
 enum Direction { ltr, rtl }
 
 Direction flipDirection(Direction dir) =>

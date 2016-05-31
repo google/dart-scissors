@@ -93,10 +93,10 @@ String resolveEnvVars(String s) => s?.replaceAllMapped(
     new RegExp(r'\$\{([^}]+)\}'),
     (Match m) => (Platform.environment[m.group(1)] ?? ''));
 
-// final bidiCss = new Setting<bool>('bidiCss',
+// final flippingScheme = new Setting<FlippingScheme>('flippingScheme',
 //     comment:
-//         "Whether to perform LTR -> RTL mirroring of .css files with cssjanus.",
-//     defaultValue: false);
+//         "Whether to skip, flip or biDirectionalize input css.",
+//     defaultValue: FlippingScheme.biDirectionalize);
 
 // final cssJanusPath =
 //     makePathSetting('cssJanusPath', pathResolver.defaultCssJanusPath);

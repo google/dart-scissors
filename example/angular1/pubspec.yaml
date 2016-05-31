@@ -11,7 +11,7 @@ transformers:
 # - scissors/eager_transformer
 - scissors:
     verbose: true
-    bidiCss: true
+    flippingScheme: biDirectionalize
     cssJanusPath: ${PWD}/../../.dependencies/cssjanus/cssjanus.py
     release:
         imageInlining: inlineAllUrls

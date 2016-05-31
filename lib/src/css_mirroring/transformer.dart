@@ -19,7 +19,7 @@ import 'package:barback/barback.dart';
 
 import 'bidi_css_generator.dart';
 import 'cssjanus_runner.dart';
-import 'css_utils.dart' show Direction;
+import 'css_utils.dart' show Direction, FlippingScheme;
 import '../utils/enum_parser.dart';
 import '../utils/file_skipping.dart';
 import '../utils/path_resolver.dart';
@@ -41,9 +41,11 @@ class BidiCssTransformer extends AggregateTransformer
   // @override String get allowedExtensions => '.css .css.map';
 
   @override
-  classifyPrimary(AssetId id) => !_settings.bidiCss.value || shouldSkipAsset(id)
-      ? null
-      : _primaryRx.matchAsPrefix(id.toString())?.group(1);
+  classifyPrimary(AssetId id) =>
+      _settings.flippingScheme.value == FlippingScheme.skip ||
+              shouldSkipAsset(id)
+          ? null
+          : _primaryRx.matchAsPrefix(id.toString())?.group(1);
 
   @override
   declareOutputs(DeclaringAggregateTransform transform) async {
@@ -73,12 +75,20 @@ class BidiCssTransformer extends AggregateTransformer
 
     if (mapAsset != null) transform.consumePrimary(mapAsset.id);
 
-    var bidiCss = await bidirectionalizeCss(await cssAsset.readAsString(),
-        _flipCss, _settings.originalCssDirection.value);
-    if (_settings.verbose.value) {
-      transform.logger.info('Bidirectionalized css:\n$bidiCss');
+    if (_settings.flippingScheme.value == FlippingScheme.flip) {
+      var flippedCss = await _flipCss(await cssAsset.readAsString());
+      if (_settings.verbose.value) {
+        transform.logger.info('Flipped css:\n$flippedCss');
+      }
+      transform.addOutput(new Asset.fromString(cssAsset.id, flippedCss));
+    } else {
+      var bidiCss = await bidirectionalizeCss(await cssAsset.readAsString(),
+          _flipCss, _settings.originalCssDirection.value);
+      if (_settings.verbose.value) {
+        transform.logger.info('Bidirectionalized css:\n$bidiCss');
+      }
+      transform.addOutput(new Asset.fromString(cssAsset.id, bidiCss));
     }
-    transform.addOutput(new Asset.fromString(cssAsset.id, bidiCss));
   }
 
   Future<String> _flipCss(String css) async =>

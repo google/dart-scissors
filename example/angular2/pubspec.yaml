@@ -11,6 +11,7 @@ transformers:
 # - scissors/eager_transformer
 - scissors:
     verbose: true
+    # flippingScheme: biDirectionalize
     # pruneCss: false
     # optimizeSvg: false
     # optimizePng: false
