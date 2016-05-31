@@ -6,7 +6,7 @@
 
 ### Bugfixes
 
-- Fixed Bidi Css which had been wrongly simplified (issue #43)
+- Fixed Bidi CSS which had been wrongly simplified (issue #43)
 
 ## 0.6.0 (2016-03-16)
 
