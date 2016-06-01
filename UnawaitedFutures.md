@@ -3,7 +3,7 @@ cause of errors / test flakiness.
 
 The `scissors/src/checker/transformer` transformer warns against unawaited
 futures in async method bodies, with a couple of hard-coded special cases
-(see [README](README.md) for usage).
+(see [README](README.md#using-scissorssrccheckertransformer-to-detect-unawaited-futures) for usage).
 
 Examples (given `Future fut();`):
 ```dart
