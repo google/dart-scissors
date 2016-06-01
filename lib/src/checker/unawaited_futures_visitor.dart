@@ -69,10 +69,12 @@ class UnawaitedFuturesVisitor extends RecursiveAstVisitor {
       _isMap(expr.methodName.staticElement?.enclosingElement);
 
   bool _isFutureClass(Element e) =>
-      e is ClassElement && e.name == 'Future' && e.library?.isDartAsync;
+      e is ClassElement &&
+      e.name == 'Future' &&
+      e.library?.name == 'dart.async';
 
   bool _isMap(Element e) =>
-      e is ClassElement && e.name == 'Map' && e.library?.isDartCore;
+      e is ClassElement && e.name == 'Map' && e.library?.name == 'dart.core';
 
   FunctionBody _findEnclosingFunctionBody(AstNode node) {
     while (node != null && node is! FunctionBody) {

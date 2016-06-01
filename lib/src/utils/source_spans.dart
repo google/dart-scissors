@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import 'package:analyzer/dart/ast/ast.dart' show AstNode;
+import 'package:analyzer/analyzer.dart' show AstNode;
 import 'package:analyzer/src/generated/source.dart' show LineInfo;
 import 'package:barback/barback.dart' show Asset;
 import 'package:source_span/source_span.dart' show SourceSpan, SourceLocation;
