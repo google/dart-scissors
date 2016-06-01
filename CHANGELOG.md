@@ -2,6 +2,12 @@
 
 ...
 
+### Features
+
+- Added experimental `scissors/src/checker/transformer` that detects unawaited futures.
+  These extra static checks are slow, but prevent accidental fire-and-forget of
+  futures within async method bodies.
+
 ## 0.6.1 (2016-05-26)
 
 ### Bugfixes
