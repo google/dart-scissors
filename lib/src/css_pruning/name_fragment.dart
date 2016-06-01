@@ -13,7 +13,8 @@
 // limitations under the License.
 library scissors.src.css_pruning.name_fragment;
 
-final RegExp _INTERPOLATION = new RegExp(r'(?:\{\{.*?\}\})+', multiLine: true);
+final RegExp _interpolationRx =
+    new RegExp(r'(?:\{\{.*?\}\})+', multiLine: true);
 
 /// Parses classes and class fragments out of a class attribute value.
 List<Pattern> parseClassPatterns(String classAttributeValue) {
@@ -21,7 +22,7 @@ List<Pattern> parseClassPatterns(String classAttributeValue) {
 
   return _getFragmentableClasses(classAttributeValue).map((name) {
     if (name.contains("{{")) {
-      return new RegExp('^' + name.replaceAll(_INTERPOLATION, ".*?") + r'$',
+      return new RegExp('^' + name.replaceAll(_interpolationRx, ".*?") + r'$',
           multiLine: true);
     } else {
       return name;
@@ -30,9 +31,9 @@ List<Pattern> parseClassPatterns(String classAttributeValue) {
 }
 
 /// Matches `a-class`, `a-fragmented-{{mustache}}-class`
-final _WORD = new RegExp(r'([\w-_]+|\{\{.*?\}\})+', multiLine: true);
+final _wordRx = new RegExp(r'([\w-_]+|\{\{.*?\}\})+', multiLine: true);
 
 /// Chunks a class attribute value into fragmentable class words.
 /// For instance, returns `["a", "b{{c d}}"]` out of `"a b{{c d}}"`.
 Iterable<String> _getFragmentableClasses(String cls) =>
-    _WORD.allMatches(cls).map((m) => m[0]);
+    _wordRx.allMatches(cls).map((m) => m[0]);

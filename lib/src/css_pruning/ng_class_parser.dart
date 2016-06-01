@@ -15,7 +15,7 @@ library scissors.src.css_pruning.ng_class_parser;
 
 import 'package:quiver/check.dart';
 
-final RegExp _IDENTIFIER_PATTERN = new RegExp(r'^[\w\d_]+$');
+final RegExp _identifierRx = new RegExp(r'^[\w\d_]+$');
 
 /// Result of parsing an ng-class attribute.
 class NgClassParsingResults {
@@ -33,7 +33,7 @@ class NgClassParsingResults {
       hasVariableClasses == other.hasVariableClasses &&
       "$classes" == "${other.classes}";
   @override
-  get hashCode => hasVariableClasses.hashCode ^ "${classes}".hashCode;
+  get hashCode => hasVariableClasses.hashCode ^ "$classes".hashCode;
 }
 
 /// Try to parse naive ng-class maps, or return `null` if the format is unknown.
@@ -70,7 +70,7 @@ NgClassParsingResults parseNgClassAttribute(String attributeValue) {
         }
         final className = key.substring(1, key.length - 1);
         classes.add(className);
-      } else if (_IDENTIFIER_PATTERN.hasMatch(key)) {
+      } else if (_identifierRx.hasMatch(key)) {
         // Key is an identifier.
         hasVariableClasses = true;
       } else {

@@ -87,7 +87,7 @@ class SassCTransformer extends AggregateTransformer
       }
     }
 
-    checkState(scss != null, message: () => "Didn't find scss in ${inputs}");
+    checkState(scss != null, message: () => "Didn't find scss in $inputs");
 
     var sasscSettings = await _settings.sasscSettings;
 

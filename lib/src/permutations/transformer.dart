@@ -78,7 +78,7 @@ class PermutationsTransformer extends AggregateTransformer
     if (dartJsId != null) {
       for (var locale in _settings.potentialLocales.value) {
         var permutationId = new AssetId(dartJsId.package,
-            dartJsId.path.replaceAll('.dart.js', '_${locale}.js'));
+            dartJsId.path.replaceAll('.dart.js', '_$locale.js'));
         transform.declareOutput(permutationId);
         transform.declareOutput(permutationId.addExtension('.map'));
       }
@@ -131,7 +131,7 @@ class PermutationsTransformer extends AggregateTransformer
 
       for (var locale in allLocales) {
         var permutationId = new AssetId(mainAsset.id.package,
-            join(dirname(mainAsset.id.path), '${mainName}_${locale}.js'));
+            join(dirname(mainAsset.id.path), '${mainName}_$locale.js'));
 
         var parts = map.getPartsForLocale(
             locale: locale,

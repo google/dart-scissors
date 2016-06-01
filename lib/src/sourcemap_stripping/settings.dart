@@ -27,7 +27,7 @@ class _SourcemapStrippingSettings extends SettingsBase
   _SourcemapStrippingSettings(settings) : super(settings);
 
   /// Enabled by default in release in standalone transformer.
-  final Setting<bool> __stripSourceMaps = makeOptimSetting('stripSourceMaps');
+  final Setting<bool> _stripSourceMaps2 = makeOptimSetting('stripSourceMaps');
   @override
-  Setting<bool> get stripSourceMaps => __stripSourceMaps;
+  Setting<bool> get stripSourceMaps => _stripSourceMaps2;
 }

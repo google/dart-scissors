@@ -5,6 +5,7 @@ function run_analyzer() {
   echo "Running the analyzer"
   dartanalyzer \
     --strong \
+    --lints \
     --fatal-warnings \
     --fatal-hints \
     --fatal-lints \

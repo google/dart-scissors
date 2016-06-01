@@ -69,7 +69,7 @@ abstract class SettingsBase {
     var invalidKeys = config.keys.where((k) => !validKeys.contains(k));
     checkState(invalidKeys.isEmpty,
         message: () =>
-            "Invalid keys in configuration: $invalidKeys (valid keys: ${validKeys})");
+            "Invalid keys in configuration: $invalidKeys (valid keys: $validKeys)");
 
     settingList.forEach((s) => s.read(config, isDebug));
   }
