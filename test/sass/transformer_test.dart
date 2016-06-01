@@ -13,8 +13,7 @@
 // limitations under the License.
 library scissors.test.sass.transformer_test;
 
-import 'package:barback/barback.dart'
-    show BarbackMode, BarbackSettings, Transformer;
+import 'package:barback/barback.dart' show BarbackMode, BarbackSettings;
 import 'package:scissors/src/sass/transformer.dart';
 import 'package:scissors/src/utils/lazy_transformer_utils.dart';
 import 'package:transformer_test/utils.dart' show testPhases;

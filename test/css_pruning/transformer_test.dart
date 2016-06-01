@@ -13,8 +13,7 @@
 // limitations under the License.
 library scissors.test.css_pruning.transformer_test;
 
-import 'package:barback/barback.dart'
-    show BarbackMode, BarbackSettings, Transformer;
+import 'package:barback/barback.dart' show BarbackMode, BarbackSettings;
 import 'package:scissors/src/css_pruning/transformer.dart';
 
 import 'package:transformer_test/utils.dart' show testPhases;

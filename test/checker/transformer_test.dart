@@ -1,5 +1,4 @@
-import 'package:barback/barback.dart'
-    show BarbackMode, BarbackSettings, Transformer;
+import 'package:barback/barback.dart' show BarbackMode, BarbackSettings;
 import 'package:scissors/src/checker/transformer.dart';
 
 import 'package:transformer_test/utils.dart' show testPhases;
