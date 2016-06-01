@@ -6,6 +6,6 @@ cache:
   directories:
     - $HOME/.pub-cache/hosted
 script:
-  - TEST_EXAMPLES=0 ./scripts/presubmit.sh
+  - RUN_CHECKER=0 TEST_EXAMPLES=0 ./scripts/presubmit.sh
 before_install:
   - . scripts/install_dependencies.sh

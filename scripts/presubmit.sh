@@ -36,12 +36,13 @@ function run_travis_lint() {
   travis lint -x --skip-completion-check
 }
 
-function run_pub_build() {
+function run_checker() {
   echo "Pub-building to self-check"
   cp pubspec.yaml pubspec.yaml.orig
   echo "
 transformers:
-  - scissors/src/checker/transformer
+  - scissors/src/checker/transformer:
+      unawaitedFutures: error
   - \$dart2js:
       \$exclude: '**'
 " >> pubspec.yaml
@@ -58,7 +59,9 @@ run_formatter
 run_analyzer
 run_tests
 run_travis_lint
-run_pub_build
+if (( ${RUN_CHECKER:-1} )); then
+  run_checker
+fi
 pub publish --dry-run
 
 if (( "${TEST_EXAMPLES:-1}" )); then
