@@ -12,43 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import 'package:analyzer/dart/ast/ast.dart' show AstNode;
+import 'package:analyzer/src/generated/source.dart' show LineInfo;
 import 'package:barback/barback.dart' show Asset;
 import 'package:source_span/source_span.dart' show SourceSpan, SourceLocation;
 import 'dart:async';
 
-Future<SourceSpan> sourceSpanForNode(AstNode node, Asset asset) async {
-  var content = await asset.readAsString();
+Future<SourceSpan> sourceSpanForNode(
+    AstNode node, Asset asset, LineInfo lineInfo) async {
+  var content = await asset?.readAsString();
   var id = asset.id;
   var sourceUrl = 'package:${id.package}/${id.path}';
 
   makeLocation(int offset) {
-    return _getLineAndColumn(content, offset, (line, column) {
-      return new SourceLocation(offset,
-          sourceUrl: sourceUrl, line: line, column: column);
-    });
+    var location = lineInfo.getLocation(offset);
+    return new SourceLocation(offset,
+        sourceUrl: sourceUrl,
+        line: location.lineNumber,
+        column: location.columnNumber);
   }
   var start = makeLocation(node.beginToken.offset);
   var end = makeLocation(node.endToken.end);
   return new SourceSpan(
-      start, end, content.substring(start.offset, end.offset));
-}
-
-dynamic _getLineAndColumn(
-    String content, int offset, dynamic callback(int line, int column)) {
-  int line = 1;
-  int column = 1;
-  for (int i = 0; i < offset; i++) {
-    switch (content[i]) {
-      case '\n':
-        line++;
-        column = 1;
-        break;
-      case '\r':
-        break;
-      default:
-        column++;
-        break;
-    }
-  }
-  return callback(line, column);
+      start, end, content?.substring(start.offset, end.offset));
 }

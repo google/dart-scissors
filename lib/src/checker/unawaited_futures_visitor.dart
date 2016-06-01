@@ -12,7 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:analyzer/analyzer.dart';
+import 'package:analyzer/analyzer.dart'
+    show
+        Expression,
+        ExpressionStatement,
+        AssignmentExpression,
+        RecursiveAstVisitor,
+        AstNode,
+        InstanceCreationExpression,
+        MethodInvocation,
+        FunctionBody;
 import 'package:analyzer/dart/element/element.dart' show ClassElement, Element;
 
 class UnawaitedFuturesVisitor extends RecursiveAstVisitor {

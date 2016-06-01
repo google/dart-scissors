@@ -74,4 +74,22 @@ void main() {
           }
         '''
   }, {}, messages: []);
+
+  testPhases('supports part files', makePhases({}), {
+    'a|foo.dart': r'''
+          library foo;
+          import 'dart:async';
+          part 'foo_part.dart';
+
+          Future foo() => null;
+        ''',
+    'a|foo_part.dart': prelude +
+        r'''
+          in_part() async {
+            foo();
+          }
+        '''
+  }, {}, messages: [
+    'warning: Unawaited future (package:a/foo_part.dart 4 13)'
+  ]);
 }

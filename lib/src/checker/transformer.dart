@@ -17,9 +17,17 @@ import 'dart:async';
 
 import 'package:analyzer/src/generated/engine.dart' show AnalysisOptionsImpl;
 import 'package:barback/barback.dart'
-    show BarbackSettings, Transformer, LogLevel, Transform, Asset, AssetId;
+    show
+        Asset,
+        AssetId,
+        AssetNotFoundException,
+        BarbackSettings,
+        LogLevel,
+        Transform,
+        Transformer;
 import 'package:code_transformers/resolver.dart'
-    show ResolverTransformer, Resolver, Resolvers, dartSdkDirectory;
+    show dartSdkDirectory, Resolver, Resolvers, ResolverTransformer;
+import 'package:path/path.dart' as path;
 
 import 'unawaited_futures_visitor.dart';
 import '../utils/result.dart';
@@ -52,23 +60,35 @@ class CheckerTransformer extends Transformer with ResolverTransformer {
   applyResolver(Transform transform, Resolver resolver) async {
     final primaryInput = transform.primaryInput;
 
-    var unawaitedFuturesVisitor = new UnawaitedFuturesVisitor();
+    for (var libElement in resolver.libraries) {
+      if (resolver.getSourceAssetId(libElement) == primaryInput.id) {
+        for (var unitElement in libElement.units) {
+          var id = primaryInput.id;
+          if (unitElement.uri != null) {
+            id = new AssetId(
+                id.package, path.join(path.dirname(id.path), unitElement.uri));
+          }
+          Asset asset;
+          try {
+            asset = await transform.getInput(id);
+          } on AssetNotFoundException catch (_) {
+            transform.logger.warning('Asset not found: $id');
+          }
 
-    for (var lib in resolver.libraries) {
-      if (resolver.getSourceAssetId(lib) == primaryInput.id) {
-        for (var unit in lib.units) {
-          unit.computeNode()?.accept(unawaitedFuturesVisitor);
+          var unawaitedFuturesVisitor = new UnawaitedFuturesVisitor();
+          var unit = unitElement.unit;
+          unit.accept(unawaitedFuturesVisitor);
+
+          for (var node in unawaitedFuturesVisitor.unawaitedFutures) {
+            new TransformMessage(
+                    _settings.unawaitedFuturesLevel.value,
+                    'Unawaited future',
+                    id,
+                    await sourceSpanForNode(node, asset, unit.lineInfo))
+                .log(transform.logger);
+          }
         }
       }
-    }
-
-    for (var node in unawaitedFuturesVisitor.unawaitedFutures) {
-      new TransformMessage(
-              _settings.unawaitedFuturesLevel.value,
-              'Unawaited future',
-              primaryInput.id,
-              await sourceSpanForNode(node, primaryInput))
-          .log(transform.logger);
     }
   }
 }
