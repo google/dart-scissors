@@ -13,8 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:barback/barback.dart'
-    show BarbackMode, BarbackSettings, Transformer;
+import 'package:barback/barback.dart' show BarbackMode, BarbackSettings;
 import 'package:scissors/src/sourcemap_stripping/transformer.dart';
 
 import 'package:transformer_test/utils.dart' show testPhases;

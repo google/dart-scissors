@@ -13,8 +13,7 @@
 // limitations under the License.
 library scissors.test.permutations.transformer_test;
 
-import 'package:barback/barback.dart'
-    show BarbackMode, BarbackSettings, Transformer;
+import 'package:barback/barback.dart' show BarbackMode, BarbackSettings;
 import 'package:scissors/src/permutations/transformer.dart';
 
 import 'package:transformer_test/utils.dart' show testPhases;

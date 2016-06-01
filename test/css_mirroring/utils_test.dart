@@ -2,7 +2,7 @@ library scissors.src.css_mirroring.bidi_css_generator;
 
 import 'package:test/test.dart';
 import 'package:csslib/parser.dart' show parse;
-import 'package:csslib/visitor.dart' show TreeNode, RuleSet;
+import 'package:csslib/visitor.dart' show TreeNode;
 import 'package:scissors/src/css_mirroring/entity.dart';
 
 main() {
