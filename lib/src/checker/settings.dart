@@ -19,7 +19,7 @@ const logLevels = const <String, LogLevel>{
   'error': LogLevel.ERROR
 };
 
-parseLogLevel(String value) => logLevels[value];
+LogLevel parseLogLevel(String value) => logLevels[value];
 
 class CheckerSettings extends SettingsBase {
   final strong = new Setting<bool>('strong', defaultValue: true);
