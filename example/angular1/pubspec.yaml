@@ -15,7 +15,7 @@ transformers:
     cssJanusPath: ${PWD}/../../.dependencies/cssjanus/cssjanus.py
     release:
         imageInlining: inlineAllUrls
-    # pruneCss: false
+    # pruningScheme: skip
     # optimizeSvg: false
     # optimizePng: false
     compiledCssExtension: replace

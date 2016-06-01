@@ -16,6 +16,7 @@ library scissors.scissors_transformer;
 import 'package:barback/barback.dart';
 
 import 'src/css_mirroring/transformer.dart';
+import 'src/css_pruning/css_utils.dart' show PruningScheme;
 import 'src/css_pruning/transformer.dart';
 import 'src/image_inlining/transformer.dart';
 import 'src/png_optimization/transformer.dart';
@@ -46,7 +47,11 @@ List<List<Transformer>> _createPhases(_ScissorsSettings settings) {
           : null,
       settings.compileSass.value ? new SassCTransformer(settings) : null
     ],
-    [settings.pruneCss.value ? new CssPruningTransformer(settings) : null],
+    [
+      settings.pruningScheme.value != PruningScheme.skip
+          ? new CssPruningTransformer(settings)
+          : null
+    ],
     [
       settings.imageInlining.value != ImageInliningMode.disablePass
           ? new ImageInliningTransformer(settings)

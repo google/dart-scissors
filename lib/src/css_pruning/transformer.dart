@@ -19,11 +19,13 @@ import 'package:barback/barback.dart';
 import 'package:source_maps/refactor.dart';
 import 'package:source_span/source_span.dart';
 
+import '../utils/enum_parser.dart';
 import '../utils/path_utils.dart';
 import '../utils/settings_base.dart';
 import '../utils/file_skipping.dart';
 import '../utils/delta_format.dart';
 import 'css_pruning.dart';
+import 'css_utils.dart';
 
 part 'settings.dart';
 
@@ -39,7 +41,8 @@ class CssPruningTransformer extends Transformer
   final String allowedExtensions = ".css .css.map";
 
   @override
-  bool isPrimary(AssetId id) => _settings.pruneCss.value && super.isPrimary(id);
+  bool isPrimary(AssetId id) =>
+      _settings.pruningScheme != PruningScheme.skip && super.isPrimary(id);
 
   @override
   declareOutputs(DeclaringTransform transform) {

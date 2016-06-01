@@ -11,7 +11,7 @@ transformers:
 # - scissors/eager_transformer
 - scissors:
     verbose: true
-    # pruneCss: false
+    # pruningScheme: skip
     # optimizeSvg: false
     # optimizePng: false
 - angular2/transform/codegen
