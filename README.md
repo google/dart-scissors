@@ -51,6 +51,8 @@ most of them are disabled or optimized for speed with `pub serve` in debug mode.
   - Supports deferred messages and deferred LTR/RTL template caches.
   - Optionally optimizes the resulting `.js` files with the Closure Compiler.
 - Automatic reload support (Optional): zero-turnaround for Dart!
+- [Experimental static checker](UnawaitedFutures.md) that detects unawaited futures
+  (a common cause of sneaky bugs in async code):
 
 # Usage
 
@@ -262,6 +264,29 @@ And edit `main.dart`:
 Valid settings:
 - `serveTimestamps` (boolean): by default, `true` in `debug` only
 - `removeReloader` (boolean): by default, `true` in `release` only
+
+# Using `scissors/src/checker/transformer` to detect unawaited futures
+
+See [UnawaitedFutures](UnawaitedFutures.md) for more details.
+
+Keep in mind that this transformer is very experimental, and slow.
+It aims to complement Dart's new strong-mode analyzer with more static checks,
+some of which could eventually graduate to the analyzer itself.
+
+Example:
+
+`pubspec.yaml`:
+
+  ```
+  dev_dependencies:
+    scissors
+  transformers:
+  - scissors/src/checker/transformer:
+    unawaitedFutures: error
+  ```
+
+Valid settings:
+- `unawaitedFutures` (`ignore`, `warning` or `error`): `warning` by default
 
 # Development
 
