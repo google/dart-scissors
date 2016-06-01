@@ -24,7 +24,3 @@ dev_dependencies:
 executables:
   scissors-inline-images: inline_images
   scissors-sassc: sassc_with_compass_functions
-transformers:
-  - scissors/src/checker/transformer
-  - $dart2js:
-      $exclude: '**'

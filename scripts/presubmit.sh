@@ -37,7 +37,15 @@ function run_travis_lint() {
 
 function run_pub_build() {
   echo "Pub-building to self-check"
+  cp pubspec.yaml pubspec.yaml.orig
+  echo "
+transformers:
+  - scissors/src/checker/transformer
+  - \$dart2js:
+      \$exclude: '**'
+" >> pubspec.yaml
   pub build
+  mv -f pubspec.yaml.orig pubspec.yaml
 }
 
 cd $(dirname ${BASH_SOURCE[0]})/..
