@@ -2,6 +2,8 @@
 
 ...
 
+## 0.6.2 (2016-06-02)
+
 ### Features
 
 - Added experimental `scissors/src/checker/transformer` that detects unawaited futures.
