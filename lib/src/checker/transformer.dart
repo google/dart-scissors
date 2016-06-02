@@ -29,12 +29,16 @@ import 'package:code_transformers/resolver.dart'
     show dartSdkDirectory, Resolver, Resolvers, ResolverTransformer;
 import 'package:path/path.dart' as path;
 
-import 'unawaited_futures_visitor.dart';
+import 'unawaited_futures_visitor.dart'
+    show UnawaitedFuturesVisitor, ignoreUnawaitedFutureComment;
 import '../utils/result.dart';
 import '../utils/settings_base.dart';
 import '../utils/source_spans.dart' show sourceSpanForNode;
 
 part 'settings.dart';
+
+const String unawaitedFutureMessage =
+    'Unawaited future (ignore with `$ignoreUnawaitedFutureComment`)';
 
 /// Static checker that attempts to spot errors such as:
 /// - unawaited futures
@@ -82,7 +86,7 @@ class CheckerTransformer extends Transformer with ResolverTransformer {
           for (var node in unawaitedFuturesVisitor.unawaitedFutures) {
             new TransformMessage(
                     _settings.unawaitedFuturesLevel.value,
-                    'Unawaited future',
+                    unawaitedFutureMessage,
                     id,
                     await sourceSpanForNode(node, asset, unit.lineInfo))
                 .log(transform.logger);

@@ -1,5 +1,6 @@
 import 'package:barback/barback.dart' show BarbackMode, BarbackSettings;
-import 'package:scissors/src/checker/transformer.dart';
+import 'package:scissors/src/checker/transformer.dart'
+    show CheckerTransformer, unawaitedFutureMessage;
 
 import 'package:transformer_test/utils.dart' show testPhases;
 
@@ -37,7 +38,7 @@ void main() {
           fire_and_forget_inside_async() async { fut(); }
         '''
   }, {}, messages: [
-    'warning: Unawaited future (package:a/foo.dart 3 52)'
+    'warning: $unawaitedFutureMessage (package:a/foo.dart 3 52)'
   ]);
 
   testPhases(
@@ -50,7 +51,7 @@ void main() {
         '''
   }, {},
       messages: [
-        'warning: Unawaited future (package:a/foo.dart 4 13)'
+        'warning: $unawaitedFutureMessage (package:a/foo.dart 4 13)'
       ]);
 
   testPhases(
@@ -61,8 +62,18 @@ void main() {
         '''
   }, {},
       messages: [
-        'error: Unawaited future (package:a/foo.dart 3 52)'
+        'error: $unawaitedFutureMessage (package:a/foo.dart 3 52)'
       ]);
+
+  testPhases('respects ignore comments', makePhases({}), {
+    'a|foo.dart': prelude +
+        r'''
+          fire_and_forget_inside_async() async {
+            // ignore: UNAWAITED_FUTURE
+            fut();
+          }
+        '''
+  }, {}, messages: []);
 
   testPhases('leaves Map<*, Future>.putIfAbsent alone', makePhases({}), {
     'a|foo.dart': prelude +
@@ -89,6 +100,6 @@ void main() {
           }
         '''
   }, {}, messages: [
-    'warning: Unawaited future (package:a/foo_part.dart 4 13)'
+    'warning: $unawaitedFutureMessage (package:a/foo_part.dart 4 13)'
   ]);
 }

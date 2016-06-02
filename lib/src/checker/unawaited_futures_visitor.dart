@@ -14,15 +14,17 @@
 
 import 'package:analyzer/analyzer.dart'
     show
+        AssignmentExpression,
+        AstNode,
         Expression,
         ExpressionStatement,
-        AssignmentExpression,
-        RecursiveAstVisitor,
-        AstNode,
+        FunctionBody,
         InstanceCreationExpression,
         MethodInvocation,
-        FunctionBody;
+        RecursiveAstVisitor;
 import 'package:analyzer/dart/element/element.dart' show ClassElement, Element;
+
+const String ignoreUnawaitedFutureComment = "// ignore: UNAWAITED_FUTURE";
 
 class UnawaitedFuturesVisitor extends RecursiveAstVisitor {
   final unawaitedFutures = <AstNode>[];
@@ -45,12 +47,19 @@ class UnawaitedFuturesVisitor extends RecursiveAstVisitor {
         return;
       }
 
+      // Not in an async function body: assume fire-and-forget.
+      if (!_findEnclosingFunctionBody(node).isAsynchronous) return;
+
+      // Skip if found special ignore comment.
+      if (node.beginToken.precedingComments
+              ?.value()
+              ?.toString()
+              ?.contains(ignoreUnawaitedFutureComment) ==
+          true) return;
+
       // Future expression statement that isn't awaited in an async function:
       // while this is legal, it's a very frequent sign of an error.
-      var enclosingFunctionBody = _findEnclosingFunctionBody(node);
-      if (enclosingFunctionBody.isAsynchronous) {
-        unawaitedFutures.add(node);
-      }
+      unawaitedFutures.add(node);
     }
   }
 
