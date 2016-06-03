@@ -23,8 +23,11 @@ import 'mirrored_entities.dart';
 import '../utils/enum_parser.dart';
 import 'css_utils.dart' show Direction, flipDirection;
 
-/// Returns true if the [RuleSet] was completely removed, false otherwise.
-bool editFlippedRuleSet(
+enum RemovalResult { none, some, all }
+
+/// Returns all if the [RuleSet] was completely removed, none when the
+/// rule was not modified at all and some otherwise.
+RemovalResult editFlippedRuleSet(
     MirroredEntity mirroredRuleSet,
     Direction nativeDirection,
     BufferedTransaction commonTrans,
@@ -58,11 +61,11 @@ bool editFlippedRuleSet(
 
   assert(commonCount + flippedCount == mirroredDeclarations.length);
 
-  bool removalResult = false;
+  RemovalResult removalResult = RemovalResult.some;
   if (flippedCount > 0) {
     if (commonCount == 0) {
       mirroredRuleSet.original.remove(commonTrans);
-      removalResult = true;
+      removalResult = RemovalResult.all;
     } else {
       commonSubTransaction.commit();
     }
@@ -78,6 +81,7 @@ bool editFlippedRuleSet(
     flippedDirSubTransaction.commit();
     nativeDirSubTransaction.commit();
   } else {
+    removalResult = RemovalResult.none;
     mirroredRuleSet.flipped.remove(flippedDirTrans);
     mirroredRuleSet.original.remove(nativeDirTrans);
   }
