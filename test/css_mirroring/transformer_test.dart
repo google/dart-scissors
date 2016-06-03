@@ -213,6 +213,39 @@ void main() {
   testPhases('splits direction dependent directives', phases, {
     'a|foo2_unmatched_css_url.css': r'''
        @media screen and (min-width: 401px) {
+                body {
+                  margin-left: 13px;
+                  color: red;
+                }
+       }
+    '''
+  }, {
+    'a|foo2_unmatched_css_url.css': r'''
+       @media screen and (min-width: 401px) {
+                body {
+                  color: red;
+                }
+       }
+
+       @media screen and (min-width: 401px) {
+                :host-context([dir="ltr"]) body {
+                  margin-left: 13px;
+                  }
+       }
+
+       @media screen and (min-width: 401px) {
+                :host-context([dir="rtl"]) body {
+                  margin-right: 13px;
+                  }
+       }
+    '''
+  });
+
+  /// Splits direction dependent directives @media to direction independent and
+  /// dependent parts and removes empty directives.
+  testPhases('splits direction dependent directives', phases, {
+    'a|foo2_unmatched_css_url.css': r'''
+       @media screen and (min-width: 401px) {
                 body { margin-left: 13px }
        }
     '''
@@ -225,6 +258,22 @@ void main() {
 
        @media screen and (min-width: 401px) {
                 :host-context([dir="rtl"]) body { margin-right: 13px }
+       }
+    '''
+  });
+
+  /// Keeps direction dependent directives @media same when none of the rules
+  /// in it are modified
+  testPhases('splits direction dependent directives', phases, {
+    'a|foo2_unmatched_css_url.css': r'''
+       @media screen and (min-width: 401px) {
+                body { color: red }
+       }
+    '''
+  }, {
+    'a|foo2_unmatched_css_url.css': r'''
+       @media screen and (min-width: 401px) {
+                body { color: red }
        }
     '''
   });
