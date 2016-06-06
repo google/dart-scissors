@@ -17,7 +17,7 @@ import 'package:barback/barback.dart';
 import 'package:path/path.dart';
 
 final RegExp _filesToSkipRx =
-    new RegExp(r'^_.*?\.scss|.*?\.ess\.s[ac]ss\.css(\.map)?$');
+    new RegExp(r'^_.*?\.s[ac]ss|.*?\.ess\.s[ac]ss\.css(\.map)?$');
 
 bool shouldSkipAsset(AssetId id) {
   var name = basename(id.path);
