@@ -32,6 +32,7 @@ import 'rule_set_index.dart';
 import 'template_extractor.dart' show extractTemplates;
 import 'usage_collector.dart';
 import 'transformer.dart' show CssPruningSettings;
+import 'css_utils.dart' show PruningScheme;
 
 Future<String> findHtmlTemplate(Transform transform, AssetId cssAssetId) async {
   try {
@@ -69,7 +70,6 @@ dropUnusedCssRules(
     SourceFile cssSourceFile,
     String htmlTemplate) {
   hacks.useCssLib();
-
   final StyleSheet cssTree =
       new css_parser.Parser(cssSourceFile, transaction.original).parse();
   final List<dom.Node> htmlTrees =
@@ -89,15 +89,18 @@ dropUnusedCssRules(
 
   final fileLength = transaction.file.length;
   topLevelsToDropWithIndex.forEach((TreeNode topLevel, int i) {
-    if (settings.verbose.value) {
+    if (settings.verbose.value ||
+        settings.pruningScheme.value == PruningScheme.print) {
       transform.logger.info("Dropping unused CSS rule: "
           "${_printCss(new StyleSheet([topLevel], null))}");
     }
-    final start = topLevel.span.start.offset;
-    final end = i == topLevels.length - 1
-        ? fileLength
-        : topLevels[i + 1].span.start.offset;
-    transaction.edit(start, end, '');
+    if (settings.pruningScheme.value == PruningScheme.overwrite) {
+      final start = topLevel.span.start.offset;
+      final end = i == topLevels.length - 1
+          ? fileLength
+          : topLevels[i + 1].span.start.offset;
+      transaction.edit(start, end, '');
+    }
   });
 }
 

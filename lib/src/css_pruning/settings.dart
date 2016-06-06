@@ -16,8 +16,10 @@ part of scissors.src.css_pruning.transformer;
 abstract class CssPruningSettings {
   Setting<bool> get verbose;
 
-  final pruneCss =
-      new Setting<bool>('pruneCss', debugDefault: false, releaseDefault: true);
+  final pruningScheme = new Setting<PruningScheme>('pruningScheme',
+      debugDefault: PruningScheme.skip,
+      releaseDefault: PruningScheme.overwrite,
+      parser: new EnumParser<PruningScheme>(PruningScheme.values).parse);
 
   // final bidiCss = new Setting<bool>('bidiCss',
   //     comment:
