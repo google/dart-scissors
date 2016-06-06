@@ -64,6 +64,8 @@ class CheckerTransformer extends Transformer with ResolverTransformer {
   applyResolver(Transform transform, Resolver resolver) async {
     final primaryInput = transform.primaryInput;
 
+    if (_settings.unawaitedFuturesLevel.value == null) return;
+
     for (var libElement in resolver.libraries) {
       if (resolver.getSourceAssetId(libElement) == primaryInput.id) {
         for (var unitElement in libElement.units) {

@@ -75,6 +75,17 @@ void main() {
         '''
   }, {}, messages: []);
 
+  testPhases(
+      'respects ignore setting', makePhases({'unawaitedFutures': 'ignore'}), {
+    'a|foo.dart': prelude +
+        r'''
+        fire_and_forget_inside_async() async {
+          fut();
+        }
+      '''
+  }, {},
+      messages: []);
+
   testPhases('leaves Map<*, Future>.putIfAbsent alone', makePhases({}), {
     'a|foo.dart': prelude +
         r'''
