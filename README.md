@@ -30,7 +30,22 @@ most of them are disabled or optimized for speed with `pub serve` in debug mode.
     ```dart
     document.body.dir = Bidi.isRtlLanguage(Intl.getCurrentLocale()) ? 'rtl' : 'ltr';
     ```
-
+  - Ignores rules annotated with `/* @noflip */`. This allows specifying different rule for ltr and rtl languages.
+    Example: 
+    
+    ``` 
+    /* @noflip */
+    :host-context([dir="ltr"]) .header{
+        margin-left: 5em;
+    }
+    ```
+     
+    ```
+    /* @noflip */
+    :host-context([dir="rtl"]) .header {
+        margin-right: 15em;
+    }
+    ```
 - [Sass](http://sass-lang.com) compilation:
   - Compiles `*.sass` and `*.scss` files with [`sassc`](https://github.com/sass/sassc),
     the lightning-fast C++ port of Ruby Sass.
@@ -134,7 +149,7 @@ Valid settings:
     - `append`: append the `.css` extension to the SASS / SCSS file name: `foo.scss` will be compiled to `foo.scss.css`.
     - `replace`: replace the SASS / SCSS file extension by `.css`: `foo.scss` will be compiled to `foo.css`.
 - `pngCrushPath`: default is `pngcrush`
-- `bidiCss` (boolean): default is `false` (note that this is `true` by default in the `scissors/css_mirroring_transformer`, see below)
+- `bidiCss` (`skip` or `flip` or `biDirectionalize`): default is `skip` (note that this is `biDirectionalize` by default in `scissors/css_mirroring_transformer`, see below)
 - `cssJanusPath`: `cssjanus.py` by default, see [prerequisites](#prerequisites)
 
 ### Limitations
@@ -188,13 +203,13 @@ Example: see [example/mirroring](https://github.com/google/dart-scissors/tree/ma
   ```
 
 Valid settings:
-- `bidiCss` (boolean): `true` by default (Note: this is not the same default as in the `scissors` transformer)
+- `bidiCss` (`skip` or `flip` or `biDirectionalize`): `biDirectionalize` by default (Note: this is not the same default as in the `scissors` transformer)
 - `originalCssDirection` (`ltr` or `rtl`): `ltr` by default, defines the direction of input css.
 - `cssJanusPath`: `cssjanus.py` by default.
 
 ### Limitations
 
-- The standalone `scissors/css_mirroring_transformer` transformer only consumes CSS files. If you need Sass support, please use the `scissors` transformer with `bidiCss: true`.
+- The standalone `scissors/css_mirroring_transformer` transformer only consumes CSS files. If you need Sass support, please use the `scissors` transformer with `flippingScheme: FlippingScheme.biDirectionalize`.
 - Does not handle directives like `@keyframes` and `@page`.
 
 ## Using `scissors/permutations_transformer`

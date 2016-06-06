@@ -15,6 +15,7 @@ library scissors.scissors_transformer;
 
 import 'package:barback/barback.dart';
 
+import 'src/css_mirroring/css_utils.dart' show FlippingScheme;
 import 'src/css_mirroring/transformer.dart';
 import 'src/css_pruning/transformer.dart';
 import 'src/image_inlining/transformer.dart';
@@ -52,7 +53,11 @@ List<List<Transformer>> _createPhases(_ScissorsSettings settings) {
           ? new ImageInliningTransformer(settings)
           : null
     ],
-    [settings.bidiCss.value ? new BidiCssTransformer(settings) : null],
+    [
+      settings.flippingScheme.value != FlippingScheme.skip
+          ? new BidiCssTransformer(settings)
+          : null
+    ],
   ];
   return trimPhases(phases);
 }

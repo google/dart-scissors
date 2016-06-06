@@ -27,7 +27,7 @@ List<List> makePhases(Map config) => <List>[
     ];
 
 void main() {
-  var phases = makePhases({'bidiCss': true});
+  var phases = makePhases({});
 
   testPhases(
       'splits the rule with language dependent declaration to common rule and language dependent rules',

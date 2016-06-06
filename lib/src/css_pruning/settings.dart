@@ -19,10 +19,11 @@ abstract class CssPruningSettings {
   final pruneCss =
       new Setting<bool>('pruneCss', debugDefault: false, releaseDefault: true);
 
-  // final bidiCss = new Setting<bool>('bidiCss',
-  //     comment:
-  //         "Whether to perform LTR -> RTL mirroring of .css files with cssjanus.",
-  //     defaultValue: false);
+// final flippingScheme = new Setting<FlippingScheme>('flippingScheme',
+//     comment:
+//         "Whether to skip, flip or biDirectionalize input css.",
+//     defaultValue: FlippingScheme.biDirectionalize);
+
 }
 
 class _CssPruningSettings extends SettingsBase with CssPruningSettings {
