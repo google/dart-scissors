@@ -44,15 +44,13 @@ List<List<Transformer>> _createPhases(_ScissorsSettings settings) {
       settings.optimizePng.value
           ? new PngOptimizationTransformer(settings)
           : null,
-      settings.compileSass.value ? new SassCTransformer(settings) : null
-    ],
-    [settings.pruneCss.value ? new CssPruningTransformer(settings) : null],
-    [
+      settings.compileSass.value ? new SassCTransformer(settings) : null,
+      settings.pruneCss.value ? new CssPruningTransformer(settings) : null,
       settings.imageInlining.value != ImageInliningMode.disablePass
           ? new ImageInliningTransformer(settings)
-          : null
-    ],
-    [settings.bidiCss.value ? new BidiCssTransformer(settings) : null],
+          : null,
+      settings.bidiCss.value ? new BidiCssTransformer(settings) : null
+    ]
   ];
   return trimPhases(phases);
 }
