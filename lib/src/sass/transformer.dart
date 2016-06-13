@@ -18,76 +18,52 @@ import 'dart:io';
 
 import 'package:barback/barback.dart';
 import 'package:path/path.dart';
-import 'package:quiver/check.dart';
 
 import 'sassc_runner.dart' show SasscSettings, runSassC;
 import '../utils/deps_consumer.dart';
 import '../utils/file_skipping.dart';
 import '../utils/path_resolver.dart';
 import '../utils/settings_base.dart';
+import '../utils/transformer_utils.dart' show getInputs, getDeclaredInputs;
 
 part 'settings.dart';
 
+final RegExp _classifierRx =
+    new RegExp(r'^(.*?\.s[ac]ss)(?:\.css(?:\.map)?)?$');
+
 class SassCTransformer extends AggregateTransformer
-    implements LazyAggregateTransformer {
+    implements DeclaringAggregateTransformer {
   final SassSettings _settings;
 
   SassCTransformer(this._settings);
   SassCTransformer.asPlugin(BarbackSettings settings)
       : this(new _SassSettings(settings));
 
-  final RegExp _classifierRx =
-      new RegExp(r'^(.*?\.s[ac]ss)(?:\.css(?:\.map)?)?$');
-
   @override
   classifyPrimary(AssetId id) {
-    var path = id.path;
     if (!_settings.compileSass.value || shouldSkipAsset(id)) return null;
 
-    var m = _classifierRx.matchAsPrefix(path);
-    var key = m?.group(1);
-    return key;
+    return _classifierRx.matchAsPrefix(id.path)?.group(1);
   }
 
   @override
   declareOutputs(DeclaringAggregateTransform transform) async {
-    List<AssetId> ids = await transform.primaryIds.toList();
+    final inputs = await getDeclaredInputs(transform);
+    final AssetId scss = inputs['.scss'] ?? inputs['.sass'];
+    if (scss == null) return;
 
-    AssetId scss;
-    for (var id in ids) {
-      switch (id.extension) {
-        case '.sass':
-        case '.scss':
-          scss = id;
-          break;
-      }
-    }
-    if (scss != null) {
-      // Don't consume the sass file in debug, for maps to work.
-      if (!_settings.isDebug) transform.consumePrimary(scss);
-      var cssId = (await _settings.sasscSettings).getCssOutputId(scss);
-      transform.declareOutput(cssId);
-      transform.declareOutput(cssId.addExtension('.map'));
-    }
+    // Don't consume the sass file in debug, for maps to work.
+    if (!_settings.isDebug) transform.consumePrimary(scss);
+    var cssId = (await _settings.sasscSettings).getCssOutputId(scss);
+    transform.declareOutput(cssId);
+    transform.declareOutput(cssId.addExtension('.map'));
   }
 
   Future apply(AggregateTransform transform) async {
-    List<Asset> inputs = await transform.primaryInputs.toList();
-
-    Asset css, scss;
-    for (var input in inputs) {
-      switch (input.id.extension) {
-        case '.css':
-          css = input;
-          break;
-        case '.sass':
-        case '.scss':
-          scss = input;
-          break;
-      }
-    }
-
-    checkState(scss != null, message: () => "Didn't find scss in $inputs");
+    final inputs = await getInputs(transform);
+    final Asset scss = inputs['.scss'] ?? inputs['.sass'];
+    final Asset css = inputs['.css'];
+    if (scss == null) return;
 
     var sasscSettings = await _settings.sasscSettings;
 

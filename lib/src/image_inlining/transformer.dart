@@ -24,69 +24,66 @@ import '../utils/path_resolver.dart';
 import '../utils/settings_base.dart';
 import '../utils/enum_parser.dart';
 import '../utils/file_skipping.dart';
+import '../utils/transformer_utils.dart' show getInputs, getDeclaredInputs;
 
 part 'settings.dart';
 
-class ImageInliningTransformer extends Transformer
-    implements DeclaringTransformer {
-  final ImageInliningSettings _settings;
+typedef String _PackageRewriter(String s);
 
-  ImageInliningTransformer(this._settings);
+final RegExp _classifierRx = new RegExp(r'^(.*?\.css)(?:\.map)?$');
+
+class ImageInliningTransformer extends AggregateTransformer
+    implements DeclaringAggregateTransformer {
+  final ImageInliningSettings _settings;
+  _PackageRewriter _rewritePackage;
+
+  ImageInliningTransformer(this._settings) {
+    _rewritePackage = _getPackageRewriter(_settings.packageRewrites.value);
+  }
+
   ImageInliningTransformer.asPlugin(BarbackSettings settings)
       : this(new _ImageInliningSettings(settings));
 
-  bool get _isEnabled =>
-      _settings.imageInlining.value != ImageInliningMode.disablePass;
-
   @override
-  final String allowedExtensions = ".css .css.map";
-
-  @override
-  bool isPrimary(AssetId id) => _isEnabled && super.isPrimary(id);
-
-  @override
-  declareOutputs(DeclaringTransform transform) {
-    var id = transform.primaryId;
-    if (shouldSkipAsset(id)) return;
-
-    if (id.extension == '.map') {
-      transform.consumePrimary();
-    } else {
-      transform.declareOutput(id);
-      transform.declareOutput(id.addExtension('.map'));
+  classifyPrimary(AssetId id) {
+    if (_settings.imageInlining.value == ImageInliningMode.disablePass ||
+        shouldSkipAsset(id)) {
+      return null;
     }
+    return _classifierRx.matchAsPrefix(id.path)?.group(1);
   }
 
-  Future apply(Transform transform) async {
-    if (transform.primaryInput.id.extension == '.map') {
-      transform.consumePrimary();
-      return;
-    }
-    var cssAsset = transform.primaryInput;
+  @override
+  declareOutputs(DeclaringAggregateTransform transform) async {
+    final inputs = await getDeclaredInputs(transform);
+    final AssetId css = inputs['.css'];
+    if (css == null) return;
 
-    if (shouldSkipAsset(cssAsset.id)) {
-      transform.logger.info("Skipping ${transform.primaryInput.id}");
-      return;
-    }
+    transform.declareOutput(css);
+    transform.declareOutput(css.addExtension('.map'));
+  }
 
-    var rewritePackage = _getPackageRewriter(_settings.packageRewrites.value);
+  Future apply(AggregateTransform transform) async {
+    final inputs = await getInputs(transform);
+    final Asset css = inputs['.css'];
+    if (css == null) return;
 
-    var result = await inlineImages(cssAsset, _settings.imageInlining.value,
+    var result = await inlineImages(css, _settings.imageInlining.value,
         assetFetcher: (String url, {AssetId from}) {
       return pathResolver.resolveAsset(transform.getInput, [url], from);
     }, resolveLinkToAsset: (Asset asset) {
       var uri = pathResolver.assetIdToUri(asset.id);
-      return rewritePackage(uri);
+      return _rewritePackage(uri);
     });
     result.logMessages(transform.logger);
-    if (result.success) {
-      transform.addOutput(result.css);
-      if (result.map != null) transform.addOutput(result.map);
-    }
+    if (!result.success) return;
+
+    transform.addOutput(result.css);
+    if (result.map != null) transform.addOutput(result.map);
   }
 }
 
-Function _getPackageRewriter(String fromToString) {
+_PackageRewriter _getPackageRewriter(String fromToString) {
   var fromTo = fromToString.split(',');
   checkState(fromTo.length == 2,
       message: () => "Expected from,to pattern, got: $fromToString");
