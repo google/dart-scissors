@@ -147,10 +147,10 @@ class PathResolver {
     if (_sassIncludeDirectories == null) {
       var roots = await getRootDirectories();
       _sassIncludeDirectories = []..addAll(roots);
-      if (defaultCompassStylesheetsPath == null) {
+      if (defaultCompassStylesheetsPath != null) {
         // Import compass' SASS partials.
-        var compassDirs = findExistingDirectories(roots
-            .map((d) => new File(join(d.path, defaultCompassStylesheetsPath))));
+        var compassDirs = findExistingDirectories(roots.map(
+            (d) => new Directory(join(d.path, defaultCompassStylesheetsPath))));
         await for (var dir in compassDirs) {
           _sassIncludeDirectories.add(dir);
         }
