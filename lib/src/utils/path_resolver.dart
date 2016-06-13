@@ -77,12 +77,15 @@ class PathResolver {
     var parent = dirname(from.path);
     Iterable<AssetId> ids = alternativePaths
         .map((path) => new AssetId(from.package, join(parent, path)));
-    Asset asset = await findFirstWhere(
-        ids.map(inputGetter).toList(),
-        (Future<Asset> asset) => asset.then((_) => true, onError: (e, [s]) {
-              acceptAssetNotFoundException(e, s);
-              return false;
-            }));
+    Asset asset = await findFirstWhere(ids.map(inputGetter).toList(),
+        (Future<Asset> asset) async {
+      try {
+        await asset;
+        return true;
+      } on AssetNotFoundException catch (_) {
+        return false;
+      }
+    });
     if (asset != null) return asset;
 
     var paths = <String>[]..addAll(alternativePaths);

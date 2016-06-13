@@ -41,16 +41,10 @@ Future/*<T>*/ findFirstWhere/*<T>*/(
   for (var future in values.map(predicate).toList()) {
     try {
       if (await future) return values[i];
-    } catch (e, s) {
-      acceptAssetNotFoundException(e, s);
+    } on AssetNotFoundException catch (_) {
+      // Do nothing.
     }
     i++;
   }
   return orElse;
-}
-
-acceptAssetNotFoundException(e, s) {
-  if (e is! AssetNotFoundException) {
-    throw new StateError('$e (${e.runtimeType})\n$s');
-  }
 }

@@ -26,7 +26,6 @@ import 'package:source_maps/refactor.dart';
 import 'package:source_span/source_span.dart';
 
 import '../utils/hacks.dart' as hacks;
-import '../utils/path_utils.dart';
 
 import 'rule_set_index.dart';
 import 'template_extractor.dart' show extractTemplates;
@@ -39,8 +38,8 @@ Future<String> findHtmlTemplate(Transform transform, AssetId cssAssetId) async {
     var dartAsset = await transform.getInput(dartAssetId);
     var templates = await extractTemplates(transform, dartAsset, cssAssetId);
     if (templates.isNotEmpty) return templates.join('\n');
-  } catch (e, s) {
-    acceptAssetNotFoundException(e, s);
+  } on AssetNotFoundException catch (_) {
+    // Do nothing.
   }
   var htmlAssetId = _getCssCompanionId(cssAssetId, ".html");
   var htmlAsset = await transform.getInput(htmlAssetId);

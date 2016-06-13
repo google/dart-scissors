@@ -16,12 +16,12 @@ library scissors.src.sass.sassc;
 import 'dart:async';
 import 'dart:io';
 
-import 'package:barback/barback.dart' show Asset, AssetId, LogLevel;
+import 'package:barback/barback.dart'
+    show Asset, AssetId, AssetNotFoundException, LogLevel;
 import 'package:path/path.dart';
 import 'package:source_span/source_span.dart';
 
 import '../utils/path_resolver.dart';
-import '../utils/path_utils.dart';
 import '../utils/result.dart' show TransformMessage, TransformResult;
 import 'package:quiver/check.dart';
 
@@ -68,8 +68,7 @@ Future<TransformResult> runSassC(Asset sassAsset,
     var sassFile;
     try {
       sassFile = (await pathResolver.resolveAssetFile(sassId)).absolute;
-    } catch (e, s) {
-      acceptAssetNotFoundException(e, s);
+    } on AssetNotFoundException catch (_) {
       sassFile = new File(join(dir.path, fileName));
       await sassFile.writeAsString(await getSassContent());
     }

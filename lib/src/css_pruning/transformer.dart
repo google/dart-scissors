@@ -19,7 +19,6 @@ import 'package:barback/barback.dart';
 import 'package:source_maps/refactor.dart';
 import 'package:source_span/source_span.dart';
 
-import '../utils/path_utils.dart';
 import '../utils/settings_base.dart';
 import '../utils/file_skipping.dart';
 import '../utils/delta_format.dart';
@@ -88,8 +87,7 @@ class CssPruningTransformer extends Transformer
         transform.addOutput(new Asset.fromString(
             cssAsset.id.addExtension('.map'), printer.map));
       }
-    } catch (e, s) {
-      acceptAssetNotFoundException(e, s);
+    } on AssetNotFoundException catch (_) {
       // No HTML template found: leave the CSS alone!
     }
   }
