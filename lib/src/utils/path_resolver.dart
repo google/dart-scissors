@@ -142,21 +142,22 @@ class PathResolver {
     return _packageLibDirectories;
   }
 
-  List<Directory> _sassIncludeDirectories;
-  Future<List<Directory>> getSassIncludeDirectories() async {
-    if (_sassIncludeDirectories == null) {
-      var roots = await getRootDirectories();
-      _sassIncludeDirectories = []..addAll(roots);
-      if (defaultCompassStylesheetsPath != null) {
-        // Import compass' SASS partials.
-        var compassDirs = findExistingDirectories(roots.map(
-            (d) => new Directory(join(d.path, defaultCompassStylesheetsPath))));
-        await for (var dir in compassDirs) {
-          _sassIncludeDirectories.add(dir);
-        }
+  Future<List<Directory>> _sassIncludeDirectories;
+  Future<List<Directory>> getSassIncludeDirectories() =>
+      _sassIncludeDirectories ??= _getSassIncludeDirectories();
+
+  Future<List<Directory>> _getSassIncludeDirectories() async {
+    var roots = await getRootDirectories();
+    var dirs = <Directory>[]..addAll(roots);
+    if (defaultCompassStylesheetsPath != null) {
+      // Import compass' SASS partials.
+      var compassDirs = findExistingDirectories(roots.map(
+          (d) => new Directory(join(d.path, defaultCompassStylesheetsPath))));
+      await for (var dir in compassDirs) {
+        dirs.add(dir);
       }
     }
-    return _sassIncludeDirectories;
+    return dirs;
   }
 
   Future<File> resolveAssetFile(AssetId id) async {
