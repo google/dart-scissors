@@ -18,7 +18,7 @@ import 'package:csslib/visitor.dart' show RuleSet;
 import 'buffered_transaction.dart';
 import 'css_utils.dart' show Direction;
 import 'mirrored_entities.dart';
-import 'rulesets_processor.dart' show editFlippedRuleSet;
+import 'rulesets_processor.dart' show editFlippedRuleSet, RemovalResult;
 
 /// All removable declarations of ruleset are removed and if all declarations
 /// in rulesets have to be removed, it removes ruleset itself.
@@ -33,7 +33,8 @@ editFlippedDirectiveWithNestedRuleSets(
   final commonSubTransaction = commonTrans.createSubTransaction();
   final nativeDirSubTransaction = nativeDirTrans.createSubTransaction();
   final flippedDirSubTransaction = flippedDirTrans.createSubTransaction();
-  int removedRulesCount = 0;
+  int removedAllCount = 0;
+  int removedNoneCount = 0;
   nestedRuleSets.forEach((MirroredEntity<RuleSet> ruleSet) {
     var result = editFlippedRuleSet(
         ruleSet,
@@ -41,16 +42,18 @@ editFlippedDirectiveWithNestedRuleSets(
         commonSubTransaction,
         nativeDirSubTransaction,
         flippedDirSubTransaction);
-    if (result) {
-      removedRulesCount++;
+    if (result == RemovalResult.all) {
+      removedAllCount++;
+    } else if (result == RemovalResult.none) {
+      removedNoneCount++;
     }
   });
 
-  if (removedRulesCount == 0) {
+  if (removedNoneCount == nestedRuleSets.length) {
     directive.original.remove(nativeDirTrans);
     directive.flipped.remove(flippedDirTrans);
   } else {
-    if (removedRulesCount == nestedRuleSets.length) {
+    if (removedAllCount == nestedRuleSets.length) {
       directive.original.remove(commonTrans);
     } else {
       commonSubTransaction.commit();
