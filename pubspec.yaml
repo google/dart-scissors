@@ -8,9 +8,7 @@ environment:
   sdk: ">=1.8.0 <2.0.0"
 dependencies:
   args: ">=0.12.0 <0.14.0"
-  analyzer: ^0.27.3
   barback: ^0.15.0
-  code_transformers: ^0.4.2+2
   csslib: ">=0.12.0 <0.14.0"
   html: ">=0.12.0 <0.14.0"
   intl: ">=0.8.0 <0.14.0"

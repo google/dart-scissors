@@ -1,6 +1,13 @@
 #!/bin/bash
 set -eu
 
+function find_dart_files() {
+  find bin -name '*.dart'
+  find lib -name '*.dart' | grep -v 'lib/src/checker/'
+}
+function find_dart_test_files() {
+  find test -name '*.dart' | grep -v 'test/checker/'
+}
 function run_analyzer() {
   echo "Running the analyzer"
   dartanalyzer \
@@ -9,14 +16,14 @@ function run_analyzer() {
     --fatal-warnings \
     --fatal-hints \
     --fatal-lints \
-    `find bin -name '*.dart'` `find lib -name '*.dart'`
+    `find_dart_files`
 }
 
 function run_tests() {
   export TEST_COMPASS_POLYFILLED_FUNCTIONS=true
   echo "Running tests"
   # TODO(ochafik): `pub run test` again? (sometimes not reliable)
-  for test in `find test -name '*.dart'` ; do
+  for test in `find_dart_test_files` ; do
     echo "TESTING $test"
     SKIP_PATH_RESOLVER_TESTS=true pub run -c $test
   done
@@ -25,9 +32,9 @@ function run_tests() {
 function run_formatter() {
   echo "Running the formatter"
   pub run dart_style:format -w \
-    `find lib -name '*.dart'` \
-    `ls example/{angular1,angular2,permutations,mirroring}/web/*.dart` \
-    `find test -name '*.dart'` | ( grep -v "^Unchanged " || true )
+    `find_dart_files` `find_dart_test_files` \
+    `ls example/{angular1,angular2,permutations,mirroring}/web/*.dart` | \
+      ( grep -v "^Unchanged " || true )
 }
 
 function run_travis_lint() {
