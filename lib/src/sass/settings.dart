@@ -21,15 +21,14 @@ abstract class SassSettings {
   final onlyCompileOutOfDateSass =
       new Setting<bool>('onlyCompileOutOfDateSass', defaultValue: false);
 
-  // final fallbackToRubySass = new Setting<bool>('fallbackToRubySass',
-  //     comment: "Whether to fallback to JRuby+Ruby Sass when SassC fails.\n"
-  //         "This can help with some keyframe syntax in Compass stylesheets.",
-  //     defaultValue: false);
+  final imageInlining = new Setting<ImageInliningMode>('imageInlining',
+      debugDefault: ImageInliningMode.linkInlinedImages,
+      releaseDefault: ImageInliningMode.inlineInlinedImages,
+      parser:
+          new EnumParser<ImageInliningMode>(ImageInliningMode.values).parse);
 
-  // final jrubyPath = makePathSetting('jrubyPath', pathResolver.defaultJRubyPath);
-
-  // final rubySassPath =
-  //     makePathSetting('rubySassPath', pathResolver.defaultRubySassPath);
+  final packageRewrites = new Setting<String>('packageRewrites',
+      defaultValue: "^package:,packages/");
 
   final compassStylesheetsPath = makePathSetting(
       'compassStylesheetsPath', pathResolver.defaultCompassStylesheetsPath);

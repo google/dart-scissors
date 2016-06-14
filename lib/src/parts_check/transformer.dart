@@ -55,7 +55,8 @@ class PartsCheckTransformer extends Transformer
       return;
     }
     int count = 0;
-    while (true) {
+    final always = true; // Defeat buggy dead-code warning.
+    while (always) {
       try {
         var partId = id.addExtension("_${count + 1}.part.js");
         await transform.getInput(partId);

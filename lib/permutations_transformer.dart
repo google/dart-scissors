@@ -46,11 +46,8 @@ import 'package:scissors/src/utils/phase_utils.dart';
 /// This might interact with the CSS mirroring feature, in ways still TBD.
 ///
 class PermutationsTransformerGroup extends TransformerGroup {
-  final PermutationsSettings _settings;
-
   PermutationsTransformerGroup(_PermutationsGroupSettings settings)
-      : _settings = settings,
-        super(trimPhases([
+      : super(trimPhases([
           [
             new PermutationsTransformer(settings),
             new PartsCheckTransformer(settings)

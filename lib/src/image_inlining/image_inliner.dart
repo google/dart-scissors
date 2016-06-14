@@ -90,11 +90,14 @@ final _urlsRx = new RegExp(r'\b(inline-image|url)\s*\(', multiLine: true);
 Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
     {Future<Asset> assetFetcher(String url, {AssetId from}),
     String resolveLinkToAsset(Asset asset)}) async {
+  if (mode == ImageInliningMode.disablePass) {
+    return new TransformResult(true);
+  }
   var css = await input.readAsString();
 
   // Fail fast in case there's no url mention in the css.
   if (_urlsRx.firstMatch(css) == null) {
-    return new TransformResult(false);
+    return new TransformResult(true);
   }
 
   hacks.useCssLib();

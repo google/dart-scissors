@@ -18,11 +18,16 @@ import 'dart:io';
 
 import 'package:barback/barback.dart';
 import 'package:path/path.dart';
+import 'package:quiver/check.dart';
 
 import 'sassc_runner.dart' show SasscSettings, runSassC;
+import '../image_inlining/image_inliner.dart';
+export '../image_inlining/image_inliner.dart' show ImageInliningMode;
 import '../utils/deps_consumer.dart';
+import '../utils/enum_parser.dart';
 import '../utils/file_skipping.dart';
 import '../utils/path_resolver.dart';
+import '../utils/result.dart' show TransformResult;
 import '../utils/settings_base.dart';
 import '../utils/transformer_utils.dart' show getInputs, getDeclaredInputs;
 
@@ -31,11 +36,17 @@ part 'settings.dart';
 final RegExp _classifierRx =
     new RegExp(r'^(.*?\.s[ac]ss)(?:\.css(?:\.map)?)?$');
 
+typedef String _PackageRewriter(String s);
+
 class SassCTransformer extends AggregateTransformer
     implements DeclaringAggregateTransformer {
   final SassSettings _settings;
+  _PackageRewriter _rewritePackage;
 
-  SassCTransformer(this._settings);
+  SassCTransformer(this._settings) {
+    _rewritePackage = _getPackageRewriter(_settings.packageRewrites.value);
+  }
+
   SassCTransformer.asPlugin(BarbackSettings settings)
       : this(new _SassSettings(settings));
 
@@ -94,21 +105,51 @@ class SassCTransformer extends AggregateTransformer
       }
     }
 
-    var result = await runSassC(scss,
+    var cssResult = await runSassC(scss,
         isDebug: _settings.isDebug, settings: sasscSettings);
-    result.logMessages(transform.logger);
-
-    await depsFuture;
-
-    if (!result.success) return;
+    cssResult.logMessages(transform.logger);
+    if (!cssResult.success) return;
 
     // Don't consume the sass file in debug, for maps to work.
     if (!_settings.isDebug) transform.consumePrimary(scss.id);
+
+    TransformResult result;
+
+    var inliningResult =
+        await inlineImages(cssResult.css, _settings.imageInlining.value,
+            assetFetcher: (String url, {AssetId from}) {
+      return pathResolver.resolveAsset(transform.getInput, [url], from);
+    }, resolveLinkToAsset: (Asset asset) {
+      var uri = pathResolver.assetIdToUri(asset.id);
+      return _rewritePackage(uri);
+    });
+
+    if (inliningResult.success && inliningResult.css == null) {
+      // inlineImage fast-failed.
+      result = cssResult;
+    } else {
+      inliningResult.logMessages(transform.logger);
+      if (!inliningResult.success) return;
+
+      result = inliningResult;
+    }
+
     transform.addOutput(result.css);
-    if (result.map != null) transform.addOutput(result.map);
+    // In theory we should compose cssResult.map with inliningResult.map.
+    // In practice it doesn't matter as image inlining preserves lines.
+    if (cssResult.map != null) transform.addOutput(cssResult.map);
   }
 }
 
 Future<DateTime> _getLastModified(id) async =>
     (await pathResolver.resolveAssetFile(id is Future ? await id : id))
         ?.lastModified();
+
+_PackageRewriter _getPackageRewriter(String fromToString) {
+  var fromTo = fromToString.split(',');
+  checkState(fromTo.length == 2,
+      message: () => "Expected from,to pattern, got: $fromToString");
+  var fromRx = new RegExp(fromTo[0]);
+  var to = fromTo[1];
+  return (String s) => s.replaceFirst(fromRx, to);
+}

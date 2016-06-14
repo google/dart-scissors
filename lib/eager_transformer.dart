@@ -17,7 +17,6 @@ import 'package:barback/barback.dart';
 
 import 'src/css_mirroring/transformer.dart';
 import 'src/css_pruning/transformer.dart';
-import 'src/image_inlining/transformer.dart';
 import 'src/png_optimization/transformer.dart';
 import 'src/sass/transformer.dart';
 import 'src/svg_optimization/transformer.dart';
@@ -30,8 +29,7 @@ class _ScissorsSettings extends SettingsBase
         PngOptimizationSettings,
         SassSettings,
         CssPruningSettings,
-        CssMirroringSettings,
-        ImageInliningSettings {
+        CssMirroringSettings {
   _ScissorsSettings(BarbackSettings settings) : super(settings);
 }
 
@@ -43,15 +41,10 @@ List<List<Transformer>> _createPhases(_ScissorsSettings settings) {
           : null,
       settings.optimizePng.value
           ? new PngOptimizationTransformer(settings)
-          : null,
-      settings.compileSass.value ? new SassCTransformer(settings) : null
-    ],
-    [settings.pruneCss.value ? new CssPruningTransformer(settings) : null],
-    [
-      settings.imageInlining.value != ImageInliningMode.disablePass
-          ? new ImageInliningTransformer(settings)
           : null
     ],
+    [settings.compileSass.value ? new SassCTransformer(settings) : null],
+    [settings.pruneCss.value ? new CssPruningTransformer(settings) : null],
     [settings.bidiCss.value ? new BidiCssTransformer(settings) : null],
   ];
   return trimPhases(phases);
