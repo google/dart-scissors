@@ -87,5 +87,10 @@ Future<Asset> inlineImagesWithIncludeDirs(
     return pathResolver.resolveAsset(getAsset, alternativeUrls, from);
   });
 
+  if (result.success && result.css == null) {
+    // inlineImage fast-failed.
+    return input;
+  }
+
   return result.css;
 }
