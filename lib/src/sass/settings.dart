@@ -22,8 +22,7 @@ abstract class SassSettings {
       new Setting<bool>('onlyCompileOutOfDateSass', defaultValue: false);
 
   final imageInlining = new Setting<ImageInliningMode>('imageInlining',
-      debugDefault: ImageInliningMode.linkInlinedImages,
-      releaseDefault: ImageInliningMode.inlineInlinedImages,
+      defaultValue: ImageInliningMode.inlineInlinedImages,
       parser:
           new EnumParser<ImageInliningMode>(ImageInliningMode.values).parse);
 
