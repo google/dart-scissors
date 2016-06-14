@@ -23,7 +23,7 @@ List<List> makePhases(Map config) => new EagerScissorsTransformerGroup.asPlugin(
     .phases;
 
 void main() {
-  var phases = makePhases({});
+  var phases = makePhases({'pruneCss': true});
 
   var iconSvg = r'''
     <?xml version="1.0" encoding="utf-8"?>

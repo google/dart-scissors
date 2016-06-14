@@ -26,7 +26,7 @@ List<List> makePhases(Map config) => <List>[
     ];
 
 void main() {
-  var phases = makePhases({});
+  var phases = makePhases({'pruneCss': true});
 
   testPhases('leaves css based on angular2 annotations without css url alone',
       phases, {

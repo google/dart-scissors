@@ -121,7 +121,7 @@ Examples: see [example/angular1](https://github.com/google/dart-scissors/tree/ma
   ```
 
 Valid settings:
-- `pruneCss` (boolean): by default, `true` in `release` only
+- `pruneCss` (boolean): `false` by default
 - `imageInlining`: default is `inlineInlinedImages`
     - `inlineAllUrls`: treats `url` as `inline-image`
     - `inlineInlinedImages`: simply honours `inline-image`

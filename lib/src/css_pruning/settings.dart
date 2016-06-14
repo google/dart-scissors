@@ -16,13 +16,7 @@ part of scissors.src.css_pruning.transformer;
 abstract class CssPruningSettings {
   Setting<bool> get verbose;
 
-  final pruneCss =
-      new Setting<bool>('pruneCss', debugDefault: false, releaseDefault: true);
-
-  // final bidiCss = new Setting<bool>('bidiCss',
-  //     comment:
-  //         "Whether to perform LTR -> RTL mirroring of .css files with cssjanus.",
-  //     defaultValue: false);
+  final pruneCss = new Setting<bool>('pruneCss', defaultValue: false);
 }
 
 class _CssPruningSettings extends SettingsBase with CssPruningSettings {
