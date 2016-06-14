@@ -2,6 +2,23 @@
 
 ...
 
+## 0.6.3 (2016-06-14)
+
+### Bugfixes
+
+- Fixed bidirectionalization of `@media` rules.
+- Fixed race condition + some embarrassing typos in Sass settings
+  (caused some includes to not be resolved)
+- Merged SassC & ImageInlining transformers to avoid some errors
+  "Both {SassC on ..., ImageInlining on ...} emitted the same file."
+- Switched hidden onlyCompileOutOfDateSass option's default to false (caused
+  pub to hang when used in combination with some other transformers)
+
+### Features
+
+- Removed experimental `scissors/src/checker/transformer`, which feature was
+  integrated to the Dart Linter package from version 0.1.19.
+
 ## 0.6.2 (2016-06-02)
 
 ### Features
