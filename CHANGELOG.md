@@ -18,6 +18,7 @@
 
 - Removed experimental `scissors/src/checker/transformer`, which feature was
   integrated to the Dart Linter package from version 0.1.19.
+- Switched some defaults around: `pruneCss: false`, `imageInlining: inlineInlinedImages`
 
 ## 0.6.2 (2016-06-02)
 
