@@ -2,7 +2,7 @@ import 'package:barback/barback.dart';
 import 'package:path/path.dart';
 import 'src/image_inlining/image_inliner.dart';
 
-const svg_extension = ".svg";
+const svgExtension = ".svg";
 
 /// Transformer that compiles several image files to a Dart source file with
 /// constant definitions that has these image files Base64-encoded.
@@ -19,7 +19,7 @@ class DartImageCompiler extends AggregateTransformer {
 
       // Convert filenames to valid Dart identifiers
       final name = filename
-          .substring(0, filename.length - svg_extension.length)
+          .substring(0, filename.length - svgExtension.length)
           .replaceAll("-", "_");
       buffer.write('const $name = "$data";\n');
     }
@@ -36,7 +36,7 @@ class DartImageCompiler extends AggregateTransformer {
 
   @override
   classifyPrimary(AssetId id) {
-    if (!id.path.endsWith(svg_extension)) {
+    if (!id.path.endsWith(svgExtension)) {
       return null;
     }
 
