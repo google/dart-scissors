@@ -1,0 +1,17 @@
+name: 'image_compiler'
+version: 0.0.1
+description: Usage example for image_dart_compiler
+
+environment:
+  sdk: '>=1.0.0 <2.0.0'
+
+dependencies:
+  browser: '>=0.10.0 <0.11.0'
+  dart_to_js_script_rewriter: '^1.0.1'
+  scissors:
+    path: ../..
+
+transformers:
+- scissors/image_dart_compiler:
+    $include: "web/pics"
+- dart_to_js_script_rewriter
