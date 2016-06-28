@@ -164,15 +164,17 @@ class PathResolver {
   }
 
   Future<File> resolveAssetFile(AssetId id) async {
-    var packageLibDirectories = await getPackageLibDirectories();
-    var libDir = packageLibDirectories[id.package];
-    if (libDir != null && await libDir.exists()) {
-      var file = new File(join(libDir.path, '..', id.path));
-      if (await file.exists()) {
-        return file;
-      }
-    }
-    throw new AssetNotFoundException(id);
+    var alternativePaths = [
+      join(id.package.replaceAll('.', '/'), id.path),
+      id.path
+    ];
+    var path =
+        id.path.startsWith('lib/') ? id.path.substring('lib/'.length) : id.path;
+    alternativePaths
+        .add(join('packages', id.package.replaceAll('.', '/'), path));
+    var fileAsset = await _resolveFileAsset(alternativePaths);
+    if (fileAsset == null) throw new AssetNotFoundException(id);
+    return new File(fileAsset.fullPath);
   }
 
   Future<_FileAsset> _resolveFileAsset(List<String> alternativePaths) async {
