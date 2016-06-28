@@ -83,4 +83,4 @@ NgClassParsingResults parseNgClassAttribute(String attributeValue) {
   return new NgClassParsingResults(hasVariableClasses, classes);
 }
 
-_trimmer(s) => s.trim();
+String _trimmer(String s) => s.trim();

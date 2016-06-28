@@ -21,8 +21,9 @@ import 'dart:async';
 ///
 /// Note that calls to this function and imports of this file are
 /// removed by `scissors/reloader/transformer` in release mode.
-setupReloader(
-    {timestampBaseUrl: '/', delay: const Duration(seconds: 1)}) async {
+Future setupReloader(
+    {String timestampBaseUrl: '/',
+    Duration delay: const Duration(seconds: 1)}) async {
   var initialTimestamp = await _getTimestamp(timestampBaseUrl);
   await Future.doWhile(() async {
     await new Future.delayed(const Duration(seconds: 1));
@@ -39,7 +40,7 @@ setupReloader(
   });
 }
 
-Future<int> _getTimestamp(timestampBaseUrl) {
+Future<int> _getTimestamp(String timestampBaseUrl) {
   var completer = new Completer<int>();
   new HttpRequest()
     ..open('GET', timestampBaseUrl + 'timestamp')

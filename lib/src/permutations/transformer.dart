@@ -103,7 +103,7 @@ class PermutationsTransformer extends AggregateTransformer
     var map = new IntlDeferredMap.fromJson(deferredMapJson);
 
     var defaultLocale = _settings.defaultLocale.value;
-    var allLocales = []..addAll(map.locales);
+    var allLocales = <String>[]..addAll(map.locales);
     if (defaultLocale != null) allLocales.add(defaultLocale);
 
     if (_settings.verbose.value) {
@@ -111,7 +111,7 @@ class PermutationsTransformer extends AggregateTransformer
           'and locales ${map.locales} with default locale $defaultLocale');
     }
 
-    Asset getMatchingAsset(path, {throwIfNotFound: true}) =>
+    Asset getMatchingAsset(String path, {throwIfNotFound: true}) =>
         inputs.firstWhere((a) => a.id.path.endsWith(path), orElse: () {
           if (!throwIfNotFound) return null;
 

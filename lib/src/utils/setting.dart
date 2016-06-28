@@ -44,7 +44,7 @@ class Setting<T> {
     if (value == null) {
       _value = isDebug ? debugDefault : releaseDefault;
     } else {
-      _value = parser != null ? parser(value) : value as T;
+      _value = parser != null ? parser('$value') : value as T;
     }
   }
 }

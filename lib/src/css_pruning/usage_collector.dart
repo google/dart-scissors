@@ -55,7 +55,7 @@ class UsageCollector extends dom_parsing.TreeVisitor {
         desc.classFragments.add(pattern);
       }
     }
-    for (var name in node.attributes.keys) {
+    for (dynamic name in node.attributes.keys) {
       if (name is! String) continue;
 
       var m = _ng2ClassNameAttrRx.matchAsPrefix(name);

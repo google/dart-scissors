@@ -57,8 +57,10 @@ abstract class SettingsBase {
   static const _releaseConfigKey = 'release';
 
   SettingsBase(this._settings) {
-    var config = _settings.configuration;
-    config.addAll(config[isDebug ? _debugConfigKey : _releaseConfigKey] ?? {});
+    var config = _settings.configuration as Map<String, dynamic>;
+    config.addAll(config[isDebug ? _debugConfigKey : _releaseConfigKey]
+        as Map<String, dynamic> ??
+        const <String, dynamic>{});
 
     var settingList = getAllSettings();
     var validKeys = []

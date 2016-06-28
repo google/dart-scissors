@@ -38,7 +38,7 @@ String which(String path) => successString('which $path', _which(path)).trim();
 
 bool hasExecutable(String name) => _which(name).exitCode == 0;
 
-Future<ProcessResult> pipeInAndOutOfNewProcess(Process p, input) async {
+Future<ProcessResult> pipeInAndOutOfNewProcess(Process p, dynamic input) async {
   if (input is String) {
     p.stdin.write(input);
   } else if (input is List<int>) {

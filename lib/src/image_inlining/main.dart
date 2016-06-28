@@ -54,12 +54,12 @@ main(List<String> args) async {
     await stream.pipe(output.openWrite());
 }
 
-makeFileAsset(File file) {
+Asset makeFileAsset(File file) {
   var path = relative(file.path, from: Directory.current.path);
   return new Asset.fromFile(new AssetId(_package, path), new File(path));
 }
 
-makeStringAsset(String path, String input) {
+Asset makeStringAsset(String path, String input) {
   return new Asset.fromString(new AssetId(_package, path), input);
 }
 

@@ -42,7 +42,8 @@ class PartsCheckTransformer extends Transformer
   bool isPrimary(AssetId id) =>
       expectedPartCounts.isNotEmpty && super.isPrimary(id);
 
-  get expectedPartCounts => _settings.expectedPartCounts.value;
+  Map<String, int> get expectedPartCounts =>
+      _settings.expectedPartCounts.value as Map<String, int>;
 
   @override
   apply(Transform transform) async {
