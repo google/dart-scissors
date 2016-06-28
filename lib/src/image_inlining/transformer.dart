@@ -66,6 +66,7 @@ class ImageInliningTransformer extends AggregateTransformer
   Future apply(AggregateTransform transform) async {
     final inputs = await getInputs(transform);
     final Asset css = inputs['.css'];
+    final Asset map = inputs['.map'];
     if (css == null) return;
 
     var result = await inlineImages(css, _settings.imageInlining.value,
@@ -78,6 +79,11 @@ class ImageInliningTransformer extends AggregateTransformer
     result.logMessages(transform.logger);
     if (!result.success) return;
 
+    if (result.css == null) {
+      transform.addOutput(css);
+      if (map != null) transform.addOutput(map);
+      return;
+    }
     transform.addOutput(result.css);
     if (result.map != null) transform.addOutput(result.map);
   }

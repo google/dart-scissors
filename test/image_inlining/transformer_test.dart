@@ -119,4 +119,42 @@ void main() {
       }
     '''
   });
+
+  testPhases('deals with /deep/ selectors in skippable files',
+      phases(ImageInliningMode.inlineInlinedImages), {
+    'a|foo.css': '''
+      :host /deep/ {
+        float: left;
+        background-image: url('inlined-image.svg');
+      }
+    ''',
+  }, {
+    'a|foo.css': '''
+      :host /deep/ {
+        float: left;
+        background-image: url('inlined-image.svg');
+      }
+    '''
+  },
+      messages: []);
+
+  // TODO(ochafik): https://github.com/google/dart-scissors/issues/53
+  // testPhases('deals with /deep/ selectors in inlined files',
+  //     phases(ImageInliningMode.inlineInlinedImages), {
+  //   'a|foo.css': '''
+  //     :host /deep/ {
+  //       float: left;
+  //       background-image: inline-image('inlined-image.svg');
+  //     }
+  //   ''',
+  //   'a|icon.svg': iconSvg,
+  // }, {
+  //   'a|foo.css': '''
+  //     :host /deep/ {
+  //       float: left;
+  //       background-image: inline-image('inlined-image.svg');
+  //     }
+  //   '''
+  // },
+  //     messages: []);
 }

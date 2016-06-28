@@ -86,6 +86,7 @@ class InliningVisitor extends Visitor {
 }
 
 final _urlsRx = new RegExp(r'\b(inline-image|url)\s*\(', multiLine: true);
+final _inlineImagesRx = new RegExp(r'\binline-image\s*\(', multiLine: true);
 
 Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
     {Future<Asset> assetFetcher(String url, {AssetId from}),
@@ -96,8 +97,20 @@ Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
   var css = await input.readAsString();
 
   // Fail fast in case there's no url mention in the css.
-  if (_urlsRx.firstMatch(css) == null) {
-    return new TransformResult(true);
+  switch (mode) {
+    case ImageInliningMode.inlineInlinedImages:
+    case ImageInliningMode.linkInlinedImages:
+      if (_inlineImagesRx.firstMatch(css) == null) {
+        return new TransformResult(true);
+      }
+      break;
+    case ImageInliningMode.inlineAllUrls:
+      if (_urlsRx.firstMatch(css) == null) {
+        return new TransformResult(true);
+      }
+      break;
+    default:
+      break;
   }
 
   hacks.useCssLib();
