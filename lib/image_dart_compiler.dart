@@ -1,12 +1,21 @@
 import 'package:barback/barback.dart';
 import 'package:path/path.dart';
 import 'src/image_inlining/image_inliner.dart';
+import 'dart:io';
 
-const svgExtension = ".svg";
+const outputFileName = 'images.dart';
+
+/// Convert file name to a string suitable for being used as Dart identifier.
+/// Currently result isn't guaranteed to be always valid identifier, but
+/// function should work for majority of the cases.
+String identifierFromFileName(String fileName) {
+  return url.basenameWithoutExtension(fileName).replaceAll('-', '_');
+}
 
 /// Transformer that compiles several image files to a Dart source file with
 /// constant definitions that has these image files Base64-encoded.
-class DartImageCompiler extends AggregateTransformer {
+class DartImageCompiler extends AggregateTransformer
+    implements DeclaringAggregateTransformer {
   @override
   apply(AggregateTransform transform) async {
     List<Asset> list = await transform.primaryInputs.toList();
@@ -14,19 +23,14 @@ class DartImageCompiler extends AggregateTransformer {
 
     final buffer = new StringBuffer();
     for (final asset in list) {
-      final data = await encodeDataAsUri(asset);
-      final filename = url.basename(asset.id.path);
-
-      // Convert filenames to valid Dart identifiers
-      final name = filename
-          .substring(0, filename.length - svgExtension.length)
-          .replaceAll("-", "_");
-      buffer.write('const $name = "$data";\n');
+      final data = await encodeAssetAsUri(asset);
+      final name = identifierFromFileName(asset.id.path);
+      buffer.write('const ${name} = "$data";\n');
     }
 
     final first = list.first.id;
     final dir = url.dirname(first.path);
-    final outputPath = url.join(dir, "images.dart");
+    final outputPath = url.join(dir, outputFileName);
 
     final asset = new Asset.fromString(
         new AssetId(first.package, outputPath), buffer.toString());
@@ -36,7 +40,7 @@ class DartImageCompiler extends AggregateTransformer {
 
   @override
   classifyPrimary(AssetId id) {
-    if (!id.path.endsWith(svgExtension)) {
+    if (!mediaTypeByExtension.containsKey(url.extension(id.path))) {
       return null;
     }
 
@@ -44,4 +48,40 @@ class DartImageCompiler extends AggregateTransformer {
   }
 
   DartImageCompiler.asPlugin();
+
+  @override
+  declareOutputs(DeclaringAggregateTransform transform) async {
+    var firstInput = await transform.primaryIds.first;
+    var dirname = url.dirname(firstInput.path);
+    return url.join(dirname, outputFileName);
+  }
+}
+
+/// Command-line entry point. Takes list of paths to pictures, producing Dart
+/// source on stdout.
+main(List<String> arguments) async {
+  void fail(String message) {
+    stderr.writeln(message);
+    exit(1);
+  }
+
+  StringBuffer buffer = new StringBuffer();
+  for (final arg in arguments) {
+    final dot = arg.lastIndexOf('.');
+    if (dot == -1) {
+      fail('Cannot determine extension of $arg');
+    }
+
+    final extension = arg.substring(dot);
+    if (!mediaTypeByExtension.containsKey(extension)) {
+      fail('Unknown media type of $arg');
+    }
+
+    final data = await encodeMediaAsUri(
+        mediaTypeByExtension[extension], await new File(arg).readAsBytes());
+    final name = identifierFromFileName(arg);
+    buffer.write('const $name = "$data";\n');
+  }
+
+  stdout.write(buffer.toString());
 }
