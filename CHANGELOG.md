@@ -2,6 +2,12 @@
 
 ...
 
+## 0.6.4 (2016-06-30)
+
+### Bugfixes
+
+- Fix skipping of image inlining for unaffected files (see issue #53)
+
 ## 0.6.3 (2016-06-14)
 
 ### Bugfixes
