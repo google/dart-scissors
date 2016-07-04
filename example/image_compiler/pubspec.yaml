@@ -12,6 +12,6 @@ dependencies:
     path: ../..
 
 transformers:
-- scissors/image_dart_compiler:
+- scissors/image_dart_transformer:
     $include: "web/pics"
 - dart_to_js_script_rewriter

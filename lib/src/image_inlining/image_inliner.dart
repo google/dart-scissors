@@ -181,7 +181,7 @@ Future<String> encodeAssetAsUri(Asset asset) async {
       await readAll(await asset.read()));
 }
 
-Future<String> encodeMediaAsUri(String mediaType, List<int> bytes) async {
+String encodeMediaAsUri(String mediaType, List<int> bytes) {
   var encodedData = BASE64.encode(bytes);
   return 'data:$mediaType;base64,$encodedData';
 }
