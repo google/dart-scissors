@@ -33,7 +33,7 @@ class _ScissorsSettings extends SettingsBase
   _ScissorsSettings(BarbackSettings settings) : super(settings);
 }
 
-List<List<Transformer>> _createPhases(_ScissorsSettings settings) {
+List<List> _createPhases(_ScissorsSettings settings) {
   var phases = <List>[
     [
       settings.optimizeSvg.value

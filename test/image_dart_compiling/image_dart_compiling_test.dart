@@ -1,7 +1,7 @@
 library scissors.test.image_inlining.image_dart_compiling_test;
 
 import 'package:test/test.dart';
-import 'package:scissors/src/image_inlining/image_dart_compiling.dart';
+import 'package:scissors/src/image_dart_compiling/image_dart_compiling.dart';
 
 main() {
   group('generate identifier', () {

@@ -1,6 +1,9 @@
 import 'dart:async';
-import 'image_inliner.dart';
+import '../image_inlining/image_inliner.dart';
 import 'package:path/path.dart' as path;
+
+final _illegalCharacters = new RegExp(r'[^\w]+');
+final _illegalFirstCharacter = new RegExp(r'\d|_');
 
 /// Data holder for image-related information: its file name and contents.
 class ImageInformation {
@@ -16,10 +19,10 @@ class ImageInformation {
 String identifierFromFileName(String fileName) {
   final candidate = path
       .basenameWithoutExtension(fileName)
-      .replaceAll(new RegExp(r'[^\w]+'), '_');
+      .replaceAll(_illegalCharacters, '_');
 
   // Prepend a prefix if starts from an invalid character.
-  if (candidate.startsWith(new RegExp(r'\d|_'))) {
+  if (candidate.startsWith(_illegalFirstCharacter)) {
     return "img_" + candidate;
   } else {
     return candidate;
