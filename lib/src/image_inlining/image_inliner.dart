@@ -169,7 +169,7 @@ Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
       new Asset.fromString(input.id.addExtension('.map'), printer.map));
 }
 
-const mediaTypeByExtension = const <String, String>{
+const imageMediaTypeByExtension = const <String, String>{
   '.jpeg': 'image/jpeg',
   '.jpg': 'image/jpeg',
   '.svg': 'image/svg+xml',
@@ -177,11 +177,12 @@ const mediaTypeByExtension = const <String, String>{
 };
 
 Future<String> encodeAssetAsUri(Asset asset) async {
-  return encodeMediaAsUri(mediaTypeByExtension[asset.id.extension],
-      await readAll(await asset.read()));
+  return encodeBytesAsDataUri(await readAll(await asset.read()),
+      mimeType: imageMediaTypeByExtension[asset.id.extension]);
 }
 
-String encodeMediaAsUri(String mediaType, List<int> bytes) {
+String encodeBytesAsDataUri(List<int> bytes,
+    {String mimeType: "application/octet-stream"}) {
   var encodedData = BASE64.encode(bytes);
-  return 'data:$mediaType;base64,$encodedData';
+  return 'data:$mimeType;base64,$encodedData';
 }

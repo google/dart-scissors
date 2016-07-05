@@ -7,11 +7,14 @@ environment:
 
 dependencies:
   browser: '>=0.10.0 <0.11.0'
+
+dev_dependencies:
   dart_to_js_script_rewriter: '^1.0.1'
-  scissors:
-    path: ../..
+  scissors: ^0.6.3+1
 
 transformers:
 - scissors/image_dart_transformer:
     $include: "web/pics"
 - dart_to_js_script_rewriter
+
+dependency_overrides: {scissors: {path: ../..}}
