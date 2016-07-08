@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 import 'package:scissors/src/image_dart_compiling/image_dart_compiling.dart';
 
 main() {
-  group('generate identifier', () {
+  group('identifierFromFileName', () {
     test('prepends prefix when needed', () {
       expect(identifierFromFileName("10-test-image.png"),
           equals("img_10_test_image"));

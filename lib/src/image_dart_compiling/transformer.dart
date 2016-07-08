@@ -5,10 +5,13 @@ import 'package:scissors/src/utils/io_utils.dart' show readAll;
 import 'package:scissors/src/image_dart_compiling/image_dart_compiling.dart';
 import '../image_inlining/image_inliner.dart';
 
-const outputFileName = 'images.dart';
+const _outputFileName = 'images.dart';
 
 /// Transformer that compiles several image files to a Dart source file with
 /// constant definitions that has these image files Base64-encoded.
+///
+/// Files are grouped by the directory they reside in, and the resulting source
+/// would be written to that directory.
 class DartImageCompiler extends AggregateTransformer
     implements DeclaringAggregateTransformer {
   DartImageCompiler.asPlugin();
@@ -24,7 +27,7 @@ class DartImageCompiler extends AggregateTransformer
 
     final first = list.first.id;
     final dir = url.dirname(first.path);
-    final outputPath = url.join(dir, outputFileName);
+    final outputPath = url.join(dir, _outputFileName);
 
     final asset =
         new Asset.fromString(new AssetId(first.package, outputPath), source);
@@ -46,6 +49,6 @@ class DartImageCompiler extends AggregateTransformer
     var firstInput = await transform.primaryIds.first;
     var dirname = url.dirname(firstInput.path);
     transform.declareOutput(
-        new AssetId(firstInput.package, url.join(dirname, outputFileName)));
+        new AssetId(firstInput.package, url.join(dirname, _outputFileName)));
   }
 }
