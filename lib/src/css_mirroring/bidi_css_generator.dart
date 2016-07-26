@@ -72,11 +72,9 @@ Future<String> bidirectionalizeCss(String originalCss, CssFlipper cssFlipper,
           bufferedCommonTrans,
           bufferedNativeDirTrans,
           bufferedFlippedDirTrans);
-    } else if (entity.isDirectionInsensitiveDirective) {
+    } else {
       entity.original.remove(bufferedNativeDirTrans);
       entity.flipped.remove(bufferedFlippedDirTrans);
-    } else {
-      throw new StateError('Node type not handled: $entity');
     }
   });
   bufferedCommonTrans.commit();
