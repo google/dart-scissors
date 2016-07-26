@@ -74,7 +74,7 @@ class BidiCssTransformer extends AggregateTransformer
     if (mapAsset != null) transform.consumePrimary(mapAsset.id);
 
     var bidiCss = await bidirectionalizeCss(await cssAsset.readAsString(),
-        _flipCss, _settings.originalCssDirection.value);
+        _flipCss, transform.logger, _settings.originalCssDirection.value);
     if (_settings.verbose.value) {
       transform.logger.info('Bidirectionalized css:\n$bidiCss');
     }

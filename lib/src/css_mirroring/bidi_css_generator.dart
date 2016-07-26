@@ -15,9 +15,9 @@ library scissors.src.css_mirroring.bidi_css_generator;
 
 import 'dart:async';
 
+import 'package:barback/barback.dart' show TransformLogger;
 import 'package:csslib/parser.dart' show parse;
 import 'package:csslib/visitor.dart' show TreeNode, RuleSet;
-
 import 'package:source_maps/refactor.dart' show TextEditTransaction;
 import 'package:source_span/source_span.dart' show SourceFile;
 
@@ -41,7 +41,8 @@ typedef Future<String> CssFlipper(String inputCss);
 ///    :host-context([dir="rtl"]) foo { float: right }
 ///
 /// See BidirectionalCss.md for more details.
-Future<String> bidirectionalizeCss(String originalCss, CssFlipper cssFlipper,
+Future<String> bidirectionalizeCss(
+    String originalCss, CssFlipper cssFlipper, TransformLogger logger,
     [Direction nativeDirection = Direction.ltr]) async {
   var flippedCss = await cssFlipper(originalCss);
 
@@ -72,11 +73,13 @@ Future<String> bidirectionalizeCss(String originalCss, CssFlipper cssFlipper,
           bufferedCommonTrans,
           bufferedNativeDirTrans,
           bufferedFlippedDirTrans);
-    } else if (entity.isDirectionInsensitiveDirective) {
+    } else {
+      if (!entity.isDirectionInsensitiveDirective) {
+        logger.warning(
+            'Node type not handled: ${entity.original.value.span.text}');
+      }
       entity.original.remove(bufferedNativeDirTrans);
       entity.flipped.remove(bufferedFlippedDirTrans);
-    } else {
-      throw new StateError('Node type not handled: $entity');
     }
   });
   bufferedCommonTrans.commit();
