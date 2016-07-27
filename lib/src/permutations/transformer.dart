@@ -111,7 +111,7 @@ class PermutationsTransformer extends AggregateTransformer
           'and locales ${map.locales} with default locale $defaultLocale');
     }
 
-    Asset getMatchingAsset(String path, {throwIfNotFound: true}) =>
+    Asset getMatchingAsset(String path, {bool throwIfNotFound: true}) =>
         inputs.firstWhere((a) => a.id.path.endsWith(path), orElse: () {
           if (!throwIfNotFound) return null;
 
