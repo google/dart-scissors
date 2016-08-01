@@ -41,7 +41,7 @@ class DartImageCompiler extends AggregateTransformer
       return null;
     }
 
-    return url.dirname(id.path);
+    return '${id.package}|${url.dirname(id.path)}';
   }
 
   @override
