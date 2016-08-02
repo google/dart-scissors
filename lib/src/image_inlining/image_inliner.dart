@@ -126,7 +126,7 @@ Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
     Asset imageAsset = await assetFetcher(url, from: input.id);
     messages.add(new TransformMessage(
         LogLevel.INFO, "Inlined '$url' with ${imageAsset.id}", input.id, span));
-    return encodeDataAsUri(imageAsset);
+    return encodeAssetAsUri(imageAsset);
   }
 
   var urlsToInline = <SourceSpan, String>{};
@@ -182,16 +182,20 @@ Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
       new Asset.fromString(input.id.addExtension('.map'), printer.map));
 }
 
-const _mediaTypeByExtension = const <String, String>{
+const imageMediaTypeByExtension = const <String, String>{
   '.jpeg': 'image/jpeg',
   '.jpg': 'image/jpeg',
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
 };
 
-Future<String> encodeDataAsUri(Asset asset) async {
-  var mediaType = _mediaTypeByExtension[asset.id.extension];
-  var data = await readAll(await asset.read());
-  var encodedData = BASE64.encode(data);
-  return 'data:$mediaType;base64,$encodedData';
+Future<String> encodeAssetAsUri(Asset asset) async {
+  return encodeBytesAsDataUri(await readAll(await asset.read()),
+      mimeType: imageMediaTypeByExtension[asset.id.extension]);
+}
+
+String encodeBytesAsDataUri(List<int> bytes,
+    {String mimeType: "application/octet-stream"}) {
+  var encodedData = BASE64.encode(bytes);
+  return 'data:$mimeType;base64,$encodedData';
 }
