@@ -22,13 +22,14 @@ import 'package:path/path.dart';
 import '../utils/io_utils.dart';
 
 var _tempDir = Directory.systemTemp.createTemp();
+var nextFileId = 1;
 
 Future<Asset> runPngCrush(String pngCrushPath, Asset input,
     sizeReport(int originalSize, int resultSize)) async {
   var dir = await _tempDir;
   var fileName = basename(input.id.path);
   var inputFile = new File(join(dir.path, fileName));
-  var outputFile = new File(join(dir.path, '$fileName.out'));
+  var outputFile = new File(join(dir.path, '$fileName-${nextFileId++}.out'));
 
   await inputFile.writeAsBytes(await readAll(await input.read()));
 

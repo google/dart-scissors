@@ -120,6 +120,33 @@ void main() {
     '''
   });
 
+  testPhases('does not confuse same-named images from different packages',
+      phases(ImageInliningMode.inlineInlinedImages), {
+    'a|foo.css': r'''
+      div {
+        background-image: inline-image('icona.svg');
+      }
+    ''',
+    'b|foo.css': r'''
+      div {
+        other-image: inline-image('iconb.svg');
+      }
+    ''',
+    'a|icona.svg': iconSvg,
+    'b|iconb.svg': iconSvg,
+  }, {
+    'a|foo.css': '''
+      div {
+        background-image: url('data:image/svg+xml;base64,$iconSvgData');
+      }
+    ''',
+    'b|foo.css': '''
+      div {
+        other-image: url('data:image/svg+xml;base64,$iconSvgData');
+      }
+    '''
+  });
+
   testPhases('deals with /deep/ selectors in skippable files',
       phases(ImageInliningMode.inlineInlinedImages), {
     'a|foo.css': '''

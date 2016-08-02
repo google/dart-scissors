@@ -63,6 +63,23 @@ void main() {
         '}'
   });
 
+  testPhases(
+      'does not confuse same-named assets from different packages', phases, {
+    'a|foo.scss': '''
+      .foo {
+        float: left;
+      }
+    ''',
+    'b|foo.scss': '''
+      .foo {
+        float: right;
+      }
+    ''',
+  }, {
+    'a|foo.scss.css': '.foo{float:left}\n',
+    'b|foo.scss.css': '.foo{float:right}\n',
+  });
+
   // testPhases('does not run sassc on .scss that are already converted', phases, {
   //   'a|foo.scss': '''
   //     .foo {

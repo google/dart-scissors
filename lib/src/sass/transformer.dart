@@ -54,7 +54,7 @@ class SassCTransformer extends AggregateTransformer
   classifyPrimary(AssetId id) {
     if (!_settings.compileSass.value || shouldSkipAsset(id)) return null;
 
-    return _classifierRx.matchAsPrefix(id.path)?.group(1);
+    return '${id.package}|${_classifierRx.matchAsPrefix(id.path)?.group(1)}';
   }
 
   @override

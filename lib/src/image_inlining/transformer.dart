@@ -50,7 +50,7 @@ class ImageInliningTransformer extends AggregateTransformer
         shouldSkipAsset(id)) {
       return null;
     }
-    return _classifierRx.matchAsPrefix(id.path)?.group(1);
+    return '${id.package}|${_classifierRx.matchAsPrefix(id.path)?.group(1)}';
   }
 
   @override

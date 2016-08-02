@@ -50,9 +50,6 @@ class SasscSettings {
   }
 }
 
-// Each isolate gets its temp dir.
-var _tmpDir = Directory.systemTemp.createTemp();
-
 Future<TransformResult> runSassC(Asset sassAsset,
     {bool isDebug, SasscSettings settings}) async {
   var sassId = sassAsset.id;
@@ -61,9 +58,10 @@ Future<TransformResult> runSassC(Asset sassAsset,
     sassContentFuture ??= sassAsset.readAsString();
     return sassContentFuture;
   }
-  var dir = await _tmpDir;
-  List<String> cmd;
-  {
+  // Each run gets its temp dir.
+  var dir = await Directory.systemTemp.createTemp();
+  try {
+    List<String> cmd;
     var fileName = basename(sassId.path);
     var sassFile;
     try {
@@ -156,7 +154,7 @@ Future<TransformResult> runSassC(Asset sassAsset,
       return new TransformResult(
           true,
           messages,
-          new Asset.fromFile(cssId, cssFile),
+          new Asset.fromString(cssId, await cssFile.readAsString()),
           new Asset.fromString(cssId.addExtension('.map'), map));
     } else {
       if (!messages.any((m) => m.level == LogLevel.ERROR)) {
@@ -168,6 +166,8 @@ Future<TransformResult> runSassC(Asset sassAsset,
       }
       return new TransformResult(false, messages, null, null);
     }
+  } finally {
+    await dir.delete(recursive: true);
   }
 }
 
