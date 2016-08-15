@@ -17,13 +17,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:barback/barback.dart';
-import 'package:csslib/visitor.dart';
-import 'package:csslib/parser.dart';
-import 'package:quiver/check.dart';
 import 'package:source_maps/refactor.dart';
 import 'package:source_span/source_span.dart';
 
-import '../utils/hacks.dart' as hacks;
 import '../utils/io_utils.dart';
 import '../utils/result.dart' show TransformMessage, TransformResult;
 
@@ -34,59 +30,9 @@ enum ImageInliningMode {
   disablePass
 }
 
-String _unquote(String s) {
-  // TODO(ochafik): What about url encode, escapes, etc?
-  if (s.startsWith('"'))
-    checkArgument(s.endsWith('"'));
-  else {
-    checkArgument(s.startsWith("'"));
-    checkArgument(s.endsWith("'"));
-  }
-  return s.substring(1, s.length - 1);
-}
-
-class InliningVisitor extends Visitor {
-  var _literals = <LiteralTerm>[];
-  var inlineImageUrls = <SourceSpan, String>{};
-  var urls = <SourceSpan, String>{};
-
-  final String source;
-  InliningVisitor(this.source);
-
-  @override
-  void visitUriTerm(UriTerm node) {
-    var span = _computeActualSpan(node.span, "url");
-    urls[span] = node.text;
-  }
-
-  @override
-  void visitFunctionTerm(FunctionTerm node) {
-    _literals.clear();
-    super.visitFunctionTerm(node);
-    if (node.value == 'inline-image') {
-      checkState(_literals.length == 2 && _literals[0] == node);
-      String url = _unquote(_literals.last.value);
-      var span = _computeActualSpan(node.span, node.value);
-      inlineImageUrls[span] = url;
-    }
-  }
-
-  void visitLiteralTerm(LiteralTerm node) {
-    _literals.add(node);
-  }
-
-  SourceSpan _computeActualSpan(SourceSpan span, String startPattern) {
-    var start = new SourceLocation(
-        source.lastIndexOf(startPattern, span.start.offset),
-        sourceUrl: span.start.sourceUrl);
-    var end = span.end;
-    var text = source.substring(start.offset, end.offset);
-    return new SourceSpan(start, end, text);
-  }
-}
-
-final _urlsRx = new RegExp(r'\b(inline-image|url)\s*\(', multiLine: true);
-final _inlineImagesRx = new RegExp(r'\binline-image\s*\(', multiLine: true);
+final _urlsRx = new RegExp(
+    '\\b(inline-image|url)\\s*\\(\\s*["\']([^"\']+)["\']\\s*\\)',
+    multiLine: true);
 
 Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
     {Future<Asset> assetFetcher(String url, {AssetId from}),
@@ -94,33 +40,11 @@ Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
   if (mode == ImageInliningMode.disablePass) {
     return new TransformResult(true);
   }
-  var css = await input.readAsString();
+  final css = await input.readAsString();
+  final cssUrl = "${input.id}";
+  final cssSourceFile = new SourceFile(css, url: cssUrl);
 
-  // Fail fast in case there's no url mention in the css.
-  switch (mode) {
-    case ImageInliningMode.inlineInlinedImages:
-    case ImageInliningMode.linkInlinedImages:
-      if (_inlineImagesRx.firstMatch(css) == null) {
-        return new TransformResult(true);
-      }
-      break;
-    case ImageInliningMode.inlineAllUrls:
-      if (_urlsRx.firstMatch(css) == null) {
-        return new TransformResult(true);
-      }
-      break;
-    default:
-      break;
-  }
-
-  hacks.useCssLib();
-
-  var cssSourceFile = new SourceFile(css, url: "${input.id}");
-  var cssTree = new Parser(cssSourceFile, css).parse();
-  var visitor = new InliningVisitor(css);
-  cssTree.visit(visitor);
-
-  var messages = <TransformMessage>[];
+  final messages = <TransformMessage>[];
 
   Future<String> encodeUrl(SourceSpan span, String url) async {
     Asset imageAsset = await assetFetcher(url, from: input.id);
@@ -129,26 +53,33 @@ Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
     return encodeAssetAsUri(imageAsset);
   }
 
-  var urlsToInline = <SourceSpan, String>{};
-  var urlsToLink = <SourceSpan, String>{};
+  final urlsToInline = <SourceSpan, String>{};
+  final urlsToLink = <SourceSpan, String>{};
 
-  switch (mode) {
-    case ImageInliningMode.inlineAllUrls:
-      urlsToInline = {}..addAll(visitor.inlineImageUrls)..addAll(visitor.urls);
-      break;
-    case ImageInliningMode.inlineInlinedImages:
-      urlsToInline = visitor.inlineImageUrls;
-      break;
-    case ImageInliningMode.linkInlinedImages:
-      urlsToLink = visitor.inlineImageUrls;
-      break;
-    default:
-      throw new StateError("Unsupported: $mode");
+  for (final match in _urlsRx.allMatches(css)) {
+    final kind = match.group(1);
+    final url = match.group(2);
+    final start = new SourceLocation(match.start, sourceUrl: cssUrl);
+    final end = new SourceLocation(match.end, sourceUrl: cssUrl);
+    final span = new SourceSpan(start, end, match.group(0));
+
+    switch (mode) {
+      case ImageInliningMode.inlineAllUrls:
+        urlsToInline[span] = url;
+        break;
+      case ImageInliningMode.inlineInlinedImages:
+        if (kind == 'inline-image') urlsToInline[span] = url;
+        break;
+      case ImageInliningMode.linkInlinedImages:
+        if (kind == 'inline-image') urlsToLink[span] = url;
+        break;
+      default:
+        throw new StateError("Unsupported: $mode");
+    }
   }
 
   if (urlsToInline.isEmpty && urlsToLink.isEmpty) {
-    // We reach here if there was an issue parsing the css...
-    return new TransformResult(false, messages);
+    return new TransformResult(true);
   }
 
   var futures = <Future>[];
@@ -168,7 +99,7 @@ Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
   });
   await Future.wait(futures);
 
-  var transaction = new TextEditTransaction(css, cssSourceFile);
+  final transaction = new TextEditTransaction(css, cssSourceFile);
   replacements.forEach((SourceSpan span, String replacement) {
     transaction.edit(span.start.offset, span.end.offset, replacement);
   });

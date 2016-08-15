@@ -165,23 +165,22 @@ void main() {
   },
       messages: []);
 
-  // TODO(ochafik): https://github.com/google/dart-scissors/issues/53
-  // testPhases('deals with /deep/ selectors in inlined files',
-  //     phases(ImageInliningMode.inlineInlinedImages), {
-  //   'a|foo.css': '''
-  //     :host /deep/ {
-  //       float: left;
-  //       background-image: inline-image('inlined-image.svg');
-  //     }
-  //   ''',
-  //   'a|icon.svg': iconSvg,
-  // }, {
-  //   'a|foo.css': '''
-  //     :host /deep/ {
-  //       float: left;
-  //       background-image: inline-image('inlined-image.svg');
-  //     }
-  //   '''
-  // },
-  //     messages: []);
+  testPhases('deals with /deep/ selectors in inlined files',
+      phases(ImageInliningMode.inlineInlinedImages), {
+    'a|foo.css': '''
+      :host /deep/ {
+        float: left;
+        background-image: inline-image('icon.svg');
+      }
+    ''',
+    'a|icon.svg': iconSvg,
+  }, {
+    'a|foo.css': '''
+      :host /deep/ {
+        float: left;
+        background-image: url('data:image/svg+xml;base64,$iconSvgData');
+      }
+    '''
+  },
+      messages: []);
 }
