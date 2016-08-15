@@ -67,6 +67,7 @@ class PathResolver {
     for (var path in alternativePaths) {
       if (path.contains(':')) {
         try {
+          if (path.startsWith('/')) path = path.substring(1);
           return inputGetter(_parsePackageUrl(path));
         } catch (e) {
           // Do nothing.

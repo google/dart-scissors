@@ -58,7 +58,8 @@ Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
 
   for (final match in _urlsRx.allMatches(css)) {
     final kind = match.group(1);
-    final url = match.group(2);
+    var url = match.group(2);
+    if (url.startsWith('/')) url = url.substring(1);
     final start = new SourceLocation(match.start, sourceUrl: cssUrl);
     final end = new SourceLocation(match.end, sourceUrl: cssUrl);
     final span = new SourceSpan(start, end, match.group(0));
