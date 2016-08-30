@@ -2,13 +2,16 @@
 
 Given the example CSS:
 
+```css
     foo {
        color: red;
        margin-left: 10px;
     }
+```
 
 it'd get converted to a CSS containing 3 sections:
 
+```css
     foo {
         color: red;
     }
@@ -20,20 +23,25 @@ it'd get converted to a CSS containing 3 sections:
     :host-context([dir="rtl"]) foo {
         margin-right: 10px; /* flipped orientation specific declarations *
     }
+```
 
 It starts by runing CSSJanus on the input CSS:
 
+```css
     foo {
         color: red;
         margin-left: 10px;            will be used as Original CSS
     }
+```
 
 is transformed by CSSJanus to:
 
+```css
     foo {
         color: red;
         margin-right: 10px;           will be used as flipped CSS.
     }
+```
 
 It then parses both CSS sources matches rules and declarations 1:1 between the
 original and the flipped versions. It builds a "flipped" fragment by dropping
@@ -42,11 +50,13 @@ elements that are identical in the two versions.
 If a topLevel entity is of the type **Rule Set**
 for example:
 
+```css
     a {                                         
         foo: bar;
         margin-left: 1em;
         background-position:25% 75%;
     }
+```
 
 it recurses over declarations in them.
 
@@ -57,9 +67,11 @@ be removed, it removes the ruleset (no need to keep an empty flipped rule).
 If topLevel is of type **Media Directive** or **Host Directive**
 for example:
 
+```css
     @media screen and (min-width: 401px) {
         foo { margin-left: 13px }             
     }
+```
 
 It recurses into its rule sets, and removes the directive altogether if all
 rule sets are removed.
@@ -67,8 +79,10 @@ rule sets are removed.
 If topLevel is a **Direction Independent Directive**
 for example:
 
-    @charset "UTF-8";                                 Charset Directive
-    @namespace url(http://www.w3.org/1999/xhtml);     Namespace Directive
+```css
+    @charset "UTF-8";                                 /* Charset Directive */
+    @namespace url(http://www.w3.org/1999/xhtml);     /* Namespace Directive */
+```
 
 We don't generate anything special.
 
