@@ -7,10 +7,13 @@ Given the example CSS:
        margin-left: 10px;
     }
 
-it'd get converted to a CSS containing 2 sections:
+it'd get converted to a CSS containing 3 sections:
 
     foo {
         color: red;
+    }
+
+    :host-context([dir="ltr"]) foo {
         margin-left: 10px;
     }
 
