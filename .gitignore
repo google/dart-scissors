@@ -5,3 +5,4 @@ pubspec.lock
 build
 .sass-cache
 .dependencies
+.DS_Store

@@ -1,6 +1,16 @@
 ## Current development tree
 
 ...
+## 0.6.5 (2016-09-16)
+
+### Bugfixes
+
+- Made image inlining more robust (#53).
+- Fix sass aggregate transformer (skip non-scss files)
+
+### Features
+
+- New dart image inliner transformer + CLI
 
 ## 0.6.4 (2016-06-30)
 

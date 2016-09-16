@@ -1,10 +1,10 @@
 name: scissors_mirroring_example
-version: 0.6.4
+version: 0.6.5
 dependencies:
   angular2: 2.0.0-beta.12
   browser: 0.10.0
 dev_dependencies:
-  scissors: ^0.6.4
+  scissors: ^0.6.5
   dart_to_js_script_rewriter: ^0.1.0
 transformers:
 # Use css_mirroring_transformer as standalone.
