@@ -55,7 +55,7 @@ class SassCTransformer extends AggregateTransformer
     if (!_settings.compileSass.value || shouldSkipAsset(id)) return null;
 
     final prefix = _classifierRx.matchAsPrefix(id.path)?.group(1);
-    return prefix == null ? null : '${id.package}|${prefix}';
+    return prefix == null ? null : '${id.package}|$prefix';
   }
 
   @override
