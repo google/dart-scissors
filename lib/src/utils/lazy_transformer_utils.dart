@@ -27,7 +27,7 @@ abstract class BaseWrapper<T> {
 abstract class LazyTransformerWrapper<T> implements BaseWrapper<T> {
   factory LazyTransformerWrapper(T wrapped) {
     return (wrapped is AggregateTransformer
-        ? new _LazyAggregateTransformerWrapper(wrapped as AggregateTransformer)
+        ? new _LazyAggregateTransformerWrapper(wrapped)
         : new _LazyTransformerWrapper(
             wrapped as Transformer)) as LazyTransformerWrapper<T>;
   }
@@ -36,7 +36,7 @@ abstract class LazyTransformerWrapper<T> implements BaseWrapper<T> {
 abstract class EagerTransformerWrapper<T> implements BaseWrapper<T> {
   factory EagerTransformerWrapper(T wrapped) {
     return (wrapped is AggregateTransformer
-        ? new _EagerAggregateTransformerWrapper(wrapped as AggregateTransformer)
+        ? new _EagerAggregateTransformerWrapper(wrapped)
         : new _EagerTransformerWrapper(
             wrapped as Transformer)) as EagerTransformerWrapper<T>;
   }
