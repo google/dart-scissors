@@ -31,7 +31,7 @@ Future<Asset> runPngCrush(String pngCrushPath, Asset input,
   var inputFile = new File(join(dir.path, fileName));
   var outputFile = new File(join(dir.path, '$fileName-${nextFileId++}.out'));
 
-  await inputFile.writeAsBytes(await readAll(await input.read()));
+  await inputFile.writeAsBytes(await readAll(input.read()));
 
   var args = "-q -brute -reduce "
       "-rem alla -rem allb "

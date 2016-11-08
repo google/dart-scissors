@@ -64,9 +64,10 @@ pub get
 
 run_formatter
 run_analyzer
+exit 1
 run_tests
 run_travis_lint
-if (( ${RUN_CHECKER:-1} )); then
+if (( ${RUN_CHECKER:-0} )); then
   run_checker
 fi
 pub publish --dry-run

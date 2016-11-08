@@ -122,7 +122,7 @@ const imageMediaTypeByExtension = const <String, String>{
 };
 
 Future<String> encodeAssetAsUri(Asset asset) async {
-  return encodeBytesAsDataUri(await readAll(await asset.read()),
+  return encodeBytesAsDataUri(await readAll(asset.read()),
       mimeType: imageMediaTypeByExtension[asset.id.extension]);
 }
 

@@ -16,7 +16,7 @@ main(List<String> args) async {
 
 Future runWithWorkerSupport(ProcessRunner runner, List<String> args) async {
   if (args.contains('--persistent_worker')) {
-    new _Loop(runner, args.toList()..remove('--persistent_worker')).run();
+    await new _Loop(runner, args.toList()..remove('--persistent_worker')).run();
   } else {
     final result = await runner(await _expandArgFiles(args));
     stdout.write(result.stdout);

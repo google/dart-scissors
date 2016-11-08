@@ -138,8 +138,8 @@ Future<TransformResult> runSassC(Asset sassAsset,
             new TransformMessage(convertLevel(level), message, sassId, span));
       } else {
         // TODO(ochafik): Compute asset + span from file if possible here.
-        var asset = null;
-        var span = null;
+        var asset;
+        var span;
         message += '\nIn $file:$line\n  $excerpt\n  $arrow';
         messages.add(
             new TransformMessage(convertLevel(level), message, asset, span));

@@ -44,7 +44,7 @@ Future<String> generateDartSource(Iterable<ImageInformation> images) async {
     }
 
     final name = identifierFromFileName(image.fileName);
-    final data = await encodeBytesAsDataUri(image.bytes,
+    final data = encodeBytesAsDataUri(image.bytes,
         mimeType: imageMediaTypeByExtension[extension]);
     result.write('const $name = "$data";\n');
   }
