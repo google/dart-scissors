@@ -4,6 +4,8 @@
 
 ## 0.6.6 (2016-11-08)
 
+### Features
+
 - scissors-sassc runner now supports Bazel.io workers (combo of `--persistent_worker` flag, `@@args_file` argument and proto-based standard input / output communication protocol with Bazel).
 
 ## 0.6.5 (2016-09-16)
