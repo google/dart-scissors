@@ -1,5 +1,5 @@
 #!/usr/bin/env dart
-// Copyright 2015 Google Inc. All Rights Reserved.
+// Copyright 2016 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,9 +13,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:scissors/src/compass/sassc_with_compass_functions.dart'
-    show runWithArgs;
-import 'package:scissors/src/bazel/generic_bazel_worker.dart'
-    show runWithWorkerSupport;
-
-main(List<String> args) => runWithWorkerSupport(runWithArgs, args);
+export 'package:scissors/src/bazel/generic_bazel_worker.dart' show main;

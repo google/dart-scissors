@@ -10,6 +10,7 @@ dependencies:
   args: ">=0.12.0 <0.14.0"
   analyzer: ">=0.27.3 <0.28.0"
   barback: ^0.15.0
+  bazel_worker: ^0.1.1
   csslib: ">=0.12.0 <0.14.0"
   html: ">=0.12.0 <0.14.0"
   intl: ">=0.8.0 <0.14.0"
@@ -23,3 +24,4 @@ dev_dependencies:
 executables:
   scissors-inline-images: inline_images
   scissors-sassc: sassc_with_compass_functions
+  bazel-worker: generic_bazel_worker

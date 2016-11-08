@@ -38,35 +38,39 @@ final String compassStylesheetsPath =
 
 main(List<String> args) async {
   try {
-    args = ['-I', compassStylesheetsPath]..addAll(args);
-
-    var opts = new SassCArgs.parse(args);
-    if (opts.inputFile == null) {
-      var stdin = readStdinSync();
-      if (stdin != null) opts.setInput('stdin.scss', stdin);
-    }
-
-    ProcessResult result = await Process.run(
-        await pathResolver.resolveExecutable(pathResolver.defaultSassCPath),
-        opts.args);
-
-    if (result.exitCode == 0) {
-      var input = opts.outputFile != null
-          ? makeFileAsset(opts.outputFile)
-          : makeStringAsset('<stdin>', result.stdout);
-      var output = await inlineImagesWithIncludeDirs(
-          input, opts.includeDirs.map((path) => new Directory(path)).toList());
-      if (output != null) {
-        result = await _pipeResult(output, opts.outputFile, result.stderr);
-      }
-    }
-
+    final result = await runWithArgs(args);
     stdout.write(result.stdout);
     stderr.write(result.stderr);
     exit(result.exitCode);
   } finally {
     deleteTempDir();
   }
+}
+
+Future<ProcessResult> runWithArgs(List<String> args) async {
+  args = ['-I', compassStylesheetsPath]..addAll(args);
+
+  var opts = new SassCArgs.parse(args);
+  if (opts.inputFile == null) {
+    var stdin = readStdinSync();
+    if (stdin != null) opts.setInput('stdin.scss', stdin);
+  }
+
+  ProcessResult result = await Process.run(
+      await pathResolver.resolveExecutable(pathResolver.defaultSassCPath),
+      opts.args);
+
+  if (result.exitCode == 0) {
+    var input = opts.outputFile != null
+        ? makeFileAsset(opts.outputFile)
+        : makeStringAsset('<stdin>', result.stdout);
+    var output = await inlineImagesWithIncludeDirs(
+        input, opts.includeDirs.map((path) => new Directory(path)).toList());
+    if (output != null) {
+      result = await _pipeResult(output, opts.outputFile, result.stderr);
+    }
+  }
+  return result;
 }
 
 ArgParser _createSassCArgsParser() {
@@ -78,6 +82,8 @@ ArgParser _createSassCArgsParser() {
     ..addFlag('stdin', abbr: 's')
     ..addFlag('version', abbr: 'v')
     ..addFlag('sourcemap', abbr: 'm')
+    ..addOption('cssjanus-path')
+    ..addOption('cssjanus-direction')
     ..addOption('load-path', abbr: 'I', allowMultiple: true)
     ..addOption('plugin-path', abbr: 'P')
     ..addOption('precision', abbr: 'p')
@@ -90,9 +96,16 @@ ArgParser _createSassCArgsParser() {
 class SassCArgs {
   final List<String> args;
   final List<String> includeDirs;
+  final File cssjanusPath;
+  final String cssjanusDirection;
   File inputFile;
   final File outputFile;
-  SassCArgs(this.args, {this.includeDirs, this.inputFile, this.outputFile});
+  SassCArgs(this.args,
+      {this.includeDirs,
+      this.inputFile,
+      this.outputFile,
+      this.cssjanusPath,
+      this.cssjanusDirection});
 
   factory SassCArgs.parse(List<String> args) {
     var results = _createSassCArgsParser().parse(args);
@@ -113,10 +126,21 @@ class SassCArgs {
             'Expecting 0, 1 or 2 arguments ([input] [output]),'
             'got ${results.arguments}');
     }
-    return new SassCArgs(new List.from(args),
+
+    final cssjanusPath = results['cssjanus-path'];
+    final cssjanusDirection = results['cssjanus-direction'];
+    if (cssjanusPath != null) {
+      if (cssjanusDirection != 'ltr' && cssjanusDirection != 'rtl') {
+        throw 'Unexpected direction: "$cssjanusDirection"';
+      }
+    }
+    return new SassCArgs(
+        args.where((a) => !a.startsWith('--cssjanus-')).toList(),
         includeDirs: results['load-path'] as List<String>,
         inputFile: inputFile,
-        outputFile: outputFile);
+        outputFile: outputFile,
+        cssjanusPath: cssjanusPath == null ? null : new File(cssjanusPath),
+        cssjanusDirection: cssjanusDirection);
   }
 
   void setInput(String name, List<int> content) {
