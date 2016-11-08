@@ -64,7 +64,6 @@ pub get
 
 run_formatter
 run_analyzer
-exit 1
 run_tests
 run_travis_lint
 if (( ${RUN_CHECKER:-0} )); then
