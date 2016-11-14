@@ -19,6 +19,7 @@ _expectSassOutput(String input, String expectedOutput, {bool useSassC}) async {
 
   Future<String> run(
       String name, String exec, List<String> args, String input) async {
+    //print('EXEC:\necho "$input" | $exec ${args.join(' ')}');
     var stopwatch = new Stopwatch()..start();
     var result = successString(name,
         await pipeInAndOutOfNewProcess(await Process.start(exec, args), input));
@@ -98,9 +99,11 @@ main() async {
         }
       ''',
           '.inline-block {\n'
-          '  -moz-box-shadow: 0px 5px #333333;\n'
-          '  -webkit-box-shadow: 0px 5px #333333;\n'
-          '  box-shadow: 0px 5px #333333; }\n',
+          '  display: inline-block;\n'
+          '  vertical-align: middle;\n'
+          '  *vertical-align: auto;\n'
+          '  *zoom: 1;\n'
+          '  *display: inline; }\n',
           useSassC: useSassC);
     });
 

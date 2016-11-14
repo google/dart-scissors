@@ -72,6 +72,23 @@ $_capability-needs-prefixing: (
   @return if(map-get($needs, $prefix), 1, 0);
 }
 
+$_omitted-usage-per-browser: (
+  firefox: 0,
+  ie: 1,
+);
+
+/// How many users would be omitted if support for the given browser starts
+/// with the given version.
+///
+/// (see compass/core/lib/compass/core/caniuse.rb)
+@function omitted-usage($browser, $min_version, $max_version: nil) {
+  $usage: map-get($_omitted-usage-per-browser, $browser);
+  @if not $usage {
+    @error 'TODO: please hard-code omitted-usage for #{$browser}.';
+  }
+  @return $usage;
+}
+
 $_prefixes-by-browser: (
   android: -webkit,
   android-chrome: -webkit,
