@@ -88,6 +88,21 @@ main() async {
           '  box-shadow: 0px 5px #333333; }\n',
           useSassC: useSassC);
     });
+    test('support inline-block', () async {
+      await _expectSassOutput(
+          r'''
+        @import 'compass/css3/inline-block';
+
+        .inline-block {
+          @include inline-block;
+        }
+      ''',
+          '.inline-block {\n'
+          '  -moz-box-shadow: 0px 5px #333333;\n'
+          '  -webkit-box-shadow: 0px 5px #333333;\n'
+          '  box-shadow: 0px 5px #333333; }\n',
+          useSassC: useSassC);
+    });
 
     test('support animations & transitions', () async {
       await _expectSassOutput(
