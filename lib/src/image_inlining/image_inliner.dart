@@ -104,7 +104,7 @@ Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
   replacements.forEach((SourceSpan span, String replacement) {
     transaction.edit(span.start.offset, span.end.offset, replacement);
   });
-  ;
+
   var printer = transaction.commit()..build(input.id.path);
 
   return new TransformResult(
@@ -115,6 +115,7 @@ Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
 }
 
 const imageMediaTypeByExtension = const <String, String>{
+  '.gif': 'image/gif',
   '.jpeg': 'image/jpeg',
   '.jpg': 'image/jpeg',
   '.svg': 'image/svg+xml',
