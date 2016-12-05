@@ -4,6 +4,9 @@ dart:
   - stable
   - dev
   - "dev/release/1.17.0-dev.2.0"
+matrix:
+  allow_failures:
+    - dart: "dev"
 cache:
   directories:
     - $HOME/.pub-cache/hosted

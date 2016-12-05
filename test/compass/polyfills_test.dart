@@ -19,6 +19,7 @@ _expectSassOutput(String input, String expectedOutput, {bool useSassC}) async {
 
   Future<String> run(
       String name, String exec, List<String> args, String input) async {
+    //print('EXEC:\necho "$input" | $exec ${args.join(' ')}');
     var stopwatch = new Stopwatch()..start();
     var result = successString(name,
         await pipeInAndOutOfNewProcess(await Process.start(exec, args), input));
@@ -39,10 +40,12 @@ _expectSassOutput(String input, String expectedOutput, {bool useSassC}) async {
         'Compass', sass, ['--compass', '--scss']..addAll(args), input);
   }
 
-  // Ignore all empty lines, to allow outputs to differ by empty lines.
-  output = output.split('\n').where((s) => s.isNotEmpty).join('\n') + '\n';
+  expect(_normalize(output), _normalize(expectedOutput));
+}
 
-  expect(output, expectedOutput);
+String _normalize(String css) {
+  css = css.replaceAll('\n\n', '\n');
+  return css;
 }
 
 main() async {
@@ -70,6 +73,24 @@ main() async {
           '  display: flex;\n'
           '  -webkit-flex-direction: row;\n'
           '  flex-direction: row; }\n',
+          useSassC: useSassC);
+    });
+
+    test('support inline-block', () async {
+      await _expectSassOutput(
+          r'''
+        @import 'compass/css3/inline-block';
+
+        .inline-block {
+          @include inline-block;
+        }
+      ''',
+          '.inline-block {\n'
+          '  display: inline-block;\n'
+          '  vertical-align: middle;\n'
+          '  *vertical-align: auto;\n'
+          '  *zoom: 1;\n'
+          '  *display: inline; }\n',
           useSassC: useSassC);
     });
 
@@ -199,7 +220,6 @@ main() async {
       await _expectSassOutput(
           r'''
         @import 'compass/css3/filter';
-
         .filter {
           @include filter(grayscale(100%));
         }

@@ -18,9 +18,11 @@ $_capability-needs-prefixing: (
     -moz: true,
     -webkit: true,
   ),
+  // http://shouldiprefix.com/#filters
   css-filters: (
     -webkit: true,
   ),
+  // http://shouldiprefix.com/#placeholder
   css-placeholder: (
     -moz: true,
     -ms: true,
@@ -151,7 +153,39 @@ $browsers-by-prefix: (
   @return $result;
 }
 
-/// No usage check is implemented; return "1" to support everything.
-@function omitted-usage($browser, $min-version, $max-version) {
-  @return 1;
+$_min-supported-browser-version: (
+  android: 0,
+  // Fine-tuned for inline-block support
+  // (see compass-core/stylesheets/compass/css3/_inline-block.scss).
+  firefox: 3,
+  ie: 0,
+);
+
+$_digits-to-numbers: ("0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9);
+
+/// Dirty string -> number parsing. This is slow, only handles positive ints, etc.
+@function to-number($s) {
+  $l: str_length($s);
+  @if $l == 0 {
+    @return 0;
+  } @else {
+    $d: map-get($_digits-to-numbers, str_slice($s, $l, $l));
+    @if $l == 1 {
+      @return $d;
+    } @else {
+      @return $d + 10 * to-number(str_slice($s, 1, $l - 1));
+    }
+  }
+}
+
+/// How many users would be omitted if support for the given browser starts
+/// with the given version.
+///
+/// (see compass/core/lib/compass/core/caniuse.rb)
+@function omitted-usage($browser, $min_version, $max_version: nil) {
+  $min_supported_versions: map-get($_min-supported-browser-version, $browser);
+  @if not $min_supported_versions {
+    @error 'TODO: please hard-code min-supported-browser-version for #{$browser}.';
+  }
+  @return if(to-number($min_version) >= $min_supported_versions, 1, 0);
 }
