@@ -115,20 +115,6 @@ main() async {
           '  *display: inline; }\n',
           useSassC: useSassC);
     });
-    test('support filter', () async {
-      await _expectSassOutput(
-          r'''
-        @import 'compass/css3/filter';
-
-        .filter {
-          @include filter(grayscale(100%));
-        }
-      ''',
-          '.filter {\n'
-          '  -webkit-filter: grayscale(100%);\n'
-          '  filter: grayscale(100%); }\n',
-          useSassC: useSassC);
-    });
     test('support box-shadow', () async {
       await _expectSassOutput(
           r'''
@@ -301,7 +287,6 @@ main() async {
       await _expectSassOutput(
           r'''
         @import 'compass/css3/filter';
-
         .filter {
           @include filter(grayscale(100%));
         }
