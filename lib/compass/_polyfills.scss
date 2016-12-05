@@ -18,6 +18,14 @@ $_capability-needs-prefixing: (
     -moz: true,
     -webkit: true,
   ),
+  css-filters: (
+    -webkit: true,
+  ),
+  css-placeholder: (
+    -moz: true,
+    -ms: true,
+    -webkit: true,
+  ),
   // http://shouldiprefix.com/#transitions
   css-transitions: (
     -moz: true,
@@ -141,4 +149,9 @@ $browsers-by-prefix: (
     }
   }
   @return $result;
+}
+
+/// No usage check is implemented; return "1" to support everything.
+@function omitted-usage($browser, $min-version, $max-version) {
+  @return 1;
 }

@@ -38,6 +38,10 @@ _expectSassOutput(String input, String expectedOutput, {bool useSassC}) async {
     output = await run(
         'Compass', sass, ['--compass', '--scss']..addAll(args), input);
   }
+
+  // Ignore all empty lines, to allow outputs to differ by empty lines.
+  output = output.split('\n').where((s) => s.isNotEmpty).join('\n') + '\n';
+
   expect(output, expectedOutput);
 }
 
@@ -61,7 +65,6 @@ main() async {
           '  -moz-box-sizing: border-box;\n'
           '  -webkit-box-sizing: border-box;\n'
           '  box-sizing: border-box; }\n'
-          '\n'
           '.flex {\n'
           '  display: -webkit-flex;\n'
           '  display: flex;\n'
@@ -69,6 +72,7 @@ main() async {
           '  flex-direction: row; }\n',
           useSassC: useSassC);
     });
+
     test('support box-shadow', () async {
       await _expectSassOutput(
           r'''
@@ -102,7 +106,6 @@ main() async {
           '  -moz-animation: border;\n'
           '  -webkit-animation: border;\n'
           '  animation: border; }\n'
-          '\n'
           '.transition {\n'
           '  -moz-transition: all 1s;\n'
           '  -o-transition: all 1s;\n'
@@ -146,7 +149,6 @@ main() async {
           '  -ms-transform-origin: 50% 50%;\n'
           '  -webkit-transform-origin: 50% 50%;\n'
           '  transform-origin: 50% 50%; }\n'
-          '\n'
           '.transform3d {\n'
           '  -moz-transform-style: preserve-3d;\n'
           '  -webkit-transform-style: preserve-3d;\n'
@@ -176,7 +178,6 @@ main() async {
           '  -ms: ie, ie-mobile;\n'
           '  -o: opera, opera-mini, opera-mobile;\n'
           '  -webkit: android, android-chrome, blackberry, chrome, ios-safari, opera, opera-mobile, safari; }\n'
-          '\n'
           '.prefixes {\n'
           '  android: -webkit;\n'
           '  android-chrome: -webkit;\n'
@@ -191,6 +192,43 @@ main() async {
           '  opera-mini: -o;\n'
           '  opera-mobile: -o, -webkit;\n'
           '  safari: -webkit; }\n',
+          useSassC: useSassC);
+    });
+
+    test('support filter', () async {
+      await _expectSassOutput(
+          r'''
+        @import 'compass/css3/filter';
+
+        .filter {
+          @include filter(grayscale(100%));
+        }
+      ''',
+          '.filter {\n'
+          '  -webkit-filter: grayscale(100%);\n'
+          '  filter: grayscale(100%); }\n',
+          useSassC: useSassC);
+    });
+
+    test('support input-placeholder', () async {
+      await _expectSassOutput(
+          r'''
+        @import 'compass/css3/user-interface';
+
+        input[type="text"] {
+          @include input-placeholder {
+            color: white;
+          }
+        }
+      ''',
+          'input[type="text"]:-moz-placeholder {\n'
+          '  color: white; }\n'
+          'input[type="text"]::-moz-placeholder {\n'
+          '  color: white; }\n'
+          'input[type="text"]:-ms-input-placeholder {\n'
+          '  color: white; }\n'
+          'input[type="text"]::-webkit-input-placeholder {\n'
+          '  color: white; }\n',
           useSassC: useSassC);
     });
   }
