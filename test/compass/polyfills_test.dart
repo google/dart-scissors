@@ -45,13 +45,6 @@ _expectSassOutput(String input, String expectedOutput, {bool useSassC}) async {
 
 String _normalize(String css) {
   css = css.replaceAll('\n\n', '\n');
-  // TODO(ochafik): File bug on libsass.
-  if (css.contains('::-moz-placeholder')) {
-    print('WARNING: libsass is buggy with placeholder');
-    css = css.replaceAll('::-moz-placeholder', ':-moz-placeholder');
-    css = css.replaceAll(
-        '::-webkit-input-placeholder', ':-webkit-input-placeholder');
-  }
   return css;
 }
 
