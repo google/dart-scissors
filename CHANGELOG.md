@@ -2,7 +2,13 @@
 
 ...
 
-## 0.6.6 (2016-11-08)
+## 0.6.7 (2016-12-05)
+
+### Features
+
+- Added Compass polyfills support for css-filters, css-placeholder, inline-block
+
+## 0.6.7 (2016-11-08)
 
 ### Features
 
