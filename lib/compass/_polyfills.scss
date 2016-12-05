@@ -18,9 +18,11 @@ $_capability-needs-prefixing: (
     -moz: true,
     -webkit: true,
   ),
+  // http://shouldiprefix.com/#filters
   css-filters: (
     -webkit: true,
   ),
+  // http://shouldiprefix.com/#placeholder
   css-placeholder: (
     -moz: true,
     -ms: true,
@@ -73,6 +75,7 @@ $_capability-needs-prefixing: (
 }
 
 $_omitted-usage-per-browser: (
+  android: 1,
   firefox: 0,
   ie: 1,
 );
