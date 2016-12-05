@@ -51,8 +51,7 @@ class _Loop extends AsyncWorkerLoop {
 Future<List<String>> _expandArgFiles(List<String> args) async {
   return (await Future.wait(args.map((arg) {
     if (arg.startsWith('@@')) {
-      return new Future.value(
-          new File(arg.substring('@@'.length)).readAsLines());
+      return new File(arg.substring('@@'.length)).readAsLines();
     } else {
       return new Future.value(<String>[arg]);
     }
