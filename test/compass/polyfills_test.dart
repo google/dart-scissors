@@ -83,21 +83,6 @@ main() async {
           useSassC: useSassC);
     });
 
-    test('support box-shadow', () async {
-      await _expectSassOutput(
-          r'''
-        @import 'compass/css3';
-
-        .box-shadow {
-          @include single-box-shadow;
-        }
-      ''',
-          '.box-shadow {\n'
-          '  -moz-box-shadow: 0px 5px #333333;\n'
-          '  -webkit-box-shadow: 0px 5px #333333;\n'
-          '  box-shadow: 0px 5px #333333; }\n',
-          useSassC: useSassC);
-    });
     test('support inline-block', () async {
       await _expectSassOutput(
           r'''
@@ -115,52 +100,7 @@ main() async {
           '  *display: inline; }\n',
           useSassC: useSassC);
     });
-    test('support box-shadow', () async {
-      await _expectSassOutput(
-          r'''
-        @import 'compass/css3';
 
-        .box-shadow {
-          @include single-box-shadow;
-        }
-      ''',
-          '.box-shadow {\n'
-          '  -moz-box-shadow: 0px 5px #333333;\n'
-          '  -webkit-box-shadow: 0px 5px #333333;\n'
-          '  box-shadow: 0px 5px #333333; }\n',
-          useSassC: useSassC);
-    });
-    test('support inline-block', () async {
-      await _expectSassOutput(
-          r'''
-        @import 'compass/css3/inline-block';
-
-        .inline-block {
-          @include inline-block;
-        }
-      ''',
-          '.inline-block {\n'
-          '  display: inline-block;\n'
-          '  vertical-align: middle;\n'
-          '  *vertical-align: auto;\n'
-          '  *zoom: 1;\n'
-          '  *display: inline; }\n',
-          useSassC: useSassC);
-    });
-    test('support filter', () async {
-      await _expectSassOutput(
-          r'''
-        @import 'compass/css3/filter';
-
-        .filter {
-          @include filter(grayscale(100%));
-        }
-      ''',
-          '.filter {\n'
-          '  -webkit-filter: grayscale(100%);\n'
-          '  filter: grayscale(100%); }\n',
-          useSassC: useSassC);
-    });
     test('support box-shadow', () async {
       await _expectSassOutput(
           r'''
