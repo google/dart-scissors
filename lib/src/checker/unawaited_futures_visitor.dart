@@ -22,6 +22,7 @@ import 'package:analyzer/analyzer.dart'
         InstanceCreationExpression,
         MethodInvocation,
         RecursiveAstVisitor;
+import 'package:analyzer/dart/ast/standard_resolution_map.dart';
 import 'package:analyzer/dart/element/element.dart' show ClassElement, Element;
 
 const String ignoreUnawaitedFutureComment = "// ignore: UNAWAITED_FUTURE";
@@ -39,7 +40,8 @@ class UnawaitedFuturesVisitor extends RecursiveAstVisitor {
     var expr = node?.expression;
     if (expr is AssignmentExpression) return;
 
-    var type = expr?.staticType;
+    var type =
+        expr == null ? null : resolutionMap.staticTypeForExpression(expr);
     if (_isFutureClass(type?.element)) {
       // Ignore a couple of special known cases.
       if (_isFutureDelayedInstanceCreationWithComputation(expr) ||
@@ -67,7 +69,9 @@ class UnawaitedFuturesVisitor extends RecursiveAstVisitor {
   /// computation.
   bool _isFutureDelayedInstanceCreationWithComputation(Expression expr) =>
       expr is InstanceCreationExpression &&
-      _isFutureClass(expr.staticElement?.enclosingElement) &&
+      _isFutureClass(resolutionMap
+          .staticElementForConstructorReference(expr)
+          ?.enclosingElement) &&
       expr.constructorName?.name?.name == 'delayed' &&
       expr.argumentList.arguments.length == 2;
 
@@ -75,7 +79,9 @@ class UnawaitedFuturesVisitor extends RecursiveAstVisitor {
   bool _isMapPutIfAbsentInvocation(Expression expr) =>
       expr is MethodInvocation &&
       expr.methodName.name == 'putIfAbsent' &&
-      _isMap(expr.methodName.staticElement?.enclosingElement);
+      _isMap(resolutionMap
+          .staticElementForIdentifier(expr.methodName)
+          ?.enclosingElement);
 
   bool _isFutureClass(Element e) =>
       e is ClassElement &&
