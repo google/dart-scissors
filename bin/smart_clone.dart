@@ -26,10 +26,26 @@ final argParser = new ArgParser(allowTrailingOptions: true)
   ..addOption('add-command',
       help:
           'Command to run on added files. The path of the file is appended to the command')
-  ..addFlag('dry-run');
+  ..addFlag('inflections',
+      negatable: true,
+      defaultsTo: true,
+      help:
+          'Automatically replace inflections such as plurals, gerunds, etc (e.g. "bazzing" for "baz", "vertices" for "vertex", etc)')
+  ..addFlag('strict',
+      help:
+          'Avoids matching Fooa with Foo (but FooBar will still be matched by Foo)')
+  ..addFlag('dry-run')
+  ..addFlag('verbose', abbr: 'v');
 
 main(List<String> args) async {
   final argResults = argParser.parse(args);
+
+  final editCommand = argResults['edit-command'];
+  final addCommand = argResults['add-command'];
+  final dryRun = argResults['dry-run'];
+  final verbose = argResults['verbose'];
+  final strict = argResults['strict'];
+  final allowInflections = argResults['inflections'];
 
   if (argResults.rest.length != 2)
     throw 'Invalid arguments: expected `from to`, got `${argResults.rest.join(' ')}`';
@@ -37,7 +53,8 @@ main(List<String> args) async {
   String from = argResults.rest[0];
   String to = argResults.rest[1];
 
-  final replacer = new Replacer();
+  final replacer =
+      new Replacer(strict: strict, allowInflections: allowInflections);
   replacer.addReplacements(
       basenameWithoutExtension(from), basenameWithoutExtension(to));
 
@@ -53,9 +70,6 @@ main(List<String> args) async {
     final rel = relative(path, from: from);
     return rel == '.' ? replacer(to) : join(to, replacer(rel));
   }
-
-  final editCommand = argResults['edit-command'];
-  final addCommand = argResults['add-command'];
 
   Future runCommand(String command, File file) async {
     final args = command.split(' ');
@@ -111,17 +125,18 @@ main(List<String> args) async {
     cloneFutures.add(cloneFile(fromEntity));
   }
   final clones = await Future.wait(cloneFutures);
-  if (argResults['dry-run']) {
-    for (final clone in clones) {
-      print('CLONE: ${clone.original} -> ${clone.destination}');
-      print(clone.content);
-    }
-
-    print(replacer);
-    return;
-  }
+  if (dryRun || verbose) printClones(clones);
+  if (verbose) print(replacer);
+  if (dryRun) return;
 
   await Future.wait(clones.map((c) => c.perform()));
+}
+
+printClones(List<FileClone> clones) {
+  for (final clone in clones) {
+    print('CLONE: ${clone.original} -> ${clone.destination}');
+    print(clone.content);
+  }
 }
 
 Future<FileSystemEntity> stat(String path) async {
@@ -157,32 +172,27 @@ final caseInsensitiveTransforms = <_StringTransform>[
   (s) => s.replaceAll('_', '-'),
   (s) => decamelize(s, '_'),
   (s) => decamelize(s, '-'),
-  // (s) => s
 ];
 final caseSensitiveTransforms = <_StringTransform>[
   underscoresToCamel,
   hyphensToCamel,
-  // capitalize,
-  // decapitalize,
 ];
-final variationTransforms = <_StringTransform>[
-  (s) => s,
-  pluralize,
-  (s) => doubleFinalLetter(s, 'er'),
-  (s) => doubleFinalLetter(s, 'ed'),
-  (s) => doubleFinalLetter(s, 'ing'),
-];
+String identity(String s) => s;
 
 class Replacer extends Function {
   final _replacedPatterns = new Set<String>();
   final _replacements = <RegExp, String>{};
   final _patterns = <RegExp>[];
+  final bool strict;
+  final bool allowInflections;
+  Replacer({this.strict, this.allowInflections});
 
   static const _patternSuffix = r'(?:$|\b|(?=\d|[-_A-Z]))';
   // const patternPrefix = r'(\b|\d|[_A-Z])';
 
   void addReplacements(String original, String replacement) {
-    for (final variation in variationTransforms) {
+    final variations = allowInflections ? English.inflections : [identity];
+    for (final variation in variations) {
       for (final transform in caseSensitiveTransforms) {
         _addReplacement(original, replacement, (s) => transform(variation(s)));
         _addReplacement(
@@ -205,7 +215,7 @@ class Replacer extends Function {
     final transformed = transform(original);
 
     // if (transformed == original) continue;
-    String pattern = transformed + _patternSuffix;
+    String pattern = transformed + (strict ? _patternSuffix : '');
     if (_replacedPatterns.add(pattern)) {
       final rx = new RegExp(pattern);
       _patterns.add(rx);
@@ -252,64 +262,98 @@ String capitalize(String s) =>
 String decapitalize(String s) =>
     s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 
-final knownPlurals = {
-  'leaf': 'leaves',
-  'hero': 'heroes',
-  'foot': 'feet',
-  'person': 'people',
-  'child': 'children',
-  'knife': 'knives',
-  'life': 'lives',
-  'storey': 'storeys',
-  'formula': 'formulae',
-  'criterion': 'criteria',
-};
+Map<String, String> invertMap(Map<String, String> map) =>
+    new Map.fromIterable(map.keys, key: (k) => map[k]);
 
-final doubledConsonants = new Set.from([
-  'b', 'd', 'f', 'g', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'z'
-  // 'c', 'j', 'k', 'q', 'w', 'x',
-]);
-String doubleFinalLetter(String s, String suffix) {
-  if (s.length < 2) return s;
-  final c = s[s.length - 1];
-  final previous = s[s.length - 2];
-  if (doubledConsonants.contains(c) && c != previous) return s + c + suffix;
-  return s + suffix;
-}
+_stripFinalE(String s) => s.endsWith('e') ? s.substring(0, s.length - 1) : s;
 
-String pluralize(String s) {
-  String replaceSuffix(int length, String to) =>
+// TODO(ochafik): Use package:inflection.
+class English {
+  static final inflections = <_StringTransform>[
+    identity,
+    doubleLetterPluralize,
+    pluralize,
+    singularize,
+    (s) => doubleFinalLetter(_stripFinalE(s)) + 'er',
+    (s) => doubleFinalLetter(_stripFinalE(s)) + 'ed',
+    (s) => doubleFinalLetter(_stripFinalE(s)) + 'ing',
+  ];
+
+  static final doubledConsonants = new Set.from([
+    'b', 'd', 'f', 'g', 'l', 'm', 'n', 'p', 't', 'v', 'z',
+    // 'c', 'j', 'k', 'q', 's', 'w', 'x', 'r'
+  ]);
+  static bool shouldDoubleFinalLetter(String s) {
+    if (s.length < 2) return false;
+    final c = s[s.length - 1];
+    final previous = s[s.length - 2];
+    return doubledConsonants.contains(c) && c != previous;
+  }
+
+  static String doubleFinalLetter(String s) {
+    if (shouldDoubleFinalLetter(s)) return s + s[s.length - 1];
+    return s;
+  }
+
+  static final _knownPlurals = {
+    'child': 'children',
+    'criterion': 'criteria',
+    'foot': 'feet',
+    'leaf': 'leaves',
+    'life': 'lives',
+    'person': 'people',
+    'formula': 'formulae',
+  };
+  static final _knownSingulars = invertMap(_knownPlurals);
+  static final _knownPluralSuffices = {
+    'ay': 'ays',
+    'ey': 'eys',
+    'y': 'ies',
+    'ix': 'ices',
+    'ex': 'ices',
+    'is': 'es',
+    'ro': 'roes',
+    'um': 'a',
+    'us': 'i',
+    's': 'ses',
+    '': 's'
+  };
+  static final _knownSingularSuffices = invertMap(_knownPluralSuffices);
+
+  static String _replaceSuffix(String s, int length, String to) =>
       s.substring(0, s.length - length) + to;
 
-  final knownPlural = knownPlurals[s];
-  if (knownPlural != null) return knownPlural;
+  static String pluralize(String s) {
+    final knownPlural = _knownPlurals[s];
+    if (knownPlural != null) return knownPlural;
 
-  if (s.length > 1) {
-    if (s.endsWith('y') && !s.endsWith('ay') && !s.endsWith('ey')) {
-      return replaceSuffix(1, 'ies');
+    if (s.length > 1) {
+      for (final suffix in _knownPluralSuffices.keys) {
+        if (s.endsWith(suffix)) {
+          return _replaceSuffix(s, suffix.length, _knownPluralSuffices[suffix]);
+        }
+      }
     }
-    if (s.endsWith('ix') || s.endsWith('ex')) {
-      return replaceSuffix(2, 'ices');
-    }
-    if (s.endsWith('is')) {
-      return replaceSuffix(2, 'es');
-    }
-    if (s.endsWith('ro')) {
-      return replaceSuffix(2, 'roes');
-    }
-    if (s.endsWith('um')) {
-      return replaceSuffix(2, 'a');
-    }
-    if (s.endsWith('us')) {
-      return replaceSuffix(2, 'i');
-    }
-    if (s.endsWith('ies')) {
-      return s;
-    }
-    if (s.endsWith('s') || s.endsWith('es')) {
-      return replaceSuffix(0, 'es');
-    }
-    return s + 's';
+    return s;
   }
-  return s;
+
+  static String singularize(String s) {
+    final knownSingular = _knownSingulars[s];
+    if (knownSingular != null) return knownSingular;
+
+    if (s.length > 1) {
+      for (final suffix in _knownSingularSuffices.keys) {
+        if (s.endsWith(suffix)) {
+          return _replaceSuffix(
+              s, suffix.length, _knownSingularSuffices[suffix]);
+        }
+      }
+    }
+    return s;
+  }
+
+  static String doubleLetterPluralize(String s) {
+    if (shouldDoubleFinalLetter(s)) return doubleFinalLetter(s) + 'es';
+    return pluralize(s);
+  }
 }
