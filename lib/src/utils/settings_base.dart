@@ -59,7 +59,7 @@ abstract class SettingsBase {
   SettingsBase(this._settings) {
     var config = _settings.configuration as Map<String, dynamic>;
     config.addAll(config[isDebug ? _debugConfigKey : _releaseConfigKey]
-        as Map<String, dynamic> ??
+            as Map<String, dynamic> ??
         const <String, dynamic>{});
 
     var settingList = getAllSettings();

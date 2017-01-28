@@ -58,6 +58,7 @@ Future<TransformResult> runSassC(Asset sassAsset,
     sassContentFuture ??= sassAsset.readAsString();
     return sassContentFuture;
   }
+
   // Each run gets its temp dir.
   var dir = await Directory.systemTemp.createTemp();
   try {

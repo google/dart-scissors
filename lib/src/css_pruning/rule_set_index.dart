@@ -80,6 +80,7 @@ class RuleSetIndex {
       final values = map[key];
       if (values != null) result.addAll(values);
     }
+
     for (String c in node.classes) {
       addValues(c, rulesByClass);
     }

@@ -68,7 +68,9 @@ class PermutationsTransformer extends AggregateTransformer
 
   @override
   classifyPrimary(AssetId id) => _settings.generatePermutations.value &&
-      _allowedExtensions.any((x) => id.path.endsWith(x)) ? '<default>' : null;
+          _allowedExtensions.any((x) => id.path.endsWith(x))
+      ? '<default>'
+      : null;
 
   @override
   declareOutputs(DeclaringAggregateTransform transform) async {
@@ -157,6 +159,7 @@ class PermutationsTransformer extends AggregateTransformer
                 ? name
                 : '$name (used by: ${importedBy.join(", ")})';
           }
+
           transform.logger.info('Creating $permutationId with:\n'
               '\t${assets.map(describeAsset).join("\n\t")}');
         } else {

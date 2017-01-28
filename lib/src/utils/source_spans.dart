@@ -30,6 +30,7 @@ Future<SourceSpan> sourceSpanForNode(
         line: location.lineNumber,
         column: location.columnNumber);
   }
+
   var start = makeLocation(node.beginToken.offset);
   var end = makeLocation(node.endToken.end);
   return new SourceSpan(
