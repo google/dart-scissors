@@ -22,6 +22,7 @@ dev_dependencies:
   transformer_test: ^0.2.0
   test: ^0.12.12
 executables:
+  scissors-clone: smart_clone
   scissors-inline-images: inline_images
   scissors-sassc: sassc_with_compass_functions
   bazel-worker: generic_bazel_worker
