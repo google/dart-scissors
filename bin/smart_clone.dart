@@ -46,10 +46,10 @@ final argParser = new ArgParser(allowTrailingOptions: true)
 main(List<String> args) async {
   final argResults = argParser.parse(args);
 
-  final editCommand = argResults['edit-command'];
-  final copyCommand = argResults['copy-command'];
-  final addCommand = argResults['add-command'];
-  final finalCommand = argResults['final-command'];
+  final editCommand = parseCommand(argResults['edit-command']);
+  final copyCommand = parseCommand(argResults['copy-command']);
+  final addCommand = parseCommand(argResults['add-command']);
+  final finalCommand = parseCommand(argResults['final-command']);
   final dryRun = argResults['dry-run'];
   final verbose = argResults['verbose'];
   final strict = argResults['strict'];
@@ -79,10 +79,9 @@ main(List<String> args) async {
     return rel == '.' ? replacer(to) : join(to, replacer(rel));
   }
 
-  Future runCommand(String command, List<File> files) async {
-    final args = command.split(' ');
-    final result = await Process.run(args.first,
-        []..addAll(args.skip(1))..addAll(files.map((file) => file.path)));
+  Future runCommand(List<String> command, List<File> files) async {
+    final result = await Process.run(command.first,
+        []..addAll(command.skip(1))..addAll(files.map((file) => file.path)));
     if (result.exitCode == 0) {
       stdout.write(result.stdout);
     } else {
@@ -368,4 +367,64 @@ class English {
     if (shouldDoubleFinalLetter(s)) return doubleFinalLetter(s) + 'es';
     return pluralize(s);
   }
+}
+
+List<String> parseCommand(String command) {
+  if (command == null) return;
+  String currentToken = '';
+  String quoteChar;
+  final length = command.length;
+  final tokens = <String>[];
+  int i = 0;
+  String c;
+  consumeChar() => c = command[i++];
+  flushToken() {
+    tokens.add(currentToken);
+    currentToken = '';
+  }
+  while (i < length) {
+    consumeChar();
+    switch (c) {
+      case '"':
+      case "'":
+        quoteChar = c;
+        while (i < length) {
+          consumeChar();
+          if (c == '\\') {
+            if (i < length) {
+              consumeChar();
+              switch (c) {
+                case 'n':
+                  c = '\n';
+                  break;
+                case 'r':
+                  c = '\r';
+                  break;
+                case 'b':
+                  c = '\b';
+                  break;
+                case 't':
+                  c = '\t';
+                  break;
+              }
+              currentToken += c;
+            } else {
+              throw 'Invalid escape in command: `$command`';
+            }
+          } else if (c == quoteChar) {
+            break;
+          } else {
+            currentToken += c;
+          }
+        }
+        break;
+      case ' ':
+        flushToken();
+        break;
+      default:
+        currentToken += c;
+    }
+  }
+  if (currentToken.isNotEmpty) flushToken();
+  return tokens;
 }
