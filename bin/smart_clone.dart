@@ -378,7 +378,8 @@ List<String> parseCommand(String command) {
   int i = 0;
   String c;
   consumeChar() => c = command[i++];
-  flushToken() {
+  void flushToken() {
+    if (currentToken.isEmpty) return;
     tokens.add(currentToken);
     currentToken = '';
   }
@@ -420,12 +421,15 @@ List<String> parseCommand(String command) {
         }
         break;
       case ' ':
+      case '\t':
+      case '\n':
+      case '\r':
         flushToken();
         break;
       default:
         currentToken += c;
     }
   }
-  if (currentToken.isNotEmpty) flushToken();
+  flushToken();
   return tokens;
 }
