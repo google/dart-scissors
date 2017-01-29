@@ -92,31 +92,43 @@ main(List<String> args) async {
 
   Future<FileClone> cloneFile(File file) async {
     final newFile = new File(replacePath(file.path));
+
+    Future copy() async {
+      final existed = await newFile.exists();
+      await newFile.parent.create(recursive: true);
+      bool copied = false;
+      bool edited = false;
+      if (copyCommand != null && !existed) {
+        await runCommand(copyCommand, [file, newFile]);
+        copied = true;
+      }
+      if (editCommand != null && await newFile.exists()) {
+        await runCommand(editCommand, [newFile]);
+        edited = true;
+      }
+      if (!copied) {
+        await file.copy(newFile.path);
+      }
+      if (!existed && !copied && !edited && addCommand != null) {
+        await runCommand(addCommand, [newFile]);
+      }
+    }
+
     try {
       final content = await file.readAsString();
       final newContent = replacer(content);
-      if (!identical(newContent, content)) {
-        return new FileClone(file, newFile, () async {
-          await newFile.parent.create(recursive: true);
-          bool existed = await newFile.exists();
-          if (copyCommand != null && !existed) {
-            await runCommand(copyCommand, [file, newFile]);
-          } else if (editCommand != null && existed) {
-            await runCommand(editCommand, [newFile]);
-          }
+      return new FileClone(file, newFile, () async {
+        await copy();
+        if (content != newContent) {
           await newFile.writeAsString(newContent);
-          if (copyCommand == null && addCommand != null && !existed) {
-            await runCommand(addCommand, [newFile]);
-          }
-        }, newContent);
-      }
+        }
+      }, newContent);
     } catch (e) {
       if (verbose) stderr.writeln('WARNING[$file]: $e');
+      return new FileClone(file, newFile, () async {
+        await copy();
+      });
     }
-    return new FileClone(file, newFile, () async {
-      await newFile.parent.create(recursive: true);
-      await file.copy(newFile.path);
-    });
   }
 
   final cloneFutures = <Future<FileClone>>[];
