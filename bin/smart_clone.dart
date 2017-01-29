@@ -23,9 +23,15 @@ final argParser = new ArgParser(allowTrailingOptions: true)
   ..addOption('edit-command',
       help:
           'Command to run on existing files. The path of the file is appended to the command')
+  ..addOption('copy-command',
+      help:
+          'Command to run on each old/new file pair, to initiate a copy. The path of the files is appended to the command')
   ..addOption('add-command',
       help:
           'Command to run on added files. The path of the file is appended to the command')
+  ..addOption('final-command',
+      help:
+          'Command to run on all output files at the end. The path of the all the files is appended to the command')
   ..addFlag('inflections',
       negatable: true,
       defaultsTo: true,
@@ -41,7 +47,9 @@ main(List<String> args) async {
   final argResults = argParser.parse(args);
 
   final editCommand = argResults['edit-command'];
+  final copyCommand = argResults['copy-command'];
   final addCommand = argResults['add-command'];
+  final finalCommand = argResults['final-command'];
   final dryRun = argResults['dry-run'];
   final verbose = argResults['verbose'];
   final strict = argResults['strict'];
@@ -71,18 +79,15 @@ main(List<String> args) async {
     return rel == '.' ? replacer(to) : join(to, replacer(rel));
   }
 
-  Future runCommand(String command, File file) async {
+  Future runCommand(String command, List<File> files) async {
     final args = command.split(' ');
-    final result = await Process.run(
-        args.first,
-        []
-          ..addAll(args.skip(1))
-          ..add(file.path));
+    final result = await Process.run(args.first,
+        []..addAll(args.skip(1))..addAll(files.map((file) => file.path)));
     if (result.exitCode == 0) {
       stdout.write(result.stdout);
     } else {
-      stderr.writeln(
-          'Command `$command` failed on ${file.path}:\n${result.stderr}');
+      stderr
+          .writeln('Command `$command` failed on ${files}:\n${result.stderr}');
     }
   }
 
@@ -94,12 +99,14 @@ main(List<String> args) async {
       if (!identical(newContent, content)) {
         return new FileClone(file, newFile, () async {
           await newFile.parent.create(recursive: true);
-          if (editCommand != null && await newFile.exists()) {
-            await runCommand(editCommand, newFile);
+          if (copyCommand != null && !await newFile.exists()) {
+            await runCommand(copyCommand, [file, newFile]);
+          } else if (editCommand != null && await newFile.exists()) {
+            await runCommand(editCommand, [newFile]);
           }
           await newFile.writeAsString(newContent);
           if (addCommand != null) {
-            await runCommand(addCommand, newFile);
+            await runCommand(addCommand, [newFile]);
           }
         }, newContent);
       }
@@ -130,6 +137,10 @@ main(List<String> args) async {
   if (dryRun) return;
 
   await Future.wait(clones.map((c) => c.perform()));
+
+  if (finalCommand != null) {
+    await runCommand(finalCommand, clones.map((c) => c.destination).toList());
+  }
 }
 
 printClones(List<FileClone> clones) {
