@@ -370,7 +370,7 @@ class English {
 }
 
 List<String> parseCommand(String command) {
-  if (command == null) return;
+  if (command == null) return null;
   String currentToken = '';
   String quoteChar;
   final length = command.length;
@@ -382,6 +382,7 @@ List<String> parseCommand(String command) {
     tokens.add(currentToken);
     currentToken = '';
   }
+
   while (i < length) {
     consumeChar();
     switch (c) {
