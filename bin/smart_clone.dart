@@ -99,19 +99,20 @@ main(List<String> args) async {
       if (!identical(newContent, content)) {
         return new FileClone(file, newFile, () async {
           await newFile.parent.create(recursive: true);
-          if (copyCommand != null && !await newFile.exists()) {
+          bool existed = await newFile.exists();
+          if (copyCommand != null && !existed) {
             await runCommand(copyCommand, [file, newFile]);
-          } else if (editCommand != null && await newFile.exists()) {
+          } else if (editCommand != null && existed) {
             await runCommand(editCommand, [newFile]);
           }
           await newFile.writeAsString(newContent);
-          if (addCommand != null) {
+          if (copyCommand == null && addCommand != null && !existed) {
             await runCommand(addCommand, [newFile]);
           }
         }, newContent);
       }
     } catch (e) {
-      print('WARNING[$file]: $e');
+      if (verbose) stderr.writeln('WARNING[$file]: $e');
     }
     return new FileClone(file, newFile, () async {
       await newFile.parent.create(recursive: true);
