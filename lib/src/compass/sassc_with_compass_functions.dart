@@ -20,6 +20,8 @@ import 'package:args/args.dart';
 import 'package:barback/barback.dart' show Asset;
 import 'package:quiver/check.dart';
 
+import '../css_mirroring/bidi_css_generator.dart';
+import '../css_mirroring/cssjanus_runner.dart';
 import '../image_inlining/main.dart';
 import '../utils/io_utils.dart';
 import '../utils/path_resolver.dart';
@@ -67,6 +69,20 @@ Future<ProcessResult> runWithArgs(List<String> args) async {
     var output = await inlineImagesWithIncludeDirs(
         input, opts.includeDirs.map((path) => new Directory(path)).toList());
     if (output != null) {
+      final cssJanusPath =
+          opts.cssjanusPath?.path ?? pathResolver.defaultCssJanusPath;
+      if (opts.cssjanusDirection == 'rtl') {
+        final inlined = await output.readAsString();
+        final flipped = await runCssJanus(inlined, cssJanusPath);
+        output = new Asset.fromString(output.id, flipped);
+      } else if (opts.cssjanusDirection == 'bidi') {
+        final inlined = await output.readAsString();
+        final bidirectionalized =
+        await bidirectionalizeCss(inlined, (String css) async {
+          return runCssJanus(css, cssJanusPath);
+        });
+        output = new Asset.fromString(output.id, bidirectionalized);
+      }
       result = await _pipeResult(output, opts.outputFile, result.stderr);
     }
   }
@@ -83,7 +99,7 @@ ArgParser _createSassCArgsParser() {
     ..addFlag('version', abbr: 'v')
     ..addFlag('sourcemap', abbr: 'm')
     ..addOption('cssjanus-path')
-    ..addOption('cssjanus-direction')
+    ..addOption('cssjanus-direction', allowed: ['ltr', 'rtl', 'bidi'])
     ..addOption('load-path', abbr: 'I', allowMultiple: true)
     ..addOption('plugin-path', abbr: 'P')
     ..addOption('precision', abbr: 'p')
@@ -129,11 +145,6 @@ class SassCArgs {
 
     final cssjanusPath = results['cssjanus-path'];
     final cssjanusDirection = results['cssjanus-direction'];
-    if (cssjanusPath != null) {
-      if (cssjanusDirection != 'ltr' && cssjanusDirection != 'rtl') {
-        throw 'Unexpected direction: "$cssjanusDirection"';
-      }
-    }
     return new SassCArgs(
         args.where((a) => !a.startsWith('--cssjanus-')).toList(),
         includeDirs: results['load-path'] as List<String>,
