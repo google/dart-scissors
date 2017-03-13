@@ -54,6 +54,16 @@ void main() {
     '''
   });
 
+  testPhases('works on compact code',
+      phases, {
+    'a|foo_compact.css': r'.foo{color:blue;float:right;}.bar{}'
+  }, {
+    'a|foo_compact.css':
+        '.foo{color:blue;}.bar{}\n' +
+        ':host-context([dir="ltr"]) .foo{float:right;}\n' +
+        ':host-context([dir="rtl"]) .foo{float:left;}'
+  });
+
   testPhases(
       'honours and consumes cssjanus\'s /* @noflip */ comments', phases, {
     'a|foo_noflip.css': r'''
@@ -312,6 +322,75 @@ void main() {
 
         :host-context([dir="rtl"]) .child1, :host-context([dir="rtl"]) .child2 {
           margin-left: 10px;
+        }
+    '''
+  });
+
+  testPhases('supports :host', phases, {
+    'a|foo_host.css': r'''
+        :host {
+          position: absolute;
+          padding-right: 10px;
+        }
+
+        :host.bar {
+          position: relative;
+          margin-right: 10px;
+        }
+
+        :hostage {
+          border-right: 10px;
+        }
+
+        :host-context(.foo) {
+          position: fixed;
+          right: 10px;
+        }
+    '''
+  }, {
+    'a|foo_host.css': r'''
+        :host {
+          position: absolute;
+          }
+
+        :host.bar {
+          position: relative;
+          }
+
+        :host-context(.foo) {
+          position: fixed;
+          }
+
+        :host-context([dir="ltr"]) {
+          padding-right: 10px;
+        }
+
+        :host-context([dir="ltr"]).bar {
+          margin-right: 10px;
+        }
+
+        :host-context([dir="ltr"]) :hostage {
+          border-right: 10px;
+        }
+
+        :host-context([dir="ltr"]) :host-context(.foo) {
+          right: 10px;
+        }
+
+        :host-context([dir="rtl"]) {
+          padding-left: 10px;
+        }
+
+        :host-context([dir="rtl"]).bar {
+          margin-left: 10px;
+        }
+
+        :host-context([dir="rtl"]) :hostage {
+          border-left: 10px;
+        }
+
+        :host-context([dir="rtl"]) :host-context(.foo) {
+          left: 10px;
         }
     '''
   });
