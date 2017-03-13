@@ -73,10 +73,10 @@ RemovalResult editFlippedRuleSet(
     /// Add direction attribute to RuleId for direction-specific RuleSet.
     var flippedDirection = flipDirection(nativeDirection);
 
-    prependToEachSelector(mirroredRuleSet.original, nativeDirTrans,
-        ':host-context([dir="${enumName(nativeDirection)}"]) ');
-    prependToEachSelector(mirroredRuleSet.flipped, flippedDirTrans,
-        ':host-context([dir="${enumName(flippedDirection)}"]) ');
+    prependHostContextToEachSelector(mirroredRuleSet.original, nativeDirTrans,
+        '[dir="${enumName(nativeDirection)}"]');
+    prependHostContextToEachSelector(mirroredRuleSet.flipped, flippedDirTrans,
+        '[dir="${enumName(flippedDirection)}"]');
 
     flippedDirSubTransaction.commit();
     nativeDirSubTransaction.commit();
@@ -89,10 +89,26 @@ RemovalResult editFlippedRuleSet(
   return removalResult;
 }
 
-void prependToEachSelector(Entity e, BufferedTransaction trans, String s) {
+/// Matches " :host" or ":host.foo" without matching ":host-context".
+final _hostPrefixRx = new RegExp(r'^(\s*:host)(?:$|[^\w-])');
+
+void prependHostContextToEachSelector(
+    Entity e, BufferedTransaction trans, String selector) {
   for (final Selector sel in _getSelectors(e.value as RuleSet)) {
-    var start = sel.span.start.offset;
-    trans.edit(start, start, s);
+    final start = sel.span.start.offset;
+    int end = start;
+    bool appendSpace = true;
+
+    // If sel is :host, we ditch it as :host-context will already apply to it.
+    final text = sel.span.text;
+    final match = _hostPrefixRx.matchAsPrefix(text);
+    if (match != null) {
+      end = start + match.group(1).length;
+      appendSpace = false;
+    }
+
+    final prefix = ':host-context($selector)${appendSpace ? ' ' : ''}';
+    trans.edit(start, end, prefix);
   }
 }
 
