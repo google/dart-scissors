@@ -54,12 +54,10 @@ void main() {
     '''
   });
 
-  testPhases('works on compact code',
-      phases, {
+  testPhases('works on compact code', phases, {
     'a|foo_compact.css': r'.foo{color:blue;float:right;}.bar{}'
   }, {
-    'a|foo_compact.css':
-        '.foo{color:blue;}.bar{}\n' +
+    'a|foo_compact.css': '.foo{color:blue;}.bar{}\n' +
         ':host-context([dir="ltr"]) .foo{float:right;}\n' +
         ':host-context([dir="rtl"]) .foo{float:left;}'
   });
