@@ -2,7 +2,7 @@
 set -eu
 
 function find_dart_files() {
-  find bin -name '*.dart'
+  find bin -name '*.dart' | grep -v 'smart_clone.dart'
   find lib -name '*.dart' | grep -v 'lib/src/checker/'
 }
 function find_dart_test_files() {
