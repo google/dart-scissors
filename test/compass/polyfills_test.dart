@@ -258,11 +258,11 @@ main() async {
         @import 'compass/css3';
 
         .gradient {
-          background-image: linear-gradient(to bottom, white, black);
+          background-image: linear-gradient(to bottom, #ffffff, #000000);
         }
         ''',
           '.gradient {\n'
-          '  background-image: linear-gradient(to bottom, white, black); }\n'
+          '  background-image: linear-gradient(to bottom, #ffffff, #000000); }\n'
           '',
           useSassC: useSassC);
     });
