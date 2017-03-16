@@ -251,6 +251,21 @@ main() async {
           '  color: white; }\n',
           useSassC: useSassC);
     });
+
+    test('leaves linear-gradient intact', () async {
+      await _expectSassOutput(
+          r'''
+        @import 'compass/css3';
+
+        .gradient {
+          background-image: linear-gradient(to bottom, white, black);
+        }
+        ''',
+          '.gradient {\n'
+          '  background-image: linear-gradient(to bottom, white, black); }\n'
+          '',
+          useSassC: useSassC);
+    });
   }
 
   group('compass polyfills', () {
