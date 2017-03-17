@@ -189,3 +189,20 @@ $_digits-to-numbers: ("0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7
   }
   @return if(to-number($min_version) >= $min_supported_versions, 1, 0);
 }
+
+/// Fallbacks for using linear-gradient with SassC and Compass stylesheets.
+///
+/// compass/core/stylesheets/compass/css3/_images.scss defines SassScript
+/// function @linear-gradient that depends on Ruby code providing
+/// _linear-gradient_legacy and _linear-gradient functions. When using SassC
+/// using linear-gradient would result in generating invalid CSS instead.
+///
+/// Having simple SassScript implementation of these does not give prefixed
+/// cross-browser functionality but stops SassC from generating garbage.
+@function _linear-gradient_legacy($angle, $arguments...) {
+  @return #{'linear-gradient(#{$angle}, #{$arguments})'};
+}
+
+@function _linear-gradient($angle, $arguments...) {
+  @return #{'linear-gradient(#{$angle}, #{$arguments})'};
+}
