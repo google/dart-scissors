@@ -262,8 +262,7 @@ main() async {
         }
         ''',
           '.gradient {\n'
-          '  background-image: linear-gradient(to bottom, #ffffff, #000000); }\n'
-          '',
+          '  background-image: linear-gradient(to bottom, #ffffff, #000000); }\n',
           useSassC: useSassC);
     });
   }
