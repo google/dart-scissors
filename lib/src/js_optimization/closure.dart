@@ -20,16 +20,8 @@ import '../utils/process_utils.dart';
 
 Future<String> simpleClosureCompile(
     String javaPath, String closureCompilerJarPath, String content) async {
-  var p = await Process.start(
-      javaPath,
-      [
-        '-jar',
-        closureCompilerJarPath,
-        '--language_in=ES5',
-        '--language_out=ES5',
-        '-O',
-        'SIMPLE'
-      ],
+  var p = await Process.start(javaPath,
+      ['-jar', closureCompilerJarPath, '--language_out=ES5', '-O', 'SIMPLE'],
       mode: ProcessStartMode.DETACHED_WITH_STDIO);
 
   return successString(

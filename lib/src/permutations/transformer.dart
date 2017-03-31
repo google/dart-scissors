@@ -46,7 +46,7 @@ part 'settings.dart';
 /// 1kB / 24kB in gzipped size.
 ///
 /// cat example/permutations/build/web/main_en.js | gzip -9 | wc -c
-/// cat example/permutations/build/web/main_en.js | java -jar compiler.jar --language_in=ES5 --language_out=ES5 -O SIMPLE | gzip -9 | wc -c
+/// cat example/permutations/build/web/main_en.js | java -jar compiler.jar --language_out=ES5 -O SIMPLE | gzip -9 | wc -c
 ///
 /// This might interact with the CSS mirroring feature, in ways still TBD.
 ///
