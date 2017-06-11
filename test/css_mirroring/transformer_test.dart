@@ -16,7 +16,7 @@ library scissors.test.css_mirroring.transformer_test;
 
 import 'package:barback/barback.dart' show BarbackMode, BarbackSettings;
 import 'package:scissors/src/css_mirroring/transformer.dart';
-
+import 'package:test/test.dart';
 import 'package:transformer_test/utils.dart' show testPhases;
 
 List<List> makePhases(Map config) => <List>[
@@ -324,72 +324,93 @@ void main() {
     '''
   });
 
-  testPhases('supports :host', phases, {
-    'a|foo_host.css': r'''
-        :host {
-          position: absolute;
-          padding-right: 10px;
-        }
+  group('supports :host', () {
+    testPhases('in simple cases', phases, {
+      'a|foo_host.css': r'''
+          :host {
+            position: absolute;
+            padding-right: 10px;
+          }
+      '''
+    }, {
+      'a|foo_host.css': r'''
+          :host {
+            position: absolute;
+            }
 
-        :host.bar {
-          position: relative;
-          margin-right: 10px;
-        }
-
-        :hostage {
-          border-right: 10px;
-        }
-
-        :host-context(.foo) {
-          position: fixed;
-          right: 10px;
-        }
-    '''
-  }, {
-    'a|foo_host.css': r'''
-        :host {
-          position: absolute;
+          :host-context([dir="ltr"]) {
+            padding-right: 10px;
           }
 
-        :host.bar {
-          position: relative;
+          :host-context([dir="rtl"]) {
+            padding-left: 10px;
+          }
+      '''
+    });
+
+    testPhases('with a class', phases, {
+      'a|foo_host.css': r'''
+          :host.bar {
+            position: relative;
+            margin-right: 10px;
+          }
+      '''
+    }, {
+      'a|foo_host.css': r'''
+          :host.bar {
+            position: relative;
+            }
+
+          :host-context([dir="ltr"]).bar {
+            margin-right: 10px;
           }
 
-        :host-context(.foo) {
-          position: fixed;
+          :host-context([dir="rtl"]).bar {
+            margin-left: 10px;
+          }
+      '''
+    });
+
+    testPhases('skips near-matches', phases, {
+      'a|foo_host.css': r'''
+          :hostage {
+            border-right: 10px;
+          }
+      '''
+    }, {
+      'a|foo_host.css': r'''
+
+          :host-context([dir="ltr"]) :hostage {
+            border-right: 10px;
           }
 
-        :host-context([dir="ltr"]) {
-          padding-right: 10px;
-        }
+          :host-context([dir="rtl"]) :hostage {
+            border-left: 10px;
+          }
+      '''
+    });
 
-        :host-context([dir="ltr"]).bar {
-          margin-right: 10px;
-        }
+    testPhases('with existing :host-context', phases, {
+      'a|foo_host.css': r'''
+          :host-context(.foo) {
+            position: fixed;
+            right: 10px;
+          }
+      '''
+    }, {
+      'a|foo_host.css': r'''
+          :host-context(.foo) {
+            position: fixed;
+            }
 
-        :host-context([dir="ltr"]) :hostage {
-          border-right: 10px;
-        }
+          :host-context([dir="ltr"]) :host-context(.foo) {
+            right: 10px;
+          }
 
-        :host-context([dir="ltr"]) :host-context(.foo) {
-          right: 10px;
-        }
-
-        :host-context([dir="rtl"]) {
-          padding-left: 10px;
-        }
-
-        :host-context([dir="rtl"]).bar {
-          margin-left: 10px;
-        }
-
-        :host-context([dir="rtl"]) :hostage {
-          border-left: 10px;
-        }
-
-        :host-context([dir="rtl"]) :host-context(.foo) {
-          left: 10px;
-        }
-    '''
+          :host-context([dir="rtl"]) :host-context(.foo) {
+            left: 10px;
+          }
+      '''
+    });
   });
 }

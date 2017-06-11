@@ -16,7 +16,13 @@ library scissors.src.css_mirroring.bidi_css_generator;
 import 'dart:async';
 
 import 'package:csslib/parser.dart' show parse;
-import 'package:csslib/visitor.dart' show TreeNode, RuleSet;
+import 'package:csslib/visitor.dart'
+    show
+        TreeNode,
+        HostDirective,
+        MediaDirective,
+        StyletDirective,
+        MixinRulesetDirective;
 
 import 'package:source_maps/refactor.dart' show TextEditTransaction;
 import 'package:source_span/source_span.dart' show SourceFile;
@@ -67,7 +73,7 @@ Future<String> bidirectionalizeCss(String originalCss, CssFlipper cssFlipper,
     } else if (entity.hasNestedRuleSets) {
       editFlippedDirectiveWithNestedRuleSets(
           entity,
-          entity.getChildren((d) => (d as dynamic).rulesets as List<RuleSet>),
+          entity.getChildren<TreeNode>(_getRules),
           nativeDirection,
           bufferedCommonTrans,
           bufferedNativeDirTrans,
@@ -97,4 +103,14 @@ final _noFlipRx = new RegExp(r'/\*\*?\s*@noflip\s*\*/\s*', multiLine: true);
 
 String _cleanupCss(String css) {
   return css.replaceAll(_noFlipRx, '');
+}
+
+List<TreeNode> _getRules(node) {
+  if (node is HostDirective ||
+      node is MediaDirective ||
+      node is StyletDirective ||
+      node is MixinRulesetDirective) {
+    return node.rules;
+  }
+  return [];
 }

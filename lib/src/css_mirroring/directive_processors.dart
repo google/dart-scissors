@@ -13,7 +13,7 @@
 // limitations under the License.
 library scissors.src.css_mirroring.directive_processors;
 
-import 'package:csslib/visitor.dart' show RuleSet;
+import 'package:csslib/visitor.dart' show TreeNode;
 
 import 'buffered_transaction.dart';
 import 'css_utils.dart' show Direction;
@@ -25,7 +25,7 @@ import 'rulesets_processor.dart' show editFlippedRuleSet, RemovalResult;
 /// Also if all rulesets have to be removed, it removes the directive.
 editFlippedDirectiveWithNestedRuleSets(
     MirroredEntity directive,
-    MirroredEntities<RuleSet> nestedRuleSets,
+    MirroredEntities<TreeNode> nestedRuleSets,
     Direction nativeDirection,
     BufferedTransaction commonTrans,
     BufferedTransaction nativeDirTrans,
@@ -35,7 +35,7 @@ editFlippedDirectiveWithNestedRuleSets(
   final flippedDirSubTransaction = flippedDirTrans.createSubTransaction();
   int removedAllCount = 0;
   int removedNoneCount = 0;
-  nestedRuleSets.forEach((MirroredEntity<RuleSet> ruleSet) {
+  nestedRuleSets.forEach((MirroredEntity<TreeNode> ruleSet) {
     var result = editFlippedRuleSet(
         ruleSet,
         nativeDirection,
