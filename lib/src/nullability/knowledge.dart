@@ -1,0 +1,1 @@
+enum Knowledge { isNullable, isNotNull }
