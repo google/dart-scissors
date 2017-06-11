@@ -6,7 +6,6 @@ import 'package:analyzer/src/generated/engine.dart';
 import 'package:analyzer/src/generated/sdk.dart';
 import 'package:analyzer/src/generated/source.dart';
 import 'package:front_end/src/base/source.dart';
-import 'package:front_end/src/base/uri_kind.dart';
 import 'package:path/path.dart' as path;
 import 'package:scissors/src/nullability/format_knowledge.dart';
 import 'package:scissors/src/nullability/nullability_inference.dart';

@@ -22,11 +22,13 @@ class Implication {
 
   static const _unconditionalMask = isNotNull | isNull;
 
-  static const _ifExpressionIsTrueMask =
-      _unconditionalMask | isNotNullIfExpressionIsTrue | isNullIfExpressionIsTrue;
+  static const _ifExpressionIsTrueMask = _unconditionalMask |
+      isNotNullIfExpressionIsTrue |
+      isNullIfExpressionIsTrue;
 
-  static const _ifExpressionIsFalseMask =
-      _unconditionalMask | isNotNullIfExpressionIsFalse | isNullIfExpressionIsFalse;
+  static const _ifExpressionIsFalseMask = _unconditionalMask |
+      isNotNullIfExpressionIsFalse |
+      isNullIfExpressionIsFalse;
 
   static const _isNullMask =
       isNull | isNullIfExpressionIsTrue | isNullIfExpressionIsFalse;
