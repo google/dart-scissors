@@ -35,6 +35,11 @@ main() {
           'bar(x) => /*not-null*/x.f(x.a, /*not-null*/x.b);');
     });
 
+    test('negation', () async {
+      expect(await annotate('bar(x) { if (!(x == null)) x(); }'),
+          'bar(x) { if (!(x == null)) /*not-null*/x(); }');
+    });
+
     test('conditional expressions', () async {
       expect(
           await annotate('''

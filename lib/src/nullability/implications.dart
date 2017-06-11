@@ -15,28 +15,24 @@ final _implicationsByKnowledgeAndExpressionValue = <Knowledge, Map<bool, int>>{
 class Implication {
   static const isNotNull = 1;
   static const isNull = 2;
-  static const isNotNullIfExpressionDidNotThrow = 4;
-  static const isNotNullIfExpressionIsTrue = 8;
-  static const isNotNullIfExpressionIsFalse = 16;
-  static const isNullIfExpressionIsTrue = 32;
-  static const isNullIfExpressionIsFalse = 64;
+  static const isNotNullIfExpressionIsTrue = 4;
+  static const isNotNullIfExpressionIsFalse = 8;
+  static const isNullIfExpressionIsTrue = 16;
+  static const isNullIfExpressionIsFalse = 32;
 
-  static const sequenceMask =
-      isNotNull | isNull | isNotNullIfExpressionDidNotThrow;
+  static const _unconditionalMask = isNotNull | isNull;
 
-  static const ifExpressionIsTrueMask =
-      sequenceMask | isNotNullIfExpressionIsTrue | isNullIfExpressionIsTrue;
+  static const _ifExpressionIsTrueMask =
+      _unconditionalMask | isNotNullIfExpressionIsTrue | isNullIfExpressionIsTrue;
 
-  static const ifExpressionIsFalseMask =
-      sequenceMask | isNotNullIfExpressionIsFalse | isNullIfExpressionIsFalse;
+  static const _ifExpressionIsFalseMask =
+      _unconditionalMask | isNotNullIfExpressionIsFalse | isNullIfExpressionIsFalse;
 
-  static const isNullMask =
+  static const _isNullMask =
       isNull | isNullIfExpressionIsTrue | isNullIfExpressionIsFalse;
 
-  static const isNotNullMask = isNotNull |
-      isNotNullIfExpressionDidNotThrow |
-      isNotNullIfExpressionIsTrue |
-      isNotNullIfExpressionIsFalse;
+  static const _isNotNullMask =
+      isNotNull | isNotNullIfExpressionIsTrue | isNotNullIfExpressionIsFalse;
 
   static int bindKnowledgeToBoolExpression(
       Knowledge knowledge, bool expression) {
@@ -52,20 +48,19 @@ class Implication {
     tokens(List<String> tokens) => tokens.where((t) => t != null).join(', ');
 
     var results = [];
-    if ((flags & isNotNullMask) != 0) {
+    if ((flags & _isNotNullMask) != 0) {
       if ((flags & isNotNull) != 0) {
         results.add('notNull');
       } else {
         results.add('notNullIf(' +
             tokens([
-              token('exprNotThrowing', isNotNullIfExpressionDidNotThrow),
               token('exprIsTrue', isNotNullIfExpressionIsTrue),
               token('exprIsFalse', isNotNullIfExpressionIsFalse),
             ]) +
             ')');
       }
     }
-    if ((flags & isNullMask) != 0) {
+    if ((flags & _isNullMask) != 0) {
       if ((flags & isNull) != 0) {
         results.add('null');
       } else {
@@ -81,13 +76,13 @@ class Implication {
   }
 
   static int and(int left, int right) =>
-      (left | right) & ifExpressionIsTrueMask;
+      (left | right) & _ifExpressionIsTrueMask;
 
   static int or(int left, int right) =>
-      (left | right) & ifExpressionIsFalseMask;
+      (left | right) & _ifExpressionIsFalseMask;
 
   static int not(int flags) {
-    var result = flags & sequenceMask;
+    var result = flags & _unconditionalMask;
     if ((flags & isNotNullIfExpressionIsTrue) != 0) {
       result |= isNotNullIfExpressionIsFalse;
     }
@@ -105,11 +100,11 @@ class Implication {
 
   static int then(int first, int second) => asStatement(first | second);
 
-  static int asStatement(int flags) => flags & sequenceMask;
+  static int asStatement(int flags) => flags & _unconditionalMask;
 
-  static Knowledge toKnowledge(int flags) => (flags & isNullMask) != 0
+  static Knowledge toKnowledge(int flags) => (flags & _isNullMask) != 0
       ? Knowledge.isNullable
-      : (flags & isNotNullMask) != 0 ? Knowledge.isNotNull : null;
+      : (flags & _isNotNullMask) != 0 ? Knowledge.isNotNull : null;
 
   static int fromKnowledge(Knowledge knowledge) {
     if (knowledge == Knowledge.isNotNull) return isNotNull;
@@ -118,13 +113,13 @@ class Implication {
   }
 
   static Knowledge getKnowledgeForRightAndOperand(int flags) =>
-      toKnowledge(flags & ifExpressionIsTrueMask);
+      toKnowledge(flags & _ifExpressionIsTrueMask);
 
   static Knowledge getKnowledgeForRightOrOperand(int flags) =>
-      toKnowledge(flags & ifExpressionIsFalseMask);
+      toKnowledge(flags & _ifExpressionIsFalseMask);
 
   static Knowledge getKnowledgeForNextOperation(int flags) =>
-      toKnowledge(flags & sequenceMask);
+      toKnowledge(flags & _unconditionalMask);
 }
 
 class Implications {

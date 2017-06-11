@@ -273,11 +273,8 @@ class FlowAwareNullableLocalInference
               defaultImplications?.getKnowledgeForNextOperation(), () {
             var targetImplications = node.target.accept(this);
             if (targetLocal != null) {
-              targetImplications = Implications.union(
-                  targetImplications,
-                  new Implications({
-                    targetLocal: Implication.isNotNullIfExpressionDidNotThrow
-                  }));
+              targetImplications = Implications.union(targetImplications,
+                  new Implications({targetLocal: Implication.isNotNull}));
             }
             return Implications.then(defaultImplications, targetImplications);
           });
@@ -402,11 +399,8 @@ class FlowAwareNullableLocalInference
         node.function.accept(this);
         final functionLocal = _getLocalVar(node.function);
         if (functionLocal != null) {
-          return Implications.then(
-              implications,
-              new Implications({
-                functionLocal: Implication.isNotNullIfExpressionDidNotThrow
-              }));
+          return Implications.then(implications,
+              new Implications({functionLocal: Implication.isNotNull}));
         } else {
           return implications;
         }
@@ -596,8 +590,8 @@ class FlowAwareNullableLocalInference
         node.target?.accept(this);
         node.methodName?.accept(this);
         if (targetLocal != null) {
-          final localImplications = new Implications(
-              {targetLocal: Implication.isNotNullIfExpressionDidNotThrow});
+          final localImplications =
+              new Implications({targetLocal: Implication.isNotNull});
           return Implications.then(implications, localImplications);
         } else {
           return implications;
@@ -659,8 +653,7 @@ class FlowAwareNullableLocalInference
       node.visitChildren(this);
       final targetLocal = _getLocalVar(node.prefix);
       if (targetLocal != null) {
-        return new Implications(
-            {targetLocal: Implication.isNotNullIfExpressionDidNotThrow});
+        return new Implications({targetLocal: Implication.isNotNull});
       } else {
         return null;
       }
@@ -673,8 +666,7 @@ class FlowAwareNullableLocalInference
       node.visitChildren(this);
       final targetLocal = _getLocalVar(node.target);
       if (targetLocal != null) {
-        return new Implications(
-            {targetLocal: Implication.isNotNullIfExpressionDidNotThrow});
+        return new Implications({targetLocal: Implication.isNotNull});
       } else {
         return null;
       }
