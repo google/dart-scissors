@@ -71,7 +71,7 @@ fi
 if (( ${RUN_CHECKER:-0} )); then
   run_checker
 fi
-pub publish --dry-run
+pub publish --dry-run || false
 
 if (( "${TEST_EXAMPLES:-1}" )); then
   # The order of execution of pub transforms cannot be made to be predictive.
