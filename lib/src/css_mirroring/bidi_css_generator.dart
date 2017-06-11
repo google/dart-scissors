@@ -48,16 +48,16 @@ Future<String> bidirectionalizeCss(String originalCss, CssFlipper cssFlipper,
   var topLevelEntities = new MirroredEntities<TreeNode>(originalCss,
       parse(originalCss).topLevels, flippedCss, parse(flippedCss).topLevels);
 
-  var flippedDirTrans =
-      new TextEditTransaction(flippedCss, new SourceFile(flippedCss, url: ''));
+  var flippedDirTrans = new TextEditTransaction(
+      flippedCss, new SourceFile.fromString(flippedCss, url: ''));
   var bufferedFlippedDirTrans = new BufferedTransaction(flippedDirTrans);
 
   var nativeDirTrans = new TextEditTransaction(
-      originalCss, new SourceFile(originalCss, url: ''));
+      originalCss, new SourceFile.fromString(originalCss, url: ''));
   var bufferedNativeDirTrans = new BufferedTransaction(nativeDirTrans);
 
   var commonTrans = new TextEditTransaction(
-      originalCss, new SourceFile(originalCss, url: ''));
+      originalCss, new SourceFile.fromString(originalCss, url: ''));
   var bufferedCommonTrans = new BufferedTransaction(commonTrans);
 
   topLevelEntities.forEach((MirroredEntity<TreeNode> entity) {

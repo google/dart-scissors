@@ -46,8 +46,7 @@ abstract class SassSettings {
     if (_sasscSettings == null) {
       _sasscSettings = (() async {
         var sasscIncludes = <Directory>[];
-        var args = <String>[]
-          ..addAll(await _resolveSassIncludePaths(
+        var args = <String>[]..addAll(await _resolveSassIncludePaths(
               sasscArgs.value.map(resolveEnvVars).toList(),
               (String includePath) async {
             includePath = absolute(await pathResolver.resolvePath(includePath));

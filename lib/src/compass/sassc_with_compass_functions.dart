@@ -78,7 +78,7 @@ Future<ProcessResult> runWithArgs(List<String> args) async {
       } else if (opts.cssjanusDirection == 'bidi') {
         final inlined = await output.readAsString();
         final bidirectionalized =
-        await bidirectionalizeCss(inlined, (String css) async {
+            await bidirectionalizeCss(inlined, (String css) async {
           return runCssJanus(css, cssJanusPath);
         });
         output = new Asset.fromString(output.id, bidirectionalized);

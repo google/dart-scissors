@@ -68,7 +68,8 @@ class CssPruningTransformer extends Transformer
       String htmlTemplate = await findHtmlTemplate(transform, cssAsset.id);
 
       var source = await cssAsset.readAsString();
-      var sourceFile = new SourceFile(source, url: cssAsset.id.toString());
+      var sourceFile =
+          new SourceFile.fromString(source, url: cssAsset.id.toString());
 
       var transaction = new TextEditTransaction(source, sourceFile);
       dropUnusedCssRules(

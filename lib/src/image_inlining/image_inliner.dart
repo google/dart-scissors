@@ -42,7 +42,7 @@ Future<TransformResult> inlineImages(Asset input, ImageInliningMode mode,
   }
   final css = await input.readAsString();
   final cssUrl = "${input.id}";
-  final cssSourceFile = new SourceFile(css, url: cssUrl);
+  final cssSourceFile = new SourceFile.fromString(css, url: cssUrl);
 
   final messages = <TransformMessage>[];
 
