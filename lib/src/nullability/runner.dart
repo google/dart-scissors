@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:analyzer/analyzer.dart';
 import 'package:analyzer/file_system/file_system.dart';
 import 'package:analyzer/file_system/physical_file_system.dart';
 import 'package:analyzer/src/context/builder.dart';
@@ -40,9 +41,13 @@ Future<String> annotateSourceWithNullability(Source source) async {
     final unit = context.resolveCompilationUnit(source, libElement);
 
     // print('unit: $unit');
-    final localsToSkip = findLocalsMutatedInEscapingExecutableElements(unit);
+    bool isNullable(Expression expr) {
+      return expr is NullLiteral || expr is! Literal;
+    }
+
+    final localsToSkip = findLocalsMutatedInEscapingExecutableElements(unit, isNullable);
     final nullableLocalInference =
-        new FlowAwareNullableLocalInference(localsToSkip);
+        new FlowAwareNullableLocalInference(localsToSkip, isNullable);
     unit.accept(nullableLocalInference);
 
     final formattedUnits = formatSourcesWithKnowledge(

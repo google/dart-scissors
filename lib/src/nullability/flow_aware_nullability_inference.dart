@@ -37,12 +37,9 @@ class FlowAwareNullableLocalInference
   final results = <LocalElement, Map<SimpleIdentifier, Knowledge>>{};
   final _stacks = <LocalElement, List<Knowledge>>{};
   final Set<LocalElement> localsToSkip;
+  final ExpressionNullabilityPredicate isNullable;
 
-  FlowAwareNullableLocalInference(this.localsToSkip);
-
-  bool isNullable(Expression expr) {
-    
-  }
+  FlowAwareNullableLocalInference(this.localsToSkip, this.isNullable);
 
   LocalElement _getValidLocal(Expression expr) {
     final local = getLocalVar(expr);
@@ -770,7 +767,7 @@ class FlowAwareNullableLocalInference
   }
 
   Implications _handleLoop(Statement loop, Implications f()) {
-    final localsMutated = findLocalsMutated(loop);
+    final localsMutated = findLocalsMutated(loop, isNullable);
     return Implications.union(
         new Implications(new Map.fromIterable(localsMutated,
             value: (_) => Implication.isNull)),
