@@ -406,6 +406,52 @@ main() {
       ''');
     });
 
+    test('switches', () async {
+      expect(
+          await annotate('''
+        m(a, b, c, d, e) {
+          d();
+          e();
+          switch (a) {
+            case 1:
+              b();
+            case 2:
+              c();
+              d = null;
+              break;
+            default:
+              e = null;
+          }
+          a;
+          b;
+          c;
+          d;
+          e;
+        }
+      '''),
+          '''
+        m(a, b, c, d, e) {
+          d();
+          e();
+          switch (a) {
+            case 1:
+              b();
+            case 2:
+              c();
+              d = null;
+              break;
+            default:
+              e = null;
+          }
+          /*not-null*/a;
+          b;
+          c;
+          d;
+          e;
+        }
+      ''');
+    });
+
     test('cascades', () async {
       expect(await annotate('m(x) => x..f(x.y);'),
           'm(x) => /*not-null*/x..f(x.y);');

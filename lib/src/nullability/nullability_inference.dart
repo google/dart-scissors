@@ -707,6 +707,21 @@ class FlowAwareNullableLocalInference
   }
 
   @override
+  Implications visitSwitchStatement(SwitchStatement node) {
+    return _log('visitSwitchStatement', node, () => _handleLoop(node, () {
+      final expressionLocal = _getValidLocal(node.expression);
+      final expressionImplications = Implications.union(
+          node.expression.accept(this),
+          new Implications({expressionLocal: Implication.isNotNull}));
+      return _withKnowledge(expressionImplications.getKnowledgeForNextOperation(), () {
+        // TODO: create all possible sequences of case members (incl.
+        // fallthroughs), then intersect their implications.
+        return expressionImplications;
+      });
+    }));
+  }
+
+  @override
   Implications visitSwitchCase(SwitchCase node) {
     return _log('visitSwitchCase', node, () {
       node.visitChildren(this);
