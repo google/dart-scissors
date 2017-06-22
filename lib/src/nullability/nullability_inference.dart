@@ -51,6 +51,20 @@ class FlowAwareNullableLocalInference
     return stack == null || stack.isEmpty ? null : stack.last;
   }
 
+  R _withForbiddenLocals<R>(Set<LocalElement> locals, R f()) {
+    final toRemove = <LocalElement>[];
+    for (final local in locals) {
+      if (localsToSkip.add(local)) toRemove.add(local);
+    }
+    try {
+      return f();
+    } finally {
+      for (final local in toRemove) {
+        localsToSkip.remove(local);
+      }
+    }
+  }
+
   R _withKnowledge<R>(Map<LocalElement, Knowledge> knowledge, R f()) {
     knowledge?.forEach((v, n) {
       // print('Pushing: $v -> $n');
@@ -225,21 +239,31 @@ class FlowAwareNullableLocalInference
           // return Implications.union(leftImplications, rightImplications);
         }
       } else {
-        final leftImplications = node.leftOperand.accept(this);
         switch (node.operator.type) {
           case TokenType.AMPERSAND_AMPERSAND:
+            final leftImplications = node.leftOperand.accept(this);
             return _withKnowledge(
                 leftImplications.getKnowledgeForAndRightOperand(), () {
               return Implications.and(
                   leftImplications, node.rightOperand.accept(this));
             });
           case TokenType.BAR_BAR:
+            final leftImplications = node.leftOperand.accept(this);
             return _withKnowledge(
                 leftImplications.getKnowledgeForOrRightOperand(), () {
               return Implications.or(
                   leftImplications, node.rightOperand.accept(this));
             });
-          // case TokenType.QUESTION_QUESTION:
+          case TokenType.QUESTION_QUESTION:
+            // TODO: work out this case (a bit similar to BAR_BAR).
+            break;
+          default:
+            return _handleSequence([node.leftOperand, node.rightOperand]);
+            // return _withKnowledge(
+            //     leftImplications.getKnowledgeForNextOperation(), () {
+            //   return Implications.then(
+            //       leftImplications, node.rightOperand.accept(this));
+            // });
         }
       }
       // node.visitChildren(this);
@@ -323,14 +347,6 @@ class FlowAwareNullableLocalInference
   }
 
   @override
-  Implications visitDoStatement(DoStatement node) {
-    return _log('visitDoStatement', node, () {
-      node.visitChildren(this);
-      return null;
-    });
-  }
-
-  @override
   Implications visitExpressionStatement(ExpressionStatement node) {
     return _log('visitExpressionStatement', node, () {
       return node.expression.accept(this) ?? Implications.empty;
@@ -346,24 +362,8 @@ class FlowAwareNullableLocalInference
   }
 
   @override
-  Implications visitForEachStatement(ForEachStatement node) {
-    return _log('visitForEachStatement', node, () {
-      node.visitChildren(this);
-      return null;
-    });
-  }
-
-  @override
   Implications visitFormalParameterList(FormalParameterList node) {
     return _log('visitFormalParameterList', node, () {
-      node.visitChildren(this);
-      return null;
-    });
-  }
-
-  @override
-  Implications visitForStatement(ForStatement node) {
-    return _log('visitForStatement', node, () {
       node.visitChildren(this);
       return null;
     });
@@ -758,13 +758,67 @@ class FlowAwareNullableLocalInference
     });
   }
 
+  Implications _handleLoop(Statement loop, Implications f()) {
+    final localsMutated = findLocalsMutated(loop);
+    return Implications.union(
+        new Implications(new Map.fromIterable(localsMutated, value: (_) => Implication.isNull)),
+        _withForbiddenLocals(localsMutated, f));
+  }
+
+  @override
+  Implications visitForEachStatement(ForEachStatement node) {
+    return _log('visitForEachStatement', node, () => _handleLoop(node, () {
+      final iterableLocal = _getValidLocal(node.iterable);
+      final iterableImplications = Implications.union(
+          node.iterable.accept(this),
+          new Implications({iterableLocal: Implication.isNotNull}));
+      return _withKnowledge(iterableImplications?.getKnowledgeForNextOperation(), () {
+        node.body.accept(this);
+        return Implications.then(iterableImplications);
+      });
+    }));
+  }
+
+  @override
+  Implications visitForStatement(ForStatement node) {
+    return _log('visitForStatement', node, () => _handleLoop(node, () {
+      final initializationImplications = node.initialization?.accept(this);
+      return _withKnowledge(initializationImplications?.getKnowledgeForNextOperation(), () {
+        final variablesImplications = node.variables?.accept(this);
+        return _withKnowledge(variablesImplications?.getKnowledgeForNextOperation(), () {
+          final conditionImplications = node.condition?.accept(this);
+          return _withKnowledge(conditionImplications?.getKnowledgeForAndRightOperand(), () {
+            node.body.accept(this);
+            // Note: we completely skip the updaters, as they might never be run
+            // and don't impact the body.
+            return Implications.then(initializationImplications,
+              Implications.then(variablesImplications, conditionImplications));
+          });
+        });
+      });
+    }));
+  }
+
   @override
   Implications visitWhileStatement(WhileStatement node) {
-    return _log('visitWhileStatement', node, () {
-      node.visitChildren(this);
-      // TODO: loop constraints + erase assigned variables in sequence
-      return null;
-    });
+    return _log('visitWhileStatement', node, () => _handleLoop(node, () {
+      final conditionImplications = node.condition.accept(this);
+      return _withKnowledge(conditionImplications?.getKnowledgeForAndRightOperand(), () {
+        node.body.accept(this);
+        return Implications.then(conditionImplications);
+      });
+    }));
+  }
+
+  @override
+  Implications visitDoStatement(DoStatement node) {
+    return _log('visitDoStatement', node, () => _handleLoop(node, () {
+      final bodyImplications = node.body.accept(this);
+      return _withKnowledge(bodyImplications?.getKnowledgeForNextOperation(), () {
+        final conditionImplications = node.condition.accept(this);
+        return Implications.then(bodyImplications, conditionImplications);
+      });
+    }));
   }
 
   @override

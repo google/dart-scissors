@@ -99,6 +99,24 @@ main() {
       ''');
     });
 
+    test('simple operators', () async {
+      expect(
+          await annotate('''
+        m(a, b) {
+          a() + b();
+          a;
+          b;
+        }
+      '''),
+          '''
+        m(a, b) {
+          a() + b();
+          /*not-null*/a;
+          /*not-null*/b;
+        }
+      ''');
+    });
+
     test('conditional expressions', () async {
       expect(
           await annotate('''
@@ -135,6 +153,183 @@ main() {
           x;
           x();
           /*not-null*/x;
+        }
+      ''');
+    });
+
+    test('if statements vs. exceptions', () async {
+      expect(
+          await annotate('''
+        m(a, b) {
+          if (a() && b()) {
+            a;
+            b;
+          } else {
+            a;
+            b;
+          }
+          a;
+          b;
+        }
+      '''),
+          '''
+        m(a, b) {
+          if (a() && b()) {
+            /*not-null*/a;
+            /*not-null*/b;
+          } else {
+            /*not-null*/a;
+            /*not-null*/b;
+          }
+          /*not-null*/a;
+          /*not-null*/b;
+        }
+      ''');
+    });
+
+    test('while loops', () async {
+      expect(
+          await annotate('''
+        m(a, b, c) {
+          while (a() + b()) {
+            a;
+            b;
+            a = null;
+            a;
+            c();
+          }
+          a;
+          b;
+          c;
+        }
+      '''),
+          '''
+        m(a, b, c) {
+          while (a() + b()) {
+            a;
+            /*not-null*/b;
+            a = null;
+            a;
+            c();
+          }
+          a;
+          /*not-null*/b;
+          c;
+        }
+      ''');
+    });
+
+    test('do-while loops', () async {
+      expect(
+          await annotate('''
+        m(x, a, b, c) {
+          x();
+          x;
+          do {
+            a;
+            b;
+            a();
+            c();
+            x = null;
+          } while (a() + b());
+          x;
+          a;
+          b;
+          c;
+        }
+      '''),
+          '''
+        m(x, a, b, c) {
+          x();
+          /*not-null*/x;
+          do {
+            a;
+            b;
+            a();
+            c();
+            x = null;
+          } while (/*not-null*/a() + b());
+          x;
+          /*not-null*/a;
+          /*not-null*/b;
+          /*not-null*/c;
+        }
+      ''');
+    });
+
+    test('foreach loops', () async {
+      expect(
+          await annotate('''
+        m(c, d) {
+          for (var i in c) {
+            c;
+            d();
+          }
+          c;
+          d;
+        }
+      '''),
+          '''
+        m(c, d) {
+          for (var i in c) {
+            /*not-null*/c;
+            d();
+          }
+          /*not-null*/c;
+          d;
+        }
+      ''');
+      expect(
+          await annotate('''
+        m(c, x) {
+          x();
+          x;
+          for (var i in c()) {
+            c;
+            x = null;
+          }
+          c;
+          x;
+        }
+      '''),
+          '''
+        m(c, x) {
+          x();
+          /*not-null*/x;
+          for (var i in c()) {
+            /*not-null*/c;
+            x = null;
+          }
+          /*not-null*/c;
+          x;
+        }
+      ''');
+    });
+
+    test('for loops', () async {
+      expect(
+          await annotate('''
+        m(a, b, c) {
+          for (var i = a(); i < b(); c()) {
+            a();
+            b();
+            c();
+          }
+          a;
+          b;
+          c;
+        }
+      '''),
+          '''
+        m(a, b, c) {
+          for (var i = a(); i < b(); c()) {
+            /*not-null*/a();
+            /*not-null*/b();
+            c();
+          }
+          /*not-null*/a;
+          /*not-null*/b;
+          c;
         }
       ''');
     });

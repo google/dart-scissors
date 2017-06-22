@@ -38,6 +38,24 @@ class _EscapingLocalMutationsVisitor extends RecursiveAstVisitor {
   }
 }
 
+class _LocalMutationsVisitor extends RecursiveAstVisitor {
+  final localsMutated = new Set<LocalElement>();
+
+  _handleAssignmentTarget(Expression target) {
+    if (target is SimpleIdentifier) {
+      final local = getLocalVar(target);
+      if (local != null) localsMutated.add(local);
+    }
+  }
+
+  @override
+  visitAssignmentExpression(AssignmentExpression node) {
+    node.visitChildren(this);
+    _handleAssignmentTarget(node.leftHandSide);
+    return null;
+  }
+}
+
 LocalElement getLocalVar(Expression expr) {
   if (expr is SimpleIdentifier) {
     var element = expr.bestElement;
@@ -52,4 +70,10 @@ Set<LocalElement> findLocalsMutatedInEscapingExecutableElements(AstNode node) {
   final visitor = new _EscapingLocalMutationsVisitor();
   node.accept(visitor);
   return visitor.localsMutatedInEscapingExecutableElements;
+}
+
+Set<LocalElement> findLocalsMutated(AstNode node) {
+  final visitor = new _LocalMutationsVisitor();
+  node.accept(visitor);
+  return visitor.localsMutated;
 }
