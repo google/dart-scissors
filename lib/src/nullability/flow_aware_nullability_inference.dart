@@ -41,8 +41,17 @@ class FlowAwareNullableLocalInference
 
   FlowAwareNullableLocalInference(this.localsToSkip, this.isStaticallyNullable);
 
+  Knowledge getKnowledge(Expression id) {
+    if (id is SimpleIdentifier) {
+      final local = getValidLocal(id);
+      final map = results[local];
+      if (map != null) return map[id];
+    }
+    return null;
+  }
+
   bool isNullable(Expression expr) {
-    final knowledge = getKnowledge(getValidLocal(expr));
+    final knowledge = getKnowledge(expr);
     if (knowledge == null) return isStaticallyNullable(expr);
     return knowledge != Knowledge.isNotNull;
   }
@@ -55,7 +64,7 @@ class FlowAwareNullableLocalInference
     return local == null || localsToSkip.contains(local) ? null : local;
   }
 
-  Knowledge getKnowledge(LocalElement variable) {
+  Knowledge _getLocalKnowledge(LocalElement variable) {
     if (variable == null) return null;
 
     final stack = _stacks[variable];
@@ -174,7 +183,7 @@ class FlowAwareNullableLocalInference
     return _log('visitAssignmentExpression', node, () {
       final leftLocal = getValidLocal(node.leftHandSide);
       final rightLocal = getValidLocal(node.rightHandSide);
-      final rightKnowledge = getKnowledge(rightLocal);
+      final rightKnowledge = _getLocalKnowledge(rightLocal);
 
       final rightImplications = node.rightHandSide.accept(this);
       return _withKnowledge(rightImplications?.getKnowledgeForNextOperation(),
@@ -243,8 +252,8 @@ class FlowAwareNullableLocalInference
           // TODO: Upon equality, transfer knowledge between left<->right
           // operands.
           // Also: should declare 1st is not exploding
-          final leftKnowledge = getKnowledge(leftLocal);
-          final rightKnowledge = getKnowledge(rightLocal);
+          final leftKnowledge = _getLocalKnowledge(leftLocal);
+          final rightKnowledge = _getLocalKnowledge(rightLocal);
           final data = <LocalElement, int>{};
           if (leftKnowledge != null) {
             data[rightLocal] =
@@ -715,7 +724,7 @@ class FlowAwareNullableLocalInference
     return _log('visitSimpleIdentifier', node, () {
       final local = getValidLocal(node);
       if (local != null) {
-        final knowledge = getKnowledge(local);
+        final knowledge = _getLocalKnowledge(local);
         // print('FOUND $local: $knowledge');
         if (knowledge != null) {
           results.putIfAbsent(
