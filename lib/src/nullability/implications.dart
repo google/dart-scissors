@@ -187,11 +187,14 @@ class Implications {
     return result;
   }
 
-  static bool _isEmpty(Implications i) => i == null || identical(i, Implications.empty);
+  static bool _isEmpty(Implications i) =>
+      i == null || identical(i, Implications.empty);
 
   static Implications subtract(Implications a, Set<LocalElement> locals) {
     if (_isEmpty(a)) return null;
-    return new Implications(new Map.fromIterable(a.data.keys.where((k) => !locals.contains(k)), value: (k) => a.data[k]));
+    return new Implications(new Map.fromIterable(
+        a.data.keys.where((k) => !locals.contains(k)),
+        value: (k) => a.data[k]));
   }
 
   static Implications union(Implications a, Implications b) {

@@ -68,7 +68,9 @@ class FlowAwareNullableLocalInference
   R _withKnowledge<R>(Map<LocalElement, Knowledge> knowledge, R f()) {
     knowledge?.forEach((v, n) {
       // print('Pushing: $v -> $n');
-      _stacks.putIfAbsent(v, () => <Knowledge>[]).add(n == Knowledge.isNullable ? null : n);
+      _stacks
+          .putIfAbsent(v, () => <Knowledge>[])
+          .add(n == Knowledge.isNullable ? null : n);
     });
     try {
       return f();
@@ -162,13 +164,12 @@ class FlowAwareNullableLocalInference
       return _withKnowledge(rightImplications?.getKnowledgeForNextOperation(),
           () {
         final leftImplications = node.leftHandSide.accept(this);
-        final transferredImplications = new Implications(
-            {leftLocal: Implication.fromKnowledge(rightKnowledge ?? Knowledge.isNullable)});
-        return Implications.then(
-            rightImplications,
-            Implications.union(
-                transferredImplications,
-                leftImplications));
+        final transferredImplications = new Implications({
+          leftLocal:
+              Implication.fromKnowledge(rightKnowledge ?? Knowledge.isNullable)
+        });
+        return Implications.then(rightImplications,
+            Implications.union(transferredImplications, leftImplications));
       });
     });
   }
@@ -259,11 +260,11 @@ class FlowAwareNullableLocalInference
             break;
           default:
             return _handleSequence([node.leftOperand, node.rightOperand]);
-            // return _withKnowledge(
-            //     leftImplications.getKnowledgeForNextOperation(), () {
-            //   return Implications.then(
-            //       leftImplications, node.rightOperand.accept(this));
-            // });
+          // return _withKnowledge(
+          //     leftImplications.getKnowledgeForNextOperation(), () {
+          //   return Implications.then(
+          //       leftImplications, node.rightOperand.accept(this));
+          // });
         }
       }
       // node.visitChildren(this);
@@ -761,64 +762,89 @@ class FlowAwareNullableLocalInference
   Implications _handleLoop(Statement loop, Implications f()) {
     final localsMutated = findLocalsMutated(loop);
     return Implications.union(
-        new Implications(new Map.fromIterable(localsMutated, value: (_) => Implication.isNull)),
+        new Implications(new Map.fromIterable(localsMutated,
+            value: (_) => Implication.isNull)),
         _withForbiddenLocals(localsMutated, f));
   }
 
   @override
   Implications visitForEachStatement(ForEachStatement node) {
-    return _log('visitForEachStatement', node, () => _handleLoop(node, () {
-      final iterableLocal = _getValidLocal(node.iterable);
-      final iterableImplications = Implications.union(
-          node.iterable.accept(this),
-          new Implications({iterableLocal: Implication.isNotNull}));
-      return _withKnowledge(iterableImplications?.getKnowledgeForNextOperation(), () {
-        node.body.accept(this);
-        return Implications.then(iterableImplications);
-      });
-    }));
+    return _log(
+        'visitForEachStatement',
+        node,
+        () => _handleLoop(node, () {
+              final iterableLocal = _getValidLocal(node.iterable);
+              final iterableImplications = Implications.union(
+                  node.iterable.accept(this),
+                  new Implications({iterableLocal: Implication.isNotNull}));
+              return _withKnowledge(
+                  iterableImplications?.getKnowledgeForNextOperation(), () {
+                node.body.accept(this);
+                return Implications.then(iterableImplications);
+              });
+            }));
   }
 
   @override
   Implications visitForStatement(ForStatement node) {
-    return _log('visitForStatement', node, () => _handleLoop(node, () {
-      final initializationImplications = node.initialization?.accept(this);
-      return _withKnowledge(initializationImplications?.getKnowledgeForNextOperation(), () {
-        final variablesImplications = node.variables?.accept(this);
-        return _withKnowledge(variablesImplications?.getKnowledgeForNextOperation(), () {
-          final conditionImplications = node.condition?.accept(this);
-          return _withKnowledge(conditionImplications?.getKnowledgeForAndRightOperand(), () {
-            node.body.accept(this);
-            // Note: we completely skip the updaters, as they might never be run
-            // and don't impact the body.
-            return Implications.then(initializationImplications,
-              Implications.then(variablesImplications, conditionImplications));
-          });
-        });
-      });
-    }));
+    return _log(
+        'visitForStatement',
+        node,
+        () => _handleLoop(node, () {
+              final initializationImplications =
+                  node.initialization?.accept(this);
+              return _withKnowledge(
+                  initializationImplications?.getKnowledgeForNextOperation(),
+                  () {
+                final variablesImplications = node.variables?.accept(this);
+                return _withKnowledge(
+                    variablesImplications?.getKnowledgeForNextOperation(), () {
+                  final conditionImplications = node.condition?.accept(this);
+                  return _withKnowledge(
+                      conditionImplications?.getKnowledgeForAndRightOperand(),
+                      () {
+                    node.body.accept(this);
+                    // Note: we completely skip the updaters, as they might never be run
+                    // and don't impact the body.
+                    return Implications.then(
+                        initializationImplications,
+                        Implications.then(
+                            variablesImplications, conditionImplications));
+                  });
+                });
+              });
+            }));
   }
 
   @override
   Implications visitWhileStatement(WhileStatement node) {
-    return _log('visitWhileStatement', node, () => _handleLoop(node, () {
-      final conditionImplications = node.condition.accept(this);
-      return _withKnowledge(conditionImplications?.getKnowledgeForAndRightOperand(), () {
-        node.body.accept(this);
-        return Implications.then(conditionImplications);
-      });
-    }));
+    return _log(
+        'visitWhileStatement',
+        node,
+        () => _handleLoop(node, () {
+              final conditionImplications = node.condition.accept(this);
+              return _withKnowledge(
+                  conditionImplications?.getKnowledgeForAndRightOperand(), () {
+                node.body.accept(this);
+                return Implications.then(conditionImplications);
+              });
+            }));
   }
 
   @override
   Implications visitDoStatement(DoStatement node) {
-    return _log('visitDoStatement', node, () => _handleLoop(node, () {
-      final bodyImplications = node.body.accept(this);
-      return _withKnowledge(bodyImplications?.getKnowledgeForNextOperation(), () {
-        final conditionImplications = node.condition.accept(this);
-        return Implications.then(bodyImplications, conditionImplications);
-      });
-    }));
+    return _log(
+        'visitDoStatement',
+        node,
+        () => _handleLoop(node, () {
+              final bodyImplications = node.body.accept(this);
+              return _withKnowledge(
+                  bodyImplications?.getKnowledgeForNextOperation(), () {
+                final conditionImplications = node.condition.accept(this);
+                return Implications.then(
+                    bodyImplications, conditionImplications);
+              });
+            }));
   }
 
   @override
