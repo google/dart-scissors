@@ -7,6 +7,7 @@ import 'package:analyzer/src/generated/sdk.dart';
 import 'package:analyzer/src/generated/source.dart';
 import 'package:front_end/src/base/source.dart';
 import 'package:path/path.dart' as path;
+import 'package:scissors/src/nullability/escaping_locals.dart';
 import 'package:scissors/src/nullability/format_knowledge.dart';
 import 'package:scissors/src/nullability/nullability_inference.dart';
 
@@ -38,11 +39,13 @@ Future<String> annotateSourceWithNullability(Source source) async {
     final unit = context.resolveCompilationUnit(source, libElement);
 
     // print('unit: $unit');
-    final visitor = new FlowAwareNullableLocalInference();
-    unit.accept(visitor);
+    final localsToSkip = findLocalsMutatedInEscapingExecutableElements(unit);
+    final nullableLocalInference =
+        new FlowAwareNullableLocalInference(localsToSkip);
+    unit.accept(nullableLocalInference);
 
-    final formattedUnits =
-        formatSourcesWithKnowledge(visitor.results, {unit: source});
+    final formattedUnits = formatSourcesWithKnowledge(
+        nullableLocalInference.results, {unit: source});
     final result = formattedUnits[unit];
     // print(result);
     return result ?? source.contents.data;

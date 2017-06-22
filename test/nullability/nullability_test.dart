@@ -30,6 +30,36 @@ main() {
       ''');
     });
 
+    test('escape analysis', () async {
+      expect(
+          await annotate('''
+        foo(x, y, z) {
+          x();
+          y();
+          z();
+          (() => x = 1);
+          setY() => y = 1;
+          getZ() => z;
+          x;
+          y;
+          z;
+        }
+      '''),
+          '''
+        foo(x, y, z) {
+          x();
+          y();
+          z();
+          (() => x = 1);
+          setY() => y = 1;
+          getZ() => /*not-null*/z;
+          x;
+          y;
+          /*not-null*/z;
+        }
+      ''');
+    });
+
     test('method calls', () async {
       expect(await annotate('bar(x) => x.f(x.a, x.b);'),
           'bar(x) => /*not-null*/x.f(x.a, /*not-null*/x.b);');
@@ -44,12 +74,14 @@ main() {
       expect(
           await annotate('''
         bar(x, c) {
-          (x.a ? x.b && c != null : x.c && c != null) && c.d;
+          (x.a ? x.b && c != null : x.c && c != null)
+            && c.d;
         }
       '''),
           '''
         bar(x, c) {
-          (x.a ? /*not-null*/x.b && c != null : /*not-null*/x.c && c != null) && /*not-null*/c.d;
+          (x.a ? /*not-null*/x.b && c != null : /*not-null*/x.c && c != null)
+            && /*not-null*/c.d;
         }
       ''');
     });

@@ -24,26 +24,25 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart' show Token, TokenType;
 import 'package:analyzer/dart/ast/visitor.dart' show RecursiveAstVisitor;
 import 'package:analyzer/dart/element/element.dart';
+import 'package:scissors/src/nullability/escaping_locals.dart';
 import 'package:scissors/src/nullability/implications.dart';
 import 'package:scissors/src/nullability/knowledge.dart';
 
 // const logVisits = true;
 const logVisits = false;
 
-LocalElement _getLocalVar(Expression expr) {
-  if (expr is SimpleIdentifier) {
-    var element = expr.bestElement;
-    if (element is LocalVariableElement || element is ParameterElement) {
-      return element;
-    }
-  }
-  return null;
-}
-
 class FlowAwareNullableLocalInference
     extends RecursiveAstVisitor<Implications> {
   final results = <LocalElement, Map<SimpleIdentifier, Knowledge>>{};
   final _stacks = <LocalElement, List<Knowledge>>{};
+  final Set<LocalElement> localsToSkip;
+
+  FlowAwareNullableLocalInference(this.localsToSkip);
+
+  LocalElement _getValidLocal(Expression expr) {
+    final local = getLocalVar(expr);
+    return local == null || localsToSkip.contains(local) ? null : local;
+  }
 
   Knowledge getKnowledge(LocalElement variable) {
     if (variable == null) return null;
@@ -136,8 +135,8 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitAssignmentExpression(AssignmentExpression node) {
     return _log('visitAssignmentExpression', node, () {
-      final leftLocal = _getLocalVar(node.leftHandSide);
-      final rightLocal = _getLocalVar(node.rightHandSide);
+      final leftLocal = _getValidLocal(node.leftHandSide);
+      final rightLocal = _getValidLocal(node.rightHandSide);
       final rightKnowledge = getKnowledge(rightLocal);
 
       final rightImplications = node.rightHandSide.accept(this);
@@ -164,8 +163,8 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitBinaryExpression(BinaryExpression node) {
     return _log('visitBinaryExpression', node, () {
-      final leftLocal = _getLocalVar(node.leftOperand);
-      final rightLocal = _getLocalVar(node.rightOperand);
+      final leftLocal = _getValidLocal(node.leftOperand);
+      final rightLocal = _getValidLocal(node.rightOperand);
 
       Implications handleNullComparison(
           Expression operand, LocalElement variable, Token operator) {
@@ -263,7 +262,7 @@ class FlowAwareNullableLocalInference
     return _log('visitCascadeExpression', node, () {
       // TODO: acknowledge that the target is not null after the first call,
       // e.g. `x..f(x)..g(/*not-null*/x)`
-      final targetLocal = _getLocalVar(node.target);
+      final targetLocal = _getValidLocal(node.target);
       return _handleSequence(node.cascadeSections,
           getCustomImplications: (index, item) {
         final defaultImplications = item.accept(this);
@@ -396,8 +395,9 @@ class FlowAwareNullableLocalInference
       // f(x.a, x.b) -> f(dart.notNull(x).a, x.b)
       return _handleSequence(node.argumentList.arguments,
           andThen: (implications) {
+        // TODO: use implications from this function visitation.
         node.function.accept(this);
-        final functionLocal = _getLocalVar(node.function);
+        final functionLocal = _getValidLocal(node.function);
         if (functionLocal != null) {
           return Implications.then(implications,
               new Implications({functionLocal: Implication.isNotNull}));
@@ -441,8 +441,7 @@ class FlowAwareNullableLocalInference
           conditionImplications.getKnowledgeForOrRightOperand(), () {
         return node.elseExpression.accept(this);
       });
-      return Implications.union(
-          Implications.then(conditionImplications),
+      return Implications.union(Implications.then(conditionImplications),
           Implications.intersect(thenImplications, elseImplications));
     });
   }
@@ -586,16 +585,17 @@ class FlowAwareNullableLocalInference
       return _handleSequence(node.argumentList.arguments,
           andThen: (implications) {
         final targetLocal = node.target == null
-            ? _getLocalVar(node.methodName)
-            : _getLocalVar(node.target);
-        node.target?.accept(this);
+            ? _getValidLocal(node.methodName)
+            : _getValidLocal(node.target);
+        final targetImplications = node.target?.accept(this);
         node.methodName?.accept(this);
         if (targetLocal != null) {
           final localImplications =
               new Implications({targetLocal: Implication.isNotNull});
-          return Implications.then(implications, localImplications);
+          return Implications.then(targetImplications,
+              Implications.then(implications, localImplications));
         } else {
-          return implications;
+          return Implications.then(targetImplications, implications);
         }
       });
     });
@@ -652,7 +652,7 @@ class FlowAwareNullableLocalInference
   Implications visitPrefixedIdentifier(PrefixedIdentifier node) {
     return _log('visitPrefixedIdentifier', node, () {
       node.visitChildren(this);
-      final targetLocal = _getLocalVar(node.prefix);
+      final targetLocal = _getValidLocal(node.prefix);
       if (targetLocal != null) {
         return new Implications({targetLocal: Implication.isNotNull});
       } else {
@@ -665,7 +665,7 @@ class FlowAwareNullableLocalInference
   Implications visitPropertyAccess(PropertyAccess node) {
     return _log('visitPropertyAccess', node, () {
       node.visitChildren(this);
-      final targetLocal = _getLocalVar(node.target);
+      final targetLocal = _getValidLocal(node.target);
       if (targetLocal != null) {
         return new Implications({targetLocal: Implication.isNotNull});
       } else {
@@ -688,7 +688,7 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitSimpleIdentifier(SimpleIdentifier node) {
     return _log('visitSimpleIdentifier', node, () {
-      final local = _getLocalVar(node);
+      final local = _getValidLocal(node);
       if (local != null) {
         final knowledge = getKnowledge(local);
         // print('FOUND $local: $knowledge');
