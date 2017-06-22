@@ -727,10 +727,14 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitSwitchCase(SwitchCase node) {
     return _log('visitSwitchCase', node, () {
-      node.visitChildren(this);
+      return _handleSequence(node.statements);
+    });
+  }
 
-      // TODO: switched expression is known not to be null inside.
-      return null;
+  @override
+  Implications visitSwitchDefault(SwitchDefault node) {
+    return _log('visitSwitchDefault', node, () {
+      return _handleSequence(node.statements);
     });
   }
 

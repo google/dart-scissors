@@ -450,6 +450,37 @@ main() {
           e;
         }
       ''');
+      expect(
+          await annotate('''
+        m(a, b, c) {
+          switch (a) {
+            case 1:
+              b();
+              b;
+            default:
+              c();
+              c;
+          }
+          a;
+          b;
+          c;
+        }
+      '''),
+          '''
+        m(a, b, c) {
+          switch (a) {
+            case 1:
+              b();
+              /*not-null*/b;
+            default:
+              c();
+              /*not-null*/c;
+          }
+          /*not-null*/a;
+          b;
+          c;
+        }
+      ''');
     });
 
     test('cascades', () async {
