@@ -65,12 +65,13 @@ class _LocalMutationsVisitor extends RecursiveAstVisitor {
   }
 }
 
+bool isLocalElement(Element element) =>
+    element is LocalVariableElement || element is ParameterElement;
+
 LocalElement getLocalVar(Expression expr) {
   if (expr is SimpleIdentifier) {
     var element = expr.bestElement;
-    if (element is LocalVariableElement || element is ParameterElement) {
-      return element;
-    }
+    if (isLocalElement(element)) return element;
   }
   return null;
 }

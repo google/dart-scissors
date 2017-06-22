@@ -42,12 +42,15 @@ class FlowAwareNullableLocalInference
   FlowAwareNullableLocalInference(this.localsToSkip, this.isStaticallyNullable);
 
   bool isNullable(Expression expr) {
-    final knowledge = getKnowledge(_getValidLocal(expr));
+    final knowledge = getKnowledge(getValidLocal(expr));
     if (knowledge == null) return isStaticallyNullable(expr);
     return knowledge != Knowledge.isNotNull;
   }
 
-  LocalElement _getValidLocal(Expression expr) {
+  bool isValidLocal(Element e) =>
+      isLocalElement(e) && !localsToSkip.contains(e);
+
+  LocalElement getValidLocal(Expression expr) {
     final local = getLocalVar(expr);
     return local == null || localsToSkip.contains(local) ? null : local;
   }
@@ -112,7 +115,7 @@ class FlowAwareNullableLocalInference
         } else {
           final implications =
               Implications.then(previousImplications, itemImplications);
-          return _withKnowledge(itemImplications.getKnowledgeForNextOperation(),
+          return _withKnowledge(itemImplications?.getKnowledgeForNextOperation(),
               () {
             return aux(index + 1, implications);
           });
@@ -154,19 +157,23 @@ class FlowAwareNullableLocalInference
   Implications visitVariableDeclaration(VariableDeclaration node) {
     return _log('visitVariableDeclaration', node, () {
       final initializerImplications = node.initializer?.accept(this);
-      return Implications.then(
-          initializerImplications,
-          node.initializer != null && !isNullable(node.initializer)
-              ? new Implications({node.element: Implication.isNotNull})
-              : null);
+      if (isValidLocal(node.element)) {
+        return Implications.then(
+            initializerImplications,
+            node.initializer != null && !isNullable(node.initializer)
+                ? new Implications({node.element: Implication.isNotNull})
+                : null);
+      } else {
+        return initializerImplications;
+      }
     });
   }
 
   @override
   Implications visitAssignmentExpression(AssignmentExpression node) {
     return _log('visitAssignmentExpression', node, () {
-      final leftLocal = _getValidLocal(node.leftHandSide);
-      final rightLocal = _getValidLocal(node.rightHandSide);
+      final leftLocal = getValidLocal(node.leftHandSide);
+      final rightLocal = getValidLocal(node.rightHandSide);
       final rightKnowledge = getKnowledge(rightLocal);
 
       final rightImplications = node.rightHandSide.accept(this);
@@ -197,8 +204,8 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitBinaryExpression(BinaryExpression node) {
     return _log('visitBinaryExpression', node, () {
-      final leftLocal = _getValidLocal(node.leftOperand);
-      final rightLocal = _getValidLocal(node.rightOperand);
+      final leftLocal = getValidLocal(node.leftOperand);
+      final rightLocal = getValidLocal(node.rightOperand);
 
       Implications handleNullComparison(
           Expression operand, LocalElement variable, Token operator) {
@@ -257,14 +264,14 @@ class FlowAwareNullableLocalInference
           case TokenType.AMPERSAND_AMPERSAND:
             final leftImplications = node.leftOperand.accept(this);
             return _withKnowledge(
-                leftImplications.getKnowledgeForAndRightOperand(), () {
+                leftImplications?.getKnowledgeForAndRightOperand(), () {
               return Implications.and(
                   leftImplications, node.rightOperand.accept(this));
             });
           case TokenType.BAR_BAR:
             final leftImplications = node.leftOperand.accept(this);
             return _withKnowledge(
-                leftImplications.getKnowledgeForOrRightOperand(), () {
+                leftImplications?.getKnowledgeForOrRightOperand(), () {
               return Implications.or(
                   leftImplications, node.rightOperand.accept(this));
             });
@@ -299,7 +306,7 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitCascadeExpression(CascadeExpression node) {
     return _log('visitCascadeExpression', node, () {
-      final targetLocal = _getValidLocal(node.target);
+      final targetLocal = getValidLocal(node.target);
       return _handleSequence(node.cascadeSections,
           getCustomImplications: (index, item) {
         final defaultImplications = item.accept(this);
@@ -408,7 +415,7 @@ class FlowAwareNullableLocalInference
       // f(x.a, x.b) -> f(dart.notNull(x).a, x.b)
       return _handleSequence([]..addAll(node.argumentList.arguments)..add(node.function),
           andThen: (implications) {
-        final functionLocal = _getValidLocal(node.function);
+        final functionLocal = getValidLocal(node.function);
         if (functionLocal != null) {
           return Implications.then(implications,
               new Implications({functionLocal: Implication.isNotNull}));
@@ -424,12 +431,12 @@ class FlowAwareNullableLocalInference
     return _log('visitIfStatement', node, () {
       final conditionImplications = node.condition.accept(this);
       final thenImplications = _withKnowledge(
-          conditionImplications.getKnowledgeForAndRightOperand(), () {
+          conditionImplications?.getKnowledgeForAndRightOperand(), () {
         return node.thenStatement.accept(this);
       });
       if (node.elseStatement != null) {
         final elseImplications = _withKnowledge(
-            conditionImplications.getKnowledgeForOrRightOperand(), () {
+            conditionImplications?.getKnowledgeForOrRightOperand(), () {
           return node.elseStatement.accept(this);
         });
         return Implications.then(conditionImplications,
@@ -445,11 +452,11 @@ class FlowAwareNullableLocalInference
     return _log('visitConditionalExpression', node, () {
       final conditionImplications = node.condition.accept(this);
       final thenImplications = _withKnowledge(
-          conditionImplications.getKnowledgeForAndRightOperand(), () {
+          conditionImplications?.getKnowledgeForAndRightOperand(), () {
         return node.thenExpression.accept(this);
       });
       final elseImplications = _withKnowledge(
-          conditionImplications.getKnowledgeForOrRightOperand(), () {
+          conditionImplications?.getKnowledgeForOrRightOperand(), () {
         return node.elseExpression.accept(this);
       });
       return Implications.union(Implications.then(conditionImplications),
@@ -593,8 +600,8 @@ class FlowAwareNullableLocalInference
       return _handleSequence(node.argumentList.arguments,
           andThen: (implications) {
         final targetLocal = node.target == null
-            ? _getValidLocal(node.methodName)
-            : _getValidLocal(node.target);
+            ? getValidLocal(node.methodName)
+            : getValidLocal(node.target);
         final targetImplications = node.target?.accept(this);
         node.methodName?.accept(this);
         if (targetLocal != null) {
@@ -651,7 +658,7 @@ class FlowAwareNullableLocalInference
   Implications visitPrefixedIdentifier(PrefixedIdentifier node) {
     return _log('visitPrefixedIdentifier', node, () {
       node.visitChildren(this);
-      final targetLocal = _getValidLocal(node.prefix);
+      final targetLocal = getValidLocal(node.prefix);
       if (targetLocal != null) {
         return new Implications({targetLocal: Implication.isNotNull});
       } else {
@@ -664,7 +671,7 @@ class FlowAwareNullableLocalInference
   Implications visitPropertyAccess(PropertyAccess node) {
     return _log('visitPropertyAccess', node, () {
       node.visitChildren(this);
-      final targetLocal = _getValidLocal(node.target);
+      final targetLocal = getValidLocal(node.target);
       if (targetLocal != null) {
         return new Implications({targetLocal: Implication.isNotNull});
       } else {
@@ -680,7 +687,7 @@ class FlowAwareNullableLocalInference
         return Implications.not(node.operand.accept(this));
       } else if (node.operator.type.isIncrementOperator &&
           node.operand is SimpleIdentifier) {
-        final local = _getValidLocal(node.operand);
+        final local = getValidLocal(node.operand);
         if (local != null) {
           return new Implications({local: Implication.isNotNull});
         }
@@ -694,7 +701,7 @@ class FlowAwareNullableLocalInference
     return _log('visitPostfixExpression', node, () {
       if (node.operator.type.isIncrementOperator &&
           node.operand is SimpleIdentifier) {
-        final local = _getValidLocal(node.operand);
+        final local = getValidLocal(node.operand);
         if (local != null) {
           return new Implications({local: Implication.isNotNull});
         }
@@ -706,7 +713,7 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitSimpleIdentifier(SimpleIdentifier node) {
     return _log('visitSimpleIdentifier', node, () {
-      final local = _getValidLocal(node);
+      final local = getValidLocal(node);
       if (local != null) {
         final knowledge = getKnowledge(local);
         // print('FOUND $local: $knowledge');
@@ -722,11 +729,11 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitSwitchStatement(SwitchStatement node) {
     return _log('visitSwitchStatement', node, () => _handleLoop(node, () {
-      final expressionLocal = _getValidLocal(node.expression);
+      final expressionLocal = getValidLocal(node.expression);
       final expressionImplications = Implications.union(
           node.expression.accept(this),
           new Implications({expressionLocal: Implication.isNotNull}));
-      return _withKnowledge(expressionImplications.getKnowledgeForNextOperation(), () {
+      return _withKnowledge(expressionImplications?.getKnowledgeForNextOperation(), () {
         // TODO: create all possible sequences of case members (incl.
         // fallthroughs), then intersect their implications.
         for (final member in node.members) {
@@ -795,7 +802,7 @@ class FlowAwareNullableLocalInference
         'visitForEachStatement',
         node,
         () => _handleLoop(node, () {
-              final iterableLocal = _getValidLocal(node.iterable);
+              final iterableLocal = getValidLocal(node.iterable);
               final iterableImplications = Implications.union(
                   node.iterable.accept(this),
                   new Implications({iterableLocal: Implication.isNotNull}));
