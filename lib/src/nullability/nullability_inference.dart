@@ -640,15 +640,6 @@ class FlowAwareNullableLocalInference
   }
 
   @override
-  Implications visitPostfixExpression(PostfixExpression node) {
-    return _log('visitPostfixExpression', node, () {
-      node.visitChildren(this);
-      // TODO
-      return Implications.then(node.operand.accept(this));
-    });
-  }
-
-  @override
   Implications visitPrefixedIdentifier(PrefixedIdentifier node) {
     return _log('visitPrefixedIdentifier', node, () {
       node.visitChildren(this);
@@ -679,9 +670,28 @@ class FlowAwareNullableLocalInference
     return _log('visitPrefixExpression', node, () {
       if (node.operator.type == TokenType.BANG) {
         return Implications.not(node.operand.accept(this));
-      } else {
-        return Implications.then(node.operand.accept(this));
+      } else if (node.operator.type.isIncrementOperator &&
+          node.operand is SimpleIdentifier) {
+        final local = _getValidLocal(node.operand);
+        if (local != null) {
+          return new Implications({local: Implication.isNotNull});
+        }
       }
+      return Implications.then(node.operand.accept(this));
+    });
+  }
+
+  @override
+  Implications visitPostfixExpression(PostfixExpression node) {
+    return _log('visitPostfixExpression', node, () {
+      if (node.operator.type.isIncrementOperator &&
+          node.operand is SimpleIdentifier) {
+        final local = _getValidLocal(node.operand);
+        if (local != null) {
+          return new Implications({local: Implication.isNotNull});
+        }
+      }
+      return Implications.then(node.operand.accept(this));
     });
   }
 

@@ -70,6 +70,35 @@ main() {
           'bar(x) { if (!(x == null)) /*not-null*/x(); }');
     });
 
+    test('increment / decrement operators', () async {
+      expect(
+          await annotate('''
+        m(x, y, z) {
+          x; x++; x;
+          y; y--; y;
+        }
+      '''),
+          '''
+        m(x, y, z) {
+          x; x++; /*not-null*/x;
+          y; y--; /*not-null*/y;
+        }
+      ''');
+      expect(
+          await annotate('''
+        m(x, y, z) {
+          x; ++x; x;
+          y; --y; y;
+        }
+      '''),
+          '''
+        m(x, y, z) {
+          x; ++x; /*not-null*/x;
+          y; --y; /*not-null*/y;
+        }
+      ''');
+    });
+
     test('conditional expressions', () async {
       expect(
           await annotate('''
