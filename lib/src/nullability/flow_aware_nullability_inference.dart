@@ -37,9 +37,15 @@ class FlowAwareNullableLocalInference
   final results = <LocalElement, Map<SimpleIdentifier, Knowledge>>{};
   final _stacks = <LocalElement, List<Knowledge>>{};
   final Set<LocalElement> localsToSkip;
-  final ExpressionNullabilityPredicate isNullable;
+  final ExpressionNullabilityPredicate isStaticallyNullable;
 
-  FlowAwareNullableLocalInference(this.localsToSkip, this.isNullable);
+  FlowAwareNullableLocalInference(this.localsToSkip, this.isStaticallyNullable);
+
+  bool isNullable(Expression expr) {
+    final knowledge = getKnowledge(_getValidLocal(expr));
+    if (knowledge == null) return isStaticallyNullable(expr);
+    return knowledge != Knowledge.isNotNull;
+  }
 
   LocalElement _getValidLocal(Expression expr) {
     final local = getLocalVar(expr);
@@ -145,6 +151,18 @@ class FlowAwareNullableLocalInference
   }
 
   @override
+  Implications visitVariableDeclaration(VariableDeclaration node) {
+    return _log('visitVariableDeclaration', node, () {
+      final initializerImplications = node.initializer?.accept(this);
+      return Implications.then(
+          initializerImplications,
+          node.initializer != null && !isNullable(node.initializer)
+              ? new Implications({node.element: Implication.isNotNull})
+              : null);
+    });
+  }
+
+  @override
   Implications visitAssignmentExpression(AssignmentExpression node) {
     return _log('visitAssignmentExpression', node, () {
       final leftLocal = _getValidLocal(node.leftHandSide);
@@ -156,9 +174,13 @@ class FlowAwareNullableLocalInference
           () {
         final leftImplications = node.leftHandSide.accept(this);
         final transferredImplications = new Implications({
-          leftLocal:
-              Implication.fromKnowledge(rightKnowledge ?? Knowledge.isNullable)
+          leftLocal: isNullable(node.rightHandSide) ? Implication.isNull : Implication.isNotNull
         });
+        // final transferredImplications = new Implications({
+        //   leftLocal:
+        //       // isNullable(node.rightHandSide) ? 0 : Implication.isNotNull
+        //       Implication.fromKnowledge(rightKnowledge ?? Knowledge.isNullable)
+        // });
         return Implications.then(rightImplications,
             Implications.union(transferredImplications, leftImplications));
       });
@@ -741,13 +763,6 @@ class FlowAwareNullableLocalInference
             final finallyImplications = node.finallyBlock?.accept(this);
             return Implications.then(intersectedImplications, finallyImplications);
           });
-    });
-  }
-
-  @override
-  Implications visitVariableDeclaration(VariableDeclaration node) {
-    return _log('visitVariableDeclaration', node, () {
-      return node.initializer?.accept(this) ?? Implications.empty;
     });
   }
 

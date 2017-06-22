@@ -491,5 +491,10 @@ main() {
       expect(await annotate('m(x) => (x..f(x)..g(x)) && x.y();'),
           'm(x) => (x..f(x)..g(/*not-null*/x)) && /*not-null*/x.y();');
     });
+
+    test('variable init', () async {
+      expect(await annotate('m(x) { var x = 1; x; }'),
+          'm(x) { var x = 1; /*not-null*/x; }');
+    });
   });
 }
