@@ -716,6 +716,9 @@ class FlowAwareNullableLocalInference
       return _withKnowledge(expressionImplications.getKnowledgeForNextOperation(), () {
         // TODO: create all possible sequences of case members (incl.
         // fallthroughs), then intersect their implications.
+        for (final member in node.members) {
+          member.accept(this);
+        }
         return expressionImplications;
       });
     }));
