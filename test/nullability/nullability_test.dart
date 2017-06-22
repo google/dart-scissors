@@ -115,6 +115,30 @@ main() {
       ''');
     });
 
+    test('reassignments', () async {
+      expect(
+          await annotate('''
+        m(x, y) {
+          x();
+          x;
+          x = y;
+          x;
+          x();
+          x;
+        }
+      '''),
+          '''
+        m(x, y) {
+          x();
+          /*not-null*/x;
+          /*not-null*/x = y;
+          x;
+          x();
+          /*not-null*/x;
+        }
+      ''');
+    });
+
     test('assigments', () async {
       expect(
           await annotate('''

@@ -53,12 +53,14 @@ class FlowAwareNullableLocalInference
 
   R _withKnowledge<R>(Map<LocalElement, Knowledge> knowledge, R f()) {
     knowledge?.forEach((v, n) {
-      _stacks.putIfAbsent(v, () => <Knowledge>[]).add(n);
+      // print('Pushing: $v -> $n');
+      _stacks.putIfAbsent(v, () => <Knowledge>[]).add(n == Knowledge.isNullable ? null : n);
     });
     try {
       return f();
     } finally {
       knowledge?.forEach((v, n) {
+        // print('Popping: $v -> $n');
         _stacks[v].removeLast();
       });
     }
@@ -80,8 +82,11 @@ class FlowAwareNullableLocalInference
         final itemImplications = getCustomImplications == null
             ? item.accept(this)
             : getCustomImplications(index, item);
-        // print("SEQUENCE: item = $item, implications: $itemImplications, previous: $previousImplications");
+        // print("SEQUENCE[$index]: item = $item, implications: $itemImplications (next op knowledge: ${itemImplications?.getKnowledgeForNextOperation()}), previous: $previousImplications");
         if (itemImplications == null) {
+          // if (ensureSequenceNotBroken) {
+          //   print('Item breaking sequence: $item (${item.runtimeType})');
+          // }
           return aux(index + 1, previousImplications);
         } else {
           final implications =
@@ -143,11 +148,12 @@ class FlowAwareNullableLocalInference
       return _withKnowledge(rightImplications?.getKnowledgeForNextOperation(),
           () {
         final leftImplications = node.leftHandSide.accept(this);
+        final transferredImplications = new Implications(
+            {leftLocal: Implication.fromKnowledge(rightKnowledge ?? Knowledge.isNullable)});
         return Implications.then(
             rightImplications,
             Implications.union(
-                new Implications(
-                    {leftLocal: Implication.fromKnowledge(rightKnowledge)}),
+                transferredImplications,
                 leftImplications));
       });
     });
@@ -327,7 +333,7 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitExpressionStatement(ExpressionStatement node) {
     return _log('visitExpressionStatement', node, () {
-      return node.expression.accept(this);
+      return node.expression.accept(this) ?? Implications.empty;
     });
   }
 
@@ -733,18 +739,14 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitVariableDeclaration(VariableDeclaration node) {
     return _log('visitVariableDeclaration', node, () {
-      node.visitChildren(this);
-      // TODO: non-null assigments here?
-      return null;
+      return node.initializer?.accept(this) ?? Implications.empty;
     });
   }
 
   @override
   Implications visitVariableDeclarationList(VariableDeclarationList node) {
     return _log('visitVariableDeclarationList', node, () {
-      node.visitChildren(this);
-      // TODO: sequence
-      return null;
+      return _handleSequence(node.variables);
     });
   }
 

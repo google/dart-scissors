@@ -129,6 +129,8 @@ class Implications {
 
   Implications._(this.data);
 
+  static final Implications empty = new Implications._(const {});
+
   factory Implications(Map<LocalElement, int> data) {
     Map<LocalElement, int> normalized;
     data?.forEach((k, v) {
@@ -139,7 +141,7 @@ class Implications {
         normalized[k] = v;
       }
     });
-    return normalized == null ? null : new Implications._(normalized);
+    return normalized == null ? empty : new Implications._(normalized);
   }
 
   /// For debug only
@@ -185,20 +187,22 @@ class Implications {
     return result;
   }
 
+  static bool _isEmpty(Implications i) => i == null || identical(i, Implications.empty);
+
   static Implications union(Implications a, Implications b) {
-    if (a == null) return b;
-    if (b == null) return a;
+    if (_isEmpty(a)) return b;
+    if (_isEmpty(b)) return a;
     return _combine(a, b, (ia, ib) => ia | ib);
   }
 
   static Implications intersect(Implications a, Implications b) {
-    if (a == null || b == null) return null;
+    if (_isEmpty(a) || _isEmpty(b)) return null;
     return _combine(a, b, (ia, ib) => ia & ib);
   }
 
   static Implications then(Implications a, [Implications b]) {
-    if (a == null) return _map(b, Implication.asStatement);
-    if (b == null) return _map(a, Implication.asStatement);
+    if (_isEmpty(a)) return _map(b, Implication.asStatement);
+    if (_isEmpty(b)) return _map(a, Implication.asStatement);
     return _combine(a, b, Implication.then);
   }
 
@@ -211,8 +215,8 @@ class Implications {
     }
 
     for (final v in mergedKeys()) {
-      result[v] = combineSingle((a == null ? null : a.data[v]) ?? 0,
-          (b == null ? null : b.data[v]) ?? 0);
+      result[v] = combineSingle((_isEmpty(a) ? null : a.data[v]) ?? 0,
+          (_isEmpty(b) ? null : b.data[v]) ?? 0);
     }
     return new Implications(result);
   }
