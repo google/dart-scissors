@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:scissors/src/nullability/knowledge.dart';
+
+import 'knowledge.dart';
 
 final _implicationsByKnowledgeAndExpressionValue = <Knowledge, Map<bool, int>>{
   Knowledge.isNullable: <bool, int>{

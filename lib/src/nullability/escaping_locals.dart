@@ -19,8 +19,17 @@ class _EscapingLocalMutationsVisitor extends RecursiveAstVisitor {
         local.enclosingElement;
   }
 
-  _handleAssignmentTarget(Expression target) {
+  @override
+  visitAssignmentExpression(AssignmentExpression node) {
+    node.visitChildren(this);
+
+    final target = node.leftHandSide;
     if (target is SimpleIdentifier) {
+      final value = node.rightHandSide;
+      if (value is Literal && value is! NullLiteral) {
+        return null;
+      }
+
       final local = getLocalVar(target);
       if (local != null &&
           !localsMutatedInEscapingExecutableElements.contains(local) &&
@@ -28,12 +37,6 @@ class _EscapingLocalMutationsVisitor extends RecursiveAstVisitor {
         localsMutatedInEscapingExecutableElements.add(local);
       }
     }
-  }
-
-  @override
-  visitAssignmentExpression(AssignmentExpression node) {
-    node.visitChildren(this);
-    _handleAssignmentTarget(node.leftHandSide);
     return null;
   }
 }

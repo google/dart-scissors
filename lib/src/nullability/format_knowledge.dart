@@ -1,7 +1,8 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/src/generated/source_io.dart';
-import 'package:scissors/src/nullability/knowledge.dart';
+
+import 'knowledge.dart';
 
 class _Data implements Comparable<_Data> {
   final SimpleIdentifier identifier;

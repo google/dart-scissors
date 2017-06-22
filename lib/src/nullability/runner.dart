@@ -7,9 +7,10 @@ import 'package:analyzer/src/generated/sdk.dart';
 import 'package:analyzer/src/generated/source.dart';
 import 'package:front_end/src/base/source.dart';
 import 'package:path/path.dart' as path;
-import 'package:scissors/src/nullability/escaping_locals.dart';
-import 'package:scissors/src/nullability/format_knowledge.dart';
-import 'package:scissors/src/nullability/nullability_inference.dart';
+
+import 'escaping_locals.dart';
+import 'format_knowledge.dart';
+import 'flow_aware_nullability_inference.dart';
 
 Future<String> annotateSourceWithNullability(Source source) async {
   try {

@@ -37,8 +37,8 @@ main() {
           x();
           y();
           z();
-          (() => x = 1);
-          setY() => y = 1;
+          (() => x = null);
+          setY() => y = null;
           getZ() => z;
           x;
           y;
@@ -50,8 +50,8 @@ main() {
           x();
           y();
           z();
-          (() => x = 1);
-          setY() => y = 1;
+          (() => x = null);
+          setY() => y = null;
           getZ() => /*not-null*/z;
           x;
           y;

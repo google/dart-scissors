@@ -24,9 +24,10 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart' show Token, TokenType;
 import 'package:analyzer/dart/ast/visitor.dart' show RecursiveAstVisitor;
 import 'package:analyzer/dart/element/element.dart';
-import 'package:scissors/src/nullability/escaping_locals.dart';
-import 'package:scissors/src/nullability/implications.dart';
-import 'package:scissors/src/nullability/knowledge.dart';
+
+import 'escaping_locals.dart';
+import 'implications.dart';
+import 'knowledge.dart';
 
 // const logVisits = true;
 const logVisits = false;
@@ -38,6 +39,10 @@ class FlowAwareNullableLocalInference
   final Set<LocalElement> localsToSkip;
 
   FlowAwareNullableLocalInference(this.localsToSkip);
+
+  bool isNullable(Expression expr) {
+    
+  }
 
   LocalElement _getValidLocal(Expression expr) {
     final local = getLocalVar(expr);
@@ -122,14 +127,6 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitAdjacentStrings(AdjacentStrings node) {
     return _log('visitAdjacentStrings', node, () {
-      node.visitChildren(this);
-      return null;
-    });
-  }
-
-  @override
-  Implications visitAnnotation(Annotation node) {
-    return _log('visitAnnotation', node, () {
       node.visitChildren(this);
       return null;
     });
@@ -573,9 +570,6 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitMethodInvocation(MethodInvocation node) {
     return _log('visitMethodInvocation', node, () {
-      // x.f(x.a, x.b) -> dart.notNull(x).f(dart.notNull(x).a, dart.notNull(x).b)
-      // b != null && a == b && a.f();
-
       // x.f(x.a, x.b) -> x.f(dart.notNull(x).a, x.b)
       return _handleSequence(node.argumentList.arguments,
           andThen: (implications) {
@@ -861,15 +855,6 @@ class FlowAwareNullableLocalInference
                     bodyImplications, conditionImplications);
               });
             }));
-  }
-
-  @override
-  Implications visitWithClause(WithClause node) {
-    return _log('visitWithClause', node, () {
-      node.visitChildren(this);
-      // TODO: ?
-      return null;
-    });
   }
 
   @override
