@@ -441,7 +441,8 @@ class FlowAwareNullableLocalInference
           conditionImplications.getKnowledgeForOrRightOperand(), () {
         return node.elseExpression.accept(this);
       });
-      return Implications.then(conditionImplications,
+      return Implications.union(
+          Implications.then(conditionImplications),
           Implications.intersect(thenImplications, elseImplications));
     });
   }

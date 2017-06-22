@@ -49,7 +49,7 @@ main() {
       '''),
           '''
         bar(x, c) {
-          (x.a ? /*not-null*/x.b && c != null : /*not-null*/x.c && c != null) && c.d;
+          (x.a ? /*not-null*/x.b && c != null : /*not-null*/x.c && c != null) && /*not-null*/c.d;
         }
       ''');
     });
