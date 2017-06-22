@@ -75,8 +75,12 @@ main() {
     });
 
     test('cascades', () async {
-      expect(await annotate('main(x) => (x..f(x)..g(x)) && x.y();'),
-          'main(x) => (/*not-null*/x..f(x)..g(/*not-null*/x)) && /*not-null*/x.y();');
+      expect(await annotate('m(x) => x..f(x.y);'),
+          'm(x) => /*not-null*/x..f(x.y);');
+      expect(await annotate('m(x) => x..f(x)..g(x);'),
+          'm(x) => x..f(x)..g(/*not-null*/x);');
+      expect(await annotate('m(x) => (x..f(x)..g(x)) && x.y();'),
+          'm(x) => (x..f(x)..g(/*not-null*/x)) && /*not-null*/x.y();');
     });
   });
 }

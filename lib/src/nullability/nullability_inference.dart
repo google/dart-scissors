@@ -262,7 +262,7 @@ class FlowAwareNullableLocalInference
   Implications visitCascadeExpression(CascadeExpression node) {
     return _log('visitCascadeExpression', node, () {
       // TODO: acknowledge that the target is not null after the first call,
-      // e.g. `x..f()..g(/*not-null*/x)`
+      // e.g. `x..f(x)..g(/*not-null*/x)`
       final targetLocal = _getLocalVar(node.target);
       return _handleSequence(node.cascadeSections,
           getCustomImplications: (index, item) {
@@ -585,9 +585,9 @@ class FlowAwareNullableLocalInference
       // x.f(x.a, x.b) -> x.f(dart.notNull(x).a, x.b)
       return _handleSequence(node.argumentList.arguments,
           andThen: (implications) {
-        final targetLocal = node.realTarget == null
+        final targetLocal = node.target == null
             ? _getLocalVar(node.methodName)
-            : _getLocalVar(node.realTarget);
+            : _getLocalVar(node.target);
         node.target?.accept(this);
         node.methodName?.accept(this);
         if (targetLocal != null) {
