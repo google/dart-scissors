@@ -354,6 +354,58 @@ main() {
       ''');
     });
 
+    test('try / catch', () async {
+      expect(
+          await annotate('''
+        m(a, b, c, d) {
+          try {
+            a();
+            b();
+            c();
+          } on NullThrownError {
+            a();
+            b();
+          } on CastError {
+            b();
+            c();
+          } finally {
+            a;
+            b;
+            c;
+            d();
+          }
+          a;
+          b;
+          c;
+          d;
+        }
+      '''),
+          '''
+        m(a, b, c, d) {
+          try {
+            a();
+            b();
+            c();
+          } on NullThrownError {
+            a();
+            b();
+          } on CastError {
+            b();
+            c();
+          } finally {
+            a;
+            /*not-null*/b;
+            c;
+            d();
+          }
+          a;
+          /*not-null*/b;
+          c;
+          /*not-null*/d;
+        }
+      ''');
+    });
+
     test('cascades', () async {
       expect(await annotate('m(x) => x..f(x.y);'),
           'm(x) => /*not-null*/x..f(x.y);');

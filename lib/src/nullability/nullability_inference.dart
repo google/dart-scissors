@@ -100,9 +100,6 @@ class FlowAwareNullableLocalInference
             : getCustomImplications(index, item);
         // print("SEQUENCE[$index]: item = $item, implications: $itemImplications (next op knowledge: ${itemImplications?.getKnowledgeForNextOperation()}), previous: $previousImplications");
         if (itemImplications == null) {
-          // if (ensureSequenceNotBroken) {
-          //   print('Item breaking sequence: $item (${item.runtimeType})');
-          // }
           return aux(index + 1, previousImplications);
         } else {
           final implications =
@@ -260,11 +257,6 @@ class FlowAwareNullableLocalInference
             break;
           default:
             return _handleSequence([node.leftOperand, node.rightOperand]);
-          // return _withKnowledge(
-          //     leftImplications.getKnowledgeForNextOperation(), () {
-          //   return Implications.then(
-          //       leftImplications, node.rightOperand.accept(this));
-          // });
         }
       }
       // node.visitChildren(this);
@@ -291,14 +283,11 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitCascadeExpression(CascadeExpression node) {
     return _log('visitCascadeExpression', node, () {
-      // TODO: acknowledge that the target is not null after the first call,
-      // e.g. `x..f(x)..g(/*not-null*/x)`
       final targetLocal = _getValidLocal(node.target);
       return _handleSequence(node.cascadeSections,
           getCustomImplications: (index, item) {
         final defaultImplications = item.accept(this);
         if (index == 0) {
-          // final implications = Implications.then(previousImplications, itemImplications);
           return _withKnowledge(
               defaultImplications?.getKnowledgeForNextOperation(), () {
             var targetImplications = node.target.accept(this);
@@ -318,8 +307,9 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitCatchClause(CatchClause node) {
     return _log('visitCatchClause', node, () {
-      node.visitChildren(this);
-      return null;
+      node.exceptionParameter?.accept(this);
+      node.stackTraceParameter?.accept(this);
+      return node.body.accept(this);
     });
   }
 
@@ -400,10 +390,8 @@ class FlowAwareNullableLocalInference
       FunctionExpressionInvocation node) {
     return _log('visitFunctionExpressionInvocation', node, () {
       // f(x.a, x.b) -> f(dart.notNull(x).a, x.b)
-      return _handleSequence(node.argumentList.arguments,
+      return _handleSequence([]..addAll(node.argumentList.arguments)..add(node.function),
           andThen: (implications) {
-        // TODO: use implications from this function visitation.
-        node.function.accept(this);
         final functionLocal = _getValidLocal(node.function);
         if (functionLocal != null) {
           return Implications.then(implications,
@@ -731,9 +719,15 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitTryStatement(TryStatement node) {
     return _log('visitTryStatement', node, () {
-      node.visitChildren(this);
-      // TODO
-      return null;
+      final bodyImplications = node.body.accept(this);
+      final catchImplications = node.catchClauses.map((n) => n.accept(this)).toList();
+      final branches = [bodyImplications]..addAll(catchImplications);
+      final intersectedImplications = branches.reduce(Implications.intersect);
+      return _withKnowledge(
+          intersectedImplications?.getKnowledgeForNextOperation(), () {
+            final finallyImplications = node.finallyBlock?.accept(this);
+            return Implications.then(intersectedImplications, finallyImplications);
+          });
     });
   }
 
