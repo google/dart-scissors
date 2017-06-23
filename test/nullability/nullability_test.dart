@@ -434,6 +434,23 @@ main() {
           c;
         }
       ''');
+      expect(
+          await annotate('''
+        m(int s, int e) {
+          if (s > e) throw '';
+          for (int i = s; i < e; i++) {
+            i;
+          }
+        }
+      '''),
+          '''
+        m(int s, int e) {
+          if (s > e) throw '';
+          for (int i = /*not-null*/s; /*not-null*/i < /*not-null*/e; i++) {
+            /*not-null*/i;
+          }
+        }
+      ''');
     });
 
     test('assigments', () async {
