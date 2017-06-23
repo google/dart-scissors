@@ -728,8 +728,11 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitPrefixedIdentifier(PrefixedIdentifier node) {
     return _log('visitPrefixedIdentifier', node, () {
-      if (node.identifier.name == 'runtimeType') {
-        return node.prefix?.accept(this);
+      switch (node.identifier.name) {
+        case 'runtimeType':
+        case 'hashCode':
+          return node.prefix?.accept(this);
+        default:
       }
       node.visitChildren(this);
       final targetLocal = getValidLocal(node.prefix);
@@ -744,8 +747,11 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitPropertyAccess(PropertyAccess node) {
     return _log('visitPropertyAccess', node, () {
-      if (node.propertyName.name == 'runtimeType') {
-        return node.target?.accept(this);
+      switch (node.propertyName.name) {
+        case 'runtimeType':
+        case 'hashCode':
+          return node.target?.accept(this);
+        default:
       }
       node.visitChildren(this);
       final targetLocal = getValidLocal(node.target);

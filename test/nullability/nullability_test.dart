@@ -72,6 +72,9 @@ main() {
       expect(
           await annotate('m(x) { x.runtimeType; x; }'),
           'm(x) { x.runtimeType; x; }');
+      expect(
+          await annotate('m(x) { x.hashCode; x; }'),
+          'm(x) { x.hashCode; x; }');
     });
 
     test('negation', () async {
