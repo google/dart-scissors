@@ -633,15 +633,22 @@ class FlowAwareNullableLocalInference
 
   bool _isCheckNull(MethodInvocation i) {
     final name = i.methodName;
-    if (name.name != 'checkNull' || i.argumentList.arguments.length != 1) {
-      return false;
+    switch (name.name) {
+      case 'checkNull':
+      case 'checkNum':
+      case 'checkInt':
+      case 'checkBool':
+      case 'checkString':
+        if (i.argumentList.arguments.length == 1) {
+          final e = name.bestElement;
+          if (e == null) return false;
+
+          var uri = e.source.uri;
+          return uri.scheme == 'dart' && uri.path == '_js_helper';
+        }
+      default:
+        return false;
     }
-
-    final e = name.bestElement;
-    if (e == null) return false;
-
-    var uri = e.source.uri;
-    return uri.scheme == 'dart' && uri.path == '_js_helper';
   }
 
   @override
