@@ -87,21 +87,24 @@ class FlowAwareNullableLocalInference
     }
   }
 
-  R _withKnowledge<R>(Map<LocalElement, Knowledge> knowledge, R f()) {
+  _KnowledgePopper pushKnowledge(Map<LocalElement, Knowledge> knowledge) {
     knowledge?.forEach((v, n) {
       // print('Pushing: $v -> $n');
       _stacks
           .putIfAbsent(v, () => <Knowledge>[])
           .add(n == Knowledge.isNullable ? null : n);
     });
+    return knowledge == null ? null : new _KnowledgePopper(_stacks, knowledge.keys);
+  }
+
+  R _withKnowledge<R>(Map<LocalElement, Knowledge> knowledge, R f()) {
+    final popper = pushKnowledge(knowledge);
     try {
       return f();
     } finally {
-      knowledge?.forEach((v, n) {
-        // print('Popping: $v -> $n');
-        _stacks[v].removeLast();
-      });
+      popper?.pop();
     }
+    return result;
   }
 
   T _log<T>(String title, AstNode node, T f()) {
@@ -114,31 +117,31 @@ class FlowAwareNullableLocalInference
   Implications _handleSequence(List<AstNode> sequence,
       {Implications andThen(Implications implications),
       Implications getCustomImplications(int index, AstNode item)}) {
-    Implications aux(int index, Implications previousImplications) {
-      if (index < sequence.length) {
+
+    final poppers = <_KnowledgePopper>[];
+    Implications previousImplications;
+
+    try {
+      for (int index = 0; index < sequence.length; index++) {
         final item = sequence[index];
         final itemImplications = getCustomImplications == null
             ? item.accept(this)
             : getCustomImplications(index, item);
         // print("SEQUENCE[$index]: item = $item, implications: $itemImplications (next op knowledge: ${itemImplications?.getKnowledgeForNextOperation()}), previous: $previousImplications");
-        if (itemImplications == null) {
-          return aux(index + 1, previousImplications);
-        } else {
-          final implications =
+        if (itemImplications != null) {
+          previousImplications =
               Implications.then(previousImplications, itemImplications);
-          return _withKnowledge(itemImplications?.getKnowledgeForNextOperation(),
-              () {
-            return aux(index + 1, implications);
-          });
+          poppers.add(pushKnowledge(itemImplications?.getKnowledgeForNextOperation()));
         }
-      } else {
-        return andThen == null
-            ? previousImplications
-            : andThen(previousImplications);
+      }
+      return andThen == null
+          ? previousImplications
+          : andThen(previousImplications);
+    } finally {
+      for (final popper in poppers.reversed) {
+        popper?.pop();
       }
     }
-
-    return aux(0, null);
   }
 
   @override
@@ -953,5 +956,18 @@ class FlowAwareNullableLocalInference
       // TODO: ?
       return null;
     });
+  }
+}
+
+class _KnowledgePopper {
+  final Iterable<LocalElement> _elements;
+  final Map<LocalElement, List<Knowledge>> _stacks;
+  _KnowledgePopper(this._stacks, this._elements);
+
+  pop() {
+    for (final v in _elements) {
+      // print('Popping: $v -> $n');
+      _stacks[v].removeLast();
+    }
   }
 }
