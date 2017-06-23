@@ -624,7 +624,9 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitMethodDeclaration(MethodDeclaration node) {
     return _log('visitMethodDeclaration', node, () {
-      return _handleSequence([node.parameters, node.body]);
+      node.visitChildren(this);
+      return null;
+      // return _handleSequence([node.parameters, node.body]);
     });
   }
 
