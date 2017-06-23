@@ -65,6 +65,15 @@ main() {
           'bar(x) => /*not-null*/x.f(x.a, /*not-null*/x.b);');
     });
 
+    test('special cases', () async {
+      expect(
+          await annotate('m(x) { x.toString(); x; }'),
+          'm(x) { x.toString(); x; }');
+      expect(
+          await annotate('m(x) { x.runtimeType; x; }'),
+          'm(x) { x.runtimeType; x; }');
+    });
+
     test('negation', () async {
       expect(await annotate('bar(x) { if (!(x == null)) x(); }'),
           'bar(x) { if (!(x == null)) /*not-null*/x(); }');

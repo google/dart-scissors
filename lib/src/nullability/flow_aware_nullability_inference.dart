@@ -664,6 +664,10 @@ class FlowAwareNullableLocalInference
         return new Implications({singleLocal: Implication.isNotNull});
       }
 
+      if (node.methodName.name == 'toString' && node.argumentList.arguments.isEmpty) {
+        return node.target?.accept(this);
+      }
+
       return _handleSequence(node.argumentList.arguments,
           andThen: (implications) {
         final targetLocal = node.target == null
@@ -724,6 +728,9 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitPrefixedIdentifier(PrefixedIdentifier node) {
     return _log('visitPrefixedIdentifier', node, () {
+      if (node.identifier.name == 'runtimeType') {
+        return node.prefix?.accept(this);
+      }
       node.visitChildren(this);
       final targetLocal = getValidLocal(node.prefix);
       if (targetLocal != null) {
@@ -737,6 +744,9 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitPropertyAccess(PropertyAccess node) {
     return _log('visitPropertyAccess', node, () {
+      if (node.propertyName.name == 'runtimeType') {
+        return node.target?.accept(this);
+      }
       node.visitChildren(this);
       final targetLocal = getValidLocal(node.target);
       if (targetLocal != null) {
