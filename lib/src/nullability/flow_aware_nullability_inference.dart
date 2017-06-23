@@ -290,8 +290,9 @@ class FlowAwareNullableLocalInference
                   leftImplications, node.rightOperand.accept(this));
             });
           case TokenType.QUESTION_QUESTION:
-            // TODO: work out this case (a bit similar to BAR_BAR).
-            break;
+            final leftImplications = node.leftOperand.accept(this);
+            node.rightOperand.accept(this);
+            return leftImplications;
           case TokenType.PLUS:
           case TokenType.PLUS_EQ:
           case TokenType.MINUS:
@@ -668,6 +669,11 @@ class FlowAwareNullableLocalInference
         return node.target?.accept(this);
       }
 
+      if (node.operator?.type == TokenType.QUESTION_PERIOD) {
+        node.visitChildren(this);
+        return null;
+      }
+
       return _handleSequence(node.argumentList.arguments,
           andThen: (implications) {
         final targetLocal = node.target == null
@@ -691,30 +697,6 @@ class FlowAwareNullableLocalInference
   Implications visitNamedExpression(NamedExpression node) {
     return _log('visitNamedExpression', node, () {
       return node.expression.accept(this);
-    });
-  }
-
-  @override
-  Implications visitNativeClause(NativeClause node) {
-    return _log('visitNativeClause', node, () {
-      node.visitChildren(this);
-      return null;
-    });
-  }
-
-  @override
-  Implications visitNativeFunctionBody(NativeFunctionBody node) {
-    return _log('visitNativeFunctionBody', node, () {
-      node.visitChildren(this);
-      return null;
-    });
-  }
-
-  @override
-  Implications visitNullLiteral(NullLiteral node) {
-    return _log('visitNullLiteral', node, () {
-      node.visitChildren(this);
-      return null;
     });
   }
 
@@ -753,6 +735,11 @@ class FlowAwareNullableLocalInference
           return node.target?.accept(this);
         default:
       }
+
+      if (node.operator?.type == TokenType.QUESTION_PERIOD) {
+        node.visitChildren(this);
+        return null;
+      }
       node.visitChildren(this);
       final targetLocal = getValidLocal(node.target);
       if (targetLocal != null) {
@@ -766,7 +753,10 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitPrefixExpression(PrefixExpression node) {
     return _log('visitPrefixExpression', node, () {
-      if (node.operator.type == TokenType.BANG) {
+      if (node.operator?.type == TokenType.QUESTION_PERIOD) {
+        node.visitChildren(this);
+        return null;
+      } else if (node.operator.type == TokenType.BANG) {
         return Implications.not(node.operand.accept(this));
       } else if (node.operator.type.isIncrementOperator &&
           hasPrimitiveType(node.operand) &&

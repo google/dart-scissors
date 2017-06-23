@@ -77,6 +77,58 @@ main() {
           'm(x) { x.hashCode; x; }');
     });
 
+    test('null-aware operators', () async {
+      expect(
+          await annotate('''
+        m(a, b) {
+          a?.x();
+          b?.x;
+          a;
+          b;
+        }
+      '''),
+          '''
+        m(a, b) {
+          a?.x();
+          b?.x;
+          a;
+          b;
+        }
+      ''');
+      expect(
+          await annotate('''
+        m(a, b) {
+          a() ?? b();
+          a;
+          b;
+        }
+      '''),
+          '''
+        m(a, b) {
+          a() ?? b();
+          /*not-null*/a;
+          b;
+        }
+      ''');
+      expect(
+          await annotate('''
+        m(a, b) {
+          if ((a ?? b) != null) {
+            a;
+            b;
+          }
+        }
+      '''),
+          '''
+        m(a, b) {
+          if ((a ?? b) != null) {
+            a;
+            b;
+          }
+        }
+      ''');
+    });
+
     test('negation', () async {
       expect(await annotate('bar(x) { if (!(x == null)) x(); }'),
           'bar(x) { if (!(x == null)) /*not-null*/x(); }');
