@@ -73,26 +73,26 @@ main() {
     test('increment / decrement operators', () async {
       expect(
           await annotate('''
-        m(x, y, z) {
+        m(int x, int y) {
           x; x++; x;
           y; y--; y;
         }
       '''),
           '''
-        m(x, y, z) {
+        m(int x, int y) {
           x; x++; /*not-null*/x;
           y; y--; /*not-null*/y;
         }
       ''');
       expect(
           await annotate('''
-        m(x, y, z) {
+        m(int x, int y) {
           x; ++x; x;
           y; --y; y;
         }
       '''),
           '''
-        m(x, y, z) {
+        m(int x, int y) {
           x; ++x; /*not-null*/x;
           y; --y; /*not-null*/y;
         }
@@ -113,6 +113,44 @@ main() {
           a() + b();
           /*not-null*/a;
           /*not-null*/b;
+        }
+      ''');
+      expect(
+          await annotate('''
+        String _truncate(String string, int start, int end, int length) {
+          if (end - start > length) {
+            end = start + length;
+          } else if (end - start < length) {
+            int overflow = length - (end - start);
+            if (overflow > 10) overflow = 10;
+            start = start - ((overflow + 1) ~/ 2);
+            end = end + (overflow ~/ 2);
+            if (start < 0) start = 0;
+            if (end > string.length) end = string.length;
+          }
+          StringBuffer buf = new StringBuffer();
+          if (start > 0) buf.write("...");
+          _escapeSubstring(buf, string, 0, string.length);
+          if (end < string.length) buf.write("...");
+          return buf.toString();
+        }
+      '''), '''
+        String _truncate(String string, int start, int end, int length) {
+          if (end - start > length) {
+            end = /*not-null*/start + /*not-null*/length;
+          } else if (/*not-null*/end - /*not-null*/start < /*not-null*/length) {
+            int overflow = /*not-null*/length - (/*not-null*/end - /*not-null*/start);
+            if (overflow > 10) overflow = 10;
+            start = /*not-null*/start - ((/*not-null*/overflow + 1) ~/ 2);
+            end = /*not-null*/end + (/*not-null*/overflow ~/ 2);
+            if (start < 0) start = 0;
+            if (end > string.length) end = /*not-null*/string.length;
+          }
+          StringBuffer buf = new StringBuffer();
+          if (/*not-null*/start > 0) buf.write("...");
+          _escapeSubstring(buf, string, 0, string.length);
+          if (/*not-null*/end < /*not-null*/string.length) buf.write("...");
+          return buf.toString();
         }
       ''');
     });
@@ -149,7 +187,7 @@ main() {
         m(x, y) {
           x();
           /*not-null*/x;
-          /*not-null*/x = y;
+          x = y;
           x;
           x();
           /*not-null*/x;

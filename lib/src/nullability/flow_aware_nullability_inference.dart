@@ -37,9 +37,10 @@ class FlowAwareNullableLocalInference
   final results = <LocalElement, Map<SimpleIdentifier, Knowledge>>{};
   final _stacks = <LocalElement, List<Knowledge>>{};
   final Set<LocalElement> localsToSkip;
-  final ExpressionNullabilityPredicate isStaticallyNullable;
+  final ExpressionPredicate isStaticallyNullable;
+  final ExpressionPredicate hasPrimitiveType;
 
-  FlowAwareNullableLocalInference(this.localsToSkip, this.isStaticallyNullable);
+  FlowAwareNullableLocalInference(this.localsToSkip, {this.isStaticallyNullable, this.hasPrimitiveType});
 
   Knowledge getKnowledge(Expression id) {
     if (id is SimpleIdentifier) {
@@ -246,28 +247,28 @@ class FlowAwareNullableLocalInference
         // node.visitChildren(this);
         return handleNullComparison(
             node.rightOperand, rightLocal, node.operator);
-      } else if (leftLocal != null && rightLocal != null) {
+      } else if (leftLocal != null && rightLocal != null &&
+          node.operator.type == TokenType.EQ_EQ) {
         node.visitChildren(this);
-        if (node.operator.type == TokenType.EQ_EQ) {
-          // TODO: Upon equality, transfer knowledge between left<->right
-          // operands.
-          // Also: should declare 1st is not exploding
-          final leftKnowledge = _getLocalKnowledge(leftLocal);
-          final rightKnowledge = _getLocalKnowledge(rightLocal);
-          final data = <LocalElement, int>{};
-          if (leftKnowledge != null) {
-            data[rightLocal] =
-                Implication.bindKnowledgeToBoolExpression(leftKnowledge, true);
-          }
-          if (rightKnowledge != null) {
-            data[leftLocal] =
-                Implication.bindKnowledgeToBoolExpression(rightKnowledge, true);
-          }
-          return new Implications(data);
-          // final leftImplications = new Implications.hasKnowledge(leftVariable, rightKnowledge);
-          // final rightImplications = new Implications.hasKnowledge(rightVariable, leftKnowledge);
-          // return Implications.union(leftImplications, rightImplications);
+        // TODO: Upon equality, transfer knowledge between left<->right
+        // operands.
+        // Also: should declare 1st is not exploding
+        final leftKnowledge = _getLocalKnowledge(leftLocal);
+        final rightKnowledge = _getLocalKnowledge(rightLocal);
+        final data = <LocalElement, int>{};
+        if (leftKnowledge != null) {
+          data[rightLocal] =
+              Implication.bindKnowledgeToBoolExpression(leftKnowledge, true);
         }
+        if (rightKnowledge != null) {
+          data[leftLocal] =
+              Implication.bindKnowledgeToBoolExpression(rightKnowledge, true);
+        }
+        return new Implications(data);
+        // final leftImplications = new Implications.hasKnowledge(leftVariable, rightKnowledge);
+        // final rightImplications = new Implications.hasKnowledge(rightVariable, leftKnowledge);
+        // return Implications.union(leftImplications, rightImplications);
+        // }
       } else {
         switch (node.operator.type) {
           case TokenType.AMPERSAND_AMPERSAND:
@@ -287,6 +288,32 @@ class FlowAwareNullableLocalInference
           case TokenType.QUESTION_QUESTION:
             // TODO: work out this case (a bit similar to BAR_BAR).
             break;
+          case TokenType.PLUS:
+          case TokenType.PLUS_EQ:
+          case TokenType.MINUS:
+          case TokenType.MINUS_EQ:
+          case TokenType.STAR:
+          case TokenType.STAR_EQ:
+          case TokenType.SLASH:
+          case TokenType.SLASH_EQ:
+          case TokenType.PERCENT:
+          case TokenType.PERCENT_EQ:
+          case TokenType.GT:
+          case TokenType.GT_EQ:
+          case TokenType.GT_GT:
+          case TokenType.LT:
+          case TokenType.LT_EQ:
+          case TokenType.LT_LT:
+          case TokenType.LT_LT_EQ:
+            if (hasPrimitiveType(node.leftOperand)) {
+              return Implications.then(
+                  _handleSequence([node.leftOperand, node.rightOperand]),
+                  new Implications({
+                    leftLocal: Implication.isNotNull,
+                    rightLocal: Implication.isNotNull
+                  }));
+            }
+            return _handleSequence([node.leftOperand, node.rightOperand]);
           default:
             return _handleSequence([node.leftOperand, node.rightOperand]);
         }
@@ -597,8 +624,7 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitMethodDeclaration(MethodDeclaration node) {
     return _log('visitMethodDeclaration', node, () {
-      node.visitChildren(this);
-      return null;
+      return _handleSequence([node.parameters, node.body]);
     });
   }
 
@@ -695,6 +721,7 @@ class FlowAwareNullableLocalInference
       if (node.operator.type == TokenType.BANG) {
         return Implications.not(node.operand.accept(this));
       } else if (node.operator.type.isIncrementOperator &&
+          hasPrimitiveType(node.operand) &&
           node.operand is SimpleIdentifier) {
         final local = getValidLocal(node.operand);
         if (local != null) {
@@ -709,6 +736,7 @@ class FlowAwareNullableLocalInference
   Implications visitPostfixExpression(PostfixExpression node) {
     return _log('visitPostfixExpression', node, () {
       if (node.operator.type.isIncrementOperator &&
+          hasPrimitiveType(node.operand) &&
           node.operand is SimpleIdentifier) {
         final local = getValidLocal(node.operand);
         if (local != null) {
@@ -722,6 +750,10 @@ class FlowAwareNullableLocalInference
   @override
   Implications visitSimpleIdentifier(SimpleIdentifier node) {
     return _log('visitSimpleIdentifier', node, () {
+      if (node.parent is AssignmentExpression && node == node.parent.leftHandSide) {
+        // Don't mark `x` in `x = y` as it's pointless / this saves up some time.
+        return null;
+      }
       final local = getValidLocal(node);
       if (local != null) {
         final knowledge = _getLocalKnowledge(local);

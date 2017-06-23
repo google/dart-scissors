@@ -6,7 +6,7 @@ import 'knowledge.dart';
 
 class _EscapingLocalMutationsVisitor extends RecursiveAstVisitor {
   final localsMutatedInEscapingExecutableElements = new Set<LocalElement>();
-  final ExpressionNullabilityPredicate isNullable;
+  final ExpressionPredicate isNullable;
   _EscapingLocalMutationsVisitor(this.isNullable);
 
   static Element _getDeclarationElement(AstNode node) => node is Declaration
@@ -47,7 +47,7 @@ class _EscapingLocalMutationsVisitor extends RecursiveAstVisitor {
 
 class _LocalMutationsVisitor extends RecursiveAstVisitor {
   final localsMutated = new Set<LocalElement>();
-  final ExpressionNullabilityPredicate isNullable;
+  final ExpressionPredicate isNullable;
   _LocalMutationsVisitor(this.isNullable);
 
   _handleAssignmentTarget(Expression target) {
@@ -78,7 +78,7 @@ LocalElement getLocalVar(Expression expr) {
 
 Set<LocalElement> findLocalsMutatedInEscapingExecutableElements(
     AstNode node,
-    ExpressionNullabilityPredicate isNullable) {
+    ExpressionPredicate isNullable) {
   final visitor = new _EscapingLocalMutationsVisitor(isNullable);
   node.accept(visitor);
   return visitor.localsMutatedInEscapingExecutableElements;
@@ -86,7 +86,7 @@ Set<LocalElement> findLocalsMutatedInEscapingExecutableElements(
 
 Set<LocalElement> findLocalsMutated(
     AstNode node,
-    ExpressionNullabilityPredicate isNullable) {
+    ExpressionPredicate isNullable) {
   final visitor = new _LocalMutationsVisitor(isNullable);
   node.accept(visitor);
   return visitor.localsMutated;

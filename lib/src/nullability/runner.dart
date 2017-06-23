@@ -46,8 +46,15 @@ Future<String> annotateSourceWithNullability(Source source) async {
     }
 
     final localsToSkip = findLocalsMutatedInEscapingExecutableElements(unit, isNullable);
+    final primitives = new Set.from(['int', 'num', 'bool', 'String']);
     final nullableLocalInference =
-        new FlowAwareNullableLocalInference(localsToSkip, isNullable);
+        new FlowAwareNullableLocalInference(localsToSkip,
+          isStaticallyNullable: isNullable,
+          hasPrimitiveType: (expr) {
+            // TODO: use something much cleaner.
+            final type = expr.staticType;
+            return primitives.contains('$type');
+          });
     unit.accept(nullableLocalInference);
 
     final formattedUnits = formatSourcesWithKnowledge(
