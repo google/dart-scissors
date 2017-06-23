@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:io';
 /**
  *
  * - 1st pass with escape analysis to detect variables to skip
@@ -630,10 +631,29 @@ class FlowAwareNullableLocalInference
     });
   }
 
+  bool _isCheckNull(MethodInvocation i) {
+    final name = i.methodName;
+    if (name.name != 'checkNull' || i.argumentList.arguments.length != 1) {
+      return false;
+    }
+
+    final e = name.bestElement;
+    if (e == null) return false;
+
+    var uri = e.source.uri;
+    return uri.scheme == 'dart' && uri.path == '_js_helper';
+  }
+
   @override
   Implications visitMethodInvocation(MethodInvocation node) {
     return _log('visitMethodInvocation', node, () {
       // x.f(x.a, x.b) -> x.f(dart.notNull(x).a, x.b)
+      if (_isCheckNull(node)) {
+        // stderr.writeln('!');
+        final singleLocal = getValidLocal(node.argumentList.arguments.single);
+        return new Implications({singleLocal: Implication.isNotNull});
+      }
+
       return _handleSequence(node.argumentList.arguments,
           andThen: (implications) {
         final targetLocal = node.target == null
