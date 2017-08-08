@@ -15,9 +15,9 @@ import 'dart:async';
 
 import 'package:barback/barback.dart';
 
-Future<Map<String, dynamic/*=T*/ >> _getInput/*<T>*/(
-    Stream/*<T>*/ values, AssetId getId(dynamic/*=T*/ value)) async {
-  var res = <String, dynamic/*=T*/ >{};
+Future<Map<String, T>> _getInput<T>(
+    Stream<T> values, AssetId getId(T value)) async {
+  var res = <String, T>{};
   await for (final value in values) {
     final id = getId(value);
     res[id.extension] = value;
@@ -27,7 +27,7 @@ Future<Map<String, dynamic/*=T*/ >> _getInput/*<T>*/(
 
 Future<Map<String, AssetId>> getDeclaredInputs(
         DeclaringAggregateTransform transform) =>
-    _getInput/*<AssetId>*/(transform.primaryIds, (id) => id);
+    _getInput<AssetId>(transform.primaryIds, (id) => id);
 
 Future<Map<String, Asset>> getInputs(AggregateTransform transform) =>
-    _getInput/*<Asset>*/(transform.primaryInputs, (asset) => asset.id);
+    _getInput<Asset>(transform.primaryInputs, (asset) => asset.id);
