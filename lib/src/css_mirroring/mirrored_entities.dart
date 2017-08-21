@@ -13,8 +13,8 @@
 // limitations under the License.
 library scissors.src.css_mirroring.mirrored_entities;
 
-import 'package:quiver/check.dart';
 import 'package:csslib/visitor.dart';
+import 'package:quiver/check.dart';
 
 import 'entity.dart';
 
@@ -58,9 +58,9 @@ class MirroredEntity<T extends TreeNode> {
     return node is MediaDirective || node is HostDirective;
   }
 
-  MirroredEntities/*<C>*/ getChildren/*<C extends TreeNode>*/(
-      List/*<C>*/ getEntityChildren(T _)) {
-    return new MirroredEntities/*<C>*/(
+  MirroredEntities<C> getChildren<C extends TreeNode>(
+      List<C> getEntityChildren(T _)) {
+    return new MirroredEntities<C>(
         _entities._originalSource,
         getEntityChildren(original.value),
         _entities._flippedSource,

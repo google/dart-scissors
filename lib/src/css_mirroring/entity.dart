@@ -53,8 +53,8 @@ int _getNodeStart(TreeNode node) {
   return node.span.start.offset;
 }
 
-int getDeclarationEnd/*<T extends TreeNode>*/(
-    String source, List/*<T>*/ decls, int iDecl) {
+int getDeclarationEnd<T extends TreeNode>(
+    String source, List<T> decls, int iDecl) {
   if (iDecl < decls.length - 1) {
     return decls[iDecl + 1].span.start.offset;
   }
