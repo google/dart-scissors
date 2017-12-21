@@ -53,7 +53,8 @@ Future<List<String>> extractTemplates(
           if (annotationName == 'View' || annotationName == 'Component') {
             var template = evalArg('template');
             if (template != null) {
-              List styleUrls = evalArg('styleUrls') ?? [evalArg('cssUrl')];
+              List<String> styleUrls =
+                  evalArg('styleUrls') ?? [evalArg('cssUrl')];
               // stderr.writeln('\ncssUrl = $cssUrl, styleUrls = $styleUrls');
               if (styleUrls.map(_resolveRelativeUrl).contains(cssUrl)) {
                 templates.add(template);

@@ -13,8 +13,7 @@
 // limitations under the License.
 library scissors.test.image_inlining.transformer_test;
 
-import 'package:barback/barback.dart'
-    show BarbackMode, BarbackSettings, Transformer;
+import 'package:barback/barback.dart' show BarbackMode, BarbackSettings;
 import 'package:scissors/src/utils/enum_parser.dart';
 import 'package:scissors/src/image_inlining/transformer.dart';
 
