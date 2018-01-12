@@ -16,12 +16,11 @@ library scissors.src.css_mirroring.bidi_css_generator.ruleset_processors;
 import 'package:csslib/visitor.dart' show Declaration, RuleSet, Selector;
 import 'package:quiver/check.dart';
 
+import '../utils/enum_parser.dart';
 import 'buffered_transaction.dart';
-import 'css_utils.dart' show Direction;
+import 'css_utils.dart' show Direction, flipDirection;
 import 'entity.dart';
 import 'mirrored_entities.dart';
-import '../utils/enum_parser.dart';
-import 'css_utils.dart' show Direction, flipDirection;
 
 enum RemovalResult { none, some, all }
 
@@ -90,7 +89,7 @@ RemovalResult editFlippedRuleSet(
 }
 
 /// Matches " :host" or ":host.foo" without matching ":host-context".
-final _hostPrefixRx = new RegExp(r'^(\s*:host)(?:$|[^\w-])');
+final _hostPrefixRx = new RegExp(r'^(\s*:host)(\(.*?\))?(?:$|[^\w-])');
 
 void prependHostContextToEachSelector(
     Entity e, BufferedTransaction trans, String selector) {
@@ -99,12 +98,13 @@ void prependHostContextToEachSelector(
     int end = start;
     bool appendSpace = true;
 
-    // If sel is :host, we ditch it as :host-context will already apply to it.
     final text = sel.span.text;
     final match = _hostPrefixRx.matchAsPrefix(text);
     if (match != null) {
-      end = start + match.group(1).length;
       appendSpace = false;
+      // Replace :host, since :host-context will already apply to it.
+      // Only a plain :host can be ditched; :host(...) must be kept.
+      if (match.group(2) == null) end = start + match.group(1).length;
     }
 
     final prefix = ':host-context($selector)${appendSpace ? ' ' : ''}';
