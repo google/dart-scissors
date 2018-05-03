@@ -42,8 +42,8 @@ abstract class EagerTransformerWrapper<T> implements BaseWrapper<T> {
   }
 }
 
-abstract class _TransformerWrapper
-    implements Transformer, BaseWrapper<Transformer> {
+abstract class _TransformerWrapper<T extends Transformer>
+    implements Transformer, BaseWrapper<T> {
   String get allowedExtensions => wrapped.allowedExtensions;
 
   apply(Transform transform) => wrapped.apply(transform);
@@ -54,8 +54,8 @@ abstract class _TransformerWrapper
   isPrimary(AssetId id) => wrapped.isPrimary(id);
 }
 
-class _EagerTransformerWrapper extends BaseWrapper<Transformer>
-    with EagerTransformerWrapper, _TransformerWrapper
+class _EagerTransformerWrapper<T extends Transformer> extends BaseWrapper<T>
+    with EagerTransformerWrapper<T>, _TransformerWrapper<T>
     implements Transformer {
   _EagerTransformerWrapper(Transformer wrapped) : super(wrapped) {
     checkState(wrapped is Transformer);
@@ -70,8 +70,8 @@ class _LazyTransformerWrapper extends BaseWrapper<Transformer>
   }
 }
 
-abstract class _AggregateTransformerWrapper
-    implements BaseWrapper<AggregateTransformer> {
+abstract class _AggregateTransformerWrapper<T extends AggregateTransformer>
+    implements BaseWrapper<T> {
   apply(AggregateTransform transform) => wrapped.apply(transform);
 
   declareOutputs(DeclaringAggregateTransform transform) =>
@@ -80,11 +80,9 @@ abstract class _AggregateTransformerWrapper
   classifyPrimary(AssetId id) => wrapped.classifyPrimary(id);
 }
 
-class _EagerAggregateTransformerWrapper
-    extends BaseWrapper<AggregateTransformer>
-    with
-        EagerTransformerWrapper<AggregateTransformer>,
-        _AggregateTransformerWrapper
+class _EagerAggregateTransformerWrapper<T extends AggregateTransformer>
+    extends BaseWrapper<T>
+    with EagerTransformerWrapper<T>, _AggregateTransformerWrapper<T>
     implements AggregateTransformer {
   _EagerAggregateTransformerWrapper(AggregateTransformer wrapped)
       : super(wrapped) {

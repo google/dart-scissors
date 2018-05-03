@@ -78,7 +78,7 @@ class PathResolver {
     var parent = dirname(from.path);
     Iterable<AssetId> ids = alternativePaths
         .map((path) => new AssetId(from.package, join(parent, path)));
-    Asset asset = ((await findFirstWhere(ids.map(inputGetter).toList(),
+    Asset asset = await await findFirstWhere<Future<Asset>>(ids.map(inputGetter).toList(),
         (Future<Asset> asset) async {
       try {
         await asset;
@@ -86,7 +86,7 @@ class PathResolver {
       } on AssetNotFoundException catch (_) {
         return false;
       }
-    }) as dynamic) as Asset); // work around analyzer weirdness.
+    });
     if (asset != null) return asset;
 
     var paths = <String>[]..addAll(alternativePaths);
