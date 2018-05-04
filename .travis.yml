@@ -1,7 +1,8 @@
 language: dart
 sudo: false
 dart:
-  - stable
+  # Do not run on Dart stable until there is a stable release >= 2.0.0.
+  #- stable
   - dev
 matrix:
   allow_failures:
