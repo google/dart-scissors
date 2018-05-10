@@ -54,8 +54,7 @@ Future<List<String>> extractTemplates(
             var template = evalArg('template');
             if (template != null) {
               List<String> styleUrls =
-                  (evalArg('styleUrls') ?? [evalArg('cssUrl')])
-                      .retype<String>();
+                  (evalArg('styleUrls') ?? [evalArg('cssUrl')]).cast<String>();
               // stderr.writeln('\ncssUrl = $cssUrl, styleUrls = $styleUrls');
               if (styleUrls.map(_resolveRelativeUrl).contains(cssUrl)) {
                 templates.add(template);
