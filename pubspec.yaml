@@ -1,5 +1,5 @@
 name: scissors
-version: 0.6.7
+version: 0.6.8
 description: A CSS minifier / tree-shaker for AngularDart 1.x / Angular2.
 authors:
 - Olivier Chafik <ochafik@google.com>
@@ -24,6 +24,7 @@ dev_dependencies:
   transformer_test: ^0.2.0
   test: ^0.12.12
 executables:
+  scissors-bidi: bidi_css
   scissors-clone: smart_clone
   scissors-inline-images: inline_images
   scissors-sassc: sassc_with_compass_functions
