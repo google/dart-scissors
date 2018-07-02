@@ -30,6 +30,7 @@ final argParser = new ArgParser(allowTrailingOptions: true)
       help:
           'Command to run on added files. The path of the file is appended to the command')
   ..addOption('final-command',
+      allowMultiple: true,
       help:
           'Command to run on all output files at the end. The path of the all the files is appended to the command')
   ..addFlag('inflections',
@@ -49,7 +50,7 @@ main(List<String> args) async {
   final editCommand = parseCommand(argResults['edit-command']);
   final copyCommand = parseCommand(argResults['copy-command']);
   final addCommand = parseCommand(argResults['add-command']);
-  final finalCommand = parseCommand(argResults['final-command']);
+  final finalCommands = (argResults['final-command'] ?? []).map(parseCommand);
   final dryRun = argResults['dry-run'];
   final verbose = argResults['verbose'];
   final strict = argResults['strict'];
@@ -79,7 +80,7 @@ main(List<String> args) async {
     return rel == '.' ? replacer(to) : join(to, replacer(rel));
   }
 
-  Future runCommand(List<String> command, List<File> files) async {
+  Future runCommand(List<String> command, List<FileSystemEntity> files) async {
     final result = await Process.run(command.first,
         []..addAll(command.skip(1))..addAll(files.map((file) => file.path)));
     if (result.exitCode == 0) {
@@ -150,7 +151,7 @@ main(List<String> args) async {
 
   await Future.wait(clones.map((c) => c.perform()));
 
-  if (finalCommand != null) {
+  for (final finalCommand in finalCommands) {
     await runCommand(finalCommand, clones.map((c) => c.destination).toList());
   }
 }
