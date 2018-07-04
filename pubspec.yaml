@@ -5,9 +5,9 @@ authors:
 - Olivier Chafik <ochafik@google.com>
 homepage: http://github.com/google/dart-scissors
 environment:
-  sdk: ">=1.21.0 <2.0.0-dev.infinity"
+  sdk: ">=2.0.0-dev.23.0"
 dependencies:
-  args: ">=0.12.0 <0.14.0"
+  args: ">=0.12.0 <1.5.0"
   analyzer: ^0.30.0+2
   barback: ^0.15.0
   bazel_worker: ^0.1.1

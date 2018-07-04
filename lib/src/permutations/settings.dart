@@ -21,7 +21,7 @@ abstract class PermutationsSettings implements JsOptimizationSettings {
   Setting<Map> get expectedPartCounts => _expectedPartCounts;
 
   final potentialLocales = new Setting<List<String>>('potentialLocales',
-      defaultValue: (numberFormatSymbols.keys as Iterable<String>).toList());
+      defaultValue: (numberFormatSymbols.keys.cast<String>()).toList());
 
   final ltrImport = new Setting<String>('ltrImport');
   final rtlImport = new Setting<String>('rtlImport');

@@ -21,7 +21,9 @@ import 'package:transformer_test/utils.dart' show testPhases;
 
 List<List> makePhases(BarbackMode mode) => new EagerTransformerGroupWrapper(
         new AutoReloadTransformerGroup.asPlugin(new BarbackSettings({}, mode)))
-    .phases;
+    .phases
+    .map((phase) => phase.toList())
+    .toList();
 
 void main() {
   testPhases('removes mentions of the reloader lib in release mode',

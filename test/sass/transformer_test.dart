@@ -13,15 +13,17 @@
 // limitations under the License.
 library scissors.test.sass.transformer_test;
 
-import 'package:barback/barback.dart' show BarbackMode, BarbackSettings;
+import 'package:barback/barback.dart'
+    show AggregateTransformer, BarbackMode, BarbackSettings;
 import 'package:scissors/src/sass/transformer.dart';
 import 'package:scissors/src/utils/lazy_transformer_utils.dart';
 import 'package:transformer_test/utils.dart' show testPhases;
 
 List<List> makePhases(Map config) => <List>[
       [
-        new EagerTransformerWrapper(new SassCTransformer.asPlugin(
-            new BarbackSettings(config, BarbackMode.RELEASE)))
+        new EagerTransformerWrapper<AggregateTransformer>(
+            new SassCTransformer.asPlugin(
+                new BarbackSettings(config, BarbackMode.RELEASE)))
       ]
     ];
 
