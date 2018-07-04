@@ -284,7 +284,7 @@ String decamelize(String s, [String c = '_']) => s.replaceAllMapped(
 String capitalize(String s) =>
     s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 String decapitalize(String s) =>
-    s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
+    s.isEmpty ? s : s[0].toLowerCase() + s.substring(1);
 
 Map<String, String> invertMap(Map<String, String> map) =>
     new Map.fromIterable(map.keys, key: (k) => map[k]);
