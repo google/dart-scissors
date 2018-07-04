@@ -2,6 +2,13 @@
 
 ...
 
+## 0.6.8
+
+### Features
+
+- Added a `bidi_css` executable that exposes this package's CSS mirroring
+  functionality.
+
 ## 0.6.7 (2016-12-05)
 
 ### Features
