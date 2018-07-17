@@ -70,7 +70,7 @@ class SourceMapEditor {
       }
     }
     var result = new SingleMapping.fromEntries(entries, filename);
-    return JSON.encode(result.toJson());
+    return jsonEncode(result.toJson());
   }
 
   // /// A line entry read from a source map.
