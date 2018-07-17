@@ -26,4 +26,4 @@ Future<String> runCssJanus(String css, String cssJanusPath) async =>
     successString(
         'cssjanus',
         await pipeInAndOutOfNewProcess(
-            await Process.start(cssJanusPath, []), css));
+            await Process.start(cssJanusPath, [], runInShell: true), css));
