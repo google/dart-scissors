@@ -41,7 +41,7 @@ class DeferredMap {
   toString() => 'Map($comment, $entries)';
 
   factory DeferredMap.fromJson(String json) {
-    Map data = JSON.decode(json);
+    Map data = jsonDecode(json);
 
     String comment = data['_comment'];
     var entries = <DeferredMapEntry>[];
