@@ -129,6 +129,6 @@ Future<String> encodeAssetAsUri(Asset asset) async {
 
 String encodeBytesAsDataUri(List<int> bytes,
     {String mimeType: "application/octet-stream"}) {
-  var encodedData = BASE64.encode(bytes);
+  var encodedData = base64.encode(bytes);
   return 'data:$mimeType;base64,$encodedData';
 }
