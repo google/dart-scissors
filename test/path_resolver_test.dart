@@ -31,7 +31,6 @@ main() {
       'cssjanus': pathResolver.defaultCssJanusPath,
       'java': pathResolver.defaultJavaPath,
       'pngcrush': pathResolver.defaultPngCrushPath,
-      'ruby': pathResolver.defaultRubyPath,
       'ruby sass': pathResolver.defaultRubySassPath,
       'sassc': pathResolver.defaultSassCPath,
     };
