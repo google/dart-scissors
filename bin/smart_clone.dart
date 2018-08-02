@@ -19,7 +19,11 @@ import 'package:args/args.dart';
 import 'package:path/path.dart';
 
 final argParser = new ArgParser(allowTrailingOptions: true)
+  ..addFlag('help')
   ..addOption('replace', allowMultiple: true)
+  ..addFlag('replaceFromTo',
+      defaultsTo: true,
+      help: 'Whether to infer replacements from the from & to args')
   ..addOption('edit-command',
       help:
           'Command to run on existing files. The path of the file is appended to the command')
@@ -55,17 +59,42 @@ main(List<String> args) async {
   final verbose = argResults['verbose'];
   final strict = argResults['strict'];
   final allowInflections = argResults['inflections'];
+  final replaceFromTo = argResults['replaceFromTo'];
 
-  if (argResults.rest.length != 2)
-    throw 'Invalid arguments: expected `from to`, got `${argResults.rest.join(' ')}`';
+  printHelp() {
+    print('smart_clone [options] fromPath toPath\n${argParser.usage}');
+  }
+
+  if (argResults['help']) {
+    printHelp();
+    return;
+  }
+  if (argResults.rest.length != 2) {
+    printHelp();
+    throw 'Missing fromPath and toPath arguments.';
+  }
 
   String from = argResults.rest[0];
   String to = argResults.rest[1];
 
   final replacer =
       new Replacer(strict: strict, allowInflections: allowInflections);
-  replacer.addReplacements(
-      basenameWithoutExtension(from), basenameWithoutExtension(to));
+  if (replaceFromTo) {
+    replacer.addReplacements(
+        basenameWithoutExtension(from), basenameWithoutExtension(to));
+    replacer.addReplacements(from, to);
+    final fromDir = dirname(from);
+    final toDir = dirname(to);
+    if (fromDir != '.' && toDir != '.') {
+      replacer.addReplacements(fromDir, toDir);
+      for (final prefix in ['src/', 'src/main/java/', 'src/test/java', 'java/', 'javatests/']) {
+        if (fromDir.startsWith(prefix) && fromDir.length > prefix.length
+            && toDir.startsWith(prefix) && toDir.length > prefix.length) {
+          replacer.addReplacements(fromDir.substring(prefix.length), toDir.substring(prefix.length));
+        }
+      }
+    }
+  }
 
   for (final repl in argResults['replace'] ?? []) {
     final split = repl.split(':');
@@ -194,6 +223,8 @@ typedef String _StringTransform(String s);
 final caseInsensitiveTransforms = <_StringTransform>[
   (s) => s.replaceAll('-', '_'),
   (s) => s.replaceAll('_', '-'),
+  (s) => s.replaceAll('/', '.'),
+  (s) => s.replaceAll('.', '/'),
   (s) => decamelize(s, '_'),
   (s) => decamelize(s, '-'),
 ];
