@@ -13,6 +13,8 @@ $_capability-needs-prefixing: (
     -moz: true,
     -webkit: true,
   ),
+  // http://shouldiprefix.com/#border-radius
+  border-radius: (),
   // http://shouldiprefix.com/#box-shadow
   css-boxshadow: (
     -moz: true,
