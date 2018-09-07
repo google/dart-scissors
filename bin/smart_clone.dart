@@ -71,7 +71,7 @@ main(List<String> args) async {
   }
   if (argResults.rest.length != 2) {
     printHelp();
-    throw 'Missing fromPath and toPath arguments.';
+    throw 'Requires both fromPath and toPath arguments.';
   }
 
   String from = argResults.rest[0];
@@ -87,7 +87,7 @@ main(List<String> args) async {
     final toDir = dirname(to);
     if (fromDir != '.' && toDir != '.') {
       replacer.addReplacements(fromDir, toDir);
-      for (final prefix in ['src/', 'src/main/java/', 'src/test/java', 'java/', 'javatests/']) {
+      for (final prefix in ['src/', 'src/main/java/', 'src/test/java/', 'java/', 'javatests/']) {
         if (fromDir.startsWith(prefix) && fromDir.length > prefix.length
             && toDir.startsWith(prefix) && toDir.length > prefix.length) {
           replacer.addReplacements(fromDir.substring(prefix.length), toDir.substring(prefix.length));
