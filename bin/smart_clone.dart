@@ -17,6 +17,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart';
+import 'package:scissors/src/smart_clone/replacer.dart';
 
 final argParser = new ArgParser(allowTrailingOptions: true)
   ..addFlag('help')
@@ -43,6 +44,7 @@ final argParser = new ArgParser(allowTrailingOptions: true)
       help:
           'Automatically replace inflections such as plurals, gerunds, etc (e.g. "bazzing" for "baz", "vertices" for "vertex", etc)')
   ..addFlag('strict',
+      defaultsTo: true,
       help:
           'Avoids matching Fooa with Foo (but FooBar will still be matched by Foo)')
   ..addFlag('dry-run')
@@ -87,10 +89,19 @@ main(List<String> args) async {
     final toDir = dirname(to);
     if (fromDir != '.' && toDir != '.') {
       replacer.addReplacements(fromDir, toDir);
-      for (final prefix in ['src/', 'src/main/java/', 'src/test/java/', 'java/', 'javatests/']) {
-        if (fromDir.startsWith(prefix) && fromDir.length > prefix.length
-            && toDir.startsWith(prefix) && toDir.length > prefix.length) {
-          replacer.addReplacements(fromDir.substring(prefix.length), toDir.substring(prefix.length));
+      for (final prefix in [
+        'src/',
+        'src/main/java/',
+        'src/test/java/',
+        'java/',
+        'javatests/'
+      ]) {
+        if (fromDir.startsWith(prefix) &&
+            fromDir.length > prefix.length &&
+            toDir.startsWith(prefix) &&
+            toDir.length > prefix.length) {
+          replacer.addReplacements(
+              fromDir.substring(prefix.length), toDir.substring(prefix.length));
         }
       }
     }
@@ -216,201 +227,6 @@ class FileClone {
   final String content;
   final _Action perform;
   FileClone(this.original, this.destination, this.perform, [this.content]);
-}
-
-typedef String _StringTransform(String s);
-
-final caseInsensitiveTransforms = <_StringTransform>[
-  (s) => s.replaceAll('-', '_'),
-  (s) => s.replaceAll('_', '-'),
-  (s) => s.replaceAll('/', '.'),
-  (s) => s.replaceAll('.', '/'),
-  (s) => decamelize(s, '_'),
-  (s) => decamelize(s, '-'),
-];
-final caseSensitiveTransforms = <_StringTransform>[
-  underscoresToCamel,
-  hyphensToCamel,
-];
-String identity(String s) => s;
-
-class Replacer extends Function {
-  final _replacedPatterns = new Set<String>();
-  final _replacements = <RegExp, String>{};
-  final _patterns = <RegExp>[];
-  final bool strict;
-  final bool allowInflections;
-  Replacer({this.strict, this.allowInflections});
-
-  static const _patternSuffix = r'(?:$|\b|(?=\d|[-_A-Z]))';
-  // const patternPrefix = r'(\b|\d|[_A-Z])';
-
-  void addReplacements(String original, String replacement) {
-    final variations = allowInflections ? English.inflections : [identity];
-    for (final variation in variations) {
-      for (final transform in caseSensitiveTransforms) {
-        _addReplacement(original, replacement, (s) => transform(variation(s)));
-        _addReplacement(
-            original, replacement, (s) => capitalize(transform(variation(s))));
-        _addReplacement(original, replacement,
-            (s) => decapitalize(transform(variation(s))));
-      }
-      for (final transform in caseInsensitiveTransforms) {
-        _addReplacement(original, replacement, (s) => transform(variation(s)));
-        _addReplacement(original, replacement,
-            (s) => transform(variation(s)).toUpperCase());
-        _addReplacement(original, replacement,
-            (s) => transform(variation(s)).toLowerCase());
-      }
-    }
-  }
-
-  void _addReplacement(
-      String original, String replacement, _StringTransform transform) {
-    final transformed = transform(original);
-
-    // if (transformed == original) continue;
-    String pattern = transformed + (strict ? _patternSuffix : '');
-    if (_replacedPatterns.add(pattern)) {
-      final rx = new RegExp(pattern);
-      _patterns.add(rx);
-      _replacements[rx] = transform(replacement);
-    }
-  }
-
-  toString() {
-    var s = '{\n';
-    _replacements.forEach((k, v) {
-      s += '  ${k.pattern} -> $v\n';
-    });
-    s += '}';
-    return s;
-  }
-
-  String call(String s) {
-    for (final pattern in _patterns) {
-      s = s.replaceAll(pattern, _replacements[pattern]);
-    }
-    return s;
-  }
-}
-
-final _underscoresRx = new RegExp(r'_([a-z])');
-final _hyphensRx = new RegExp(r'-([a-z])');
-final _camelRx = new RegExp(r'($|\b|[a-z])([A-Z][a-z]+)');
-
-/// 'this_string' -> 'thisString'.
-String underscoresToCamel(String s) =>
-    s.replaceAllMapped(_underscoresRx, (m) => m.group(1).toUpperCase());
-
-/// 'this-string' -> 'thisString'.
-String hyphensToCamel(String s) =>
-    s.replaceAllMapped(_hyphensRx, (m) => m.group(1).toUpperCase());
-
-/// 'thisString' -> 'this_string'
-String decamelize(String s, [String c = '_']) => s.replaceAllMapped(
-    _camelRx, (m) => m.group(1) + c + decapitalize(m.group(2)));
-
-/// Util method for templates to convert 'this_string' to 'ThisString'.
-String capitalize(String s) =>
-    s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
-String decapitalize(String s) =>
-    s.isEmpty ? s : s[0].toLowerCase() + s.substring(1);
-
-Map<String, String> invertMap(Map<String, String> map) =>
-    new Map.fromIterable(map.keys, key: (k) => map[k]);
-
-_stripFinalE(String s) => s.endsWith('e') ? s.substring(0, s.length - 1) : s;
-
-// TODO(ochafik): Use package:inflection.
-class English {
-  static final inflections = <_StringTransform>[
-    identity,
-    doubleLetterPluralize,
-    pluralize,
-    singularize,
-    (s) => doubleFinalLetter(_stripFinalE(s)) + 'er',
-    (s) => doubleFinalLetter(_stripFinalE(s)) + 'ed',
-    (s) => doubleFinalLetter(_stripFinalE(s)) + 'ing',
-  ];
-
-  static final doubledConsonants = new Set.from([
-    'b', 'd', 'f', 'g', 'l', 'm', 'n', 'p', 't', 'v', 'z',
-    // 'c', 'j', 'k', 'q', 's', 'w', 'x', 'r'
-  ]);
-  static bool shouldDoubleFinalLetter(String s) {
-    if (s.length < 2) return false;
-    final c = s[s.length - 1];
-    final previous = s[s.length - 2];
-    return doubledConsonants.contains(c) && c != previous;
-  }
-
-  static String doubleFinalLetter(String s) {
-    if (shouldDoubleFinalLetter(s)) return s + s[s.length - 1];
-    return s;
-  }
-
-  static final _knownPlurals = {
-    'child': 'children',
-    'criterion': 'criteria',
-    'foot': 'feet',
-    'leaf': 'leaves',
-    'life': 'lives',
-    'person': 'people',
-    'formula': 'formulae',
-  };
-  static final _knownSingulars = invertMap(_knownPlurals);
-  static final _knownPluralSuffices = {
-    'ay': 'ays',
-    'ey': 'eys',
-    'y': 'ies',
-    'ix': 'ices',
-    'ex': 'ices',
-    'is': 'es',
-    'ro': 'roes',
-    'um': 'a',
-    'us': 'i',
-    's': 'ses',
-    '': 's'
-  };
-  static final _knownSingularSuffices = invertMap(_knownPluralSuffices);
-
-  static String _replaceSuffix(String s, int length, String to) =>
-      s.substring(0, s.length - length) + to;
-
-  static String pluralize(String s) {
-    final knownPlural = _knownPlurals[s];
-    if (knownPlural != null) return knownPlural;
-
-    if (s.length > 1) {
-      for (final suffix in _knownPluralSuffices.keys) {
-        if (s.endsWith(suffix)) {
-          return _replaceSuffix(s, suffix.length, _knownPluralSuffices[suffix]);
-        }
-      }
-    }
-    return s;
-  }
-
-  static String singularize(String s) {
-    final knownSingular = _knownSingulars[s];
-    if (knownSingular != null) return knownSingular;
-
-    if (s.length > 1) {
-      for (final suffix in _knownSingularSuffices.keys) {
-        if (s.endsWith(suffix)) {
-          return _replaceSuffix(
-              s, suffix.length, _knownSingularSuffices[suffix]);
-        }
-      }
-    }
-    return s;
-  }
-
-  static String doubleLetterPluralize(String s) {
-    if (shouldDoubleFinalLetter(s)) return doubleFinalLetter(s) + 'es';
-    return pluralize(s);
-  }
 }
 
 List<String> parseCommand(String command) {
