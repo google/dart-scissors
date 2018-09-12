@@ -20,7 +20,6 @@ final caseInsensitiveTransforms = <StringTransform>[
   (s) => s.replaceAll('_', '-'),
   packageToPath,
   pathToPackage,
-  (s) => s.replaceAll('.', '/'),
   (s) => decamelize(s, '_'),
   (s) => decamelize(s, '-'),
 ];
