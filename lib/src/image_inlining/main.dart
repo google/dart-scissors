@@ -49,9 +49,9 @@ main(List<String> args) async {
       (await inlineImagesWithIncludeDirs(makeFileAsset(input), includeDirs))
           .read();
   if (output.path == '-')
-    await stream.pipe(stdout);
+    await stream.cast<List<int>>().pipe(stdout);
   else
-    await stream.pipe(output.openWrite());
+    await stream.cast<List<int>>().pipe(output.openWrite());
 }
 
 Asset makeFileAsset(File file) {
