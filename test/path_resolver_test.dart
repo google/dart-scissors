@@ -13,7 +13,6 @@
 // limitations under the License.
 library scissors.test.path_resolver_test;
 
-import 'dart:async';
 import 'dart:io';
 
 import 'package:test/test.dart';

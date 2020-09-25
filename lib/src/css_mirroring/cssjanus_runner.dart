@@ -13,7 +13,6 @@
 // limitations under the License.
 library scissors.src.css_mirroring.cssjanus_runner;
 
-import 'dart:async';
 import 'dart:io';
 
 import '../utils/process_utils.dart';

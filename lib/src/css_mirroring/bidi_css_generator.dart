@@ -13,8 +13,6 @@
 // limitations under the License.
 library scissors.src.css_mirroring.bidi_css_generator;
 
-import 'dart:async';
-
 import 'package:csslib/parser.dart' show parse;
 import 'package:csslib/visitor.dart'
     show
