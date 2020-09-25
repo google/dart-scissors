@@ -13,7 +13,6 @@
 // limitations under the License.
 library scissors.src.utils.process_utils;
 
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
